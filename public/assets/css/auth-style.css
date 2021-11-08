@@ -1,0 +1,108 @@
+body {
+    font-family: 'Titillium Web', sans-serif !important;
+    font-size: 12px;
+}
+
+.topbar-wrapper .social_icons a {
+    margin: 0 6px;
+    font-size: 13px;
+} 
+
+.logo_menu {
+    padding: 10px 0;
+}
+
+.navbar-dark {
+    background: #05192b;
+}
+
+.navbar-dark .navbar-toggler {
+    border-color: transparent;
+}
+
+.navbar-dark .navbar-toggler {
+    float: right;
+    margin-top: 5px;
+}
+
+.navbar-dark {
+    padding: 0px 0;
+}
+
+.top_header {
+    background: #e4fefe;
+    padding: 0px;
+}
+
+.top_header h5 {
+    margin-bottom: 3px;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.top_header .breaking_news {
+    background: #fab50a;
+    font-weight: 600;
+    padding: 8px 5px;
+    float: left;
+    border-radius: 2px;
+    margin-top: 1px;
+}
+
+.top_header #breaking_news_scroll {
+    float: left;
+    margin-left: 15px;
+    margin-top: 10px;
+}
+
+.top_header h6 {
+    margin-bottom: 0;
+}
+
+.top_header .navigate_arrow {
+    float: right;
+    border: 1px solid rgba(0,0,0,.1);
+    padding: 0 5px;
+    border-radius: 2px;
+    margin: 8px 3px 0;
+    color: #898d9c;
+    line-height: 1.6;
+}
+
+.top_header .rss_feed {
+    float: right;
+    padding: 0 5px;
+    margin: 7px 0 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.top_menu .market_insights .dropdown-toggle {
+    font-size: 12px;
+    background: transparent;
+    color: #ddd;
+    padding: 10px 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-top: 15px;
+}
+
+.top_menu .padding_zero {
+    padding: 0;
+}
+
+.top_menu .market_insights .dropdown-menu {
+    background: #fff;
+    border-top: 0;
+    top: auto;
+}
+
+@media(max-width: 768px) {
+    .top_menu .market_insights {
+        display: none;
+    }
+
+    .top_header {
+        display: none;
+    }
+}
