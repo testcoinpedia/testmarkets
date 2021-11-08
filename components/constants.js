@@ -9,11 +9,11 @@ export const api_url = 'https://api.coinpedia.org/';
 export const API_BASE_URL = 'https://api.coinpedia.org/'
 
 // Live links
-export const website_url = 'https://markets.afterinvest.com/'; 
-export const app_coinpedia_url="https://app.afterinvest.com/"
-export const coinpedia_url="https://afterinvest.com/"
-export const market_coinpedia_url =  'https://markets.afterinvest.com/'; 
-export const cookieDomainExtension = '.afterinvest.com';
+export const website_url = 'https://markets.coinpedia.org/'; 
+export const app_coinpedia_url="https://app.coinpedia.org/"
+export const coinpedia_url="https://coinpedia.org/"
+export const market_coinpedia_url =  'https://markets.coinpedia.org/'; 
+export const cookieDomainExtension = '.coinpedia.org';
 export const logo =  '/assets/img/logo.png'
 export const favicon =  '/assets/img/favicon.png'
 
