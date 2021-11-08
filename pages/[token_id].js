@@ -33,7 +33,7 @@ export default function LauchPadDetails({errorCode, data, paymentTypes}) {
     const explorerRef = useRef(null);
     const contractRef = useRef(null);  
     const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")     
-    // console.log(data)
+    console.log(data)
     const [wallet_data, setWalletData] = useState([]); 
     const [perPage] = useState(10);
     const [walletspageCount, setWalletsPageCount] = useState(0) ; 
@@ -1474,6 +1474,7 @@ const myReferrlaLink=()=> {
     // document.execCommand("Copy"); 
     // copytext.remove()
     set_contract_copy_status(type)
+    console.log(type)
     console.log(data)
     var copyText = document.createElement("input")
     copyText.value = data;
@@ -2287,9 +2288,7 @@ const connectToEthWallet=()=>
                                               </p>
                                             </div>
                                           </div>
-                                          
-                                          
-                                        </div>
+                                           </div>
                                         :
                                         null 
                                       }

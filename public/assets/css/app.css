@@ -9365,7 +9365,7 @@ a:hover {
 .launchpad .ongoing_launchpad h4 span {
   font-size: 18px;
   font-weight: 600;
-  color: #251c49;
+  color: #0b0816;
 }
 
 .launchpad .upcoming_launchpad h4 span {
@@ -9388,6 +9388,13 @@ a:hover {
   width: 32px;
   border-radius: 50px;
   margin-right: 5px;
+  margin-top: 1px;
+}
+
+.launchpad_table_overview .network_type {
+  margin-right: 4px;
+  position: relative;
+  top: -2px;
 }
 
 .ongoing_launchpad h4,
@@ -9413,8 +9420,9 @@ a:hover {
 }
 
 .launchpad .launchpad_title {
-  font-size: 13px;
-  margin-top: 4px;
+  font-size: 15px;
+  margin-top: 0;
+  color: #251c49;
 }
 
 .launchpad .launchpad_value {
@@ -9433,6 +9441,10 @@ a:hover {
 .completed_events table thead th {
   color: #251c49 !important;
   font-weight: 600;
+  background: #fff;
+  font-size: 16px;
+  min-width: 80px;
+  padding-top: 0 !important;
 }
 
 .completed_events .title_block h2 {
@@ -9447,8 +9459,9 @@ a:hover {
 
 .completed_events .table-responsive .media img {
   margin-right: 5px;
-  width: 40px;
+  width: 32px;
   border-radius: 50px;
+  margin-top: 1px;
 }
 
 .completed_events .title_block {
@@ -9468,6 +9481,7 @@ a:hover {
 
 .completed_events tbody td h5 {
   font-size: 14px;
+  color: #6a6a6a;
 }
 
 .completed_events tbody tr:last-child td {
@@ -10456,6 +10470,10 @@ tbody td {
   font-weight: 600;
 }
 
+.market_list_price img {
+
+}
+
 .main_page_coin_filter .dropdown_block {
   min-width: 175px;
 }
@@ -10745,8 +10763,8 @@ a:not([href]):not([class]):hover {
 .input_block_outline {
   border: 1px solid #e5e4ec;
   background: #fff;
-  padding: 5px 15px;
-  border-radius: 0.25rem;
+  padding: 7px 15px;
+  border-radius: 8px;
 }
 
 .input_block_outline .form-group {
@@ -10901,15 +10919,18 @@ input[type="number"] {
   border: 1px solid #3a325b;
   box-shadow: 0 0 15px #aaa;
 }
+
 .edit_launchpad{
   color: #fff;
-    background: #3a325b;
-    outline: 0 !important;
-    padding: 6px;
-    transition: 0.5s;
-    border-radius: 3px;
-    box-shadow: 0 0 15px #bbb;
+  background: #3a325b;
+  outline: 0 !important;
+  padding: 1px 9px;
+  transition: 0.5s;
+  border-radius: 3px;
+  box-shadow: 0 0 15px #bbb;
+  margin-right: 5px;
 }
+
 .token_multisender {
   margin-top: 50px;
 }
@@ -11689,9 +11710,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 } */
 
 .btn-gradient-primary {
-  background: #4a3b88;
+  background: #251c49;
   box-shadow: 0px 6px 12px rgb(108 96 180 / 26%);
-  border-radius: 8px;
+  border-radius: 4px;
   color: #fff;
   padding: 8px 15px;
 }
@@ -11710,6 +11731,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .launchpad_table_overview thead th {
   padding: 10px 0px !important;
   background: transparent;
+  color: #251c47;
+  font-size: 16px;
 }
 
 .launchpad_table_overview tbody td {
@@ -11720,6 +11743,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .launchpad_table_overview tbody td h5 {
   font-size: 14px;
+  color: #717171;
 }
 
 .launchpad_table_overview thead {
@@ -11867,7 +11891,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 .form-custom label {
   color: #251c49;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
 }
 .form-custom .form-group input::placeholder {
@@ -12092,8 +12116,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .tabs_for_navigation ul li a {
-  border-right: 1px solid #868686;
-  padding: 0 15px;
+  border-right: 0px solid #868686;
+  padding: 0 10px;
 }
 
 .tabs_for_navigation ul {
@@ -12104,14 +12128,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .tabs_for_navigation ul li a span {
   color: #251c49;
-  padding: 0px;
+  padding: 3px 10px;
   font-size: 16px;
 }
 
 .tabs_for_navigation ul li .active span {
-  color: #6c60b4;
-  border-bottom: 3px solid #4a3b88;
+  color: #fff;
+  border-bottom: 0;
   border-radius: 3px;
+  background: #251c49;
 }
 
 .tabs_for_navigation ul li:last-child a {
@@ -12149,11 +12174,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .market_live_price h6 .green {
-  color: green;
+  color: #3ad1ab;
 }
 
 .market_live_price h6 .red {
-  color: red;
+  color: #FF767C;
 }
 
 @media (min-width: 1300px) {
@@ -12764,8 +12789,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .launchpad-toke-button .btn-gradient-primary {
   margin-top: 28px;
-  font-size: 12px;
-  padding: 7px 7px;
+  font-size: 14px;
+  padding: 7px 14px;
   float: right;
 }
 
@@ -13052,6 +13077,499 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #footer .footer_logo {
   width: 300px;
 }
+
+.completed_events .networks_type img {
+  width: 15px;
+  margin-right: 5px;
+}
+
+.token_list_table .input-group {
+  border: 1px solid #e5e4ec;
+  border-radius: 8px;
+  height: 42px;
+}
+
+.token_list_table .form-control {
+  border: 0;
+  background: transparent;
+  font-size: 14px;
+}
+
+#market .main_block {
+  background: #fff;
+  padding: 15px;
+  border-radius: 7px;
+}
+
+#market h4 {
+  font-size: 15px;
+  margin-bottom: 5px;
+  color: #000;
+  margin-top: 0px;
+}
+
+#market h4 a {
+  color: #a7a7a7;
+  float: right;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+#market .main_block h6 {
+  margin-top: 15px; 
+}
+
+#market .market_centiment .market_bull img {
+  width: 40px;
+  border-radius: 2px;
+}
+
+#market .market_centiment .market_bull {
+  text-align: center;
+}
+
+#market .market_centiment ul li p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #aaa;
+}
+
+#market .market_cap {
+  min-height: 110px;
+}
+
+#market .market_cap .tie-col-md-6 {
+  width: 49%;
+  display: inline-block;
+}
+
+#market .market_cap h6 {
+  font-size: 12px;
+}
+
+#market .market_total_locked h5 {
+  font-size: 12px; 
+}
+
+#market .market_total_locked .tie-col-md-5 {
+  width: 40%;
+  display: inline-block;
+  padding-right: 5px;
+  vertical-align: top;
+  border-right: 1px solid #eee;
+}
+
+
+#market .market_total_locked .tie-col-md-7 {
+  width: 59%;
+  display: inline-block;
+  padding-left: 5px;
+}
+
+
+#market .market_insights {
+  background: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 35px;
+}
+
+#market .market_centiment h3 {
+  text-align: center;
+  font-size: 14px !important;
+  color: #000;
+}
+
+#market .market_centiment ul {
+  text-align: center;
+}
+
+#market .market_centiment ul li {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 10px;
+}
+
+#market .progress {
+  display: -ms-flexbox;
+  display: flex;
+  height: 0.6rem;
+  overflow: hidden;
+  font-size: .75rem;
+  background-color: #e9ecef;
+  border-radius: 50px;
+  margin-bottom: 15px;
+}
+
+#market .bg-success {
+  background-color: #66ab73!important;
+}
+
+#market .bg-warning {
+  background-color: #ff8787!important;
+}
+
+#market .bg-warning span {
+  position: absolute;
+  top: 20px;
+  color: #ff8787;
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+#market .bg-success span {
+  position: absolute;
+  top: 20px;
+  color: #66ab73;
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.cap_vol {
+  border: 1px solid #c0c0c0;
+  padding: 7px 10px;
+  border-radius: 7px;
+  margin-top: 5px;
+}
+
+.cap_vol h4 {
+  margin: 0 !important;
+  color: #251c49 !important;
+  font-size: 15px !important;
+}
+
+#market .market_cap h5 {
+  color: #818181;
+  font-size: 12px;
+}
+
+#market .market_cap {
+  padding: 15px;
+}
+
+#market .market_cap .dominance {
+  margin-top: 10px;
+}
+
+#market .market_cap .dominance span {
+  color: #251c49;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+#market .network_value_block h5 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#market .network_value_block h6 {
+  font-size: 14px;
+}
+
+
+#market .market_total_locked table {
+  margin-bottom: 0;
+}
+
+#market .market_total_locked table tr {
+  
+}
+
+#market .market_total_locked table td h4 {
+  margin-bottom: 0;
+  margin-top: 0;
+  font-size: 13px;
+}
+
+#market .market_total_locked table td h4 img {
+  width: 15px;
+  position: relative;
+  top: -1px;
+  margin-right: 5px;
+}
+
+#market .market_total_locked table td {
+  border-right: 0px dotted rgba(0,0,0,0.1);
+  padding: 5px;
+}
+
+#market table tr:nth-child(even) {
+  background: #fff;
+}
+
+#market .network_value_block {
+  padding: 7px 0;
+}
+
+#market .network_value_percentage{
+  padding: 12px 0 0;
+  border-top: 1px solid #eee;
+}
+
+#market .network_value_percentage h4 {
+  margin: 0px !important;
+  color: #888;
+}
+
+#market .network_value_percentage h4 span {
+  color: #000;
+  font-size: 18px;
+}
+
+#market .market_gas_value table {
+  margin-bottom: 0;
+}
+
+#market .market_gas_value table td {
+  border-right: 0px;
+  padding: 4px !important;
+  border-top: 1px solid #ddd;
+}
+
+#market .market_gas_value h6 {
+  color: #50bcaf;
+  margin-top: 3px;
+  font-size: 10px;
+}
+
+
+#market .market_gas_value h5 {
+  font-size: 12px;
+}
+
+#market .market_gas_value h5 img {
+  width: 13px;
+}
+
+#market .market_gas_value thead th {
+  padding: 0 4px !important;
+  border: 0;
+  background: #fff;
+  min-width: 75px;
+}
+
+#market .market_gas_value table h4 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 12px;
+}
+
+#market .market_eth_fee_burn {
+  min-height: 110px;
+}
+
+#market .market_eth_fee_burn .tab-content {
+  display: block;
+  padding-top: 0;
+}
+
+#market .market_eth_fee_burn .nav-tabs a {
+  border-top: 0;
+  font-size: 12px;
+  margin: 0 6px;
+  padding: 0;
+  border: 0;
+}
+
+#market .market_eth_fee_burn h5 {
+  line-height: 1;
+}
+
+#market .market_eth_fee_burn h6 {
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+#market .market_eth_fee_burn .tie-col-md-7 {
+  width: 58.33333%;
+  float: left;
+}
+
+#market .market_eth_fee_burn .tie-col-md-5 {
+  width: 41.66667%;
+  float: left;
+}
+
+#market .market_eth_fee_burn .nav-tabs {
+  border-bottom: 0;
+  float: right;
+}
+
+#market .market_eth_fee_burn .nav-tabs a.active {
+  background: #251c49;
+  border-radius: 3px;
+  color: #fff;
+  padding: 1px 5px;
+}
+
+#market .market_eth_fee_burn h5 span {
+  color: #999;
+  font-size: 12px;
+}
+
+#market .market_eth_fee_burn .tie-col-md-4 {
+  width: 33.33%;
+  float: left;
+}
+
+#market .market_eth_fee_burn .tab-pane {
+  padding: 0;
+}
+
+#market .market_eth_fee_burn h4 {
+  font-size: 18px;
+  margin-bottom: 0px;
+  margin-top: 0;
+  font-weight: 700;
+}
+
+#market .active_addresses .tie-col-md-6 {
+  width: 50%;
+  float: left;
+}
+
+#market .active_addresses .media img {
+  width: 35px;
+}
+
+#market .active_addresses .media h5 {
+  margin-top: 6px;
+  margin-left: 5px;
+  font-size: 18px;
+}
+
+#market .active_addresses .media .media-body {
+  display: inline-block;
+  vertical-align: top;
+}
+
+#market .active_addresses .tab-content h5  {
+  font-size: 14px;
+  margin-bottom: 7px;
+  margin-top: 10px;
+}
+
+#market .active_addresses .tab-content h5 span {
+  color: #232323;
+  font-weight: 700;
+  font-size: 18px;
+  margin-left: 5px;
+}
+
+#market .active_addresses .glass-node {
+  width: 100px;
+  float: right;
+}
+
+.view_all_coins a {
+  color: #a7a7a7;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+#market .future_bitcoin_data {
+  text-align: center;
+  min-height: 110px;
+}
+
+#market .future_bitcoin_data .tie-col-md-4 {
+  width: 33.33%;
+  float: left;
+  text-align: center;
+}
+
+#market .future_bitcoin_data h4 {
+  margin-top: 0;
+  color: #251c49;
+  font-size: 14px;
+  margin-bottom: 9px;
+}
+
+#market .future_bitcoin_data h5 {
+  color: #969696;
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+#market .future_bitcoin_data h6 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2c2c2c;
+}
+
+#market .future_bitcoin_data .tie-col-md-6 {
+  width: 50%;
+  float: left;
+}
+
+#market .future_bitcoin_data .tie-col-md-6 {
+  width: 50%;
+  float: left;
+}
+
+#market .future_bitcoin_data .bitcoin_volume {
+  padding-right: 5px; 
+  padding-left: 5px;
+  border-right: 1px solid #eee;
+}
+
+#market .future_bitcoin_data .open_interest {
+  padding-right: 5px; 
+  padding-left: 5px;
+  border-right: 1px solid #eee;
+}
+
+#market .future_bitcoin_data .liquidation {
+  padding-right: 5px; 
+  padding-left: 5px;
+}
+
+#market .future_bitcoin_data .liquidation h6 {
+  font-size: 15px;
+}
+
+#market .nft_volume .tie-col-md-6 {
+  width: 50%;
+  float: left;
+}
+
+#market .nft_volume h4 {
+  margin-top: 0;
+  text-align: center;
+  font-size: 18px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+#market .nft_volume h5 {
+  color: #4381fa;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+#market .nft_volume h6 {
+  color: #636363;
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+}
+
+#market {
+  margin-top: 50px;
+}
+
+.green {
+  color: #3ad1ab !important;
+}
+
+.red {
+  color: #FF767C !important;
+}
+
 
 @media(min-width: 768px) {
   .mobile_view_crypto, .sticky_footer_menu {

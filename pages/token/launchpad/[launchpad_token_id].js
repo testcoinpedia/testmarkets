@@ -513,12 +513,12 @@ const onRemove = (selectedList, removedItem) => {
         <div className="create_airdrop">
           <div className="container">
             <div className="row">
-            <div className="col-md-4">
+            <div className="col-md-5">
               <div className="main_create_form">
                 <div className=" token_steps">
                   <h1 className="create-token-res">Launch Pad List</h1>
                   <p className="token_form_sub_text">Enter all these fields to create token</p>
-
+                  <div className="table-responsive">
                   <table className="table table-borderless token-list-tbl">
                   <thead>
                         <tr>
@@ -529,6 +529,42 @@ const onRemove = (selectedList, removedItem) => {
                   </thead>
                   <tbody>
                   {
+                          launch_pad.length > 0 ?
+                          launch_pad.map((e, i)=>{
+                          return <tr>
+                            <td>{separator(parseFloat(e.tokens_sold))} { e.launch_pad_type==1
+                                                  ?
+                                                  "ICO"
+                                                  :
+                                                  e.launch_pad_type==2
+                                                  ?
+                                                  "IDO"
+                                                  :
+                                                  e.launch_pad_type==3
+                                                  ?
+                                                  "IEO"
+                                                  :
+                                                  null
+                            }
+                            </td>
+                            <td>{moment(e.start_date).format("MMM DD, YYYY")}<br/>{moment(e.end_date).format("MMM DD, YYYY")}</td>
+                            
+                            <td>
+                              <button className="edit_launchpad" onClick={()=>editLaunchpadDetails(e)}>Edit</button>
+                              <button className="edit_launchpad" onClick={()=>btnremove(e.id)} data-toggle="modal" data-target="#removeConnection">Remove</button>
+                            </td>
+                        
+
+                        </tr> 
+                          })
+                       
+                        :
+                       <tr><td colSpan="5" className="text-center" >Sorry, No data found</td></tr>
+                  }
+
+
+
+{/* {
                           launch_pad.length > 0 ?
                           launch_pad.map((e, i)=>{
                           return <tr>
@@ -558,15 +594,16 @@ const onRemove = (selectedList, removedItem) => {
                        
                         :
                        <tr><td colSpan="5" className="text-center" >Sorry, No data found</td></tr>
-                  }
+                  } */}
 
                   </tbody>
                   </table>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="col-md-8">
+            <div className="col-md-7">
               <form id="myForm" >
               <div className="main_create_form">
                 <div className="token_steps">
@@ -602,8 +639,21 @@ const onRemove = (selectedList, removedItem) => {
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-custom">
-                    <label htmlFor="email">Tokens For sale<span className="label_star">*</span></label>
-                      <div className="form-group input_block_outline">
+                      <label htmlFor="email">Tokens For sale<span className="label_star">*</span></label>
+                      <div class="input-group mb-3">
+                        <div class="input-group-append">
+                        <select  name="launch_pad_type" className="form-control"  id="exampleFormControlSelect1" value={launch_pad_type} onChange={(e)=>set_launch_pad_type(e.target.value)}>
+                                <option value="">Type</option>
+                                <option value="1">ICO</option>
+                                <option value="2">IDO</option>
+                                <option value="3">IEO</option>
+                              </select>
+                        </div>
+                        <input type="number" className="form-control" placeholder="Number of Tokens for Sale" value={tokens_sold} onChange={(e)=>set_tokens_sold(e.target.value)}/>
+                        
+                      </div>
+
+                      {/* <div className="form-group input_block_outline">
                         <div className="input-group">
                           <div className="input-group-prepend">
                              <select  name="launch_pad_type" className="form-control"  id="exampleFormControlSelect1" value={launch_pad_type} onChange={(e)=>set_launch_pad_type(e.target.value)}>
@@ -616,7 +666,7 @@ const onRemove = (selectedList, removedItem) => {
                         <input type="number" className="form-control" placeholder="Number of Tokens for Sale" value={tokens_sold} onChange={(e)=>set_tokens_sold(e.target.value)}/>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="error">{err_launchpad} {err_tokens_sale}</div>
                  </div>
@@ -740,8 +790,8 @@ const onRemove = (selectedList, removedItem) => {
                   <div className="col-md-6">
                     <div className="form-custom">
                     <label htmlFor="accept_payment_type">Accept<span className="label_star">*</span></label>
-                      <div className="form-group input_block_outline multi-select-dropdown-input">
-                        <fieldset> 
+                      <div className="form-group input_block_outline multi-select-dropdown-input" style={{padding: '0 10px'}}>
+                        
                           <Multiselect  className="form-control" 
                             selectedValues={accept_payment_type}
                             options={payment_types} // Options to display in the dropdown
@@ -749,7 +799,7 @@ const onRemove = (selectedList, removedItem) => {
                             onRemove={onRemove} // Function will trigger on remove event
                             displayValue="payment_name" // Property name to display in the dropdown options
                             /> 
-                            </fieldset>  
+                           
                        </div>
                     </div>
                     <div className="error">{err_accept}</div>

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Axios from 'axios'; 
 import Head from 'next/head';
 import cookie from 'cookie'
-import { API_BASE_URL,config, website_url } from '../../components/constants' 
+import { API_BASE_URL,config, website_url, app_coinpedia_url } from '../../components/constants' 
 import TableContentLoader from '../../components/loaders/tableLoader'
 import moment from 'moment'
  
@@ -91,8 +91,8 @@ export default function UpcomingLaunchPad({userAgent}) {
                         {/* <Link href="/launchpad/create-token"><a><button className="wallets__btn btn_blue">
                           <span className="btn__text"><img src="/assets/img/create-token-icon.png" />Create token</span>
                         </button></a></Link> */}
-                        <Link href={user_token ? "/token/create-new":app_coinpedia_url+"/login"}><a><button className="btn-gradient-primary">
-                          <span className="btn__text"><img src="/assets/img/create-token-icon.png" />Create Token</span>
+                        <Link href={user_token ? "/token/create-new":app_coinpedia_url+"/login" }><a><button className="btn-gradient-primary">
+                          <span className="btn__text"><img src="/assets/img/create-token-icon.png" />List your Token</span>
                         </button></a></Link>
                       </div>
                 </div> 
@@ -104,7 +104,7 @@ export default function UpcomingLaunchPad({userAgent}) {
                     <li><Link href="/launchpad"><a><span>Overview</span></a></Link></li>
                     <li><Link href="/launchpad/ongoing"><a><span>Ongoing</span></a></Link></li>
                     <li><Link href="/launchpad/upcoming"><a className="active"><span>Upcoming</span></a></Link></li>
-                    <li><Link href="/launchpad/ended"><a><span>Ended</span></a></Link></li>
+                    <li><Link href="/launchpad/ended"><a><span>Completed</span></a></Link></li>
                   </ul>
                 </div>
               </div>
@@ -117,8 +117,10 @@ export default function UpcomingLaunchPad({userAgent}) {
                     <thead>
                       <tr>
                         <th className="ongoing_token">Project</th>
-                        
+                        <th className="table_live_price">Total Supply</th>
                         <th className="">Type</th>
+                        <th className="">Holders</th>
+                        <th className="">Trading On</th>
                         <th className="ongoing_date">Start Date</th>
                         <th className="ongoing_date">End Date</th>
                       </tr>
@@ -143,7 +145,7 @@ export default function UpcomingLaunchPad({userAgent}) {
                               </div>
                             </a>
                           </td>
-                          
+                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>84587</h5></a></td>
                           <td className="market_list_price"><a href={"/"+e.token_id}><h5> <a>
                                                     {
                                                     e.launch_pad_type==1
@@ -160,7 +162,10 @@ export default function UpcomingLaunchPad({userAgent}) {
                                                     :
                                                     null
                                                     }
-                                                </a></h5></a></td>
+                                                </a></h5></a>
+                          </td>
+                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>88778899</h5></a></td>
+                          <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td>
                           <td className="market_list_price"><a href={"/"+e.token_id}><h5>{moment(e.start_date).format("MMM DD, YYYY")}</h5></a></td>
                           <td className="market_list_price"><a href={"/"+e.token_id}><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></td>
                         </tr>
@@ -171,12 +176,12 @@ export default function UpcomingLaunchPad({userAgent}) {
                          {
                            apistatus ?
                            <tr key="1">
-                             <td className="text-center" colSpan="6">
+                             <td className="text-center" colSpan="7">
                                  Sorry, No related data found.
                              </td>
                            </tr>
                            :
-                          <TableContentLoader row="5" col="4" />
+                          <TableContentLoader row="5" col="7" />
                                                
                          }
                          </>

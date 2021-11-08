@@ -713,7 +713,7 @@ const getTokensDetails = (type, address) =>{
                       contract_address.length > 0
                       ?
                       contract_address.map((e, i)=>
-                       <div className="col-md-6">
+                       <div className="col-md-6" key={i}>
                         <div className="form-custom">
                           <label htmlFor="email">
                           Enter Contract address<span className="label_star">*</span></label>
@@ -985,7 +985,7 @@ const getTokensDetails = (type, address) =>{
                            exchange_link.length > 0 ?
                            exchange_link.map((item, i) => 
                             i == 0 ?
-                              <div className="col-md-12">
+                              <div className="col-md-12" key={i}>
                                 <div className="form-custom create_token_no_space">
                                   <label htmlFor="email">Exchange URL</label>
                                   <div className="form-group input_block_outline">
@@ -996,7 +996,7 @@ const getTokensDetails = (type, address) =>{
                           
                           : 
                           
-                            <div className="col-md-12">
+                            <div className="col-md-12" key={i}>
                               <div className="form-custom create_token_top_space">
                                 <label htmlFor="email">Exchange URL {i}</label>
                                 <div className="form-group input_block_outline">
@@ -1008,7 +1008,14 @@ const getTokensDetails = (type, address) =>{
                           
                         )
                         :
-                        null
+                        <div className="col-md-12">
+                        <div className="form-custom create_token_no_space">
+                          <label htmlFor="email">Exchange URL</label>
+                          <div className="form-group input_block_outline">
+                            <input type="text" name="link" value="" onChange={e => handleExchangeChange(e, 0)} />
+                          </div>
+                        </div>
+                      </div>
                       }
                       <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.png" /> Add More Exchange</span></button>
                       </div>
@@ -1029,7 +1036,7 @@ const getTokensDetails = (type, address) =>{
                               </div>
                           </div>
                           : 
-                          <div className="row">
+                          <div className="row" key={i}>
                             <div className="col-md-12">
                               <div className="form-custom create_token_top_space">
                                 <label htmlFor="email">Explorer URL {i}</label>
@@ -1044,7 +1051,16 @@ const getTokensDetails = (type, address) =>{
                           </div>
                         )
                         :
-                        null
+                        <div className="row">
+                          <div className="col-md-12">
+                            <div className="form-custom create_token_no_space">
+                              <label htmlFor="email">Explorer URL</label>
+                              <div className="form-group input_block_outline">
+                                <input type="text" name="link" value="" onChange={e => handleExplorersChange(e, 0)} />
+                              </div>
+                            </div>
+                          </div>
+                      </div>
                       }
                         <button className="addmore_ico create-token-res" onClick={addMoreExplorers}><span><img src="/assets/img/add-more.png" /> Add More Explorer</span></button>
                       </div>
@@ -1077,7 +1093,16 @@ const getTokensDetails = (type, address) =>{
                           </div>
                         )
                         :
-                        null
+                        <div className="row">
+                          <div className="col-md-12">
+                            <div className="form-custom create_token_no_space">
+                              <label htmlFor="email">Community URL</label>
+                              <div className="form-group input_block_outline">
+                                <input type="text" name="link" value="" onChange={e => handleCommunityChange(e, 0)} />
+                              </div>
+                            </div>
+                          </div>
+                      </div>
                       }
                         <button className="addmore_ico create-token-res" onClick={addMoreCommunity}><span><img src="/assets/img/add-more.png" /> Add More Community</span></button>
                       </div>

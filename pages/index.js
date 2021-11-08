@@ -257,7 +257,7 @@ const CheckContractAddress =(address)=>{
               <div className="row market_insights ">
                 <div className="col-md-7 col-lg-6">
                   <h1 className="page_title">Cryptocurrency Market Insights</h1>
-                  <p>Companies with tech innovation into finance and technology, Globally companies with tech innovations into finance and technology, Globally.</p>
+                  <p>Companies with tech innovation into finance and technology, Globally.</p>
                 </div>
                 <div className="col-md-1 col-lg-2"></div>
                 <div className="col-md-4 col-lg-4">

@@ -4,6 +4,7 @@ import Axios from 'axios'
 import Web3 from 'web3' 
 import { useRouter } from 'next/router' 
 import Head from 'next/head'
+import JsCookie from "js-cookie" 
 import cookie from 'cookie'
 import "react-datetime/css/react-datetime.css"
 import {api_url, x_api_key, app_coinpedia_url, website_url} from '../../components/constants'; 
@@ -1158,17 +1159,17 @@ const clearform = () =>
 export async function getServerSideProps({req}) 
 {
     const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
-    var user_token = userAgent.user_token 
-    const config = {
-      headers: {
-        "X-API-KEY": x_api_key,
-        "token": user_token
-      }
-    }
-
     if(userAgent.user_token)
     {
-        if(userAgent.user_email_status==1){
+      
+      if(userAgent.user_email_status==1){
+       
+        const config = {
+          headers: {
+            "X-API-KEY": x_api_key,
+            "token": userAgent.user_token 
+          }
+        }
             return { props: { userAgent: userAgent, config: config}} 
         }
         else

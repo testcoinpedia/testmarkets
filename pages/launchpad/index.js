@@ -96,15 +96,15 @@ export default function LaunchPad({userAgent})
                   <p>List of ongoing and upcoming launchpad list</p>
                 </div>
                 <div className="col-md-4 col-5">
-                      <div className="launchpad-toke-button">
-                        <Link href={user_token ? "/token/create-new":app_coinpedia_url+"/login"}><a>
-                          <button className="btn-gradient-primary">
-                        <span className="btn__text"><img src="/assets/img/create-token-icon.png" />Create Token</span>
-                          </button></a></Link>
-                        {/* <Link href="/"><a><button className="btn-gradient-primary">
-                          <span className="btn__text"><img src="/assets/img/weekly-updates.png" className="weekly_updates" />Get Weekly Updates</span>
-                        </button></a></Link> */}
-                      </div>
+                  <div className="launchpad-toke-button">
+                    <Link href={user_token ? "/token/create-new":app_coinpedia_url+"/login"}><a>
+                      <button className="btn-gradient-primary">
+                        <span className="btn__text"><img src="/assets/img/create-token-icon.png" />List your Token</span>
+                      </button></a></Link>
+                    {/* <Link href="/"><a><button className="btn-gradient-primary">
+                      <span className="btn__text"><img src="/assets/img/weekly-updates.png" className="weekly_updates" />Get Weekly Updates</span>
+                    </button></a></Link> */}
+                  </div>
                 </div> 
               </div>
 
@@ -114,7 +114,7 @@ export default function LaunchPad({userAgent})
                     <li><Link href="/launchpad"><a className="active"><span>Overview</span></a></Link></li>
                     <li><Link href="/launchpad/ongoing"><a><span>Ongoing</span></a></Link></li>
                     <li><Link href="/launchpad/upcoming"><a><span>Upcoming</span></a></Link></li>
-                    <li><Link href="/launchpad/ended"><a><span>Ended</span></a></Link></li>
+                    <li><Link href="/launchpad/ended"><a><span>Completed</span></a></Link></li>
                   </ul>
                 </div>
               </div>
@@ -131,6 +131,7 @@ export default function LaunchPad({userAgent})
                         <tr>
                           <th className="ongoing_token">Project</th>
                           <th>Type</th>
+                          <th>Network</th>
                           <th className="table_launchpad_date">Start Date</th>
                           <th className="table_launchpad_date">End Date</th>
                         </tr>
@@ -158,6 +159,7 @@ export default function LaunchPad({userAgent})
                           </td>
                           {/* {moment(e.start_date, 'd m  Y')} */}
                           <td><Link href={"/"+e.token_id}><a><h5>{e.launch_pad_type === "1" ? "ICO" : e.launch_pad_type === "2" ? "IDO" : e.launch_pad_type === "3" ? "IEO" : "-"}</h5></a></Link></td>
+                          <td><Link href={"/"+e.token_id}><a><h5><img src="/assets/img/network-bnb.svg" class="network_type" />BNB</h5></a></Link></td>
                           <td><Link href={"/"+e.token_id}><a><h5>{moment(e.start_date).format("MMM DD, YYYY")}</h5></a></Link></td>
                           <td><Link href={"/"+e.token_id}><a><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></Link>
                           </td>
@@ -184,6 +186,7 @@ export default function LaunchPad({userAgent})
                           <tr>
                             <th className="ongoing_token"  >Project</th>
                             <th>Type</th>
+                            <th>Network</th>
                             <th className="table_launchpad_date">Start Date</th>
                             <th className="table_launchpad_date">End Date</th>
                           </tr>
@@ -225,6 +228,7 @@ export default function LaunchPad({userAgent})
                                               :
                                               null
                                             }</h5></a></Link></td>
+                            <td><Link href={"/"+e.token_id}><a><h5><img src="/assets/img/network-bnb.svg" class="network_type" />BNB</h5></a></Link></td>
                             <td><Link href={"/"+e.token_id}><a><h5>{moment(e.start_date).format("MMM DD, YYYY")}</h5></a></Link></td>
                             <td><Link href={"/"+e.token_id}><a><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></Link>
                             </td>
@@ -266,11 +270,14 @@ export default function LaunchPad({userAgent})
                       <tr>
                         <th className="ongoing_token">Name</th>
                         <th className="table_ended_fields">Price</th>
+                        <th className="table_ended_fields">Network</th>
                         <th className="table_ended_fields">Token Sold</th>
                         <th className="table_live_price">Total Supply</th>
-                        <th className="table_ended_fields">% of total supply</th>
+                        <th className="table_ended_fields">Presale Supply(%)</th>
                         
                         <th className="">Type</th>
+                        <th style={{minWidth:'80px'}}>Holders</th>
+                        <th style={{minWidth:'125px'}}>Trading On</th>
                         <th className="table_ended_fields">Completed Date</th>
                       </tr>
                     </thead> 
@@ -285,17 +292,18 @@ export default function LaunchPad({userAgent})
                             ended.map((e,i)=>
                             <tr key={i}>
                                 <td>
-                                <a href={"/"+e.token_id}>
-                                    <div className="media">
-                                    <img src={e.token_image?image_base_url+e.token_image:"https://api.coinpedia.org/uploads/tokens/162774178061055e5419cc7.png"} alt="Logo" className="mr-1rounded-circle" />
-                                    <div className="media-body">
-                                        <h5 className="launchpad_title">{e.token_name}</h5>
-                                        <p className="launchpad_value">{e.symbol}</p>
-                                    </div>
-                                    </div>
-                                </a>
+                                  <a href={"/"+e.token_id}>
+                                      <div className="media">
+                                      <img src={e.token_image?image_base_url+e.token_image:"https://api.coinpedia.org/uploads/tokens/162774178061055e5419cc7.png"} alt="Logo" className="mr-1rounded-circle" />
+                                      <div className="media-body">
+                                          <h5 className="launchpad_title">{e.token_name}</h5>
+                                          <p className="launchpad_value">{e.symbol}</p>
+                                      </div>
+                                      </div>
+                                  </a>
                                 </td>
                                 <td className="market_list_price"><a href={"/"+e.token_id}><h5>${parseFloat(e.price)}</h5></a></td>
+                                <td className="market_list_price"><a href={"/"+e.token_id}><h5><img src="/assets/img/bnb.svg" /> BNB</h5></a></td>
                                 <td className="market_list_price"><a href={"/"+e.token_id}><h5>{separator(parseFloat(e.tokens_sold))}</h5></a></td>
                                 <td className="market_list_price"><a href={"/"+e.token_id}><h5>{separator(parseFloat(e.token_max_supply))}</h5></a></td>
                                 <td className="market_list_price"><a href={"/"+e.token_id}><h5>{parseFloat(e.percentage_total_supply)}%</h5></a></td>
@@ -315,6 +323,8 @@ export default function LaunchPad({userAgent})
                                                   null
                                                   }</h5></a></td>
                                 
+                                <td className="market_list_price"><a href={"/"+e.token_id}><h5>8578</h5></a></td>
+                                <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td>
                                 <td className="market_list_price"><a href={"/"+e.token_id}><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></td>
                             </tr>
 

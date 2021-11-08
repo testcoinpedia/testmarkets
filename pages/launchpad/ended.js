@@ -89,7 +89,7 @@ export default function OngoingLaunchPad({userAgent}) {
                   <div className="col-md-4 col-5">
                     <div className="launchpad-toke-button">
                     <Link href={user_token ? "/token/create-new":app_coinpedia_url+"/login"}><a><button className="btn-gradient-primary">
-                        <span className="btn__text"><img src="/assets/img/create-token-icon.png" />Create Token</span>
+                        <span className="btn__text"><img src="/assets/img/create-token-icon.png" />List your Token</span>
                       </button></a></Link>
                     </div>
                   </div> 
@@ -101,7 +101,7 @@ export default function OngoingLaunchPad({userAgent}) {
                       <li><Link href="/launchpad"><a><span>Overview</span></a></Link></li>
                       <li><Link href="/launchpad/ongoing"><a><span>Ongoing</span></a></Link></li>
                       <li><Link href="/launchpad/upcoming"><a><span>Upcoming</span></a></Link></li>
-                      <li><Link href="/launchpad/ended"><a className="active"><span>Ended</span></a></Link></li>
+                      <li><Link href="/launchpad/ended"><a className="active"><span>Completed</span></a></Link></li>
                     </ul>
                   </div>
                 </div> 
@@ -116,8 +116,9 @@ export default function OngoingLaunchPad({userAgent}) {
                             <th className="table_ended_fields">Token Sold</th>
                             <th className="table_live_price">Total Supply</th>
                             <th className="table_ended_fields">% of total supply</th>
-                           
                             <th className="">Type</th>
+                            <th className="">Holders</th>
+                            <th className="">Trading On</th>
                             <th className="table_ended_fields">Completed Date</th>
                         </tr>
                         </thead> 
@@ -163,7 +164,8 @@ export default function OngoingLaunchPad({userAgent}) {
                                     }</h5>
                                   </a>
                                 </td>
-                                
+                                <td className="market_list_price"><a href={"/"+e.token_id}><h5>88778899</h5></a></td>
+                                <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td>
                                 <td className="market_list_price"><a href={"/"+e.token_id}><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></td>
                             </tr>
 
@@ -173,12 +175,12 @@ export default function OngoingLaunchPad({userAgent}) {
                            {
                              apistatus ?
                              <tr key="1">
-                               <td className="text-center" colSpan="6">
+                               <td className="text-center" colSpan="9">
                                    Sorry, No related data found.
                                </td>
                              </tr>
                              :
-                            <TableContentLoader row="5" col="7" />
+                            <TableContentLoader row="5" col="9" />
                                                  
                            }
                            </>
