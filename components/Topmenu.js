@@ -96,7 +96,8 @@ export default function Topmenu()
                               </button>
                          
                                 {
-                                  login_dropdown == 1 ?
+                                  login_dropdown == 1 
+                                  ?
                                   <div className="dropdown connect_wallet_header">
                                     <button  className="btn connect_wallet" type="button" id="1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                       <img src="/assets/img/connect-wallet-header.png" className="login_img" /> {JsCookie.get('user_username')} <img src="/assets/img/caret-down.png" className="caret_down" />
@@ -153,7 +154,7 @@ export default function Topmenu()
                                       <a className="dropdown-item" href={app_coinpedia_url+"login"}><img src="/assets/img/menu-wallet.png" /> Login via Wallet<br/><span>Connect wallet here</span></a>
                                       <a className="dropdown-item" href={app_coinpedia_url+"login"}><img src="/assets/img/menu-login.png"  /> Manual Login</a>
                                       <div className="register_now">
-                                        <p>Don't not have your own accout? click below link to register </p>
+                                        <p>Don't have your own account? click below link to register </p>
                                         <Link href={app_coinpedia_url+"register"}><a className="header_reg_btn">Register</a></Link>
                                       </div>
                                     </div>
@@ -194,9 +195,9 @@ export default function Topmenu()
                         <img className="" src="/assets/img/close_btn.png"></img>
                       </div>
                       <ul className="nav navbar-nav">
-                        <li className=""><a href={coinpedia_url} href="https://afterinvest.com/">Home</a></li>
+                        <li className=""><a href={coinpedia_url}>Home</a></li>
 
-                        <li className=""><a href="https://afterinvest.com/news/">News</a></li>
+                        <li className=""><a href={coinpedia_url + "news/"}>News</a></li>
                         
                         <li className="nav-item dropdown primary_navbar" >
                           <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
