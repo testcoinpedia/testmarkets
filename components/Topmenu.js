@@ -6,7 +6,7 @@ import Axios from 'axios'
 import cookie from 'cookie'
 import JsCookie from "js-cookie" 
 import $ from 'jquery';
-import {website_url,app_coinpedia_url,market_coinpedia_url,coinpedia_url, Logout, separator,logo} from '../components/constants'    
+import {website_url,app_coinpedia_url,market_coinpedia_url,coinpedia_url, Logout, separator,logo, config, api_url} from '../components/constants'    
 import Popupmodal from './popupmodal'  
 
 
@@ -37,16 +37,15 @@ export default function Topmenu()
     $(".main_menu_header").toggleClass("fixed_toggle_navbar");
   }
 
- 
   const getLivePricesList=()=>
   {
-      Axios.get("https://api.coinranking.com/v1/public/coins").then(res => {
-        if(res.data.status == 'success') 
-        {
-          //console.log()
-          set_live_prices_list(res.data.data.coins.slice(0, 5))
-        }
-      })
+    Axios.get(api_url+"listing_tokens/live_prices", config)
+        .then(response => {  
+          if(response.data.status == true) 
+          {
+            set_live_prices_list(response.data.message)
+          }
+        })
   }
 
  
@@ -70,7 +69,7 @@ export default function Topmenu()
                         <div className="navbar-header">
                         <div className="row">
                             <div className="col-md-3 col-6">
-                              <Link href="/">
+                              <Link href={coinpedia_url}>
                                 <a className="navbar-brand"><img src={logo} className="logo_header" /></a>
                               </Link>
                             </div>
@@ -82,7 +81,7 @@ export default function Topmenu()
                                     <li key={i}>
                                         <a>
                                           <h4 className="text-uppercase">{item.symbol}</h4>
-                                          <h6>$ {separator(((parseFloat(item.price))).toFixed(2))} <span className={(item.change >= 0 ? "green":"red")}>({(item.change).toFixed(2)}%)</span></h6>
+                                          <h6>$ {separator(((parseFloat(item.price))).toFixed(2))} <span className={(parseFloat(item.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(item.usd_24h_change)).toFixed(2)}%)</span></h6>
                                         </a>
                                     </li>
                                     )
@@ -175,8 +174,8 @@ export default function Topmenu()
                           {
                             live_prices_list.map((item, i) =>
                             <div className="block_crypto" key={i}>
-                              <h6>[{item.name} <span className="crypto_value">${separator(((parseFloat(item.price))).toFixed(2))}</span> <span className={(item.change >= 0 ? "green":"red")}>{(item.change).toFixed(2)}%</span>]</h6>
-                          </div>
+                              <h6 className="text-uppercase">[{item.symbol} <span className="crypto_value">${separator(((parseFloat(item.price))).toFixed(2))}</span> <span className={(parseFloat(item.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(item.usd_24h_change)).toFixed(2)}%</span>]</h6>
+                            </div>
                             )
                           }
                       </marquee>
