@@ -283,6 +283,7 @@ export default function Topmenu()
                               <li><a href={coinpedia_url+"contact-us/"} >Submit Query</a></li>
                               <li><a href={coinpedia_url+"submit-your-press-report/"} >Submit PR</a></li>
                               <li><a href={coinpedia_url+"advertising/"} >Advertise</a></li>
+                              <li><a href={app_coinpedia_url+"feedback/"} >Feedback</a></li>
                             </ul>
                           </div>
                         </li>
