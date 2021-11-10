@@ -29,7 +29,8 @@ export default function LaunchPad({userAgent})
     
     Axios.get(API_BASE_URL+"listing_tokens/launchpad_list", config)
     .then(res=>
-    {   console.log(res)
+    {   
+      // console.log(res)
         if(res.data.status)
         {
           setapistatus(true)
@@ -93,7 +94,7 @@ export default function LaunchPad({userAgent})
               <div className="row launchpad_list">
                 <div className="col-md-8 col-7">
                   <h1 className="page_title">Launchpad List</h1>
-                  <p>List of ongoing and upcoming launchpad list</p>
+                  <p>List of ongoing, upcoming and completed launchpads</p>
                 </div>
                 <div className="col-md-4 col-5">
                   <div className="launchpad-toke-button">
@@ -331,8 +332,8 @@ export default function LaunchPad({userAgent})
                            )
                            :
                            <tr>
-                               <td colSpan="7" className="text-center">No data found</td>
-                           </tr>
+                            <td colSpan="10"><h5 className="text-center no_data_found">No data found</h5></td>
+                          </tr>
                            :
                            null
                          }

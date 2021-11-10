@@ -121,7 +121,7 @@ export default function Create_token({config})
           reader.readAsDataURL(blob);
           reader.onloadend = function() 
           {
-              console.log(reader.result)
+              // console.log(reader.result)
               set_blobFile(reader.result)
           }
           resolve(fileUrl);
@@ -419,7 +419,7 @@ const clearform = () =>
  
     Axios.post(api_url+"listing_tokens/create_new", reqObj, config)
     .then(response=>{ 
-      console.log(response)
+      // console.log(response)
       if(response.data.status)
       { 
        
@@ -430,7 +430,7 @@ const clearform = () =>
       } 
       else
       {  
-        console.log("error")
+        // console.log("error")
         if(response.data.message.contract_address){
          // setErrContractAddress(response.data.message.contract_address)
           setErrContractAddress("This contract address is already in use")

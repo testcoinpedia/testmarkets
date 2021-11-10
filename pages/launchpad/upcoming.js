@@ -84,7 +84,7 @@ export default function UpcomingLaunchPad({userAgent}) {
               <div className="row launchpad_list">
                 <div className="col-md-8 col-7">
                   <h1 className="page_title">Launchpad List</h1>
-                  <p>These are the upcoming launchpad's</p>
+                  <p>These are the upcoming launchpads</p>
                 </div>
                 <div className="col-md-4 col-5">
                       <div className="launchpad-toke-button">
@@ -191,8 +191,8 @@ export default function UpcomingLaunchPad({userAgent}) {
                 </div>
                 <div className="launchpad_overview_data">
                     <h3>Upcoming</h3>
-                    <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
-                    <p><a href="#">Read More</a></p>
+                    <p>Discover upcoming ICOs, IEOs, IDOs, and STOs that will be launching soon. These are the best upcoming launchpad list available for you to keep an eye on before actual crowd sales or pre-sales. If you find any of the projects interesting, visit the respective website and social media profiles for more information.</p>
+                    {/* <p><a href="#">Read More</a></p> */}
                   </div>
               </div>
             </div>

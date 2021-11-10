@@ -33,7 +33,7 @@ export default function LauchPadDetails({errorCode, data, paymentTypes}) {
     const explorerRef = useRef(null);
     const contractRef = useRef(null);  
     const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")     
-    console.log(data)
+    // console.log(data)
     const [wallet_data, setWalletData] = useState([]); 
     const [perPage] = useState(10);
     const [walletspageCount, setWalletsPageCount] = useState(0) ; 
@@ -666,7 +666,7 @@ useEffect(()=>{
     getTokenexchange(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
     getGraphData(4, data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)     
     getTokenUsdPrice(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
-    console.log(data.contract_addresses[0].contract_address)
+    // console.log(data.contract_addresses[0].contract_address)
     
   } 
 
@@ -776,7 +776,7 @@ const getTokenUsdPrice=async(id, networks)=> {
     .then(result => {  
       if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
       { 
-        console.log("Live Price",result.data)   
+        // console.log("Live Price",result.data)   
         // result.data.ethereum.dexTrades[0].baseCurrency.symbol === "WBNB" || 
         if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c")
         {
@@ -1474,8 +1474,8 @@ const myReferrlaLink=()=> {
     // document.execCommand("Copy"); 
     // copytext.remove()
     set_contract_copy_status(type)
-    console.log(type)
-    console.log(data)
+    // console.log(type)
+    // console.log(data)
     var copyText = document.createElement("input")
     copyText.value = data;
     document.body.appendChild(copyText)
@@ -1565,7 +1565,7 @@ const myReferrlaLink=()=> {
         })
       }
       catch(error) {
-        console.log('ethereum error, ', error)
+        // console.log('ethereum error, ', error)
       } 
     }
     else
@@ -1701,7 +1701,7 @@ const connectToEthWallet=()=>
       })
     }
     catch(error) {
-      console.log('ethereum error, ', error)
+      // console.log('ethereum error, ', error)
     } 
   }
   else

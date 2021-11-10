@@ -100,7 +100,7 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
 
   const editLaunchpadDetails = (object)=>
   {
-    console.log(object)
+    // console.log(object)
     set_edit_launchpad_object(object)
     set_edit_launchpad_row_id(parseInt(object.id))
     set_launch_pad_type(object.launch_pad_type)
@@ -134,7 +134,7 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
     Axios.post(API_BASE_URL+"listing_tokens/remove_launch_pad", reqObj, config)
     .then(res=>
     {
-      console.log(res.data)
+      // console.log(res.data)
         if(res.data.status)
         {
           getTokenDetails()
@@ -178,7 +178,7 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
     Axios.get(API_BASE_URL+"listing_tokens/listed_individual_details/"+token_id, config)
     .then(res=>
     {
-      console.log(res.data)
+      // console.log(res.data)
         if(res.data.status)
         {
           if(res.data.message.launch_pads_data.length)
@@ -357,11 +357,11 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
       how_to_participate:how_to_participate
 
     } 
-    console.log("reqObj",reqObj);
+    // console.log("reqObj",reqObj);
    
     Axios.post(API_BASE_URL+'listing_tokens/update_launch_pad', reqObj, config  )
     .then(res=>{ 
-      console.log(res.data)
+      // console.log(res.data)
       if(res.data.status)
       { 
         
@@ -464,7 +464,7 @@ const redirectToPage = () =>
 }
 
 const onSelect =(selectedList, selectedItem)=> {  
-  console.log(selectedItem)
+  // console.log(selectedItem)
   accept_payment_type_ids.push(selectedItem.id)
   accept_payment_type.push(selectedItem)  
 }

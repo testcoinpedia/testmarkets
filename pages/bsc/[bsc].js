@@ -1206,7 +1206,7 @@ const connectToEthWallet=()=>
       })
     }
     catch(error) {
-      console.log('ethereum error, ', error)
+      // console.log('ethereum error, ', error)
     } 
   }
   else
@@ -1320,7 +1320,7 @@ const connectToEthWallet=()=>
         })
       }
       catch(error) {
-        console.log('ethereum error, ', error)
+        // console.log('ethereum error, ', error)
       } 
     }
     else

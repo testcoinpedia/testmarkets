@@ -116,7 +116,7 @@ export default function UpdateToken({userAgent,config,token_id}) {
           reader.readAsDataURL(blob);
           reader.onloadend = function() 
           {
-              console.log(reader.result)
+              // console.log(reader.result)
               set_blobFile(reader.result)
           }
           resolve(fileUrl);
@@ -392,7 +392,7 @@ const onLoad = useCallback((img) => {
       .then(response=>{ 
         if(response.data.status)
         { 
-          console.log(response.data)
+          // console.log(response.data)
           setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: response.data.message.alert_message})
         } 
         { 
@@ -445,7 +445,7 @@ const onLoad = useCallback((img) => {
     Axios.get(API_BASE_URL+"listing_tokens/listed_individual_details/"+token_id, config)
     .then(response=>{
       if(response.data.status){  
-        console.log(response.data) 
+        // console.log(response.data) 
         setContractAddress(response.data.message.contract_addresses)
         setErrContractAddress("")  
         setSymbol(response.data.message.symbol) 

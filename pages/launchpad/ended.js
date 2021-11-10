@@ -26,7 +26,7 @@ export default function OngoingLaunchPad({userAgent}) {
     Axios.get(API_BASE_URL+"listing_tokens/launchpad_ended", config)
     .then(response=>{
           if(response.data.status){  
-            console.log(response.data.message)
+            // console.log(response.data.message)
             setapistatus(true)
             setended(response.data.message) 
           }
@@ -84,7 +84,7 @@ export default function OngoingLaunchPad({userAgent}) {
                 <div className="row launchpad_list">
                   <div className="col-md-8 col-7">
                     <h1 className="page_title">Launchpad List</h1>
-                    <p>These are the ongoing launchpad's</p>
+                    <p>These are the ongoing launchpads</p>
                   </div>
                   <div className="col-md-4 col-5">
                     <div className="launchpad-toke-button">
@@ -192,8 +192,8 @@ export default function OngoingLaunchPad({userAgent}) {
 
                   <div className="launchpad_overview_data">
                     <h3>Completed</h3>
-                    <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
-                    <p><a href="#">Read More</a></p>
+                    <p>A list of Completed ICOs, STOs, IEOs and IDOs. If you are looking for a platform to compare different launchpads in order to make a successful investment, this past event list is what you need. you will get a complete list of most projects in the crypto world.</p>
+                    {/* <p><a href="#">Read More</a></p> */}
                   </div>
                 </div>
 

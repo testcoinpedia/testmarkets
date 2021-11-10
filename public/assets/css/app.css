@@ -12181,6 +12181,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: #FF767C;
 }
 
+.min_height_page  {
+  min-height: 70vh;
+}
+
 @media (min-width: 1300px) {
   .container,
   .container-lg,

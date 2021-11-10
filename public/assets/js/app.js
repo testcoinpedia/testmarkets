@@ -200,7 +200,7 @@ $('.activity__close').on('click', function () {
 		option.on('click', function () {
 			var thisOption = $(this),
 			    indexOption = thisOption.index();
-			console.log(indexOption);
+			// console.log(indexOption);
 			$('.js-tabs-item').hide();
 			$('.js-tabs-item').eq(indexOption).fadeIn();
 		});

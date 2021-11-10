@@ -21,7 +21,7 @@ export default function Home(props) {
   const [search_contract_address, set_search_contract_address] = useState("")    
   const [validSearchContract, setvalidContractAddress] = useState("")
   const [dataLoaderStatus, setDataLoaderStatus] = useState(true)
-  console.log('asdf', tokenslist);
+  // console.log('asdf', tokenslist);
   
  
   useEffect(()=>{  
@@ -246,7 +246,7 @@ const CheckContractAddress =(address)=>{
         <link rel="canonical" href={website_url} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
-    <div className="page new_markets_index">
+    <div className="page new_markets_index min_height_page">
       <div className="market-page">
 
 

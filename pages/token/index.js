@@ -1,7 +1,7 @@
 import React , {useState, useEffect} from 'react';  
 import Link from 'next/link' 
 import ReactPaginate from 'react-paginate';  
-import {x_api_key, API_BASE_URL, convertvalue, Logout, app_coinpedia_url } from '../../components/constants'; 
+import {x_api_key, API_BASE_URL, convertvalue, Logout, app_coinpedia_url, market_coinpedia_url } from '../../components/constants'; 
 import TableContentLoader from '../../components/loaders/tableLoader'
 import Web3 from 'web3'
 import moment from 'moment'
@@ -85,7 +85,7 @@ export default function WalletTokensList({userAgent, config})
           item[newItem].toString().toLowerCase().indexOf((searchValue-1)) > -1 ))
           
           setfilteredTokens(fi_tokens)
-          console.log(fi_tokens)
+          // console.log(fi_tokens)
           setPageCount(Math.ceil(fi_tokens.length / perPage)) 
           getTokensCurrentList(fi_tokens, 0) 
           set_token_counts(fi_tokens.length)
@@ -160,17 +160,16 @@ const getTokensCurrentList=(items, offset)=>
           <div className="dropdown" >
             <img src="/assets/img/table_dropdown_dots.png" data-toggle="dropdown" className="dropdown_dots" />
             <div className="dropdown-menu">
-              <Link href={"/token/edit/"+e.token_id}><a className="dropdown-item">
+              <Link href={market_coinpedia_url + "token/edit/"+e.token_id}><a className="dropdown-item">
                 <img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Token
               </a></Link>
-              <Link href={"/token/launchpad/"+e.token_id}> 
-                <a className="dropdown-item">
+              <Link href={market_coinpedia_url + "token/launchpad/"+e.token_id}><a className="dropdown-item">
                 <img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Launchpad
               </a></Link>
 
                {
                  parseInt(e.approval_status) === 1 ?
-                 <Link href={"/"+e.token_id}><a className="dropdown-item">
+                 <Link href={market_coinpedia_url + e.token_id}><a className="dropdown-item">
                     <img src="/assets/img/table_dropdown_view.png" className="dropdown_images" />View
                   </a></Link>
                  :
