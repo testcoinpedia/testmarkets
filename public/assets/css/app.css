@@ -10022,8 +10022,7 @@ tbody td {
 .exchange_transactions .table td {
   padding: 10px 17px;
 }
-.modal
-{
+.modal {
   background: rgb(0 0 0 / 68%);
 }
 
@@ -10471,7 +10470,6 @@ tbody td {
 }
 
 .market_list_price img {
-
 }
 
 .main_page_coin_filter .dropdown_block {
@@ -10920,7 +10918,7 @@ input[type="number"] {
   box-shadow: 0 0 15px #aaa;
 }
 
-.edit_launchpad{
+.edit_launchpad {
   color: #fff;
   background: #3a325b;
   outline: 0 !important;
@@ -12156,6 +12154,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-top: 15px;
   width: 19.5%;
   border-right: 1px solid #444;
+  padding: 0px 5px;
+  vertical-align: top;
 }
 
 .market_live_price ul li:last-child {
@@ -12170,7 +12170,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .market_live_price h6 {
   color: #fff;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .market_live_price h6 .green {
@@ -12178,10 +12178,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .market_live_price h6 .red {
-  color: #FF767C;
+  color: #ff767c;
 }
 
-.min_height_page  {
+.min_height_page {
   min-height: 70vh;
 }
 
@@ -12564,7 +12564,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .searchWrapper {
   border: 0px !important;
 }
-
 
 .wallet-tabs-list {
   padding: 0px;
@@ -12985,7 +12984,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .center_fixed_menu_img img {
-  position: absolute;
+  position: relative;
   width: 65px;
   top: -25px;
   left: 0;
@@ -13120,7 +13119,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 #market .main_block h6 {
-  margin-top: 15px; 
+  margin-top: 15px;
 }
 
 #market .market_centiment .market_bull img {
@@ -13152,7 +13151,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 #market .market_total_locked h5 {
-  font-size: 12px; 
+  font-size: 12px;
 }
 
 #market .market_total_locked .tie-col-md-5 {
@@ -13163,13 +13162,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border-right: 1px solid #eee;
 }
 
-
 #market .market_total_locked .tie-col-md-7 {
   width: 59%;
   display: inline-block;
   padding-left: 5px;
 }
-
 
 #market .market_insights {
   background: #fff;
@@ -13199,18 +13196,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: flex;
   height: 0.6rem;
   overflow: hidden;
-  font-size: .75rem;
+  font-size: 0.75rem;
   background-color: #e9ecef;
   border-radius: 50px;
   margin-bottom: 15px;
 }
 
 #market .bg-success {
-  background-color: #66ab73!important;
+  background-color: #66ab73 !important;
 }
 
 #market .bg-warning {
-  background-color: #ff8787!important;
+  background-color: #ff8787 !important;
 }
 
 #market .bg-warning span {
@@ -13272,13 +13269,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 14px;
 }
 
-
 #market .market_total_locked table {
   margin-bottom: 0;
 }
 
 #market .market_total_locked table tr {
-  
 }
 
 #market .market_total_locked table td h4 {
@@ -13295,7 +13290,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 #market .market_total_locked table td {
-  border-right: 0px dotted rgba(0,0,0,0.1);
+  border-right: 0px dotted rgba(0, 0, 0, 0.1);
   padding: 5px;
 }
 
@@ -13307,7 +13302,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 7px 0;
 }
 
-#market .network_value_percentage{
+#market .network_value_percentage {
   padding: 12px 0 0;
   border-top: 1px solid #eee;
 }
@@ -13337,7 +13332,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-top: 3px;
   font-size: 10px;
 }
-
 
 #market .market_gas_value h5 {
   font-size: 12px;
@@ -13449,7 +13443,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   vertical-align: top;
 }
 
-#market .active_addresses .tab-content h5  {
+#market .active_addresses .tab-content h5 {
   font-size: 14px;
   margin-bottom: 7px;
   margin-top: 10px;
@@ -13514,19 +13508,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 #market .future_bitcoin_data .bitcoin_volume {
-  padding-right: 5px; 
+  padding-right: 5px;
   padding-left: 5px;
   border-right: 1px solid #eee;
 }
 
 #market .future_bitcoin_data .open_interest {
-  padding-right: 5px; 
+  padding-right: 5px;
   padding-left: 5px;
   border-right: 1px solid #eee;
 }
 
 #market .future_bitcoin_data .liquidation {
-  padding-right: 5px; 
+  padding-right: 5px;
   padding-left: 5px;
 }
 
@@ -13571,17 +13565,40 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .red {
-  color: #FF767C !important;
+  color: #ff767c !important;
 }
-
-
-@media(min-width: 768px) {
-  .mobile_view_crypto, .sticky_footer_menu {
-      display: none;
+@media (min-width: 991px) {
+  .mobile_view_crypto {
+    display: none;
   }
 }
 
-@media(max-width: 768px) {
+@media (min-width: 768px) {
+  /* .mobile_view_crypto {
+    display: none;
+  } */
+  .sticky_footer_menu {
+    display: none;
+  }
+}
+
+@media (max-width: 1200px) {
+  #footer #site-info .social-icons {
+    float: right;
+    width: 100%;
+    text-align: center;
+  }
+  #footer .copyright-text {
+    float: none;
+    text-align: center;
+  }
+  #footer .footer-menu {
+    float: unset;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
   #site-info {
     padding: 23px 0 90px;
     text-align: center;
@@ -13605,16 +13622,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   #footer .footer_logo {
     margin: 0 auto;
-    width: 200px;
+    width: 160px !important;
   }
 
   #footer .aboutme-widget-content {
-    text-align: center;
+    text-align: left;
     margin-bottom: 20px;
+    line-height: 1.5;
+    font-size: 14px;
   }
 }
-
-
 
 /* ...popup modal css ends here... */
 
@@ -14581,6 +14598,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media (max-width: 991px) {
+  #footer .footer_logo {
+    width: 200px;
+  }
+  .market_live_price_desktop {
+    display: none;
+  }
   .market_insights h1 {
     font-size: 27px;
   }
@@ -14596,7 +14619,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin: 10px;
   }
 
-  .mobile_view_crypto .block_crypto .crypto_value { 
+  .mobile_view_crypto .block_crypto .crypto_value {
     color: #fff;
     margin: 0 3px;
   }
@@ -14611,7 +14634,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .mobile_view_crypto h6 .red {
-    color: #FF767C;
+    color: #ff767c;
   }
 
   .mfp-arrow {
@@ -14679,8 +14702,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     text-align: center;
     padding: 14px 15px !important;
   }
-
-  
 }
 @media (min-width: 768px) and (max-width: 991px) {
   .wallets__number {
@@ -14695,11 +14716,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media only screen and (max-width: 767px) {
-  .connect_wallet_header .connect_wallet .login_img {
-    display: none;
+  #footer .twitter_side .media p {
+    line-height: 1.5;
   }
-
-  .market_live_price_desktop {
+  .connect_wallet_header .connect_wallet .login_img {
     display: none;
   }
 
@@ -16317,6 +16337,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media (max-width: 576px) {
+  #footer {
+    padding: 15px 0 0px;
+  }
+  .footer_logo {
+    margin-bottom: 12px !important;
+  }
   .launchpad_overview_data p {
     font-size: 12px;
   }

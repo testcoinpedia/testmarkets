@@ -12,7 +12,7 @@ export default function Home(props) {
   const [data, setData] = useState([]); 
   const [pageCount] = useState(Math.ceil(props.post.length / 15))
   const [firstcount, setfirstcount] = useState(1)
-  const [finalcount, setfinalcount] = useState(10)
+  const [finalcount, setfinalcount] = useState(15)
   const [selectedPage, setSelectedPage] = useState(0) ;
   const [image_base_url] = useState(API_BASE_URL + 'uploads/tokens/')
   const [tokenslist] = useState(props.post)
@@ -36,7 +36,7 @@ const handlePageClick = (e) => {
   setSelectedPage(e.selected)
   const selectPage = e.selected; 
   Pages_Counts(selectPage , tokenslist.length)
-  getTokensList(selectPage * 10)
+  getTokensList(selectPage * 15)
 };  
 const Pages_Counts = (page_selected, length_value) => 
 {
@@ -153,7 +153,7 @@ const CheckContractAddress =(address)=>{
    
   const getTokensList=(offset)=>{   
     setDataLoaderStatus(false)
-    let slice = tokenslist.slice(offset, offset + 10)  
+    let slice = tokenslist.slice(offset, offset + 15)  
     const postData = slice.map((e, i) => {
         return  <tr key={i}>
                       <td>
@@ -164,14 +164,14 @@ const CheckContractAddress =(address)=>{
                               <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
                             </div>
                             <div className="media-body">
-                              <h4 className="media-heading">{e.token_name}</h4>
+                              <h4 className="media-heading text-uppercase">{e.token_name}</h4>
                               <p>{e.symbol.toUpperCase()}</p>
                             </div>
                           </div> 
                           </a>
                         </Link>
                       </td> 
-                      <td>{e.price === null? "-":Number(e.price).toFixed(2)}</td>
+                      <td>{e.price === null? "-":"$"+ Number(e.price).toFixed(2)}</td>
                       {/* <td>
                         <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span>
                       </td> */}
@@ -189,7 +189,7 @@ const CheckContractAddress =(address)=>{
                       <td className="market_list_price">
                         <Link href={"/"+e.token_id}>
                           <a>
-                            {e.token_max_supply ? separator(e.token_max_supply) : "-"}
+                            {e.token_max_supply ? separator(e.token_max_supply) : "-"} 
                           </a>
                         </Link>
                       </td>
@@ -379,7 +379,7 @@ const CheckContractAddress =(address)=>{
                   </div> 
 
                   {
-                    alltokens > 10
+                    alltokens > 15
                     ? 
                   <div className="col-md-12">
                     <div className="pagination_block">

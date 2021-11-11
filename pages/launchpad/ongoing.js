@@ -27,7 +27,7 @@ export default function OngoingLaunchPad({userAgent}) {
           if(response.data.status){  
             setapistatus(true)
             setOngoing(response.data.message) 
-            // console.log(response.data.message)
+            console.log(response.data.message)
           }
     })
   } 
@@ -134,13 +134,13 @@ export default function OngoingLaunchPad({userAgent}) {
                               <div className="media">
                                 <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" className="mr-1rounded-circle" />
                                 <div className="media-body">
-                                  <h5 className="launchpad_title">{e.token_name}</h5>
-                                  <p className="launchpad_value">{e.symbol}</p>
+                                  <h5 className="launchpad_title text-uppercase">{e.token_name}</h5>
+                                  <p className="launchpad_value">{e.symbol.toUpperCase()}</p>
                                 </div>
                               </div>
                             </a>
                           </td>
-                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>0.00</h5></a></td>
+                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>$ {e.price}</h5></a></td>
                           <td className="market_list_price"><a href={"/"+e.token_id}><h5><h5><img src="/assets/img/bnb.svg" /> BNB</h5></h5></a></td>
                           <td className="market_list_price"><a href={"/"+e.token_id}><h5>874587</h5></a></td>
                          

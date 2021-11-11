@@ -74,6 +74,7 @@ export default function Footer (){
                            <li id="menu-item-58570" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-58570"><a href={coinpedia_url+"privacy-policy/"} >Privacy Policy</a></li>
                            <li id="menu-item-58571" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-58571"><a href={coinpedia_url+"terms-and-conditions/"}>Terms and Conditions</a></li>
                            <li id="menu-item-58565" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-58565"><a href={coinpedia_url+"editorial-policy/"} >Editorial Policy</a></li>
+                           <li id="menu-item-58565" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-58565"><a href={app_coinpedia_url+"feedback"} >Feedback</a></li>
                         </ul> 
                      </div>  
 

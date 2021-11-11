@@ -28,12 +28,13 @@ let inputProps2 = {
 
 
 export default function LauchPadDetails({errorCode, data, paymentTypes}) {   
+
     if(errorCode) {return <Error/> }
     const communityRef = useRef(null);
     const explorerRef = useRef(null);
     const contractRef = useRef(null);  
     const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")     
-    // console.log(data)
+    console.log(data)
     const [wallet_data, setWalletData] = useState([]); 
     const [perPage] = useState(10);
     const [walletspageCount, setWalletsPageCount] = useState(0) ; 
@@ -201,29 +202,37 @@ const getTokenTransactions=(id, networktype)=>
               
               if (result.data.ethereum != null) {  
                       set_tokentransactions(result.data.ethereum.dexTrades) 
-                      settokentransactionsPageCount(Math.ceil(result.data.ethereum.dexTrades.length  / 10 ))
+                      if(result.data.ethereum.dexTrades)
+                      {
+                        settokentransactionsPageCount(Math.ceil(result.data.ethereum.dexTrades.length  / 10 ))
+                      }
+                      
                       tokenTrasactionspagination(result.data.ethereum.dexTrades , 0) 
               }        
             })
             .catch(console.error);
 } 
 
-const tokenTrasactionspagination=(data, offset)=>{ 
- 
-  let slice = data.slice(offset, offset + 10)   
+const tokenTrasactionspagination=(data, offset)=>
+{ 
+  if(data)
+  {
+    let slice = data.slice(offset, offset + 10)   
 
-  const postData = slice.map((e,i)=>{
-    return <tr key={i}>
-              
-              <td>{separator(Number.parseFloat((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd).toFixed(2))} {(e.baseCurrency.symbol === "WBNB") ? e.quoteCurrency.symbol : e.baseCurrency.symbol}</td>
-              <td>{moment(e.block.timestamp.time).format("ll")}</td>
-              <td>{separator(Number.parseFloat((e.tradeAmountInUsd / ((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd)).toString()).toFixed(7))} USD</td>
-              <td>{separator(Number.parseFloat(e.tradeAmountInUsd).toFixed(4))} USD</td>
-              <td><a rel="noreferrer" href={"https://bscscan.com/tx/"+e.transaction.hash} target="_blank">{e.exchange.name ? e.exchange.name : "-"}</a></td>
-            </tr>
-  })
+    const postData = slice.map((e,i)=>{
+      return <tr key={i}>
+                
+                <td>{separator(Number.parseFloat((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd).toFixed(2))} {(e.baseCurrency.symbol === "WBNB") ? e.quoteCurrency.symbol : e.baseCurrency.symbol}</td>
+                <td>{moment(e.block.timestamp.time).format("ll")}</td>
+                <td>{separator(Number.parseFloat((e.tradeAmountInUsd / ((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd)).toString()).toFixed(7))} USD</td>
+                <td>{separator(Number.parseFloat(e.tradeAmountInUsd).toFixed(4))} USD</td>
+                <td><a rel="noreferrer" href={"https://bscscan.com/tx/"+e.transaction.hash} target="_blank">{e.exchange.name ? e.exchange.name : "-"}</a></td>
+              </tr>
+    })
 
-  set_tokentransactionsdata(postData)  
+    set_tokentransactionsdata(postData) 
+  }
+   
 
 }
 
@@ -419,8 +428,13 @@ const getTokenexchange=(id, networktype)=> {
     .then(res => res.json())
     .then(result => {
       if (result.data.ethereum != null) {  
-          set_exchangelist(result.data.ethereum.dexTrades)  
-          setExchnagesPageCount(Math.ceil(result.data.ethereum.dexTrades.length  / 10 ))
+          
+          if(result.data.ethereum.dexTrades)
+          { 
+            set_exchangelist(result.data.ethereum.dexTrades)
+            setExchnagesPageCount(Math.ceil(result.data.ethereum.dexTrades.length  / 10 ))
+          }  
+        
           exchangespagination(result.data.ethereum.dexTrades , 0) 
       }
     })
@@ -428,20 +442,23 @@ const getTokenexchange=(id, networktype)=> {
 } 
 
   const exchangespagination=(data, offset)=>{ 
+    if(data)
+    {
+      let slice = data.slice(offset, offset + 10)  
 
-    let slice = data.slice(offset, offset + 10)  
+      const postData = slice.map((e,i)=>{
+        return <tr key={i}>
+                  <td>{e.exchange.fullName}</td>
+                  <td>{separator(e.trades)}</td>
+                  <td>{separator(e.takers)}</td>
+                  <td>{separator(e.makers)}</td>
+                  <td>{separator(e.amount.toFixed(2)) }</td>
+                </tr> 
+      })
 
-    const postData = slice.map((e,i)=>{
-      return <tr key={i}>
-                <td>{e.exchange.fullName}</td>
-                <td>{separator(e.trades)}</td>
-                <td>{separator(e.takers)}</td>
-                <td>{separator(e.makers)}</td>
-                <td>{separator(e.amount.toFixed(2)) }</td>
-              </tr> 
-    })
-
-    set_exchangelistdata(postData)  
+      set_exchangelistdata(postData)  
+    }
+    
 
   }
 
@@ -1990,11 +2007,11 @@ const connectToEthWallet=()=>
                           <div >
                             <div className="coin_main_links">
                               <ul className="coin_quick_details">
-                                <li className="coin_individual_list">
+                                {/* <li className="coin_individual_list">
                                   <div className="quick_block_links">
                                     <div className="widgets__select links_direct"><a href="#" target="_blank"> # Rank -07 </a></div>
                                   </div>
-                                </li>
+                                </li> */}
                                 <li className="coin_individual_list">
                                   <div className="quick_block_links">
                                     <div className="widgets__select links_direct"><a href={data.website_link ? data.website_link :"#"} target="_blank"> <img src="/assets/img/website.png" className="coin_cat_img" />Website </a></div>
@@ -2592,6 +2609,7 @@ const connectToEthWallet=()=>
                           </div>
 
                           {
+                            tokentransactions ?
                             tokentransactions.length > 10
                             ? 
                             <div className="pager__list pagination_element"> 
@@ -2608,6 +2626,8 @@ const connectToEthWallet=()=>
                                 subContainerClassName={"pages pagination"}
                                 activeClassName={"active"} />
                             </div> 
+                            :
+                            null
                             :
                             null
                           }

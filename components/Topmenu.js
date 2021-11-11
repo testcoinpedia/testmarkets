@@ -68,12 +68,12 @@ export default function Topmenu()
                       {/* .......... */}
                         <div className="navbar-header">
                         <div className="row">
-                            <div className="col-md-3 col-6">
+                            <div className="col-md-6 col-lg-3 col-6">
                               <Link href={coinpedia_url}>
                                 <a className="navbar-brand"><img src={logo} className="logo_header" /></a>
                               </Link>
                             </div>
-                            <div className="col-md-6 market_live_price_desktop">
+                            <div className="col-lg-6 market_live_price_desktop">
                               <div className="market_live_price">
                                 <ul>
                                   {
@@ -88,8 +88,9 @@ export default function Topmenu()
                                   }
                                 </ul>
                               </div>
+                              
                             </div>
-                            <div className="col-md-3  col-6">
+                            <div className="col-md-6 col-lg-3 col-6">
                               <button  className="navbar-toggler" onClick={() => customToggle()}  type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                                 <span className="navbar-toggler-icon"></span>
                               </button>
@@ -283,7 +284,7 @@ export default function Topmenu()
                               <li><a href={coinpedia_url+"contact-us/"} >Submit Query</a></li>
                               <li><a href={coinpedia_url+"submit-your-press-report/"} >Submit PR</a></li>
                               <li><a href={coinpedia_url+"advertising/"} >Advertise</a></li>
-                              <li><a href={app_coinpedia_url+"feedback/"} >Feedback</a></li>
+                              {/* <li><a href={app_coinpedia_url+"feedback/"} >Feedback</a></li> */}
                             </ul>
                           </div>
                         </li>

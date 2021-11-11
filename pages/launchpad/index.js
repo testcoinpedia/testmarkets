@@ -205,7 +205,7 @@ export default function LaunchPad({userAgent})
                               <Link href={"/"+e.token_id}>
                                 <a>
                                   <div className="media">
-                                    <img src={e.token_image?image_base_url+e.token_image:"https://api.coinpedia.org/uploads/tokens/162774178061055e5419cc7.png"} alt="Logo" className="mr-1rounded-circle" />
+                                    <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" className="mr-1rounded-circle" />
                                     <div className="media-body">
                                       <h5 className="launchpad_title">{e.token_name}</h5>
                                       <p className="launchpad_value">{e.symbol}</p>
@@ -295,7 +295,7 @@ export default function LaunchPad({userAgent})
                                 <td>
                                   <a href={"/"+e.token_id}>
                                       <div className="media">
-                                      <img src={e.token_image?image_base_url+e.token_image:"https://api.coinpedia.org/uploads/tokens/162774178061055e5419cc7.png"} alt="Logo" className="mr-1rounded-circle" />
+                                      <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" className="mr-1rounded-circle" />
                                       <div className="media-body">
                                           <h5 className="launchpad_title">{e.token_name}</h5>
                                           <p className="launchpad_value">{e.symbol}</p>
