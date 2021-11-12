@@ -12991,6 +12991,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-left: 0;
 }
 
+.dcma_protected {
+  margin-top: 10px;
+}
+
 #footer {
   background: #251c49;
   padding: 60px 0 0px;
@@ -13567,9 +13571,35 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .red {
   color: #ff767c !important;
 }
-@media (min-width: 991px) {
+/* @media (min-width: 991px) {
   .mobile_view_crypto {
     display: none;
+  }
+} */
+
+/* ...theme css starts here... */
+.dark_theme_toggle {
+  width: 30px;
+  margin-right: 23px;
+  margin-top: 7px;
+  cursor: pointer;
+}
+.dark_theme_toggle img {
+  width: 100%;
+}
+/* ...theme css ends here... */
+
+@media (min-width: 992px) {
+  .mobile_view_crypto {
+    display: none;
+  }
+}
+
+@media (max-width: 992px) {
+  .mobile_view_crypto {
+    border-top: 1px solid #3a325b;
+    height: 35px;
+    width: 100%;
   }
 }
 
@@ -14606,12 +14636,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   .market_insights h1 {
     font-size: 27px;
-  }
-
-  .mobile_view_crypto {
-    border-top: 1px solid #3a325b;
-    height: 35px;
-    width: 100%;
   }
 
   .mobile_view_crypto .block_crypto {

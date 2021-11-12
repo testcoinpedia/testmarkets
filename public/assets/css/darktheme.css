@@ -1,0 +1,260 @@
+/* html, */
+.dark_theme {
+  background-color: #27292d !important;
+}
+
+.dark_theme .market_top_header {
+  background-color: #27292d;
+  box-shadow: 0 0 10px 5px rgb(0 0 0 / 10%);
+}
+
+.dark_theme .new_page_title_block {
+  background-color: #27292d !important;
+}
+.dark_theme .page_title {
+  color: #fff;
+}
+.dark_theme .market_insights p {
+  color: #fff !important;
+}
+
+.dark_theme .new_markets_index table tbody tr td {
+  color: #fff !important;
+}
+.dark_theme .market_page_data tr .media p {
+  color: #fff !important;
+}
+
+.dark_theme #footer {
+  background-color: #1c1d21 !important;
+}
+
+.dark_theme .categories__item {
+  -webkit-box-shadow: 0 0px 0px #d9d3ff;
+}
+.dark_theme .new_markets_index table tbody tr {
+  border-bottom: 2px solid #323232 !important;
+}
+
+.dark_theme .main_menu_header .dropdown .dropdown-menu {
+  background: #27292d;
+  box-shadow: 0 0 15px #000;
+}
+.dark_theme .market_top_header .nav-item.show .dropdown-toggle {
+  color: #fff !important;
+}
+
+.dark_theme #site-info {
+  background: unset;
+}
+
+.dark_theme .widgets__item,
+.dark_theme .launchpads {
+  background: #24262a;
+  border: 1px solid #24262a;
+}
+
+.dark_theme .quick_block_links .widgets__select {
+  background: #18191c;
+  color: #fff;
+}
+.dark_theme .share_market_detail_page {
+  color: #fff;
+  border: 1px solid #fff;
+}
+.dark_theme .widgets__price {
+  color: #fff;
+}
+.dark_theme .widgets__category {
+  color: #fff;
+}
+.dark_theme .market_details_block .widgets__info {
+  color: #fff;
+}
+.dark_theme .market_details_block .wallets__info {
+  color: #fff;
+}
+.dark_theme .wallets__inner .wallets__number {
+  color: #fff;
+}
+.dark_theme .token-contract-details h5 a {
+  color: #fff;
+}
+.dark_theme .market {
+  background: #24262a;
+  border: 1px solid #24262a;
+}
+.dark_theme .company_profile_tabs li {
+  border-right: 1px solid #fff;
+}
+.dark_theme .company_profile_tabs .nav-tabs .nav-link {
+  color: #fff;
+}
+.dark_theme .company_profile_tabs .nav-tabs .nav-link.active span {
+  border-bottom: 1px solid #fff;
+}
+.dark_theme .company_profile_tabs .nav-tabs .nav-link.active {
+  background-color: #24262a;
+}
+.dark_theme .exchange_transactions {
+  background-color: #24262a;
+}
+.dark_theme .chart_tabs_ul {
+  background: #2e2e2e;
+  color: #fff;
+}
+/* .dark_theme .highcharts-background {
+  background: #24262a !important;
+} */
+
+.dark_theme .price_change {
+  color: #fff;
+}
+
+.dark_theme .exchange_transactions h4 {
+  color: #fff;
+}
+.dark_theme .no_data_found {
+  color: #fff;
+}
+.dark_theme .market-details-custom-search-block {
+  box-shadow: 0 0 0px #aaa;
+}
+.dark_theme .prices__title h1 {
+  color: #fff;
+}
+
+.dark_theme .referral_dropdown .dropdown .dropdown-menu {
+  background: #27292d;
+  box-shadow: 0 0 15px #000;
+}
+.dark_theme .referral_dropdown .dropdown .dropdown-item {
+  color: #fff !important;
+}
+.dark_theme .market_page_data tr .media h4 {
+  color: #fff;
+}
+.dark_theme .token_list_table .table td {
+  color: #fff;
+}
+.dark_theme .token_list_table .table tr {
+  border-bottom: 2px solid #323232 !important;
+}
+.dark_theme .token_steps h1 {
+  color: #fff;
+}
+.dark_theme .token_form_sub_text {
+  color: #fff;
+}
+.dark_theme .main_create_form {
+  background: #24262a;
+  border: 1px solid #24262a;
+}
+.dark_theme .form-custom label {
+  color: #fff;
+}
+.dark_theme .addmore_ico span {
+  color: #fff;
+}
+.dark_theme .review_upload_token button,
+.dark_theme .edit_launchpad {
+  box-shadow: 0 0 0px #bbb;
+  background: #18191c !important;
+}
+
+.dark_theme .panel_title_go_back a {
+  color: #fff;
+}
+.dark_theme .token_list_table .form-control {
+  color: #fff;
+  background: #27292d;
+}
+.dark_theme .token_list_table .form-control::placeholder {
+  color: #fff;
+}
+.dark_theme .token-list-tbl td {
+  color: #ddd;
+}
+.dark_theme .input_block_outline .access_type option {
+  color: #fff !important;
+  background: #27292d !important;
+}
+
+.dark_theme .ico_plans .panel-default {
+  background: #363636;
+  color: #fff;
+}
+.dark_theme .ico_plans .panel-title a {
+  color: #fff;
+}
+.dark_theme .ico_plans .start-end-date,
+.dark_theme .participate_para_one,
+.dark_theme .token_content h1,
+.dark_theme .promotion__text,
+.dark_theme .promotion__text p,
+.dark_theme .launchpad_list p,
+.dark_theme
+  .completed_events
+  .title_block
+  h2
+  .dark_theme
+  .launchpad_overview_data
+  p {
+  color: #fff !important;
+}
+.dark_theme .participate_link span {
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+.dark_theme .input_block_outline .input-group-prepend select option {
+  background: #24262a;
+  border: 1px solid #24262a;
+  color: #fff;
+}
+
+.dark_theme .launchpad .ongoing_launchpad,
+.dark_theme .launchpad .upcoming_launchpad {
+  background: #24262a;
+  border: 1px solid #24262a;
+}
+.dark_theme .tabs_for_navigation ul li a span {
+  color: #fff;
+}
+.dark_theme .tabs_for_navigation ul li .active span {
+}
+
+.dark_theme .btn-gradient-primary {
+  background-color: #18191c !important;
+}
+.dark_theme .launchpad-toke-button .btn-gradient-primary {
+  box-shadow: 0 0;
+}
+.dark_theme .tabs_for_navigation ul li .active span {
+  background-color: #18191c !important;
+}
+
+.dark_theme .launchpad .ongoing_launchpad h4 span,
+.dark_theme .launchpad .ongoing_launchpad h4 a,
+.dark_theme .launchpad .upcoming_launchpad h4 span,
+.dark_theme .launchpad .upcoming_launchpad h4 a {
+  color: #fff;
+}
+.dark_theme .launchpad_table_overview thead th {
+  color: #fff;
+}
+.dark_theme .ongoing_launchpad h4,
+.dark_theme .upcoming_launchpad h4,
+.dark_theme.launchpad_table_overview thead {
+  border-bottom: 2px solid #323232 !important;
+}
+
+.dark_theme .completed_events {
+  background: #24262a;
+  border: 1px solid #24262a;
+}
+
+.dark_theme .launchpad_overview_data p a {
+  border-bottom: 2px solid #fff;
+  color: #fff;
+}

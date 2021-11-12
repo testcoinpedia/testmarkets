@@ -16,7 +16,6 @@ export default function OngoingLaunchPad({userAgent}) {
   const [apistatus, setapistatus] = useState(false)
   const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")
   
- 
 
   useEffect(()=>{ 
     GetAllOngoing()
@@ -26,7 +25,6 @@ export default function OngoingLaunchPad({userAgent}) {
     Axios.get(API_BASE_URL+"listing_tokens/launchpad_ended", config)
     .then(response=>{
           if(response.data.status){  
-            // console.log(response.data.message)
             setapistatus(true)
             setended(response.data.message) 
           }
@@ -84,7 +82,7 @@ export default function OngoingLaunchPad({userAgent}) {
                 <div className="row launchpad_list">
                   <div className="col-md-8 col-7">
                     <h1 className="page_title">Launchpad List</h1>
-                    <p>These are the ongoing launchpads</p>
+                    <p>These are the completed launchpads</p>
                   </div>
                   <div className="col-md-4 col-5">
                     <div className="launchpad-toke-button">
@@ -112,13 +110,14 @@ export default function OngoingLaunchPad({userAgent}) {
                         <thead>
                         <tr>
                             <th className="ongoing_token">Name</th>
-                            <th  className="table_ended_fields">Price</th>
+                            <th className="table_ended_fields">Price</th>
+                            <th className="table_ended_fields">Network</th>
                             <th className="table_ended_fields">Token Sold</th>
                             <th className="table_live_price">Total Supply</th>
                             <th className="table_ended_fields">% of total supply</th>
                             <th className="">Type</th>
-                            <th className="">Holders</th>
-                            <th className="">Trading On</th>
+                            {/* <th className="">Holders</th>
+                            <th className="">Trading On</th> */}
                             <th className="table_ended_fields">Completed Date</th>
                         </tr>
                         </thead> 
@@ -142,21 +141,45 @@ export default function OngoingLaunchPad({userAgent}) {
                                   </a>
                                 </td>
                                 <td className="market_list_price"><a href={"/"+e.token_id}><h5>${parseFloat(e.price)}</h5></a></td>
+                                <td className="market_list_price">
+                                  <a href={"/"+e.token_id}><h5>
+                                    {/* <img src="/assets/img/bnb.svg" />  */}
+                                    {
+                                      e.network_type_array.length > 0 
+                                      ?
+                                        e.network_type_array.map((ntwrk,i)=>
+                                        {
+                                          if(ntwrk == 1)
+                                          {
+                                            return <>{i>0 ? "," : null} BNB</>
+                                          }
+                                          else if(ntwrk == 2)
+                                          {
+                                            return <>{i>0 ? "," : null} ETH</>
+                                          }
+                                          
+                                        }
+                                        )
+                                      :
+                                      "-"
+                                    }
+                                  </h5></a>
+                                </td>
                                 <td className="market_list_price"><a href={"/"+e.token_id}><h5>{separator(parseFloat(e.tokens_sold))}</h5></a></td>
                                 <td className="market_list_price"><a href={"/"+e.token_id}><h5>{separator(parseFloat(e.token_max_supply))}</h5></a></td>
                                 <td className="market_list_price"><a href={"/"+e.token_id}><h5>{parseFloat(e.percentage_total_supply)}%</h5></a></td>
                                 <td className="market_list_price">
                                   <a href={"/"+e.token_id}><h5> 
                                     {
-                                      e.access_type==1
+                                      e.launch_pad_type==1
                                       ?
                                       "ICO"
                                       :
-                                      e.access_type==2
+                                      e.launch_pad_type==2
                                       ?
                                       "IDO"
                                       :
-                                      e.access_type==3
+                                      e.launch_pad_type==3
                                       ?
                                       "IEO"
                                       :
@@ -164,8 +187,8 @@ export default function OngoingLaunchPad({userAgent}) {
                                     }</h5>
                                   </a>
                                 </td>
-                                <td className="market_list_price"><a href={"/"+e.token_id}><h5>88778899</h5></a></td>
-                                <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td>
+                                {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>88778899</h5></a></td>
+                                <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td> */}
                                 <td className="market_list_price"><a href={"/"+e.token_id}><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></td>
                             </tr>
 
@@ -175,12 +198,12 @@ export default function OngoingLaunchPad({userAgent}) {
                            {
                              apistatus ?
                              <tr key="1">
-                               <td className="text-center" colSpan="9">
+                               <td className="text-center" colSpan="8">
                                    Sorry, No related data found.
                                </td>
                              </tr>
                              :
-                            <TableContentLoader row="5" col="9" />
+                            <TableContentLoader row="5" col="8" />
                                                  
                            }
                            </>

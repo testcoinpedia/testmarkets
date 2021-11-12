@@ -15,7 +15,7 @@ export default function Topmenu()
 { 
 
   const [login_dropdown, set_login_dropdown] = useState(0)
-  const [live_prices_list, set_live_prices_list] = useState([]); 
+  const [live_prices_list, set_live_prices_list] = useState({}); 
 
   useEffect(()=>{
     getLivePricesList()
@@ -39,11 +39,14 @@ export default function Topmenu()
 
   const getLivePricesList=()=>
   {
-    Axios.get(api_url+"listing_tokens/live_prices", config)
+    // Axios.get(api_url+"listing_tokens/live_prices", config)
+    Axios.get("https://api.coingecko.com/api/v3/simple/price?ids=ethereum%2Cbitcoin%2Cbinancecoin%2Ctether%2Csiacoin&vs_currencies=usd&include_24hr_change=true", config)
         .then(response => {  
-          if(response.data.status == true) 
+          
+          if(response.status) 
           {
-            set_live_prices_list(response.data.message)
+            // console.log(response.data)
+            set_live_prices_list(response.data)
           }
         })
   }
@@ -57,6 +60,11 @@ export default function Topmenu()
     router.push(app_coinpedia_url+"login")
   }
    
+  // const darkThemeFunction=()=>{
+  //   const abc=document.getElementById("theme_color");
+  //   $("body").toggleClass("dark_theme")
+      
+  // }
   return(
           <>
           <div className="market_top_header">
@@ -75,18 +83,45 @@ export default function Topmenu()
                             </div>
                             <div className="col-lg-6 market_live_price_desktop">
                               <div className="market_live_price">
-                                <ul>
-                                  {
-                                    live_prices_list.map((item, i) =>
-                                    <li key={i}>
+                                 {
+                                    live_prices_list.bitcoin   ?
+                                    <ul>
+                                    <li key="1">
                                         <a>
-                                          <h4 className="text-uppercase">{item.symbol}</h4>
-                                          <h6>$ {separator(((parseFloat(item.price))).toFixed(2))} <span className={(parseFloat(item.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(item.usd_24h_change)).toFixed(2)}%)</span></h6>
+                                          <h4 className="text-uppercase">BTC</h4>
+                                          <h6>$ {separator(((parseFloat(live_prices_list.bitcoin.usd))).toFixed(2))} <span className={(parseFloat(live_prices_list.bitcoin.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(live_prices_list.bitcoin.usd_24h_change)).toFixed(2)}%)</span></h6>
                                         </a>
                                     </li>
-                                    )
-                                  }
+                                    <li key="1">
+                                        <a>
+                                          <h4 className="text-uppercase">ETH</h4>
+                                          <h6>$ {separator(((parseFloat(live_prices_list.ethereum.usd))).toFixed(2))} <span className={(parseFloat(live_prices_list.ethereum.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(live_prices_list.ethereum.usd_24h_change)).toFixed(2)}%)</span></h6>
+                                        </a>
+                                    </li>
+                                    <li key="1">
+                                        <a>
+                                          <h4 className="text-uppercase">BNB</h4>
+                                          <h6>$ {separator(((parseFloat(live_prices_list.binancecoin.usd))).toFixed(2))} <span className={(parseFloat(live_prices_list.binancecoin.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(live_prices_list.binancecoin.usd_24h_change)).toFixed(2)}%)</span></h6>
+                                        </a>
+                                    </li>
+                                    <li key="1">
+                                        <a>
+                                          <h4 className="text-uppercase">SC</h4>
+                                          <h6>$ {separator(((parseFloat(live_prices_list.siacoin.usd))).toFixed(2))} <span className={(parseFloat(live_prices_list.siacoin.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(live_prices_list.siacoin.usd_24h_change)).toFixed(2)}%)</span></h6>
+                                        </a>
+                                    </li>
+                                    <li key="1">
+                                        <a>
+                                          <h4 className="text-uppercase">USDT</h4>
+                                          <h6>$ {separator(((parseFloat(live_prices_list.tether.usd))).toFixed(2))} <span className={(parseFloat(live_prices_list.tether.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(live_prices_list.tether.usd_24h_change)).toFixed(2)}%)</span></h6>
+                                        </a>
+                                    </li>
+                                 
                                 </ul>
+                                    :
+                                    null
+                                  }
+                                
                               </div>
                               
                             </div>
@@ -171,14 +206,31 @@ export default function Topmenu()
                       {/* ........... */}
                     </div>
                     <div className="mobile_view_crypto"> 
-                      <marquee width="100%" direction="left"> 
-                          {
-                            live_prices_list.map((item, i) =>
-                            <div className="block_crypto" key={i}>
-                              <h6 className="text-uppercase">[{item.symbol} <span className="crypto_value">${separator(((parseFloat(item.price))).toFixed(2))}</span> <span className={(parseFloat(item.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(item.usd_24h_change)).toFixed(2)}%</span>]</h6>
+                      <marquee width="100%" direction="left">
+                        {
+                           live_prices_list.bitcoin   ?
+                           <>
+                            <div className="block_crypto">
+                              <h6 className="text-uppercase">[BTC <span className="crypto_value">${separator(((parseFloat(live_prices_list.bitcoin.usd))).toFixed(2))}</span> <span className={(parseFloat(live_prices_list.bitcoin.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(live_prices_list.bitcoin.usd_24h_change)).toFixed(2)}%</span>]</h6>
                             </div>
-                            )
-                          }
+                            <div className="block_crypto">
+                              <h6 className="text-uppercase">[ETH <span className="crypto_value">${separator(((parseFloat(live_prices_list.ethereum.usd))).toFixed(2))}</span> <span className={(parseFloat(live_prices_list.ethereum.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(live_prices_list.ethereum.usd_24h_change)).toFixed(2)}%</span>]</h6>
+                            </div>
+                            <div className="block_crypto">
+                              <h6 className="text-uppercase">[BNB <span className="crypto_value">${separator(((parseFloat(live_prices_list.binancecoin.usd))).toFixed(2))}</span> <span className={(parseFloat(live_prices_list.binancecoin.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(live_prices_list.binancecoin.usd_24h_change)).toFixed(2)}%</span>]</h6>
+                            </div>
+                            <div className="block_crypto">
+                              <h6 className="text-uppercase">[SC <span className="crypto_value">${separator(((parseFloat(live_prices_list.siacoin.usd))).toFixed(2))}</span> <span className={(parseFloat(live_prices_list.siacoin.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(live_prices_list.siacoin.usd_24h_change)).toFixed(2)}%</span>]</h6>
+                            </div>
+                            <div className="block_crypto">
+                              <h6 className="text-uppercase">[USDT <span className="crypto_value">${separator(((parseFloat(live_prices_list.tether.usd))).toFixed(2))}</span> <span className={(parseFloat(live_prices_list.tether.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(live_prices_list.tether.usd_24h_change)).toFixed(2)}%</span>]</h6>
+                            </div>
+                          </>
+                          :
+                          null
+                        }
+                            
+                            
                       </marquee>
                   </div>
                   </div>
@@ -208,6 +260,7 @@ export default function Topmenu()
                               <li><a href={coinpedia_url+"stocks-shares/"}  className="dropdown-item">Stocks &amp; Shares</a></li> 
                               <li><a href={coinpedia_url+"press-release/"}  className="dropdown-item">Press Release</a></li>
                               <li><a href={coinpedia_url+"guest-post/"}  className="dropdown-item">Guest Post</a></li>
+                              <li><a href="https://coinpedia.org/sponsored/"  className="dropdown-item">Sponsered</a></li>
                               <li><a href={coinpedia_url+"top-10/"}  className="dropdown-item">Top 10's</a></li> 
                               <li><a href={coinpedia_url+"cryptocurrency-regulation/"}  className="dropdown-item">Press Release</a></li>
                               <li><a href={coinpedia_url+"interesting-crypto-stories/"}  className="dropdown-item">Guest Post</a></li>
@@ -293,6 +346,9 @@ export default function Topmenu()
  
                       </ul>
                       <ul className="nav navbar-nav navbar-right ml-auto ">
+                        {/* <li className="dark_theme_toggle" onClick={(e)=>darkThemeFunction()} id="theme_color">
+                            <img src="https://api.coinpedia.org/uploads/tokens/1636636942618d190eb91f9.png" />
+                        </li> */}
                         <li><a href="#"><button className="header_button notification_bell"><img src="/assets/img/notification.png" /></button></a></li> 
                       </ul>
                     </div>

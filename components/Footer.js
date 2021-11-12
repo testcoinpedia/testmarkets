@@ -24,8 +24,9 @@ export default function Footer (){
                      <div className="col-sm-4 normal-side">
                         <div id="author-bio-widget-4" className="container-wrapper widget aboutme-widget">
                            <div className="about-author about-content-wrapper">
-                           <div className="aboutme-widget-content">Coinpedia - Trusted Crypto Agency for News, Information, Exchange, PR, Blockchain Events, Crypto Wallet and Else related to Decentralized World.
+                              <div className="aboutme-widget-content">Coinpedia - Trusted Crypto Agency for News, Information, Exchange, PR, Blockchain Events, Crypto Wallet and Else related to Decentralized World.
                            </div>
+                           <div className="dcma_protected"><a href="//www.dmca.com/Protection/Status.aspx?ID=c32974f1-5754-4dc7-8646-ff88d4b0ee60" title="DMCA.com Protection Status" class="dmca-badge"> <img src ="https://images.dmca.com/Badges/dmca_protected_sml_120n.png?ID=c32974f1-5754-4dc7-8646-ff88d4b0ee60" alt="DMCA.com Protection Status" /></a> <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"> </script></div>
                            <div className="clearfix" />
                            </div>
                         <div className="clearfix" /></div>		

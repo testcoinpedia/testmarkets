@@ -34,7 +34,7 @@ export default function LauchPadDetails({errorCode, data, paymentTypes}) {
     const explorerRef = useRef(null);
     const contractRef = useRef(null);  
     const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")     
-    console.log(data)
+    // console.log(data)
     const [wallet_data, setWalletData] = useState([]); 
     const [perPage] = useState(10);
     const [walletspageCount, setWalletsPageCount] = useState(0) ; 
@@ -2412,7 +2412,7 @@ const connectToEthWallet=()=>
                     <div className="exchange_transactions">
                       <div className="tab-content">
                         <div id="overview" className="tab-pane fade show in active">
-                          <h5 className="price_change">{data.symbol} Price Change</h5>
+                          <h5 className="price_change">{(data.symbol).toUpperCase()} Price Change</h5>
                           <figure className="highcharts-figure">
                             <div
                               id="container"
@@ -2495,8 +2495,13 @@ const connectToEthWallet=()=>
                                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of 
                                     type and scrambled it to make a type specimen book. It has survived not only five centuries,
                                   </p> */}
-
-                                  <h1>About {data.token_name ? data.token_name : "-"}</h1>
+                                  {
+                                    data.token_description ?
+                                    <h1>About {data.token_name ? data.token_name : "-"}</h1>
+                                    :
+                                    null
+                                  }
+                                  
                                   {
                                     ((data.token_description != null) && ((data.token_description).length > 900)) ?
                                     <>

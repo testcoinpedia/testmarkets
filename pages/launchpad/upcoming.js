@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Axios from 'axios'; 
 import Head from 'next/head';
 import cookie from 'cookie'
-import { API_BASE_URL,config, website_url, app_coinpedia_url } from '../../components/constants' 
+import { API_BASE_URL,config, website_url, app_coinpedia_url, separator } from '../../components/constants' 
 import TableContentLoader from '../../components/loaders/tableLoader'
 import moment from 'moment'
  
@@ -117,10 +117,11 @@ export default function UpcomingLaunchPad({userAgent}) {
                     <thead>
                       <tr>
                         <th className="ongoing_token">Project</th>
+                        <th className="">Network</th>
                         <th className="table_live_price">Total Supply</th>
                         <th className="">Type</th>
-                        <th className="">Holders</th>
-                        <th className="">Trading On</th>
+                        {/* <th className="">Holders</th>
+                        <th className="">Trading On</th> */}
                         <th className="ongoing_date">Start Date</th>
                         <th className="ongoing_date">End Date</th>
                       </tr>
@@ -145,8 +146,32 @@ export default function UpcomingLaunchPad({userAgent}) {
                               </div>
                             </a>
                           </td>
-                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>84587</h5></a></td>
-                          <td className="market_list_price"><a href={"/"+e.token_id}><h5> <a>
+                          <td className="market_list_price">
+                                  <a href={"/"+e.token_id}><h5>
+                                    {/* <img src="/assets/img/bnb.svg" />  */}
+                                    {
+                                      e.network_type_array.length > 0 
+                                      ?
+                                        e.network_type_array.map((ntwrk,i)=>
+                                        {
+                                          if(ntwrk == 1)
+                                          {
+                                            return <>{i>0 ? "," : null} BNB</>
+                                          }
+                                          else if(ntwrk == 2)
+                                          {
+                                            return <>{i>0 ? "," : null} ETH</>
+                                          }
+                                          
+                                        }
+                                        )
+                                      :
+                                      "-"
+                                    }
+                                  </h5></a>
+                                </td>
+                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>{separator(parseFloat(e.token_max_supply))}</h5></a></td>
+                          <td className="market_list_price"><a href={"/"+e.token_id}><h5><a>
                                                     {
                                                     e.launch_pad_type==1
                                                     ?
@@ -164,8 +189,8 @@ export default function UpcomingLaunchPad({userAgent}) {
                                                     }
                                                 </a></h5></a>
                           </td>
-                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>88778899</h5></a></td>
-                          <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td>
+                          {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>88778899</h5></a></td>
+                          <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td> */}
                           <td className="market_list_price"><a href={"/"+e.token_id}><h5>{moment(e.start_date).format("MMM DD, YYYY")}</h5></a></td>
                           <td className="market_list_price"><a href={"/"+e.token_id}><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></td>
                         </tr>
@@ -176,12 +201,12 @@ export default function UpcomingLaunchPad({userAgent}) {
                          {
                            apistatus ?
                            <tr key="1">
-                             <td className="text-center" colSpan="7">
+                             <td className="text-center" colSpan="6">
                                  Sorry, No related data found.
                              </td>
                            </tr>
                            :
-                          <TableContentLoader row="5" col="7" />
+                          <TableContentLoader row="5" col="6" />
                                                
                          }
                          </>
