@@ -201,7 +201,7 @@ export default function UpcomingLaunchPad({userAgent}) {
                          {
                            apistatus ?
                            <tr key="1">
-                             <td className="text-center" colSpan="6">
+                             <td className="text-center no_data_found" colSpan="6">
                                  Sorry, No related data found.
                              </td>
                            </tr>

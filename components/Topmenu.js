@@ -347,7 +347,7 @@ export default function Topmenu()
                       </ul>
                       <ul className="nav navbar-nav navbar-right ml-auto ">
                         {/* <li className="dark_theme_toggle" onClick={(e)=>darkThemeFunction()} id="theme_color">
-                            <img src="https://api.coinpedia.org/uploads/tokens/1636636942618d190eb91f9.png" />
+                          <img src="https://api.coinpedia.org/uploads/tokens/1636636942618d190eb91f9.png" />
                         </li> */}
                         <li><a href="#"><button className="header_button notification_bell"><img src="/assets/img/notification.png" /></button></a></li> 
                       </ul>

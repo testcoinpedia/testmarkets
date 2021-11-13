@@ -1744,7 +1744,7 @@ const connectToEthWallet=()=>
       <Head>
          <title>{data.token_name.toUpperCase()} ({data.symbol}) Live Price | Coinpedia Market</title>  
          <meta name="description" content={data.meta_description} />
-          <meta name="keywords" content={data.meta_keywords} />
+        <meta name="keywords" content={data.meta_keywords} />
  
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
@@ -2145,17 +2145,17 @@ const connectToEthWallet=()=>
                                   <div className="wallets__info">24h volume</div>
                                   <div className="wallets__number h5">${separator(contract_24h_volume.toFixed(2))}</div>
                                   <div className="twenty_block">
-                                    {
+                                    {/* {
                                       price_change_24h
                                       ?
                                       price_change_24h > 0
                                       ?
-                                      <span className="twenty_high"><img src="/assets/img/green-up.png" />1.20%</span>
+                                      <span className="twenty_high"><img src="/assets/img/green-up.png" />{price_change_24h}%</span>
                                       :
-                                      <span className="twenty_low"><img src="/assets/img/red-down.png" />1.20%</span>
+                                      <span className="twenty_low"><img src="/assets/img/red-down.png" />{price_change_24h}%</span>
                                       :
                                       null
-                                    }
+                                    } */}
                                   </div>
                                 </div>
                               </li>
@@ -2164,7 +2164,7 @@ const connectToEthWallet=()=>
                                   <div className="wallets__info">Crypto Market cap</div>
                                   <div className="wallets__number h5">${separator(market_cap.toFixed(2))}</div>
                                   <div className="twenty_block">
-                                    <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span>
+                                    {/* <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span> */}
                                     {/* <span className="twenty_high"><img src="/assets/img/red-down.png" />2.79%</span> */}
                                   </div>
                                 </div>

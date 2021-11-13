@@ -245,7 +245,7 @@
 }
 .dark_theme .ongoing_launchpad h4,
 .dark_theme .upcoming_launchpad h4,
-.dark_theme.launchpad_table_overview thead {
+.dark_theme .launchpad_table_overview thead {
   border-bottom: 2px solid #323232 !important;
 }
 
@@ -257,4 +257,56 @@
 .dark_theme .launchpad_overview_data p a {
   border-bottom: 2px solid #fff;
   color: #fff;
+}
+
+.dark_theme .completed_events .title_block h2 {
+  color: #fff;
+}
+.dark_theme .completed_events .title_block p {
+  color: #fff;
+}
+.dark_theme .view_all_launchpad a {
+  color: #fff;
+}
+
+.dark_theme .completed_events table thead th {
+  padding-top: 15px !important;
+}
+
+.dark_theme .launchpad_overview_data {
+  border-top: 1px solid #323232;
+}
+.dark_theme .launchpad_overview_data p {
+  color: #fff;
+}
+
+.dark_theme .completed_events tbody td {
+  color: #fff !important;
+}
+
+.dark_theme .completed_events table thead th {
+  color: #fff !important;
+  background: #2e2e2e;
+}
+.dark_theme .create_token_btn a {
+  background: #18191c !important;
+  color: #fff;
+}
+
+.dark_theme .token-list-tbl th {
+  color: #fff !important;
+  background: #2e2e2e;
+}
+.dark_theme .search_filter .input-group-prepend .input-group-text {
+  background: #18191c;
+  color: #fff;
+}
+
+.dark_theme .search_filter select option {
+  background: #18191c;
+  color: #fff;
+}
+
+.dark_theme .search_filter {
+  background: #18191c;
 }

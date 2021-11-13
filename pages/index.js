@@ -171,7 +171,7 @@ const CheckContractAddress =(address)=>{
                           </a>
                         </Link>
                       </td> 
-                      <td>{e.price === null? "-":"$"+ Number(e.price).toFixed(2)}</td>
+                      {/* <td>{e.price === null? "-":"$"+ Number(e.price).toFixed(2)}</td> */}
                       {/* <td>
                         <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span>
                       </td> */}
@@ -332,7 +332,7 @@ const CheckContractAddress =(address)=>{
                       <thead>
                           <tr>
                             <th className="table_index_token">Token</th>
-                            <th className="table_live_price">Live price </th>
+                            {/* <th className="table_live_price">Live price </th> */}
                             {/* <th className="table_price_change">24h %</th> */}
                             <th className="table_token">Token type</th>
                             <th className="table_max_supply">Total max supply</th> 
@@ -366,12 +366,12 @@ const CheckContractAddress =(address)=>{
                           data
                           :
                           <tr >
-                            <td className="text-center" colSpan="5">
+                            <td className="text-center" colSpan="4">
                                 Sorry, No related data found.
                             </td>
                           </tr>
                           :
-                          <TableContentLoader row="10" col="5" />
+                          <TableContentLoader row="10" col="4" />
                         }
                       </tbody>
                     </table>
