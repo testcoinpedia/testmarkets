@@ -31,7 +31,7 @@ class MyApp extends App{
           <link rel="stylesheet" href="/assets/css/bootstrap.min.css" crossOrigin="anonymous"/>
           <link rel="stylesheet" media="all" href="/assets/css/app.css" />
           
-          {/* <link rel="stylesheet" media="all" href="/assets/css/darktheme.css" /> */}
+          <link rel="stylesheet" media="all" href="/assets/css/darktheme.css" />
           
           <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-100404206-1"></script>
           <script async src="https://www.googletagmanager.com/gtag/js?id=G-4R54LKN7PN"/>

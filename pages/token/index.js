@@ -219,7 +219,7 @@ const getTokensCurrentList=(items, offset)=>
               <option value="3">Rejected</option>
             </select>
             <div className="input-group-prepend">
-              <span className="input-group-text" onClick={()=> resetFilter()}>
+              <span className="input-group-text reset_filter" onClick={()=> resetFilter()}>
                 Reset
               </span>
             </div>

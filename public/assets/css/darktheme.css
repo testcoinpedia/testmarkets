@@ -31,6 +31,11 @@
 
 .dark_theme .categories__item {
   -webkit-box-shadow: 0 0px 0px #d9d3ff;
+  background: #323232;
+  color: #fff;
+}
+.dark_theme .active_category {
+  background: #18191c;
 }
 .dark_theme .new_markets_index table tbody tr {
   border-bottom: 2px solid #323232 !important;
@@ -45,7 +50,7 @@
 }
 
 .dark_theme #site-info {
-  background: unset;
+  background: #24242a;
 }
 
 .dark_theme .widgets__item,
@@ -60,7 +65,7 @@
 }
 .dark_theme .share_market_detail_page {
   color: #fff;
-  border: 1px solid #fff;
+  border: 1px solid #323232;
 }
 .dark_theme .widgets__price {
   color: #fff;
@@ -181,8 +186,16 @@
 }
 
 .dark_theme .ico_plans .panel-default {
-  background: #363636;
+  background: #323232;
   color: #fff;
+}
+
+.dark_theme .ico_block_details {
+  border-bottom: 1px solid #24242a;
+}
+
+.dark_theme .ico_block_details p {
+  border-bottom: 1px solid #24242a;
 }
 .dark_theme .ico_plans .panel-title a {
   color: #fff;
@@ -246,7 +259,7 @@
 .dark_theme .ongoing_launchpad h4,
 .dark_theme .upcoming_launchpad h4,
 .dark_theme .launchpad_table_overview thead {
-  border-bottom: 2px solid #323232 !important;
+  border-bottom: 1px solid #323232 !important;
 }
 
 .dark_theme .completed_events {
@@ -286,7 +299,7 @@
 
 .dark_theme .completed_events table thead th {
   color: #fff !important;
-  background: #2e2e2e;
+  background: #323232;
 }
 .dark_theme .create_token_btn a {
   background: #18191c !important;
@@ -298,8 +311,7 @@
   background: #2e2e2e;
 }
 .dark_theme .search_filter .input-group-prepend .input-group-text {
-  background: #18191c;
-  color: #fff;
+  background: #323232;
 }
 
 .dark_theme .search_filter select option {
@@ -308,5 +320,137 @@
 }
 
 .dark_theme .search_filter {
+  background: #323232;
+}
+
+.dark_theme .search_filter input {
+  background: #323232;
+}
+
+.dark_theme .search_filter input::placeholder {
+  color: #fff;
+}
+
+.dark_theme .navbar_border_bottom {
+  border-top: 1px solid #323232;
+}
+
+.dark_theme .pagination_div .pagination_element ul li a {
+  background: #323232 !important;
+  color: #fff !important;
+  border: 1px solid #323232;
+}
+
+.dark_theme .pagination_div .pagination_element ul li.active a {
+  background: #18191c !important;
+  color: #fff !important;
+  border: 1px solid #18191c;
+}
+
+.dark_theme .markets_index select {
+  background: #323232;
+  color: #fff;
+}
+.dark_theme .new_markets_index thead th {
+  background: #323232;
+  color: #fff !important;
+  border-bottom: 2px solid #323232 !important;
+}
+.dark_theme .search_filter select {
+  background: #323232;
+  color: #fff;
+}
+.dark_theme .dropdown_wallet_header {
   background: #18191c;
+}
+.dark_theme .dropdown_wallet_header .dropdown-item {
+  color: #fff;
+}
+
+.dark_theme .connect_wallet_header .dropdown_wallet_header a:hover {
+  color: #fff;
+  background: #323232 !important;
+}
+.dark_theme .dropdown_wallet_header h6 {
+  border-top: 1px solid #323232;
+  color: #fff;
+}
+.dark_theme .dropdown_wallet_header h6:first-child {
+  border-top: 1px solid #18191c;
+}
+.dark_theme .market_top_header .connect_wallet_header .connect_wallet {
+  background: #18191c;
+  color: #fff;
+}
+.dark_theme .header_button {
+  background: #18191c;
+}
+
+.dark_theme .input_block_outline {
+  background: #323232;
+  border: 1px solid #323232;
+}
+
+.dark_theme .input_block_outline input,
+.dark_theme .input_block_outline select {
+  background: #323232;
+  color: #fff;
+}
+
+.dark_theme .input_block_outline input::placeholder,
+.dark_theme .input_block_outline select {
+  color: #fff;
+}
+
+.dark_theme .choose_file_input label {
+  color: #fff;
+  background: #323232;
+  border: 2px dashed #18191c;
+}
+
+.dark_theme .token_max_supply .input-group-prepend .input-group-text {
+  background: #323232;
+  border-left: 1px solid #323232;
+}
+.dark_theme .reset_filter {
+  color: #fff;
+}
+.dark_theme .form-control:focus {
+  box-shadow: 0 0 0 0px !important;
+}
+
+.dark_theme .overview_ul li {
+  border-right: 1px solid #323232;
+}
+
+.dark_theme .market_details_share_wishlist .modal-content,
+.dark_theme .market_details_share_wishlist .modal-body {
+  color: #fff;
+  background: #323232;
+  border-radius: 8px;
+}
+
+.dark_theme .market_details_share_wishlist .modal-header {
+  border-bottom: 1px solid #404040;
+}
+.dark_theme .modal-header .close {
+  color: #fff;
+}
+.dark_theme .launchpad_overview_data h3 {
+  color: #fff;
+}
+
+.dark_theme .error_page h3 {
+  color: #fff;
+}
+.dark_theme .error_page p {
+  color: #fff;
+}
+.dark_theme .error_page .buttons a {
+  background-image: unset !important;
+  background: #18191c;
+}
+
+.dark_theme .circulating_progress .progress {
+  background-color: #323232;
 }

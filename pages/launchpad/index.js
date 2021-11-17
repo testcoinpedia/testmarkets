@@ -320,11 +320,11 @@ export default function LaunchPad({userAgent})
                         <th className="table_ended_fields">Network</th>
                         <th className="table_ended_fields">Token Sold</th>
                         <th className="table_live_price">Total Supply</th>
-                        <th className="table_ended_fields">Presale Supply(%)</th>
+                        <th className="table_pre_sale">Presale Supply(%)</th>
                         <th className="">Type</th>
                         {/* <th style={{minWidth:'80px'}}>Holders</th>
                         <th style={{minWidth:'125px'}}>Trading On</th> */}
-                        <th className="table_ended_fields">Completed Date</th>
+                        <th className="table_pre_sale">Completed Date</th>
                       </tr>
                     </thead> 
                    

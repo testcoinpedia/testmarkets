@@ -58,7 +58,6 @@ export const getDomainName = (link)=>
 {
   var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
     let url = ""
-console.log(link)
     {
       regexp.test(link) 
       ? 
@@ -71,7 +70,7 @@ console.log(link)
 
     var arr = url.hostname.split(".")
     
-    return (arr[0] == "www" || arr[0] == "in") ? arr[1] :  arr[0]
+    return (arr[0] == "www" || arr[0] == "in" || arr[1] == "medium") ? arr[1] :  arr[0]
 }
 
 

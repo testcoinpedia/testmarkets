@@ -15,7 +15,7 @@ export default function Error()
                                 <div className="buttons"><Link href="/"><a>HOME</a></Link></div>
                             </div>
                             <div className="col-md-7">
-                                <img src="/assets/img/error.png" width="100%" height="100%" alt="Error"/>
+                                <div className="error_img_block"><img src="/assets/img/error.png" width="100%" height="100%" alt="Error"/></div>
                             </div>
                         </div>
                     </div>

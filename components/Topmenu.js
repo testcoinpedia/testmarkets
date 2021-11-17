@@ -6,7 +6,7 @@ import Axios from 'axios'
 import cookie from 'cookie'
 import JsCookie from "js-cookie" 
 import $ from 'jquery';
-import {website_url,app_coinpedia_url,market_coinpedia_url,coinpedia_url, Logout, separator,logo, config, api_url} from '../components/constants'    
+import {website_url,app_coinpedia_url,market_coinpedia_url,coinpedia_url, Logout, separator,logo, config, api_url, cookieDomainExtension} from '../components/constants'    
 import Popupmodal from './popupmodal'  
 
 
@@ -15,7 +15,8 @@ export default function Topmenu()
 { 
 
   const [login_dropdown, set_login_dropdown] = useState(0)
-  const [live_prices_list, set_live_prices_list] = useState({}); 
+  const [live_prices_list, set_live_prices_list] = useState({});
+  const [dark_mode, set_dark_mode]=useState((JsCookie.get('dark_mode')) ? true:false) 
 
   useEffect(()=>{
     getLivePricesList()
@@ -30,7 +31,11 @@ export default function Topmenu()
     {
       set_login_dropdown(1)
     }
-    
+    if(JsCookie.get('dark_mode'))
+    { 
+      set_dark_mode(JsCookie.get('dark_mode'))
+      $("body").addClass("dark_theme")
+    }
   },[login_dropdown])
 
   const customToggle=()=>{
@@ -39,13 +44,11 @@ export default function Topmenu()
 
   const getLivePricesList=()=>
   {
-    // Axios.get(api_url+"listing_tokens/live_prices", config)
     Axios.get("https://api.coingecko.com/api/v3/simple/price?ids=ethereum%2Cbitcoin%2Cbinancecoin%2Ctether%2Csiacoin&vs_currencies=usd&include_24hr_change=true", config)
         .then(response => {  
           
           if(response.status) 
           {
-            // console.log(response.data)
             set_live_prices_list(response.data)
           }
         })
@@ -60,11 +63,19 @@ export default function Topmenu()
     router.push(app_coinpedia_url+"login")
   }
    
-  // const darkThemeFunction=()=>{
-  //   const abc=document.getElementById("theme_color");
-  //   $("body").toggleClass("dark_theme")
-      
-  // }
+  const setDarkMode=(param)=>{
+    JsCookie.set("dark_mode", param, {domain:cookieDomainExtension})
+    set_dark_mode(param)
+    if(param)
+    {
+      $("body").addClass("dark_theme")
+    }
+    else
+    {
+      $("body").removeClass("dark_theme")
+    }
+  }
+  
   return(
           <>
           <div className="market_top_header">
@@ -346,9 +357,24 @@ export default function Topmenu()
  
                       </ul>
                       <ul className="nav navbar-nav navbar-right ml-auto ">
-                        {/* <li className="dark_theme_toggle" onClick={(e)=>darkThemeFunction()} id="theme_color">
-                          <img src="https://api.coinpedia.org/uploads/tokens/1636636942618d190eb91f9.png" />
-                        </li> */}
+                        <li className="dark_theme_toggle" id="theme_color">
+                          {/* <img src="https://api.coinpedia.org/uploads/tokens/1636636942618d190eb91f9.png" /> */}
+                          {/* {
+                            dark_mode 
+                            ?
+                            <div className="top_menu_skin moon"><img src="/assets/img/top_menu_moon.png" /></div>
+                            :
+                            <div className="top_menu_skin sun"><img src="/assets/img/top_menu_sun.png" /></div>
+                          } */}
+
+                          {
+                            Boolean(dark_mode) === true ?
+                            <div className="top_menu_skin moon"><img onClick={(e)=>setDarkMode(false)} src="/assets/img/top_menu_moon.png" /></div>
+                            :
+                            <div className="top_menu_skin sun"><img onClick={(e)=>setDarkMode(true)} src="/assets/img/top_menu_sun.png" /></div>
+                          }
+
+                        </li>
                         <li><a href="#"><button className="header_button notification_bell"><img src="/assets/img/notification.png" /></button></a></li> 
                       </ul>
                     </div>

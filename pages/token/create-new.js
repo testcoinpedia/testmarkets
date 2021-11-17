@@ -921,7 +921,7 @@ const clearform = () =>
                         <div className="form-custom">
                           <label htmlFor="email">Token Max Supply<span className="label_star">*</span></label>
                           <div className="input_block_outline">
-                            <div className="input-group">
+                            <div className="input-group token_max_supply">
                               <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)}/>
                               <div className="input-group-prepend">
                                 <span className="input-group-text">{symbol}</span>

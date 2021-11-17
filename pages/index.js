@@ -4,28 +4,32 @@ import ReactPaginate from 'react-paginate';
 import Head from 'next/head';
 
 import TableContentLoader from '../components/loaders/tableLoader'
-import { API_BASE_URL, config, separator, website_url} from '../components/constants'; 
-
+import { API_BASE_URL, config, separator, website_url, app_coinpedia_url} from '../components/constants'; 
 var $ = require( "jquery" );
 
-export default function Home(props) {   
+export default function Home({post}) {   
   const [data, setData] = useState([]); 
-  const [pageCount] = useState(Math.ceil(props.post.length / 15))
+  const [pageCount, setPageCount] = useState(Math.ceil(post.length / 15))
   const [firstcount, setfirstcount] = useState(1)
   const [finalcount, setfinalcount] = useState(15)
   const [selectedPage, setSelectedPage] = useState(0) ;
   const [image_base_url] = useState(API_BASE_URL + 'uploads/tokens/')
-  const [tokenslist] = useState(props.post)
-  const [alltokens] = useState(props.post.length) 
+  const [tokenslist] = useState(post)
+  const [alltokens, setalltokens] = useState(post.length) 
   const [searchBy, setSearchBy] = useState("0")   
   const [search_contract_address, set_search_contract_address] = useState("")    
   const [validSearchContract, setvalidContractAddress] = useState("")
   const [dataLoaderStatus, setDataLoaderStatus] = useState(true)
-  // console.log('asdf', tokenslist);
-  
+
+  const [filteredTokens, setFilteredTokens] = useState([])  
+  const [searchTokens, setsearchTokens] = useState("")
+  const [searchParam] = useState(["token_name"])
+
+  console.log('asdf', post);
+  // const [handleModalVote, setHandleModalVote] = useState(false)
  
   useEffect(()=>{  
-    getTokensList(0) 
+    getTokensList(tokenslist , 0) 
     var $j = jQuery.noConflict();
     $j(document).ready(function() {
       $j('[data-toggle="tooltip"]').tooltip();
@@ -36,8 +40,56 @@ const handlePageClick = (e) => {
   setSelectedPage(e.selected)
   const selectPage = e.selected; 
   Pages_Counts(selectPage , tokenslist.length)
-  getTokensList(selectPage * 15)
-};  
+  getTokensList(tokenslist , selectPage * 15)
+
+}; 
+
+  const getSearchData=(searchValue) =>
+  {  
+    var curren=0
+    setsearchTokens(searchValue)
+    var filteredReferrals = null;
+    if(searchValue != '')
+    {  
+        var tokenslistData = tokenslist
+        var filteredTokens =  tokenslistData.filter((item) => {
+          return searchParam.some((newItem) => {
+            console.log(newItem)
+              return (
+                  item[newItem]
+                      .toString()
+                      .toLowerCase()
+                      .indexOf(searchValue) > -1
+              )
+          })
+      })
+        setFilteredTokens(filteredTokens)
+        // console.log(filteredTokens)
+        setPageCount(Math.ceil(filteredTokens.length / 15)) 
+        getTokensList(filteredTokens, 0) 
+        setalltokens(filteredTokens.length)
+        Pages_Counts(curren , filteredTokens.length)
+        
+    }
+    else
+    {
+        setFilteredTokens(tokenslist)
+        setPageCount(Math.ceil(tokenslist.length / 15)) 
+        getTokensList(tokenslist, 0) 
+        setalltokens(tokenslist.length)
+        Pages_Counts(curren , tokenslist.length)
+    }
+  }
+  const resetFilter=() =>
+   {
+    setsearchTokens("")
+    setFilteredTokens(tokenslist)
+    setPageCount(Math.ceil(tokenslist.length / 15)) 
+    getTokensList(tokenslist,0) 
+    setalltokens(tokenslist.length)
+   // document.getElementById("formID").reset() 
+   }    
+
 const Pages_Counts = (page_selected, length_value) => 
 {
    const presentPage = page_selected+1
@@ -151,7 +203,7 @@ const CheckContractAddress =(address)=>{
 
 }
    
-  const getTokensList=(offset)=>{   
+  const getTokensList=(tokenslist, offset)=>{   
     setDataLoaderStatus(false)
     let slice = tokenslist.slice(offset, offset + 15)  
     const postData = slice.map((e, i) => {
@@ -164,7 +216,7 @@ const CheckContractAddress =(address)=>{
                               <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
                             </div>
                             <div className="media-body">
-                              <h4 className="media-heading text-uppercase">{e.token_name}</h4>
+                              <h4 className="media-heading">{e.token_name}</h4>
                               <p>{e.symbol.toUpperCase()}</p>
                             </div>
                           </div> 
@@ -177,14 +229,21 @@ const CheckContractAddress =(address)=>{
                       </td> */}
 
                       <td className="market_list_price"> 
-                      <Link href={"/"+e.token_id}><a>
-                        {
-                          e.network_types.length > 0
-                          ?
-                          e.network_types[0] === "1" ? "ERC20" : "BEP20" 
-                          :
-                          null
-                        } </a></Link>
+                        <Link href={"/"+e.token_id}>
+                          <a>
+                          
+                            <span className="block_price">$ 00.00</span>
+                            <br/>
+                            {
+                              e.network_types.length > 0
+                              ?
+                              e.network_types[0] === "1" ? "ERC20" : "BEP20" 
+                              :
+                              null
+                            } 
+                          </a>
+
+                          </Link>
                       </td>
                       <td className="market_list_price">
                         <Link href={"/"+e.token_id}>
@@ -199,6 +258,33 @@ const CheckContractAddress =(address)=>{
                           {e.circulating_supply ?separator(e.circulating_supply) : "-"}
                         </a></Link>
                       </td>  
+
+                      <td className="market_list_price">
+                        <Link href={"/"+e.token_id}>
+                          <a>
+                            <span className="vote_value">{e.total_voting_count == 0 ? "-" :e.total_voting_count}</span>
+                          </a>
+                        </Link>
+                      </td>  
+
+                        {
+                          // userAgent.user_token ?
+                          <td className="market_list_price">
+                            <Link href={"/"+e.token_id}>
+                              <span className="market_list_price">
+                                <button data-toggle="tooltip" > Vote </button>
+                              </span>
+                            </Link>
+                          </td>  
+                          // :
+                          // <td className="market_list_price">
+                          //   <Link href={app_coinpedia_url+"login"}>
+                          //     <span className="market_list_price">
+                          //       <button data-toggle="tooltip">Vote</button>
+                          //     </span>
+                          //   </Link>
+                          // </td>  
+                        } 
                 </tr> 
     })  
 
@@ -263,13 +349,13 @@ const CheckContractAddress =(address)=>{
                 <div className="col-md-4 col-lg-4">
                   <div className="input-group search_filter">
                     <input value={search_contract_address} onChange={(e)=> set_search_contract_address(e.target.value)} type="text" placeholder="Search token here" className="form-control search-input-box" placeholder="Search by contract address" />
-                    <div className="input-group-prepend">
-                      <select className="form-control" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}>
+                    <div className="input-group-prepend markets_index">
+                      <select  className="form-control" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}>
                         <option value="0">ETH</option>
                         <option value="1">BSC</option>
                       </select>
                     </div>
-                    <div className="input-group-prepend">
+                    <div className="input-group-prepend ">
                     {
                       search_contract_address
                       ?
@@ -292,42 +378,59 @@ const CheckContractAddress =(address)=>{
               <div className="categories categories_list_display">
                 <div className="categories__container">
                   <div className="markets_list_quick_links">
-                    <Link href="/">
-                      <a className="categories__item active_category">
-                        <div className="categories__text">All</div>
-                      </a>
-                    </Link> 
-
-                    <Link href="#">
-                      <a className="categories__item">
-                        <div data-toggle="tooltip" title="Coming Soon!" className="categories__text">Gainers & Losers</div>
-                      </a>
-                    </Link>
-
-                    <Link href="#">
-                      <a className="categories__item ">
-                        <div data-toggle="tooltip" title="Coming Soon!" className="categories__text">Stable Coins</div>
-                      </a>
-                    </Link>
-
-                    <Link href="#">
-                      <a className="categories__item ">
-                        <div data-toggle="tooltip" title="Coming Soon!" className="categories__text">Trending Coins</div>
-                      </a>
-                    </Link>
-
-                    <Link href="#">
-                      <a className="categories__item ">
-                        <div data-toggle="tooltip" title="Coming Soon!" className="categories__text">NFT Marketplace</div>
-                      </a>
-                    </Link>
+                    <ul>
+                      <li>
+                        <Link href="/">
+                          <a className="categories__item active_category">
+                            <div className="categories__text">All</div>
+                          </a>
+                        </Link> 
+                      </li>
+                      <li>
+                        <Link href="#">
+                          <a className="categories__item">
+                            <div className="categories__text">Gainers & Losers</div>
+                          </a>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="#">
+                          <a className="categories__item ">
+                            <div className="categories__text">Stable Coins</div>
+                          </a>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="#">
+                          <a className="categories__item ">
+                            <div className="categories__text">Trending Coins</div>
+                          </a>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="#">
+                          <a className="categories__item ">
+                            <div className="categories__text">NFT Marketplace</div>
+                          </a>
+                        </Link>
+                      </li>
+                    </ul>
+                   
                   </div>
                 </div>
               </div>
 
+              <div className="">
+              <div className="row">
+                <div className="col-lg-4 col-sm-6 col-12">
+                  <p className="companies_found">{alltokens} Tokens Found</p>
+                </div>
+              </div>
+              </div>
+
               <div className="prices transaction_table_block">
-                  <div className="market_page_data">
-                    <div className="table-responsive">
+                <div className="market_page_data">
+                  <div className="table-responsive">
                     <table className="table table-borderless">
                       <thead>
                           <tr>
@@ -337,28 +440,11 @@ const CheckContractAddress =(address)=>{
                             <th className="table_token">Token type</th>
                             <th className="table_max_supply">Total max supply</th> 
                             <th className="mobile_hide table_circulating_supply">Circulating Supply</th>  
+                            <th className="table_circulating_supply">Votes</th>  
+                            <th className="table_circulating_supply">Vote</th>  
                           </tr>
                       </thead>
                       <tbody>
-                        {/* {
-                            data.length > 0
-                            ?
-                            data
-                            :
-                            <>
-                            {
-                             dataLoaderStatus === false ?
-                              <tr >
-                               <td className="text-center" colSpan="5">
-                                   Sorry, No related data found.
-                               </td>
-                              </tr>
-                              :
-                              <TableContentLoader row="10" col="5" />
-                            }
-                            </>
-                          }  */}
-
                         {
                           dataLoaderStatus === false ?
                           data.length > 0
@@ -375,8 +461,8 @@ const CheckContractAddress =(address)=>{
                         }
                       </tbody>
                     </table>
-                    </div>
-                  </div> 
+                  </div>
+                </div> 
 
                   {
                     alltokens > 15
@@ -384,10 +470,10 @@ const CheckContractAddress =(address)=>{
                   <div className="col-md-12">
                     <div className="pagination_block">
                       <div className="row">
-                        <div className="col-lg-3 col-md-3  col-sm-3 col-6">
+                        <div className="col-lg-3 col-md-3  col-sm-3 col-4">
                             <p className="page_range">{firstcount}-{finalcount} of {pageCount} Pages</p>
                         </div>
-                        <div className="col-lg-9 col-md-9 col-sm-9 col-6">
+                        <div className="col-lg-9 col-md-9 col-sm-9 col-8">
                             <div className="pagination_div">
                               <div className="pagination_element">
                                   
@@ -441,8 +527,23 @@ const CheckContractAddress =(address)=>{
                   }  */}
               </div>
             </div>
-        
           </div>
+      </div>
+
+      <div className="coming_soon_modal">
+        <div className="modal" id="comingSoon">
+          <div className="modal-dialog modal-sm">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h4 className="modal-title coming_soon_title">Coming Soon !!</h4>
+                <button type="button" className="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div className="modal-body">
+                <p className="coming_soon_subtext">This feature will be available soon</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     </>
@@ -450,14 +551,16 @@ const CheckContractAddress =(address)=>{
 }
  
 
-export async function getServerSideProps({query }) { 
+export async function getServerSideProps({query, req}) { 
+
+  // const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
 
   return await fetch(API_BASE_URL+"listing_tokens/tokens_list", config)
               .then(res => res.json())
               .then(result => { 
 
-                if(result.status){  
-                  
+                if(result.status)
+                {  
                   return { props: {post: result.message}}
                 }
                 else

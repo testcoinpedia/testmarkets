@@ -4,13 +4,13 @@ import { ethers } from 'ethers';
 import Link from 'next/link' 
 import Head from 'next/head';
 import Error from './404'
-import { API_BASE_URL, config, website_url, separator, strLenTrim, getDomainName } from '../components/constants'
+import { API_BASE_URL, config, website_url, separator, strLenTrim, getDomainName, app_coinpedia_url, x_api_key} from '../components/constants'
 import moment from 'moment'  
 import Web3 from 'web3'
 import Highcharts from 'highcharts';    
 import ReactPaginate from 'react-paginate';
- 
-
+import cookie from "cookie"
+import Axios from 'axios'
 import Datetime from "react-datetime"
 import "react-datetime/css/react-datetime.css" 
   
@@ -27,14 +27,15 @@ let inputProps2 = {
 } 
 
 
-export default function LauchPadDetails({errorCode, data, paymentTypes}) {   
+export default function LauchPadDetails({errorCode, data, paymentTypes, userAgent, reqConfig}) {   
 
     if(errorCode) {return <Error/> }
     const communityRef = useRef(null);
     const explorerRef = useRef(null);
     const contractRef = useRef(null);  
     const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")     
-    // console.log(data)
+    console.log(data)
+    const [user_token]= useState(userAgent.user_token)
     const [wallet_data, setWalletData] = useState([]); 
     const [perPage] = useState(10);
     const [walletspageCount, setWalletsPageCount] = useState(0) ; 
@@ -56,6 +57,7 @@ export default function LauchPadDetails({errorCode, data, paymentTypes}) {
     const [walletTokenUsdBal, set_walletTokenUsdBal]=useState(0)
     const [loadmore, set_loadmore]= useState(false) 
     const [handleModalConnections, setHandleModalConnections] = useState(false)
+    const [handleModalVote, setHandleModalVote] = useState(false)
     const [handleModalMainNetworks, setHandleModalMainNetworks] = useState(false)
     const [selectedTokenModal, setSelectedTokenModal] = useState(false)
     const [selectedwallettype, setSelectedWalletType] = useState(0)
@@ -75,7 +77,9 @@ export default function LauchPadDetails({errorCode, data, paymentTypes}) {
     const [contract_copy_status, set_contract_copy_status] = useState("")
     const [read_more, set_read_more] = useState("")
     const [desc_read_more, set_desc_read_more] = useState(false)
-    
+    const [voting_message, set_voting_message] = useState("")
+    const [votes, set_votes] = useState(data.total_voting_count)
+    const [voting_status, set_voting_status] = useState(data.voting_status)
   const makeJobSchema=()=>{  
     return { 
         "@context":"http://schema.org/",
@@ -906,6 +910,7 @@ const get24hChange=(fun_live_price, id, networks)=>
         } 
         else{
           change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) - 1) * 100
+          // change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote ) - 1) * 100
           set_priceChange24H(change24h)
         }
  
@@ -1733,6 +1738,28 @@ const connectToEthWallet=()=>
     setHandleModalConnections(!handleModalConnections) 
   }
 
+  const ModalVote=()=> 
+  {    
+    setHandleModalVote(!handleModalVote) 
+  }
+
+  const vote = () =>
+  {
+    ModalVote()
+    Axios.get(API_BASE_URL+"listing_tokens/save_voting_details/"+data.token_id, reqConfig)
+    .then(res=>{ 
+      console.log(res)
+      if(res.data.status === true) 
+      {
+        set_votes(votes+1)
+        set_voting_status(true)
+      }
+    })
+
+    
+    
+  }
+
   const handleModalMainNetwork=()=> 
   {       
     setHandleModalConnections(false)  
@@ -1927,13 +1954,14 @@ const connectToEthWallet=()=>
                               <div className="widgets__logo"><img src={data.token_image ? image_base_url+data.token_image : "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579"} alt="logo" width="100%" height="100%" /></div>
                               <div className="media-body">
                                 <div className="row ">
-                                  <div className="col-lg-7 col-sm-6 col-6">
+                                  <div className="col-lg-7 col-sm-6 col-8">
                                     <div className="widgets__details">
                                       <div className="widgets__category">{data.symbol ? (data.symbol).toUpperCase() : "-"}</div>
                                       <div className="widgets__info">{data.token_name ? data.token_name : "-"}</div>
                                     </div>
+                                    
                                   </div>
-                                  <div className="col-lg-5 col-sm-6 col-6">
+                                  <div className="col-lg-5 col-sm-6 col-4 display_vote_share">
                                     <ul className="market_details_share_wishlist">
                                       <li>
                                         {/* <div className="share_market_detail_page" data-toggle="modal" data-target="#market_share_page"><img src="/assets/img/share-icon.png"  width="100%" height="100%" /> Share</div> */}
@@ -1978,6 +2006,24 @@ const connectToEthWallet=()=>
                                         </div>
                                       </div>
                                     </ul>
+
+                                    <ul className="vote_section">
+                                      <li>
+                                        
+                                      </li>
+                                      <li>
+                                        {
+                                          user_token ?
+                                            voting_status === false ?
+                                            <button className="market_vote" onClick={()=>ModalVote()} >Vote</button>
+                                            :
+                                            <button className="market_vote" >Voted</button>
+                                          :
+                                          <Link href={app_coinpedia_url+"login"}><button className="market_vote">Vote</button></Link>
+                                        }
+                                        <p className="votes_market"><span className="votes">Votes: <span className="total_votes">{votes}</span></span></p>
+                                      </li>
+                                    </ul>
                                   </div>
                                 </div>
                               </div>
@@ -1985,17 +2031,15 @@ const connectToEthWallet=()=>
 
 
                             <div>
-                              <div className="widgets__price">${live_price ? separator(live_price.toFixed(4)) : "-"} 
+                              <div className="widgets__price">${live_price ? separator(live_price.toFixed(8)) : "-"} 
                                 {
                                   price_change_24h
                                   ?
                                   price_change_24h > 0
                                   ?
-                                  // <div className="status positive">{price_change_24h.toFixed(4)}%</div>
                                   <span className="market_growth market_up"><img src="/assets/img/caret-up.png" />{price_change_24h.toFixed(4)}%</span>
                                   :
-                                  // <div className="status negative">{price_change_24h.toFixed(4)}%</div> 
-                                  <span className="market_growth market_down"><img src="/assets/img/caret-angle-down.png" />{price_change_24h.toFixed(4)}%</span>
+                                  <span className="market_growth market_down"><img src="/assets/img/caret-angle-down.png" />{price_change_24h.toPrecision(1 + 4)}%</span>
                                   :
                                   null
                                 }
@@ -2014,15 +2058,17 @@ const connectToEthWallet=()=>
                                 </li> */}
                                 <li className="coin_individual_list">
                                   <div className="quick_block_links">
-                                    <div className="widgets__select links_direct"><a href={data.website_link ? data.website_link :"#"} target="_blank"> <img src="/assets/img/website.png" className="coin_cat_img" />Website </a></div>
+                                    <div className="widgets__select links_direct"><a href={data.website_link ? data.website_link :"#"} target="_blank"> <img src="/assets/img/website.svg" className="coin_cat_img" />Website </a></div>
                                   </div>
                                 </li>
-                                { 
+
+                                
+                                {/* { 
                                   data.community_address.length > 0
                                   ?
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct"  ref={communityRef} onClick={()=> {set_community_links(!community_links); set_explorer_links(false) }}><a><img src="/assets/img/community.png" className="coin_cat_img" />Community {data.community_address.length > 0 ? <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img" /> : null}</a></div>
+                                      <div className="widgets__select links_direct"  ref={communityRef} onClick={()=> {set_community_links(!community_links); set_explorer_links(false) }}><a><img src="/assets/img/community.svg" className="coin_cat_img" />Community {data.community_address.length > 0 ? <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img" /> : null}</a></div>
                                     </div> 
                                     {
                                       community_links
@@ -2054,14 +2100,17 @@ const connectToEthWallet=()=>
                                   </li> 
                                   :
                                   null
-                                }
+                                } */}
+
+
+
                                 {
                                   
                                   data.explorer.length > 0
                                   ?
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links); set_community_links(false) }}><a><img src="/assets/img/explorer.png" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img" /> : null} </a></div>
+                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links); set_community_links(false) }}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img" /> : null} </a></div>
                                     </div> 
                                     { 
                                       explorer_links
@@ -2097,7 +2146,7 @@ const connectToEthWallet=()=>
                                     ?
                                     <li className="coin_individual_list">
                                       <div className="quick_block_links">
-                                        <div className="widgets__select links_direct"><a href={data.source_code_link} target="_blank"> Source Code </a></div>
+                                        <div className="widgets__select links_direct"><a href={data.source_code_link} target="_blank"><img src="/assets/img/source_code.svg" className="coin_cat_img" /> Source Code </a></div>
                                       </div>
                                     </li>
                                     :
@@ -2126,12 +2175,12 @@ const connectToEthWallet=()=>
                                 <div className="wallets__details">
                                   <div className="wallets__info">Circulating Supply</div>
                                   <div className="wallets__number h5">{data.circulating_supply ? separator(data.circulating_supply) : "-"}</div>
-                                  <div className="circulating_progress">
+                                  {/* <div className="circulating_progress">
                                     <div className="progress">
                                       <div className="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={{width:"60%"}}></div>
                                     </div>
                                     <p className="progress_bar_status">75%</p>
-                                  </div>
+                                  </div> */}
                                 </div>
                               </li>
                               <li>
@@ -2161,8 +2210,8 @@ const connectToEthWallet=()=>
                               </li>
                               <li>
                                 <div className="wallets__details">
-                                  <div className="wallets__info">Crypto Market cap</div>
-                                  <div className="wallets__number h5">${separator(market_cap.toFixed(2))}</div>
+                                  <div className="wallets__info">Market cap</div>
+                                  <div className="wallets__number h5">${separator(parseFloat(market_cap.toFixed(2)))}</div>
                                   <div className="twenty_block">
                                     {/* <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span> */}
                                     {/* <span className="twenty_high"><img src="/assets/img/red-down.png" />2.79%</span> */}
@@ -2172,9 +2221,82 @@ const connectToEthWallet=()=>
                               <li>
                                 <div className="wallets__details">
                                   <div className="wallets__info">Liquidity</div>
-                                  <div className="wallets__number h5">${separator(liquidity.toFixed(2))}</div>
+                                  <div className="wallets__number h5">${separator(parseFloat(liquidity.toFixed(2)))}</div>
                                 </div>
                               </li>
+
+                              <li>
+                                <div className="wallets__details">
+                                  <div className="wallets__info">Social</div>
+                                    <div className="market_details_community">
+                                      <h6 class="social_icons">
+                                      {
+                                        data.community_address.map((e, i)=>{
+                                          // return <a href={e} target="_blank">
+                                          //       <img src={"/assets/img/social-icons/"+(getDomainName(e) != "medium" || getDomainName(e) != "linkedin" || getDomainName(e) != "reddit" || getDomainName(e) != "twitter"|| getDomainName(e) != "youtube" || getDomainName(e) != "facebook" || getDomainName(e) != "instagram") ? "default" : getDomainName(e) +".png"} class="1" alt={getDomainName(e)} title={getDomainName(e)}/>
+                                          //     </a>
+                                          if(getDomainName(e)  === "medium")
+                                          {
+                                            return <a href={e} target="_blank">
+                                                <img src="/assets/img/social-icons/medium.png" class="1" alt="Medium" title="Medium"/>
+                                              </a>
+                                          }
+                                          else if(getDomainName(e)  === "linkedin")
+                                          {
+                                            return <a href={e} target="_blank">
+                                                <img src="/assets/img/social-icons/linkedin.png" class="1" alt="Linked" title="Linked"/>
+                                              </a>
+                                          }
+                                          else if(getDomainName(e)  === "reddit")
+                                          {
+                                            return <a href={e} target="_blank">
+                                                <img src="/assets/img/social-icons/reddit.png" class="1" alt="Reddit" title="Reddit"/>
+                                              </a>
+                                          }
+                                          else if(getDomainName(e)  === "twitter")
+                                          {
+                                            return <a href={e} target="_blank">
+                                                <img src="/assets/img/social-icons/twitter.png" class="1" alt="Twitter" title="Twitter"/>
+                                              </a>
+                                          }
+                                          else if(getDomainName(e)  === "youtube")
+                                          {
+                                            return <a href={e} target="_blank">
+                                                <img src="/assets/img/social-icons/youtube.png" class="1" alt="Youtube" title="Youtube"/>
+                                              </a>
+                                          }
+                                          else if(getDomainName(e)  === "facebook")
+                                          {
+                                            return <a href={e} target="_blank">
+                                                <img src="/assets/img/social-icons/facebook.png" class="1" alt="Facebook" title="Facebook"/>
+                                              </a>
+                                          }
+                                          else if(getDomainName(e)  === "instagram")
+                                          {
+                                            return <a href={e} target="_blank">
+                                                <img src="/assets/img/social-icons/instagram.png" class="1" alt="Instagram" title="Instagram"/>
+                                              </a>
+                                          }
+                                          else if(getDomainName(e)  === "t")
+                                          {
+                                            return <a href={e} target="_blank">
+                                                <img src="/assets/img/social-icons/telegram.png" class="1" alt="Telegram" title="Telegram"/>
+                                              </a>
+                                          }
+                                          else
+                                          {
+                                            return <a href={e} target="_blank">
+                                                <img src="/assets/img/social-icons/default.png" class="1" alt={getDomainName(e)} title={getDomainName(e)}/>
+                                              </a>
+                                          }
+                                          
+                                        }) 
+                                      }
+                                      </h6>
+                                    </div>
+                                  </div>
+                              </li>
+
                             </ul>
 
 
@@ -2257,117 +2379,123 @@ const connectToEthWallet=()=>
                             </div> */}
                           </div>
 
-                          { 
-                            data.contract_addresses.length > 0
-                            ?
-                            <div className="wallets__inner contract_address">
-                              <div className="wallets__details">
-                                <div className="wallets__info">Contracts:</div>
-                                <span className="token-contract-details h5"> 
-                                  { 
-                                    data.contract_addresses.length > 1
-                                    ?
-                                      data.contract_addresses[0].network_type === "1"
-                                      ?
-                                      <>  
-                                      {/* src="/assets/img/copy.png" */}
-                                      <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
-                                        <span >
-                                          <img  className="token_dropdown_img" src="/assets/img/ETH.svg"></img>
-                                          Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
-                                        </span>
-                                      </a>&nbsp;
-                                      {
-                                        contract_copy_status == 'ETH' ? 
-                                        <span>Copied</span>
-                                        :
-                                        <img  onClick={()=> {copyContract(data.contract_addresses[0].contract_address, 'ETH')}} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
-                                      }
-                                      
-                                      <img src="/assets/img/down-arrow.png" ref={contractRef}  onClick={()=> setOtherContract(!otherContract)} className="dropdown_arrow_img" />
-                                      {
-                                        otherContract
+                          <div className="row">
+                            <div className="col-md-12 col-12">
+                              { 
+                                data.contract_addresses.length > 0
+                                ?
+                                <div className="wallets__inner contract_address">
+                                  <div className="wallets__details">
+                                    <div className="wallets__info">Contracts:</div>
+                                    <span className="token-contract-details h5"> 
+                                      { 
+                                        data.contract_addresses.length > 1
                                         ?
-                                        <div className="dropdown_block"> 
-                                          <div className="media">
-                                            <img src="/assets/img/binance.svg" alt="Binance" className="token_dropdown_img" />
-                                            <div className="media-body">
-                                              <p className="wallets__info">Binance smart chain</p> 
-                                              <p><a  href={"https://bscscan.com/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}
-                                              </a>
-                                              &nbsp; 
-                                              {
-                                                contract_copy_status == 'BNB'?
-                                                <span>Copied</span>
-                                                :
-                                                <img onClick={()=> copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
-                                              }
+                                          data.contract_addresses[0].network_type === "1"
+                                          ?
+                                          <>  
+                                          {/* src="/assets/img/copy.png" */}
+                                          <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
+                                            <span >
+                                              <img  className="token_dropdown_img" src="/assets/img/ETH.svg"></img>
+                                              Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
+                                            </span>
+                                          </a>&nbsp;
+                                          {
+                                            contract_copy_status == 'ETH' ? 
+                                            <span>Copied</span>
+                                            :
+                                            <img  onClick={()=> {copyContract(data.contract_addresses[0].contract_address, 'ETH')}} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          }
+                                          
+                                          <img src="/assets/img/down-arrow.png" ref={contractRef}  onClick={()=> setOtherContract(!otherContract)} className="dropdown_arrow_img" />
+                                          {
+                                            otherContract
+                                            ?
+                                            <div className="dropdown_block"> 
+                                              <div className="media">
+                                                <img src="/assets/img/binance.svg" alt="Binance" className="token_dropdown_img" />
+                                                <div className="media-body">
+                                                  <p className="wallets__info">Binance smart chain</p> 
+                                                  <p><a  href={"https://bscscan.com/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}
+                                                  </a>
+                                                  &nbsp; 
+                                                  {
+                                                    contract_copy_status == 'BNB'?
+                                                    <span>Copied</span>
+                                                    :
+                                                    <img onClick={()=> copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                  }
+                                                  </p>
+                                                </div>
+                                              </div>
+                                              </div>
+                                            :
+                                            null 
+                                          }
+                                          </> 
+                                          :  
+                                          data.contract_addresses[0].network_type === "2"
+                                          ?
+                                          <> 
+                                          <a href={"https://bscscan.com/token/"+data.contract_addresses[1].contract_address} target="_blank">
+                                            <span >Binance smart chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
+                                            </span>
+                                          </a>
+                                          <span id="copyTooltip">
+                                          <img onClick={()=> copyContract(data.contract_addresses[0].contract_address)} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" /> 
+                                          </span>
+                                          <img  ref={contractRef} onClick={()=> setOtherContract(!otherContract)} src="/assets/img/down-arrow.png" className="dropdown_arrow_img" />
+                                          {
+                                            otherContract
+                                            ?
+                                            <div className="dropdown_block">
+                                              <p>Ethereum</p> 
+                                              <p>
+                                                <a  href={"https://etherscan.io/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}</a> 
+                                                <span id="copyTooltip">
+                                                <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address)} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                </span>
                                               </p>
                                             </div>
-                                          </div>
-                                           </div>
+                                            :
+                                            null
+                                          }
+                                          </> 
+                                          :
+                                          null
                                         :
-                                        null 
-                                      }
-                                      </> 
-                                      :  
-                                      data.contract_addresses[0].network_type === "2"
-                                      ?
-                                      <> 
-                                      <a href={"https://bscscan.com/token/"+data.contract_addresses[1].contract_address} target="_blank">
-                                        <span >Binance smart chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
+                                        data.contract_addresses[0].network_type === "1"
+                                        ? 
+                                        <span  onClick={()=> setOtherContract(!otherContract)}>
+                                          <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
+                                            Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
+                                          </a> 
+                                          <span id="copyTooltip">
+                                          <img onClick={()=> copyContract(data.contract_addresses[0].contract_address)} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          </span>
                                         </span>
-                                      </a>
-                                      <span id="copyTooltip">
-                                      <img onClick={()=> copyContract(data.contract_addresses[0].contract_address)} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" /> 
-                                      </span>
-                                      <img  ref={contractRef} onClick={()=> setOtherContract(!otherContract)} src="/assets/img/down-arrow.png" className="dropdown_arrow_img" />
-                                      {
-                                        otherContract
-                                        ?
-                                        <div className="dropdown_block">
-                                          <p>Ethereum</p> 
-                                          <p>
-                                            <a  href={"https://etherscan.io/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}</a> 
-                                            <span id="copyTooltip">
-                                            <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address)} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
-                                            </span>
-                                          </p>
-                                        </div>
-                                        :
-                                        null
-                                      }
-                                      </> 
-                                      :
-                                      null
-                                    :
-                                    data.contract_addresses[0].network_type === "1"
-                                    ? 
-                                    <span  onClick={()=> setOtherContract(!otherContract)}>
-                                      <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
-                                        Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
-                                      </a> 
-                                      <span id="copyTooltip">
-                                      <img onClick={()=> copyContract(data.contract_addresses[0].contract_address)} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
-                                      </span>
+                                        : 
+                                        <span  onClick={()=> setOtherContract(!otherContract)}>
+                                          <a href={"https://bscscan.com/token/"+data.contract_addresses[0].contract_address} target="_blank">Binance Smart Chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
+                                          </a> 
+                                          <span id="copyTooltip">
+                                          <img onClick={()=> copyContract(data.contract_addresses[0].contract_address)} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          </span>
+                                        </span>
+                                        
+                                      } 
                                     </span>
-                                    : 
-                                    <span  onClick={()=> setOtherContract(!otherContract)}>
-                                      <a href={"https://bscscan.com/token/"+data.contract_addresses[0].contract_address} target="_blank">Binance smart chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
-                                      </a> 
-                                      <span id="copyTooltip">
-                                      <img onClick={()=> copyContract(data.contract_addresses[0].contract_address)} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
-                                      </span>
-                                    </span>
-                                    
-                                  } 
-                                </span>
-                              </div>
+                                  </div>
+                                </div>
+                                :
+                                null
+                              } 
                             </div>
-                            :
-                            null
+                            
+                          </div>
 
-                          } 
+                          
 
                         </div>
 
@@ -2540,7 +2668,7 @@ const connectToEthWallet=()=>
                                 <thead>
                                   <tr>
                                       <th>Exchange</th>
-                                      <th>Trades Count</th>
+                                      <th className="market_trades_count">Trades Count</th>
                                       <th>Takers</th>
                                       <th>Makers</th>
                                       <th>Amount</th>
@@ -2594,7 +2722,7 @@ const connectToEthWallet=()=>
                                    
                                     <th>Traded</th>
                                     <th>Time</th>
-                                    <th>Token Price</th>
+                                    <th className="market_trades_count">Token Price</th>
                                     <th>Value</th>
                                     <th>DEX</th>
                                   </tr>
@@ -2758,13 +2886,29 @@ const connectToEthWallet=()=>
             </div>
           </div> 
 
-          <div className={"modal connect_wallet_error_block"+ (handleModalMainNetworks ? " collapse show" : "")}>
+          <div className={"modal connect_wallet_error_block"+ (handleModalConnections ? " collapse show" : "")}> 
             <div className="modal-dialog modal-sm">
               <div className="modal-content">
                 <div className="modal-body">
-                  <button type="button" className="close" data-dismiss="modal" onClick={()=>handleModalMainNetwork()}>&times;</button>
-                  <h4>Connection Error</h4>
-                  <p>You are connected to an unsupported network.</p>
+                    <button type="button" className="close" data-dismiss="modal"  onClick={()=>handleModalConnection()}>&times;</button>
+                    <h4>Connection Error</h4>
+                    <p>Please connect to wallet.</p>
+                  </div>
+                </div> 
+            </div>
+          </div> 
+
+          <div className={"modal connect_wallet_error_block"+ (handleModalVote ? " collapse show" : "")}>
+            <div className="modal-dialog modal-sm">
+              <div className="modal-content">
+                <div className="modal-body">
+                  <button type="button" className="close" data-dismiss="modal" onClick={()=>ModalVote()}>&times;</button>
+                  
+                  <h4> Do you want to support this token ? </h4>
+                  <div className="vote_yes_no">
+                    {/* className={voting_status == 1 ? "vote_yes" : "vote_no"} */}
+                    <button  onClick={()=>vote()}>Yes</button>  <button onClick={()=>ModalVote()}>No</button>
+                  </div>
                 </div>
               </div> 
             </div>
@@ -2787,18 +2931,28 @@ const connectToEthWallet=()=>
 }
 
 
-export async function getServerSideProps({ query }) 
+export async function getServerSideProps({ query, req}) 
 { 
   const token_id = query.token_id
-
+  const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
+  var reqConfig = config 
+  if(userAgent.user_token)
+  {
+    reqConfig = {
+      headers : {
+        "token": userAgent.user_token,
+        "X-API-KEY": "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS"
+      }
+    } 
+  } 
   const paymentQuery = await fetch(API_BASE_URL+"listing_tokens/payment_types", config)
   const paymentQueryRun = await paymentQuery.json() 
 
-  const tokenQuery = await fetch(API_BASE_URL+"listing_tokens/individual_details/"+token_id, config)
+  const tokenQuery = await fetch(API_BASE_URL+"listing_tokens/individual_details/"+token_id, reqConfig)
   const tokenQueryRun = await tokenQuery.json() 
   if(tokenQueryRun.status)
   {
-    return { props: {data: tokenQueryRun.message, paymentTypes:paymentQueryRun.message, errorCode:false}}
+    return { props: {data: tokenQueryRun.message, paymentTypes:paymentQueryRun.message, errorCode:false, userAgent:userAgent, reqConfig}}
   }
   else
   {

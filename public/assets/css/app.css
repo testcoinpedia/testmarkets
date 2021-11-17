@@ -3530,7 +3530,7 @@ body.dark .slider__close .icon {
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   justify-content: space-between;
-  padding: 24px 15px 0;
+  padding: 24px 15px 10px;
   border-bottom: 0px solid #e4e4e4;
 }
 
@@ -6701,6 +6701,10 @@ body.dark .popup .mfp-close {
   border-right: 0px;
 }
 
+.contract_address .wallets__info {
+  margin-bottom: 7px;
+}
+
 .market_details_block .wallets__inner {
   margin: 10px 0px 5px;
 }
@@ -7309,8 +7313,7 @@ body.dark .operations__text strong {
   padding: 10px 25px 8px;
   border-radius: 3px;
   background: #fff;
-  -webkit-box-shadow: 0 5px 15px #d9d3ff;
-  box-shadow: 0 5px 15px #d9d3ff;
+  border: 1px solid #fff;
   text-align: center;
   font-size: 14px;
   line-height: 1.25;
@@ -9286,7 +9289,7 @@ a:hover {
 }
 
 .transaction_table_block {
-  border-radius: 10px;
+  border-radius: 5px;
   margin-bottom: 50px;
   padding-bottom: 25px;
   margin-top: 25px;
@@ -9444,7 +9447,7 @@ a:hover {
   background: #fff;
   font-size: 16px;
   min-width: 80px;
-  padding-top: 0 !important;
+  /* padding-top: 0 !important; */
 }
 
 .completed_events .title_block h2 {
@@ -9490,6 +9493,8 @@ a:hover {
 
 .market_details_share_wishlist {
   text-align: right;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .market_details_share_wishlist li {
@@ -9530,7 +9535,7 @@ a:hover {
   color: #1a253e;
   border: 1px solid #3a325b;
   padding: 6px 15px;
-  border-radius: 5px;
+  border-radius: 3px;
   font-weight: 600;
   font-size: 14px;
   margin: 0 0 0 15px;
@@ -9771,28 +9776,30 @@ a:hover {
   color: #7769c9;
 }
 
-.new_markets_index thead {
+/* .new_markets_index thead {
   background: #dcdbe1;
-}
+} */
 
 .new_markets_index thead th {
-  text-transform: uppercase;
-  padding: 21px 33px !important;
+  min-width: 100px;
+  /* text-transform: uppercase;
+  padding: 10px 15px !important;
   color: #251c49 !important;
   border-bottom: 2px solid #c7c6cb !important;
-  text-align: left;
+  text-align: left; */
 }
 .new_markets_index table thead th:first-child {
-  border-radius: 3px 0px 0px 3px;
+  border-radius: 5px 0px 0px 0px;
+  min-width: 165px;
 }
 
 table thead th {
-  padding: 15px !important;
+  padding: 5px 10px !important;
   background: #e5e4ec;
 }
 
 .new_markets_index thead th:last-child {
-  border-radius: 0px 3px 3px 0;
+  border-radius: 0 5px 0 0;
 }
 .new_markets_index table tbody tr:last-child {
   border-bottom: unset !important;
@@ -9804,18 +9811,18 @@ table thead th {
 .new_markets_index table tbody tr td {
   vertical-align: middle;
   text-align: left;
-  padding: 12px 35px;
+  padding: 12px 15px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
   color: #3f375f;
 }
 
 thead th:first-child {
-  border-radius: 8px 0px 0px 8px;
+  border-radius: 0;
 }
 
 thead th:last-child {
-  border-radius: 0px 8px 8px 0;
+  border-radius: 0;
 }
 
 tbody td {
@@ -9950,7 +9957,7 @@ tbody td {
 
 .market_details_block .widgets__item {
   margin-bottom: 15px;
-  padding-bottom: 10px;
+  padding-bottom: 0px;
   border-radius: 7px;
 }
 
@@ -9969,8 +9976,13 @@ tbody td {
   font-size: 13px;
   font-weight: 400;
   font-size: 14px;
-  margin-top: 5px !important;
+  margin-top: 0px !important;
   color: #888;
+}
+
+.dropdown_block .token_dropdown_img {
+  width: 26px;
+  margin-top: 0;
 }
 
 .market_details_block .widgets__line {
@@ -10020,7 +10032,7 @@ tbody td {
 }
 
 .exchange_transactions .table td {
-  padding: 10px 17px;
+  padding: 10px;
 }
 .modal {
   background: rgb(0 0 0 / 68%);
@@ -10062,8 +10074,10 @@ tbody td {
 }
 
 .coin_cat_img {
-  width: 16px;
-  margin-right: 6px;
+  width: 15px;
+  margin-right: 7px;
+  position: relative;
+  top: -1px;
 }
 .contract_block .contract_list {
   padding: 5px 8px;
@@ -10285,7 +10299,7 @@ tbody td {
 }
 
 .market_insights p {
-  color: #848484;
+  color: #333;
   font-weight: 400;
   font-size: 15px;
   margin-top: 4px;
@@ -10369,8 +10383,8 @@ tbody td {
 }
 
 .widgets__logo {
-  width: 55px;
-  height: 55px;
+  width: 70px;
+  height: 70px;
 }
 
 .widgets__category {
@@ -10387,11 +10401,13 @@ tbody td {
 }
 
 .market_details_block .widgets__info {
-  font-weight: 600;
   color: #251c49;
   text-transform: capitalize;
   font-size: 20px;
   font-weight: 600;
+  line-height: 1;
+  margin-bottom: 3px;
+  margin-top: 2px;
 }
 
 .navbar-toggler {
@@ -10419,6 +10435,27 @@ tbody td {
 
 .markets_list_quick_links {
   text-align: left;
+  overflow-x: scroll;
+}
+
+.markets_list_quick_links::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+/* Track */
+.markets_list_quick_links::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+.markets_list_quick_links::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+.markets_list_quick_links::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .categories__container .markets_list_quick_links:first-child .categories__item {
@@ -10529,8 +10566,8 @@ a:not([href]):not([class]):hover {
 
 .active_category {
   box-shadow: none;
-  background: #4a3b88;
-  color: #fff;
+  background: #fff;
+  border: 1px solid #251c49;
 }
 
 .navbar-expand-lg .navbar-nav .nav-link {
@@ -11727,7 +11764,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .launchpad_table_overview thead th {
-  padding: 10px 0px !important;
+  padding: 10px !important;
   background: transparent;
   color: #251c47;
   font-size: 16px;
@@ -11913,6 +11950,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* .......create token page css code ends here.......... */
 
 /* .....market details page code stars here........ */
+.market_trades_count {
+  min-width: 118px;
+}
+.market_details_community .social_icons img {
+  width: 14px;
+  margin-right: 10px;
+}
 .company_overview {
   margin-bottom: 14px;
   font-size: 18px;
@@ -11997,7 +12041,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .market_growth img {
   position: relative;
   top: -1px;
-  margin-right: 8px;
+  margin-right: 4px;
 }
 .market_up {
   background: #58bd7d;
@@ -12076,7 +12120,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border-right: 1px solid #eee;
   padding: 2px 10px 2px;
   min-width: 175px;
-  min-height: 88px;
+  min-height: 60px;
 }
 
 .overview_ul li:first-child {
@@ -12094,14 +12138,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .token_dropdown_img {
-  width: 15px;
+  width: 17px;
   margin-right: 12px;
+  margin-top: -5px;
 }
 
 .progress_bar_status {
   color: #888;
   font-size: 12px;
   text-align: center;
+}
+
+.market_vote {
+  background: #251c49;
+  color: #fff;
+  padding: 7px 20px;
+  margin: 0px 0 0 5px;
+  border-radius: 3px;
+  box-shadow: 0 0 15px #ccc;
 }
 
 /* .....market details page code ends here........ */
@@ -12185,6 +12239,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   min-height: 70vh;
 }
 
+.markets_list_quick_links ul {
+  border-bottom: 0;
+  overflow: scroll;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+  padding-bottom: 5px;
+}
+
+.markets_list_quick_links ul li {
+  display: inline-block;
+}
+
 @media (min-width: 1300px) {
   .container,
   .container-lg,
@@ -12255,7 +12322,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .table_live_price {
-  min-width: 134px;
+  min-width: 134px !important;
 }
 
 .table_price_change {
@@ -12303,15 +12370,26 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .ongoing_date {
-  min-width: 102px;
+  min-width: 102px !important;
 }
 
 .table_ended_fields {
-  min-width: 137px;
+  min-width: 137px !important;
 }
 
 .table_launchpad_date {
   min-width: 97px;
+}
+
+.table_total_supply {
+  min-width: 154px !important;
+}
+
+.table_completed_date {
+  min-width: 145px !important;
+}
+.table_pre_sale {
+  min-width: 152px !important;
 }
 
 /* ...new index page code ends here.......... */
@@ -12514,7 +12592,40 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-top: 0;
   z-index: 999999;
 }
+
+.top_menu_skin {
+  padding: 3px 10px 35px 10px;
+  width: 43px;
+  height: 33px;
+  border-radius: 8px;
+  position: relative;
+  top: -5px;
+}
+
+.sun {
+  background: #3a325b;
+}
+.moon {
+  background: #18191c;
+}
+.top_menu_skin img {
+  width: 100% !important;
+  margin: 0px !important;
+  position: relative;
+  top: 3px !important;
+}
+
 /* top menu css code ends here */
+
+/* ....error page css starts here...... */
+.error_img_block {
+  width: 455px;
+  margin: auto;
+}
+.error_img_block img {
+  width: 100%;
+}
+/* ....error page css ends here...... */
 
 .token-list-tbl td {
   font-size: 14px;
@@ -12540,10 +12651,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .copy-contract-img {
   margin-left: 20px;
-  width: 15px;
+  width: 12px;
   position: relative;
-  top: -1px;
-  height: 15px;
+  top: -2px;
 }
 
 .token-contract-details {
@@ -13589,6 +13699,84 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 /* ...theme css ends here... */
 
+.markets_list_quick_links .categories__item {
+  font-weight: 500;
+}
+
+.market_list_price .vote_value {
+  background: #ffeaaf;
+  padding: 4px 15px;
+  font-weight: 700;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.market_list_price .block_price {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.market_list_price span button {
+  background: #251c49;
+  padding: 3px 15px;
+  color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 15px #aaa;
+}
+
+.display_vote_share {
+  text-align: right;
+}
+
+.votes_market .total_votes {
+  font-size: 14px;
+}
+
+.vote_section {
+  display: inline-block;
+}
+
+.vote_section li {
+  display: inline-block;
+}
+
+.table-responsive {
+  border-radius: 5px;
+}
+
+.widgets__details {
+  margin-top: 10px;
+}
+
+.vote_yes_no {
+  margin: 15px 0 0;
+}
+
+.vote_yes_no button {
+  border: 1px solid #ccc;
+  padding: 3px 15px;
+  margin: 0 15px;
+  border-radius: 3px;
+}
+
+.vote_yes_no .vote_yes {
+  background: green;
+  padding: 3px 15px;
+  margin: 0 15px;
+  border-radius: 3px;
+  color: #fff;
+  border: 1px solid;
+}
+
+.vote_yes_no .vote_no {
+  background: red;
+  padding: 3px 15px;
+  margin: 0 15px;
+  border-radius: 3px;
+  color: #fff;
+  border: 1px solid;
+}
+
 @media (min-width: 992px) {
   .mobile_view_crypto {
     display: none;
@@ -13613,6 +13801,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media (max-width: 1200px) {
+  .dark_theme_toggle {
+    width: 30px;
+    margin-right: 10px;
+  }
+  .top_menu_skin {
+    padding: 3px 8px 35px 10px;
+    width: 32px;
+  }
+  .header_button {
+    padding: 8px 12px 7px;
+  }
+  .notification_bell img {
+    width: 15px !important;
+  }
   #footer #site-info .social-icons {
     float: right;
     width: 100%;
@@ -13629,6 +13831,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media (max-width: 768px) {
+  
+  .markets_list_quick_links ul {
+    width: 415px; 
+    overflow: scroll;
+  }
+
   #site-info {
     padding: 23px 0 90px;
     text-align: center;
@@ -13657,9 +13865,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   #footer .aboutme-widget-content {
     text-align: left;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     line-height: 1.5;
     font-size: 14px;
+  }
+
+  .market_vote {
+    padding: 2px 9px;
+    margin: 5px 0 0 5px;
+    border-radius: 3px;
+  }
+
+  .new_markets_index table tbody tr td {
+    padding: 4px 10px 0;
   }
 }
 
@@ -14740,6 +14958,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media only screen and (max-width: 767px) {
+  .dark_theme .error_page h3 {
+    font-size: 18px;
+  }
+  .connect_wallet_error_block .modal-body h4 {
+    font-size: 16px;
+  }
+  .error_page p {
+    font-size: 16px;
+    line-height: 1;
+    margin-top: 5px;
+  }
+  .error_img_block {
+    padding: 9px 0px;
+    width: 248px;
+  }
   #footer .twitter_side .media p {
     line-height: 1.5;
   }
@@ -14756,9 +14989,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .market_growth {
-    padding: 3px 4px;
-    margin-left: 15px;
-    font-size: 11px;
+    padding: 4px 8px 2px;
+    margin-left: 10px;
+    font-size: 10px;
+    margin-top: 5px;
   }
 
   .token-contract-details a {
@@ -14766,14 +15000,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .widgets__logo {
-    width: 45px;
-    height: 45px;
+    width: 56px;
+    height: 56px;
+    margin-top: 6px;
   }
 
   .overview_ul li {
     min-width: 47%;
     border-right: 0;
-    padding: 0 15px 15px 0 !important;
+    padding: 0 5px 5px 0 !important;
     min-height: auto;
   }
 
@@ -14902,9 +15137,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .for_padding {
     padding: 0px;
   }
-  .new_markets_index thead th {
-    padding: 12px 33px !important;
-  }
+
   .table_status {
     min-width: 64px !important;
     padding: 3px 6px;
@@ -14943,12 +15176,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 13px 0px;
   }
   .market_insights h1 {
-    font-size: 24px;
+    font-size: 16px;
   }
   .market_insights p {
     line-height: 1.3;
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: 13px;
   }
   .page_title span {
     display: none;
@@ -14992,6 +15225,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   .widgets__price {
     font-size: 22px;
+    margin: 0px 0px 10px;
   }
 
   .airdrop_single_page .promotion__text h1 {
@@ -15019,17 +15253,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .market_details_block .wallets__info {
-    font-size: 12px;
+    font-size: 11px;
     margin-bottom: 0;
   }
 
   .wallets__inner .wallets__number {
-    font-size: 13px;
+    font-size: 11px;
   }
 
   .coin_main_links .links_direct {
-    padding: 4px 6px 3px !important;
-    font-size: 9px;
+    padding: 4px 6px 4px !important;
+    font-size: 10px;
     text-align: center;
   }
 
@@ -15181,11 +15415,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   thead th:first-child {
-    border-radius: 5px 0px 0px 5px;
+    border-radius: 0px;
   }
 
   thead th:last-child {
-    border-radius: 0px 5px 5px 0px;
+    border-radius: 0;
   }
 
   .sidebar_wallet h6 {
@@ -15211,8 +15445,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 14px;
   }
 
+  .widgets__head .widgets__details {
+    margin-top: 15px;
+  }
+
   .market_details_block .widgets__info {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .error_page .wrapper {
@@ -15245,7 +15483,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .market_page_data tr .media h4 {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .market_page_data tr .media p {
@@ -15270,6 +15508,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     left: 0;
     z-index: 100;
     background: #f5f4fb;
+    border-right: 1px solid #e5e4ec;
   }
 
   .market_page_data thead th:first-child {
@@ -15286,7 +15525,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .market-details-custom-search-block {
     right: 15px;
     min-width: 300px;
-    top: 20px;
   }
 
   .header_quick_links {
@@ -15469,9 +15707,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .share_market_detail_page {
-    padding: 3px 6px;
-    border-radius: 5px;
+    padding: 3px 8px;
+    border-radius: 3px;
     font-size: 12px;
+    margin: 0 -1px 0 0;
+    width: 50px;
   }
 
   .market_details_share_wishlist li {
@@ -16358,9 +16598,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .mobile-text-right {
     text-align: right !important;
   }
+
+  .votes_market {
+    font-size: 11px;
+  }
+
+  .votes_market .total_votes {
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 576px) {
+  .dcma_protected {
+    margin: 19px 0px 16px 0px;
+    text-align: center;
+  }
+  .market_details_community .social_icons img {
+    width: 12px;
+  }
   #footer {
     padding: 15px 0 0px;
   }

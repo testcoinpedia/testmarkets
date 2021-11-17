@@ -114,11 +114,11 @@ export default function OngoingLaunchPad({userAgent}) {
                             <th className="table_ended_fields">Network</th>
                             <th className="table_ended_fields">Token Sold</th>
                             <th className="table_live_price">Total Supply</th>
-                            <th className="table_ended_fields">% of total supply</th>
+                            <th className="table_total_supply">% of total supply</th>
                             <th className="">Type</th>
                             {/* <th className="">Holders</th>
                             <th className="">Trading On</th> */}
-                            <th className="table_ended_fields">Completed Date</th>
+                            <th className="table_completed_date">Completed Date</th>
                         </tr>
                         </thead> 
                         
