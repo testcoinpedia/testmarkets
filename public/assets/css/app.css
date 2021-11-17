@@ -10249,6 +10249,45 @@ tbody td {
   margin-bottom: 5px;
 }
 
+
+
+
+#market_share_page1 .modal-title {
+  float: left;
+  font-size: 16px;
+}
+
+#market_share_page1 .input-group {
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+
+#market_share_page1 .input-group input {
+  border: 0;
+  font-size: 12px;
+  box-shadow: none;
+}
+
+#market_share_page1 .input-group-text {
+  background: transparent;
+  border-radius: 0;
+  border: 0;
+}
+
+#market_share_page1 .share_social {
+  text-align: center;
+}
+
+#market_share_page1 .share_social img {
+  width: 35px;
+  margin: 10px;
+}
+
+#market_share_page1 h6 {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
 .search_filter {
   background: #fff;
   border-radius: 3px;
@@ -13728,6 +13767,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   text-align: right;
 }
 
+.votes_market {
+  color: green;
+}
+
 .votes_market .total_votes {
   font-size: 14px;
 }
@@ -13792,9 +13835,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media (min-width: 768px) {
-  /* .mobile_view_crypto {
+  .mobile_view {
     display: none;
-  } */
+  } 
   .sticky_footer_menu {
     display: none;
   }
@@ -13832,6 +13875,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 @media (max-width: 768px) {
   
+  .desktop_view {
+    display: none;
+  }
+
+  .mobile_view {
+    margin-top: 15px
+  } 
+
   .markets_list_quick_links ul {
     width: 415px; 
     overflow: scroll;

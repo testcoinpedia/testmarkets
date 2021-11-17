@@ -1962,7 +1962,25 @@ const connectToEthWallet=()=>
                                     
                                   </div>
                                   <div className="col-lg-5 col-sm-6 col-4 display_vote_share">
-                                    <ul className="market_details_share_wishlist">
+                                    <ul className="vote_section">
+                                      <li>
+                                        
+                                      </li>
+                                      <li>
+                                        {
+                                          user_token ?
+                                            voting_status === false ?
+                                            <button className="market_vote" onClick={()=>ModalVote()} >Vote</button>
+                                            :
+                                            <button className="market_vote" >Voted</button>
+                                          :
+                                          <Link href={app_coinpedia_url+"login"}><button className="market_vote">Vote</button></Link>
+                                        }
+                                        <p className="votes_market"><span className="votes">Votes: <span className="total_votes">{votes}</span></span></p>
+                                      </li>
+                                    </ul>
+
+                                    <ul className="market_details_share_wishlist desktop_view">
                                       <li>
                                         {/* <div className="share_market_detail_page" data-toggle="modal" data-target="#market_share_page"><img src="/assets/img/share-icon.png"  width="100%" height="100%" /> Share</div> */}
                                         <div className="share_market_detail_page" data-toggle="modal" data-target="#market_share_page">Share</div>
@@ -2007,23 +2025,7 @@ const connectToEthWallet=()=>
                                       </div>
                                     </ul>
 
-                                    <ul className="vote_section">
-                                      <li>
-                                        
-                                      </li>
-                                      <li>
-                                        {
-                                          user_token ?
-                                            voting_status === false ?
-                                            <button className="market_vote" onClick={()=>ModalVote()} >Vote</button>
-                                            :
-                                            <button className="market_vote" >Voted</button>
-                                          :
-                                          <Link href={app_coinpedia_url+"login"}><button className="market_vote">Vote</button></Link>
-                                        }
-                                        <p className="votes_market"><span className="votes">Votes: <span className="total_votes">{votes}</span></span></p>
-                                      </li>
-                                    </ul>
+                                    
                                   </div>
                                 </div>
                               </div>
@@ -2380,7 +2382,7 @@ const connectToEthWallet=()=>
                           </div>
 
                           <div className="row">
-                            <div className="col-md-12 col-12">
+                            <div className="col-md-12 col-8">
                               { 
                                 data.contract_addresses.length > 0
                                 ?
@@ -2491,6 +2493,53 @@ const connectToEthWallet=()=>
                                 :
                                 null
                               } 
+                            </div>
+
+                            <div class="col-4 text-right">
+                              <ul className="market_details_share_wishlist mobile_view">
+                                <li>
+                                  {/* <div className="share_market_detail_page" data-toggle="modal" data-target="#market_share_page"><img src="/assets/img/share-icon.png"  width="100%" height="100%" /> Share</div> */}
+                                  <div className="share_market_detail_page" data-toggle="modal" data-target="#market_share_page1">Share</div>
+                                </li>
+                                {/* <li>
+                                  <div className="wishlist_market_detail_page">
+                                    <div className="star-img"><img src="/assets/img/star.png" width="100%" height="100%" />
+                                    </div>
+                                  </div>
+                                </li> */}
+                                <div className="modal" id="market_share_page1">
+                                  <div className="modal-dialog">
+                                    <div className="modal-content">
+                                      <div className="modal-header">
+                                        <h4 className="modal-title">Share</h4>
+                                        <button type="button" className="close" data-dismiss="modal">×</button>
+                                      </div>
+                                      <div className="modal-body">
+                                        <div className="row">
+                                          <div className="col-md-1" />
+                                          <div className="col-md-10">
+                                            <div className="input-group">
+                                              <input type="text" id="referral-link" className="form-control" defaultValue={website_url+data.token_id} readOnly />
+                                              <div className="input-group-prepend">
+                                                <span className="input-group-text" id="myTooltip" onClick={()=>myReferrlaLink()}>
+                                                  <img src="/assets/img/copy-file.png" className="copy_link" width="100%" height="100%" />
+                                                </span>
+                                              </div>
+                                            </div>
+                                            <h6>Share with </h6>
+                                            <p className="share_social">
+                                              <a href={"https://www.facebook.com/sharer/sharer.php?u="+website_url+data.token_id} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
+                                              <a href={"https://www.linkedin.com/shareArticle?mini=true&url="+website_url+data.token_id} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
+                                              <a href={"http://twitter.com/share?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
+                                              <a href={"https://wa.me/?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </ul>
                             </div>
                             
                           </div>
