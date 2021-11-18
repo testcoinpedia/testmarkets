@@ -312,6 +312,7 @@
 }
 .dark_theme .search_filter .input-group-prepend .input-group-text {
   background: #323232;
+  color: #fff;
 }
 
 .dark_theme .search_filter select option {
@@ -321,10 +322,12 @@
 
 .dark_theme .search_filter {
   background: #323232;
+  color: #fff;
 }
 
 .dark_theme .search_filter input {
   background: #323232;
+  color: #fff;
 }
 
 .dark_theme .search_filter input::placeholder {
@@ -453,4 +456,132 @@
 
 .dark_theme .circulating_progress .progress {
   background-color: #323232;
+}
+.dark_theme .market_vote {
+  background: #18191c;
+  box-shadow: 0 0 0px;
+}
+.dark_theme .votes_market {
+  color: #fff;
+}
+
+.dark_theme .exchange_transactions table thead th:first-child {
+  background: #18191c;
+  color: #fff;
+}
+
+.dark_theme .exchange_transactions table tbody td:first-child {
+  background: #18191c;
+  color: #fff;
+}
+.dark_theme .exchange_transactions table thead th {
+  background: #323232;
+  color: #fff;
+}
+
+.dark_theme .exchange_transactions table tbody td {
+  color: #fff;
+}
+
+.dark_theme .pager__list.pagination_element ul li a {
+  background: #323232 !important;
+  color: #fff;
+}
+.dark_theme .pager__list.pagination_element ul li.active a {
+  background: #18191c !important;
+  color: #fff !important;
+}
+.dark_theme .company_profile_tabs li:last-child {
+  border-right: 0px;
+}
+
+.dark_theme .categories__item {
+  border: 1px solid #323232;
+}
+
+.dark_theme .market_list_price .vote_value {
+  color: #fff;
+  background: #323232;
+}
+.dark_theme .market_list_price span button {
+  background: #323232;
+  box-shadow: 0 0 0px;
+}
+.dark_theme .active_category {
+  border: 0px;
+}
+.dark_theme .companies_found {
+  color: #fff;
+}
+
+.dark_theme .token-contract-details {
+  background: #323232;
+  color: #fff;
+}
+
+.dark_theme .market_page_data tr td:first-child {
+  background: #18191c;
+  border-right: 0px;
+}
+
+.dark_theme .market_page_data thead th:first-child {
+  background: #18191c;
+}
+
+.dark_theme .page_range {
+  color: #fff;
+}
+
+.dark_theme .token_content h2 {
+  color: #fff;
+}
+
+.dark_theme .token_content P {
+  color: #fff;
+}
+.dark_theme .usd_search_toggle {
+  color: #fff;
+}
+.dark_theme .bsc_search_toggle {
+  color: #fff;
+}
+.dark_theme .token_detail_ext_links .react-switch .react-switch-bg {
+  background: #323232 !important;
+}
+.dark_theme .token_detail_ext_links .react-switch .react-switch-handle {
+  background: #484848 !important;
+}
+.dark_theme .token_detail_ext_links li .bscscan_btn {
+  background: #18191c;
+  border: 1px solid #18191c;
+}
+.dark_theme .token_detail_ext_links li .select_market_type {
+  background: #18191c;
+  color: #fff;
+  border: 1px solid #18191c;
+}
+.dark_theme .price_change_tab h3 {
+  color: #fff;
+}
+
+.dark_theme .overview_ul li:last-child {
+  border-right: 0;
+}
+
+.dark_theme .modal-content {
+  background: #323232;
+  color: #fff;
+}
+.dark_theme .modal-header {
+  border-bottom: 1px solid #18191c;
+}
+
+.dark_theme .mobile_view_crypto {
+  border-top: 1px solid #323232;
+}
+
+@media (max-width: 768px) {
+  .dark_theme .overview_ul li {
+    border-right: 0px;
+  }
 }

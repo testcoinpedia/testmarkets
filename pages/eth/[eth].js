@@ -1478,7 +1478,7 @@ const CheckContractAddress =(address)=>{
                         </li> 
                         <li>
                           <label>
-                            <span>USD</span>
+                            <span className="usd_search_toggle">USD</span>
                             <Switch value={checked} onChange={()=>handleChange(!checked)} checked={checked} onColor="#86d3ff"
                               onHandleColor="#2693e6"
                               handleDiameter={30}
@@ -1490,7 +1490,7 @@ const CheckContractAddress =(address)=>{
                               width={48}
                               className="react-switch"
                               id="material-switch" />
-                            <span>ETH</span>
+                            <span className="usd_search_toggle">ETH</span>
                           </label>
                         </li>
                       </ul>
@@ -1526,12 +1526,12 @@ const CheckContractAddress =(address)=>{
                 <div className="col-md-12 market_details_block">
 
                 <div className="widgets__item">
-                    <div className="widgets__head">
+                    <div className="widgets__head no_pb_widget__head">
                       <div className="row">
                         <div className="col-md-6 col-6 col-xs-6">
                           <div className="widgets__company">
                             <div className="widgets__logo"><img src="/assets/img/ETH.svg" width="100%" height="100%" alt="logo" style={{borderRadius: 50}} /></div>
-                            <div className="widgets__details">
+                            <div className="">
                               <div className="widgets__category">{metadata.smartContract.currency.symbol.toUpperCase()}</div>
                               <div className="widgets__category widgets__category_token_name">{metadata.smartContract.currency.name}</div> 
                               
@@ -1608,7 +1608,7 @@ const CheckContractAddress =(address)=>{
                       </div>
                     </div> 
                     
-                    <div className="wallets__inner">
+                    <div className="wallets__inner wallet_bottom_space">
                       <ul className="overview_ul token_contract_details">
                         <li>
                           <div className="wallets__details">
@@ -1784,7 +1784,7 @@ const CheckContractAddress =(address)=>{
                                 <tr>
                                   <th>Traded</th>
                                   <th>Time</th>
-                                  <th>Token Price</th>
+                                  <th className="market_trades_count">Token Price</th>
                                   <th>Value</th>
                                   <th>DEX</th>
                                 </tr>

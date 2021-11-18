@@ -3533,6 +3533,9 @@ body.dark .slider__close .icon {
   padding: 24px 15px 10px;
   border-bottom: 0px solid #e4e4e4;
 }
+.no_pb_widget__head {
+  padding-bottom: 0px !important;
+}
 
 .widgets__company {
   display: -webkit-box;
@@ -9495,6 +9498,7 @@ a:hover {
   text-align: right;
   display: inline-block;
   vertical-align: top;
+  float: right;
 }
 
 .market_details_share_wishlist li {
@@ -10141,8 +10145,9 @@ tbody td {
 .token_detail_ext_links li .bscscan_btn {
   background: #3a325b;
   color: #fff;
-  padding: 10px 15px;
+  padding: 7px 15px;
   border-radius: 8px;
+  border: 1px solid #3a325b;
 }
 
 .token_detail_ext_links li .select_market_type {
@@ -10248,9 +10253,6 @@ tbody td {
   text-align: center;
   margin-bottom: 5px;
 }
-
-
-
 
 #market_share_page1 .modal-title {
   float: left;
@@ -11989,6 +11991,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* .......create token page css code ends here.......... */
 
 /* .....market details page code stars here........ */
+.wallet_bottom_space {
+  padding-bottom: 15px !important;
+}
 .market_trades_count {
   min-width: 118px;
 }
@@ -12113,6 +12118,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .company_profile_tabs li {
   border-right: 1px solid #251c49;
+}
+
+.company_profile_tabs li:last-child {
+  border-right: 0px;
 }
 
 .company_profile_tabs li:last-child {
@@ -13837,7 +13846,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 @media (min-width: 768px) {
   .mobile_view {
     display: none;
-  } 
+  }
   .sticky_footer_menu {
     display: none;
   }
@@ -13874,17 +13883,25 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media (max-width: 768px) {
-  
+  .widgets__logo {
+  }
+  .token_content h2 {
+    font-size: 16px;
+  }
+  .token_content P {
+    font-size: 14px;
+    line-height: 1.5;
+  }
   .desktop_view {
     display: none;
   }
 
   .mobile_view {
-    margin-top: 15px
-  } 
+    margin-top: 15px;
+  }
 
   .markets_list_quick_links ul {
-    width: 415px; 
+    width: 415px;
     overflow: scroll;
   }
 
@@ -13925,6 +13942,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 2px 9px;
     margin: 5px 0 0 5px;
     border-radius: 3px;
+    font-size: 12px;
   }
 
   .new_markets_index table tbody tr td {
@@ -14897,6 +14915,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media (max-width: 991px) {
+  .overview_ul li {
+    min-width: 132px;
+  }
   #footer .footer_logo {
     width: 200px;
   }
@@ -15051,9 +15072,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .widgets__logo {
-    width: 56px;
-    height: 56px;
-    margin-top: 6px;
+    width: 46px;
+    height: 46px;
   }
 
   .overview_ul li {
@@ -15239,6 +15259,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   .search_filter {
     height: 32px;
+    margin-bottom: 15px;
+    margin-top: 10px;
   }
   .search_filter input {
     height: 31px;
@@ -15276,7 +15298,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   .widgets__price {
     font-size: 22px;
-    margin: 0px 0px 10px;
+    margin: 5px 0px 10px;
   }
 
   .airdrop_single_page .promotion__text h1 {
@@ -15422,12 +15444,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .token_detail_ext_links li .bscscan_btn {
-    padding: 6px 15px;
+    padding: 4px 15px;
     border-radius: 6px;
+    font-size: 12px;
   }
 
   .token_detail_ext_links li .select_market_type {
-    padding: 6px 15px;
+    padding: 4px 15px;
+    font-size: 12px;
   }
 
   thead th {
@@ -15497,7 +15521,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .widgets__head .widgets__details {
-    margin-top: 15px;
+    margin-top: 10px;
   }
 
   .market_details_block .widgets__info {
@@ -16660,6 +16684,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media (max-width: 576px) {
+  .page_range {
+    line-height: 1;
+    font-size: 12px;
+  }
   .dcma_protected {
     margin: 19px 0px 16px 0px;
     text-align: center;
@@ -16709,17 +16737,46 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: none;
   }
 }
+
+@media (max-width: 410px) {
+  .copy-contract-img {
+    width: 12px;
+    margin-left: 10px;
+  }
+  .token-contract-details {
+    font-size: 10px;
+    padding: 4px;
+  }
+}
+
 @media (max-width: 380px) {
   .wallet-connect-btn .wallets__btn {
     font-size: 12px;
     height: 44px;
     padding: 0 8px;
   }
+  .token_share_block {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  .mobile_view {
+    margin-top: 6px;
+  }
+  .token_share_for_left {
+    text-align: unset !important;
+  }
 }
 
 @media (max-width: 350px) {
   .weekly_updates {
     display: none;
+  }
+}
+
+@media (max-width: 323px) {
+  .bsc_eth_toggle {
+    margin-top: 8px !important;
+    margin-bottom: 4px !important;
   }
 }
 

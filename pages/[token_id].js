@@ -27,18 +27,19 @@ let inputProps2 = {
 } 
 
 
-export default function LauchPadDetails({errorCode, data, paymentTypes, userAgent, reqConfig}) {   
+export default function LauchPadDetails({errorCode, data, token_id, paymentTypes, userAgent, reqConfig}) {   
 
     if(errorCode) {return <Error/> }
     const communityRef = useRef(null);
     const explorerRef = useRef(null);
     const contractRef = useRef(null);  
     const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")     
-    console.log(data)
+   
     const [user_token]= useState(userAgent.user_token)
     const [wallet_data, setWalletData] = useState([]); 
     const [perPage] = useState(10);
     const [walletspageCount, setWalletsPageCount] = useState(0) ; 
+    const [current_url]= useState(website_url+token_id)
     
     const [exchangelist, set_exchangelist]= useState([])
     const [exchangelistData, set_exchangelistdata]= useState([])
@@ -804,12 +805,14 @@ const getTokenUsdPrice=async(id, networks)=> {
           getTokendetails(id, result.data.ethereum.dexTrades[0].quote, networks)
           setLivePrice(result.data.ethereum.dexTrades[0].quote) 
           get24hChange(result.data.ethereum.dexTrades[0].quote, id, networks)
+         
         }
         else
         {
           getTokendetails(id, result.data.ethereum.dexTrades[0].quote, networks)
           setLivePrice(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) 
           get24hChange(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote , id, networks)  
+        
         }
         
       }  
@@ -1743,21 +1746,35 @@ const connectToEthWallet=()=>
     setHandleModalVote(!handleModalVote) 
   }
 
-  const vote = () =>
+  const vote = (param) =>
   {
     ModalVote()
-    Axios.get(API_BASE_URL+"listing_tokens/save_voting_details/"+data.token_id, reqConfig)
-    .then(res=>{ 
+    if(param == 1)
+    {
+      Axios.get(API_BASE_URL+"listing_tokens/save_voting_details/"+data.token_id, reqConfig)
+      .then(res=>{ 
       console.log(res)
       if(res.data.status === true) 
       {
         set_votes(votes+1)
         set_voting_status(true)
+        set_voting_message(res.data.message)
       }
     })
-
-    
-    
+    }
+    else
+    {
+      Axios.get(API_BASE_URL+"listing_tokens/remove_voting_details/"+data.token_id, reqConfig)
+      .then(res=>{ 
+      console.log(res)
+      if(res.data.status === true) 
+      {
+        set_votes(votes-1)
+        set_voting_status(false)
+        set_voting_message(res.data.message)
+      }
+    })
+    }
   }
 
   const handleModalMainNetwork=()=> 
@@ -1972,9 +1989,9 @@ const connectToEthWallet=()=>
                                             voting_status === false ?
                                             <button className="market_vote" onClick={()=>ModalVote()} >Vote</button>
                                             :
-                                            <button className="market_vote" >Voted</button>
+                                            <button className="market_vote" onClick={()=>ModalVote()} >Voted</button>
                                           :
-                                          <Link href={app_coinpedia_url+"login"}><button className="market_vote">Vote</button></Link>
+                                          <Link href={app_coinpedia_url+"login?ref="+current_url}><button className="market_vote">Vote</button></Link>
                                         }
                                         <p className="votes_market"><span className="votes">Votes: <span className="total_votes">{votes}</span></span></p>
                                       </li>
@@ -2382,7 +2399,7 @@ const connectToEthWallet=()=>
                           </div>
 
                           <div className="row">
-                            <div className="col-md-12 col-8">
+                            <div className="col-md-12 col-8 token_share_block">
                               { 
                                 data.contract_addresses.length > 0
                                 ?
@@ -2495,7 +2512,7 @@ const connectToEthWallet=()=>
                               } 
                             </div>
 
-                            <div class="col-4 text-right">
+                            <div class="col-4 text-right token_share_block token_share_for_left">
                               <ul className="market_details_share_wishlist mobile_view">
                                 <li>
                                   {/* <div className="share_market_detail_page" data-toggle="modal" data-target="#market_share_page"><img src="/assets/img/share-icon.png"  width="100%" height="100%" /> Share</div> */}
@@ -2952,11 +2969,28 @@ const connectToEthWallet=()=>
               <div className="modal-content">
                 <div className="modal-body">
                   <button type="button" className="close" data-dismiss="modal" onClick={()=>ModalVote()}>&times;</button>
+                  {
+                    voting_status == false ?
+                    <h4> Do you want to support this token ? </h4>
+                    :
+                    <h4> Do not support this token ? </h4>
+                  }
                   
-                  <h4> Do you want to support this token ? </h4>
                   <div className="vote_yes_no">
                     {/* className={voting_status == 1 ? "vote_yes" : "vote_no"} */}
-                    <button  onClick={()=>vote()}>Yes</button>  <button onClick={()=>ModalVote()}>No</button>
+                    {
+                      voting_status == false ?
+                      <>
+                      <button onClick={()=>vote(1)}>Confirm</button>  
+                      <button onClick={()=>ModalVote()}>Cancel</button>
+                      </>
+                      :
+                      <>
+                      <button onClick={()=>vote(0)}>Confirm</button>  
+                      <button onClick={()=>ModalVote()}>Cancel</button>
+                      </>
+                    }
+                    
                   </div>
                 </div>
               </div> 
@@ -3001,7 +3035,7 @@ export async function getServerSideProps({ query, req})
   const tokenQueryRun = await tokenQuery.json() 
   if(tokenQueryRun.status)
   {
-    return { props: {data: tokenQueryRun.message, paymentTypes:paymentQueryRun.message, errorCode:false, userAgent:userAgent, reqConfig}}
+    return { props: {data: tokenQueryRun.message, paymentTypes:paymentQueryRun.message, errorCode:false, token_id, userAgent:userAgent, reqConfig}}
   }
   else
   {

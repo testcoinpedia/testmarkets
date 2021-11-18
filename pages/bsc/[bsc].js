@@ -1467,9 +1467,9 @@ const connectToEthWallet=()=>
                         <option value={dxSale !== "Pancake" ? "PCSV1" : "PCSV2"}>{dxSale === "Pancake v2" ? "PCSV1" : "PCSV2"}</option> 
                       </select>
                     </li>
-                    <li>
+                    <li className="bsc_eth_toggle">
                       <label>
-                        <span>USD</span>
+                        <span className="usd_search_toggle">USD</span>
                         <Switch value={checked} onChange={()=>handleChange(!checked)} checked={checked} onColor="#86d3ff"
                           onHandleColor="#2693e6"
                           handleDiameter={30}
@@ -1481,7 +1481,7 @@ const connectToEthWallet=()=>
                           width={48}
                           className="react-switch"
                           id="material-switch" />
-                        <span>BNB</span>
+                        <span className="bsc_search_toggle">BNB</span>
                       </label>
                     </li>
                   </ul>
@@ -1517,19 +1517,19 @@ const connectToEthWallet=()=>
               <div className="row">
                 <div className="col-md-12 market_details_block">
                   <div className="widgets__item">
-                    <div className="widgets__head">
+                    <div className="widgets__head no_pb_widget__head">
                       <div className="row">
-                        <div className="col-md-6 col-6 col-xs-6">
+                        <div className="col-lg-7 col-sm-6 col-8">
                           <div className="widgets__company">
                             <div className="widgets__logo">
                               <img src="/assets/img/bnb-logo.png" width="100%" height="100%" alt="logo" style={{borderRadius: 50}} /></div>
-                              <div className="widgets__details">
+                              <div className="">
                                 <div className="widgets__category">{symbol ? symbol.toUpperCase() : "-"}</div> 
                                 <div className="widgets__category widgets__category_token_name">{metadata.smartContract.currency.name}</div> 
                               </div>
                             </div>
                           </div>
-                        <div className="col-md-6 col-6 col-xs-6">
+                        <div className="col-lg-5 col-sm-6 col-4">
                         <ul className="market_details_share_wishlist">
                             <li>
                               <div className="share_market_detail_page" data-toggle="modal" data-target="#market_share_page">
@@ -1603,7 +1603,7 @@ const connectToEthWallet=()=>
                       
                     </div> 
                     
-                    <div className="wallets__inner">
+                    <div className="wallets__inner wallet_bottom_space">
                       <ul className="overview_ul token_contract_details">
                         <li>
                           <div className="wallets__details">
@@ -1825,7 +1825,7 @@ const connectToEthWallet=()=>
                                 <tr>
                                   <th>Time</th>
                                   <th>Traded</th>
-                                  <th>Token Price</th>
+                                  <th className="market_trades_count">Token Price</th>
                                   <th>Value</th>
                                   <th>DEX</th>
                                 </tr>
