@@ -16,7 +16,7 @@ export default function Topmenu()
 
   const [login_dropdown, set_login_dropdown] = useState(0)
   const [live_prices_list, set_live_prices_list] = useState({});
-  const [dark_mode, set_dark_mode]=useState((JsCookie.get('dark_mode')) ? true:false) 
+  const [dark_mode, set_dark_mode]=useState(JsCookie.get('dark_mode')) 
 
   useEffect(()=>{
     getLivePricesList()
@@ -31,12 +31,16 @@ export default function Topmenu()
     {
       set_login_dropdown(1)
     }
-    if(JsCookie.get('dark_mode'))
+
+    if(JsCookie.get('dark_mode') === "dark")
     { 
-      set_dark_mode(JsCookie.get('dark_mode'))
       $("body").addClass("dark_theme")
     }
-  },[login_dropdown])
+    else
+    {
+      $("body").removeClass("dark_theme")
+    }
+  },[login_dropdown, JsCookie.get('dark_mode')])
 
   const customToggle=()=>{
     $(".main_menu_header").toggleClass("fixed_toggle_navbar");
@@ -63,16 +67,18 @@ export default function Topmenu()
     router.push(app_coinpedia_url+"login")
   }
    
-  const setDarkMode=(param)=>{
-    JsCookie.set("dark_mode", param, {domain:cookieDomainExtension})
-    set_dark_mode(param)
-    if(param)
+  const setDarkMode=()=>{
+    if(JsCookie.get('dark_mode') === "dark")
     {
-      $("body").addClass("dark_theme")
+      JsCookie.set("dark_mode", "light", {domain:cookieDomainExtension})
+      set_dark_mode("light")
+      $("body").removeClass("dark_theme")
     }
     else
     {
-      $("body").removeClass("dark_theme")
+      JsCookie.set("dark_mode", "dark", {domain:cookieDomainExtension})
+      set_dark_mode("dark")
+      $("body").addClass("dark_theme")
     }
   }
   
@@ -357,21 +363,19 @@ export default function Topmenu()
  
                       </ul>
                       <ul className="nav navbar-nav navbar-right ml-auto ">
-                        <li className="dark_theme_toggle" id="theme_color">
+                        <li className="dark_theme_toggle" onClick={()=>setDarkMode()} id="theme_color">
                           {/* <img src="https://api.coinpedia.org/uploads/tokens/1636636942618d190eb91f9.png" /> */}
-                          {/* {
-                            dark_mode 
-                            ?
-                            <div className="top_menu_skin moon"><img src="/assets/img/top_menu_moon.png" /></div>
-                            :
-                            <div className="top_menu_skin sun"><img src="/assets/img/top_menu_sun.png" /></div>
-                          } */}
-
                           {
-                            Boolean(dark_mode) === true ?
-                            <div className="top_menu_skin moon"><img onClick={(e)=>setDarkMode(false)} src="/assets/img/top_menu_moon.png" /></div>
+                            JsCookie.get('dark_mode') ?
+                              JsCookie.get('dark_mode') === "dark" ?
+                              <div id="dark_mode_div" className="top_menu_skin moon" ><img id="dark_mode_image" src="/assets/img/top_menu_moon.png" /></div>
+                              :
+                              JsCookie.get('dark_mode') === "light" ?
+                              <div id="dark_mode_div" className="top_menu_skin sun" ><img id="dark_mode_image" src="/assets/img/top_menu_sun.png" /></div>
+                              :
+                              null
                             :
-                            <div className="top_menu_skin sun"><img onClick={(e)=>setDarkMode(true)} src="/assets/img/top_menu_sun.png" /></div>
+                            <div id="dark_mode_div" className="top_menu_skin sun" ><img id="dark_mode_image" src="/assets/img/top_menu_sun.png" /></div>
                           }
 
                         </li>

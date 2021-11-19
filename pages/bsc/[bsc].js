@@ -354,10 +354,13 @@ function TokenDetails(props) {
           if(contract_address === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"){
             change24h = ((contract_usdt_price - (result.data.ethereum.dexTrades[0].quote)) / (contract_usdt_price) * 100) 
               set_priceChange24H(change24h)
+              console.log(change24h)
           }
           else{
-            change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) - 1) * 100
+            
+            change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) -1) * 100
             set_priceChange24H(change24h) 
+            console.log(change24h)
           }
         }
       })

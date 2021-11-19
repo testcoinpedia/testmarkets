@@ -805,19 +805,38 @@ const getTokenUsdPrice=async(id, networks)=> {
           getTokendetails(id, result.data.ethereum.dexTrades[0].quote, networks)
           setLivePrice(result.data.ethereum.dexTrades[0].quote) 
           get24hChange(result.data.ethereum.dexTrades[0].quote, id, networks)
-         
+          
+          saveTokenDetails(networks, id, result.data.ethereum.dexTrades[0].quote)
+          
         }
         else
         {
           getTokendetails(id, result.data.ethereum.dexTrades[0].quote, networks)
           setLivePrice(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) 
           get24hChange(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote , id, networks)  
-        
+          
+          saveTokenDetails(networks, id, result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote)
+          
         }
         
       }  
     })
     .catch(console.error);
+}
+
+
+const saveTokenDetails=(network_type, contract_address, live_price) =>
+{
+    const reqObj = {
+      network_type : network_type,
+      contract_address: contract_address,
+      live_price: live_price
+    } 
+
+  Axios.post('http://node-markets-api.herokuapp.com/api_tokens/save_token', reqObj).then(res => 
+  {  
+      console.log(res.data)   
+  })
 }
 
 const get24hChange=(fun_live_price, id, networks)=>
@@ -910,11 +929,14 @@ const get24hChange=(fun_live_price, id, networks)=>
         if(result.data.ethereum.dexTrades[0].baseCurrency.symbol === "WBNB" || id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"){
           change24h = ((contract_usdt_price - (result.data.ethereum.dexTrades[0].quote)) / (contract_usdt_price) * 100) 
           set_priceChange24H(change24h)
+          console.log(change24h)
         } 
         else{
           change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) - 1) * 100
           // change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote ) - 1) * 100
           set_priceChange24H(change24h)
+         
+
         }
  
       }
