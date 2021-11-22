@@ -3,6 +3,7 @@ import Highcharts from 'highcharts';
 import * as constant from '../../components/constants'
 import { ethers } from 'ethers';
 import Web3 from 'web3'
+import Axios from 'axios'
 import Switch from "react-switch";   
 import Head from 'next/head'; 
 import moment from 'moment'
@@ -31,12 +32,21 @@ function TokenDetails(props) {
   const [contract_24h_volume,set_contract_24h_volume]=useState(0)  
   const [tokentransactions, set_tokentransactions]= useState([])
   const [exchangelist, set_exchangelist]= useState([])
+  const [exchangelistnew, set_exchange_list_new]= useState([])
+  const [contract_address_new,set_contract_address_new]=useState("")
+  const [address,set_address]=useState("")
+  const [element,set_element]=useState([])
+  const [exchangevalue,set_exchangevalue]=useState("")
+  const [apiLimit]=useState(5)
+  
   const [isBNB, set_isBNB]=useState(false) 
   const [graphDate , set_graphDate] = useState(1)
   const [website_url]=useState(constant.website_url)
   const [market_cap, set_market_cap] = useState(0) 
-  const [liquidity, set_liquidity] = useState(0)      
- 
+  const [liquidity, set_liquidity] = useState(0)  
+  const [circulatingSupply, setCirculatingSupply] = useState("") 
+  const [token_max_supply, settoken_max_supply] = useState("")     
+  
   const [connected_address , set_connected_address]=useState("")
  
   const [wallet_data, setWalletData] = useState([]); 
@@ -61,6 +71,7 @@ function TokenDetails(props) {
   const [metadata] = useState(props.post)
   
   const [symbol] = useState(props.post.smartContract.currency.symbol)
+  const [decimal] = useState(props.post.smartContract.currency.decimals)
   
   const [selectedTokenModal, setSelectedTokenModal] = useState(false)
   const [selectedwallettype, setSelectedWalletType] = useState(0)  
@@ -142,6 +153,215 @@ function TokenDetails(props) {
                 }        
               })
               .catch(console.error);
+  } 
+  const getexchangedata=(id)=> { 
+    const query = `
+      query {
+        ethereum(network: bsc) {
+          dexTrades(
+            quoteCurrency: {is: "`+id+`"}
+            options: {desc: ["tradeAmount","trades"] limit: 100}
+            date: {after: "2021-11-19"}
+          ) {
+            poolToken: smartContract {
+              address {
+                address
+              }
+            }
+            exchange {
+              fullName
+            }
+            pair:baseCurrency {
+              symbol
+              address
+              name
+            }
+            trades: count
+            tradeAmount(in: USD)
+          }
+        }
+      }
+          ` ;
+
+    const url = "https://graphql.bitquery.io/";
+    const opts = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+      },
+      body: JSON.stringify({
+        query
+      })
+    };
+    fetch(url, opts)
+      .then(res => res.json())
+      .then(result => {
+        if (result.data.ethereum != null) { 
+          console.log(result.data.ethereum)
+          set_exchange_list_new(result.data.ethereum.dexTrades)
+        //   let ele=exchangelistnew.map((e, i) =>{
+        //     return<tr key={i}>
+        //       <td title= {e.poolToken.address.address}>{e.exchange.fullName}</td>
+        //       <td title={e.pair.address}>{e.pair.name}/{symbol}</td>
+        //       <td></td>
+        //       <td></td>
+        //       <td></td>
+        //      </tr>
+        // })
+        //   set_element(ele)
+        //   console.log(ele)
+          
+          // set_contract_address_new(result.data.ethereum.dexTrades.pair)
+          // set_address(result.data.ethereum.dexTrades.poolToken)
+          // getexchangevalue()
+          // console.log(contract_address_new)
+          
+        }
+      })
+      .catch(console.error);
+  }
+  // const getexchangedata= async (id)=> { 
+  //   const query = `
+  //     query {
+  //       ethereum(network: bsc) {
+  //         dexTrades(
+  //           quoteCurrency: {is: "`+id+`"}
+  //           options: {desc: ["tradeAmount","trades"] limit: 100}
+  //           date: {after: "2021-11-19"}
+  //         ) {
+  //           poolToken: smartContract {
+  //             address {
+  //               address
+  //             }
+  //           }
+  //           exchange {
+  //             fullName
+  //           }
+  //           pair:baseCurrency {
+  //             symbol
+  //             address
+  //             name
+  //           }
+  //           trades: count
+  //           tradeAmount(in: USD)
+  //         }
+  //       }
+  //     }
+  //         ` ;
+
+  //   const url = "https://graphql.bitquery.io/";
+  //   const opts = {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+  //     },
+  //     body: JSON.stringify({
+  //       query
+  //     })
+  //   };
+    
+    // var resultArray = new Array()
+    // var response1 = 0
+    // var response2 = 0
+    // const res=await fetch(url, opts)
+    //  const result = await res.json()
+    //     if (result.data.ethereum) { 
+    //      // console.log(result.data.ethereum)
+    //      // set_exchange_list_new(result.data.ethereum.dexTrades)
+    //       if(result.data.ethereum.dexTrades)
+    //       {
+    //         result.data.ethereum.dexTrades.map(async (item,i) => 
+    //         {
+    //           var createObj = {}
+    //           createObj['fullName'] = item.exchange.fullName
+    //           createObj['pairName'] = item.pair.name
+    //           createObj['poolTokenAddress']=item.poolToken.address.address
+    //           createObj['pairAddress']=item.pair.address
+    //           if(i<5){
+               
+    //           response1 = await getexchangevalue(id, item.poolToken.address.address)
+    //           response2 = await getexchangevalue(item.pair.address, item.poolToken.address.address)
+    //           }
+              
+    //           if(response1)
+    //           {
+    //             createObj['value'] = response1
+    //           }
+    //           else
+    //           {
+    //             createObj['value'] = 0
+    //           }
+    //           if(response2)
+    //           {
+    //             createObj['value2'] = response2
+    //           }
+    //           else
+    //           {
+    //             createObj['value2'] = 0
+    //           }
+              
+    //           // const response2 =  await getexchangevalue(item.pair.address, item.poolToken.address.address)
+    //           //console.log(createObj)
+    //          // console.log(response1)
+
+    //          await resultArray.push(createObj)
+    //         })
+    //       }
+    //       console.log(resultArray)
+        //   let ele=exchangelistnew.map((e, i) =>{
+        //     return<tr key={i}>
+        //       <td title= {e.poolToken.address.address}>{e.exchange.fullName}</td>
+        //       <td title={e.pair.address}>{e.pair.name}/{symbol}</td>
+        //       <td></td>
+        //       <td></td>
+        //       <td></td>
+        //      </tr>
+        // })
+        //   set_element(ele)
+        //   console.log(ele)
+          
+  //         set_contract_address_new(result.data.ethereum.dexTrades.pair)
+  //         set_address(result.data.ethereum.dexTrades.poolToken)
+  //         getexchangevalue()
+  //         console.log(contract_address_new)
+          
+  //       }
+      
+      
+  // }
+  const getexchangelist =()=>
+  { 
+    let ele = exchangelistnew.map((e, i) => {
+        return <tr key={i}>
+          <td title= {e.poolToken.address.address}>{e.exchange.fullName}</td>
+          <td title={e.pair.address}>{e.pair.name}/{symbol}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+    })
+      set_element(ele)
+     // console.log(ele)
+    
+  } 
+  const getexchangevalue = async (contract_address_new,address)=>
+  { 
+    
+    return await Axios.get("https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress="+contract_address_new+"&address="+address+"&tag=latest&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2");
+  
+    
+  } 
+  const getexchangevaluePair = (contract_address_new,address)=>{ 
+    Axios.get("https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress="+contract_address_new+"&address="+address+"&tag=latest&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
+    //Axios.get("https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress=0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c&address=0xdd901faf9652d474b0a70263e13da294990d49ae&tag=latest&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
+    .then(response=>{
+          if(response.status){ 
+            console.log(response.data.result) 
+            set_exchangevalue(response.data.result)
+          }
+    })
   } 
   
  
@@ -236,18 +456,39 @@ function TokenDetails(props) {
         else { 
           // setTokenSymbol(result.data.ethereum.address[0].smartContract.currency.symbol)     
           getMarketCap(contract_address, result.data.ethereum.address[0].smartContract.currency.decimals, usd_price) 
+          getCirculatingSupply(contract_address, result.data.ethereum.address[0].smartContract.currency.decimals)
+          gettotalMaxSupply(contract_address, result.data.ethereum.address[0].smartContract.currency.decimals)
         } 
       })
       .catch(console.error);
+     
   }
-
+  const getCirculatingSupply = (id,decimal)=>{ 
+    Axios.get("https://api.bscscan.com/api?module=stats&action=tokenCsupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
+    .then(response=>{
+          if(response.status){ 
+            console.log(response) 
+           setCirculatingSupply(response.data.result/10**decimal) 
+          }
+    })
+  } 
+  const gettotalMaxSupply = (id,decimal)=>{ 
+    Axios.get("https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
+    .then(response=>{
+          if(response.status){ 
+            console.log(response) 
+            settoken_max_supply(response.data.result/10**decimal) 
+          }
+    })
+  } 
   const getMarketCap =async(id, decval, usd_price)=> {  
     const mainnetUrl = "https://bsc-dataseed.binance.org/";
     const provider = new ethers.providers.JsonRpcProvider(mainnetUrl); 
 
     const tokenAbi = ["function totalSupply() view returns (uint256)"];
     const tokenContract = new ethers.Contract(id, tokenAbi, provider);
-    const supply = await tokenContract.totalSupply() / (10 ** decval);  
+    const supply = await tokenContract.totalSupply() / (10 ** decval); 
+    
     set_market_cap(supply * usd_price)
 
     const pairAbi = ["function getPair(address first, address second) view returns (address)"]
@@ -255,6 +496,7 @@ function TokenDetails(props) {
     const pairAddr = await pairContract.getPair(id, '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c');
 
     if(id !== '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'){
+      
       const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
       const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
       const reserve = await liqContract.getReserves();
@@ -307,6 +549,8 @@ function TokenDetails(props) {
   const get24hChange=(fun_live_price)=>
   { 
     const date = ((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString())
+    
+    console.log(date)
     const query = `
                 query
                 {
@@ -347,6 +591,7 @@ function TokenDetails(props) {
      
     const contract_usdt_price = fun_live_price 
     let change24h = 0
+    let result = 0
     fetch(url, opts)
       .then(res => res.json())
       .then(result => {
@@ -354,13 +599,15 @@ function TokenDetails(props) {
           if(contract_address === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"){
             change24h = ((contract_usdt_price - (result.data.ethereum.dexTrades[0].quote)) / (contract_usdt_price) * 100) 
               set_priceChange24H(change24h)
-              console.log(change24h)
+             
           }
           else{
-            
+            // change24h = (contract_usdt_price - (result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) )
+            //  result = (change24h /(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote)) *100
             change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) -1) * 100
             set_priceChange24H(change24h) 
-            console.log(change24h)
+           
+            
           }
         }
       })
@@ -369,7 +616,6 @@ function TokenDetails(props) {
 
   const getTokenUsdPrice=async(id)=> { 
     const dateSince = ((new Date()).toISOString()) 
-
     const query = `
                 query
                 {
@@ -418,6 +664,7 @@ function TokenDetails(props) {
           // }
           getTokenTransactions(id)
           getTokenexchange(id)
+          
 
           if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"){
             getTokendetails(id, result.data.ethereum.dexTrades[0].quote) 
@@ -435,7 +682,7 @@ function TokenDetails(props) {
       })
       .catch(console.error);
   }
-
+ 
   const getGraphData=(datetime, isBnbDisplay = undefined, dxSaleplace, id)=> {  
 	  
     if (datetime === "") { 
@@ -684,7 +931,7 @@ function TokenDetails(props) {
   useEffect(()=>{   
     
     set_search_contract_address(contract_address)
-    
+    getexchangedata(contract_address)
     getTokenUsdPrice(contract_address)
     get24hVolume(contract_address) 
     getGraphData(4, isBNB, dxSale, contract_address)     
@@ -694,7 +941,7 @@ function TokenDetails(props) {
       getETHAccountDetails(0) 
     }  
 
-  },[live_price, connected_address])
+  },[connected_address])
   
 
 
@@ -1588,15 +1835,15 @@ const connectToEthWallet=()=>
                       
                     
                       <div className="widgets__line">
-                        <div className="widgets__price">USD {live_price ? constant.separator(live_price.toFixed(8)) : "-"} 
+                        <div className="widgets__price">$ {live_price ? constant.separator(live_price.toFixed(8)) : "-"} 
                           {
                             price_change_24h
                             ?
                             price_change_24h > 0
                             ?
-                            <span className="market_growth market_up"><img src="/assets/img/caret-up.png" />{price_change_24h.toFixed(4)}%</span>
+                            <span className="market_growth market_up"><img src="/assets/img/caret-up.png" />{price_change_24h.toFixed(2)}%</span>
                             :
-                            <span className="market_growth market_down"><img src="/assets/img/caret-angle-down.png" />{price_change_24h.toFixed(4)}%</span>
+                            <span className="market_growth market_down"><img src="/assets/img/caret-angle-down.png" />{price_change_24h.toFixed(2)}%</span>
                             
                             :
                             null
@@ -1608,6 +1855,20 @@ const connectToEthWallet=()=>
                     
                     <div className="wallets__inner wallet_bottom_space">
                       <ul className="overview_ul token_contract_details">
+                      <li>
+                          <div className="wallets__details">
+                            <div className="wallets__info">Circulating Supply</div>
+                            <div className="wallets__number h5">NA</div>
+                            {/* <div className="wallets__number h5">{circulatingSupply ? constant.separator(circulatingSupply) : "-"}</div> */}
+                                  
+                            </div>
+                            </li>
+                            <li>
+                              <div className="wallets__details">
+                              <div className="wallets__info">Total Max Supply</div>
+                              <div className="wallets__number h5">{token_max_supply ? constant.separator(token_max_supply) : "-"}</div>
+                              </div>
+                            </li>
                         <li>
                           <div className="wallets__details">
                             <div className="wallets__info">Crypto Market Cap</div>
@@ -1617,7 +1878,7 @@ const connectToEthWallet=()=>
                         <li>
                           <div className="wallets__details">
                             <div className="wallets__info">24H Volume</div>
-                            <div className="wallets__number h5">${contract_24h_volume ? constant.separator(contract_24h_volume.toFixed(4)) : null}</div>
+                            <div className="wallets__number h5">${contract_24h_volume ? constant.separator(contract_24h_volume.toFixed(2)) : null}</div>
                           </div>
                         </li>
                         <li>
@@ -1656,7 +1917,7 @@ const connectToEthWallet=()=>
                     <div className="company_profile_tabs">
                       <ul className="nav nav-tabs">
                         <li className="nav-item"><a data-toggle="tab" href="#menu2" className="nav-link active" ><span>Overview</span></a></li>
-                        <li className="nav-item"><a data-toggle="tab" href="#home" className="nav-link "><span>Exchange</span></a></li>
+                        <li className="nav-item"><a data-toggle="tab" href="#home" className="nav-link " ><span>Exchange</span></a></li>
                         <li className="nav-item"><a data-toggle="tab" href="#menu1" className="nav-link" ><span>Transactions</span></a></li>
                       </ul>
                     </div>
@@ -1793,6 +2054,7 @@ const connectToEthWallet=()=>
                             <thead>
                               <tr>
                                   <th>Exchange</th>
+                                  <th>Pairs</th>
                                   <th>Trades Count</th>
                                   <th>Takers</th>
                                   <th>Makers</th>
@@ -1800,27 +2062,44 @@ const connectToEthWallet=()=>
                               </tr>
                             </thead>
                               {
-                                exchangelist
-                                ?
+                               
                                 <tbody>
                                   {
-                                    exchangelist.map((e, i) => {
+                                    exchangelistnew.map((e, i) => {
                                       return <tr key={i}>
-                                        <td>{e.exchange.fullName}</td>
-                                        <td>{constant.separator(e.trades)}</td>
-                                        <td>{constant.separator(e.takers)}</td>
-                                        <td>{constant.separator(e.makers)}</td>
-                                        <td>{constant.separator(e.amount.toFixed(2))}</td>
+                                        <td title= {e.poolToken.address.address}>{e.exchange.fullName}</td>
+                                        <td title={e.pair.address}>{e.pair.name}/{symbol}<br/> </td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                        <td>--</td>
                                       </tr>
                                     } )
+                                    
+                                    
                                   }
                                   </tbody>
-                                :
-                                null
+
+
+                                
                               }
                         </table>
                       </div>
                       </div>
+
+                      {/* <tbody>
+{
+  exchangelistnew.map((e, i) => {
+    return <tr key={i}>
+      <td>{e.exchange.fullName}</td>
+      <td>{constant.separator(e.trades)}</td>
+      <td>{constant.separator(e.takers)}</td>
+      <td>{constant.separator(e.makers)}</td>
+      <td>{constant.separator(e.amount.toFixed(2))}</td>
+    </tr>
+  } )
+}
+</tbody> */}
                       <div id="menu1" className="tab-pane fade in">
                         <div className="table-responsive">
                           <table className="table table-borderless">
@@ -1957,6 +2236,7 @@ const connectToEthWallet=()=>
       </div>
     </div>
   </div>
+  
     </>
   )
 } 
