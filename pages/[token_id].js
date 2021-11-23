@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import Link from 'next/link' 
 import Head from 'next/head';
 import Error from './404'
-import { API_BASE_URL, config, website_url, separator, strLenTrim, getDomainName, app_coinpedia_url, x_api_key} from '../components/constants'
+import { API_BASE_URL, config, website_url, separator, strLenTrim, getDomainName, app_coinpedia_url, x_api_key,API_DIGITALOCEAN_URL} from '../components/constants'
 import moment from 'moment'  
 import Web3 from 'web3'
 import Highcharts from 'highcharts';    
@@ -574,7 +574,13 @@ else{
 }
 const getTotalMaxSupply=(id,decimal,networktype)=>{
   if(networktype==1){
-  
+    Axios.get("https://api.Etherscan.com/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=E9DBMPJU7N6FK7ZZDK86YR2EZ4K4YTHZJ1")
+    .then(response=>{
+          if(response.status){ 
+            console.log(response) 
+            settoken_max_supply(response.data.result/10**decimal) 
+          }
+    })
   }
   else{
     Axios.get("https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
@@ -875,7 +881,7 @@ const saveTokenDetails=(network_type, contract_address, live_price) =>
       live_price: live_price
     } 
 
-  Axios.post('http://node-markets-api.herokuapp.com/api_tokens/save_token', reqObj).then(res => 
+  Axios.post(API_DIGITALOCEAN_URL+'api_tokens/save_token', reqObj).then(res => 
   {  
       console.log(res.data)   
   })
@@ -2270,13 +2276,13 @@ const connectToEthWallet=()=>
                               <li>
                                 <div className="wallets__details">
                                   <div className="wallets__info">Total Max Supply</div>
-                                  <div className="wallets__number h5">{token_max_supply ? separator(token_max_supply) : "-"}</div>
+                                  <div className="wallets__number h5">{token_max_supply ? separator(token_max_supply) : "NA"}</div>
                                 </div>
                               </li>
                               <li>
                                 <div className="wallets__details">
                                   <div className="wallets__info">24h volume</div>
-                                  <div className="wallets__number h5">${separator(contract_24h_volume.toFixed(2))}</div>
+                                  <div className="wallets__number h5">{contract_24h_volume?"$":null}{contract_24h_volume?separator(contract_24h_volume.toFixed(2)): "NA"}</div>
                                   <div className="twenty_block">
                                     {/* {
                                       price_change_24h
@@ -2295,7 +2301,7 @@ const connectToEthWallet=()=>
                               <li>
                                 <div className="wallets__details">
                                   <div className="wallets__info">Market cap</div>
-                                  <div className="wallets__number h5">${market_cap ? separator(market_cap.toFixed(4)) : null}</div>
+                                  <div className="wallets__number h5">{market_cap?"$":null}{market_cap ? separator(market_cap.toFixed(4)) : "NA"}</div>
                                   <div className="twenty_block">
                                     {/* <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span> */}
                                     {/* <span className="twenty_high"><img src="/assets/img/red-down.png" />2.79%</span> */}
@@ -2305,7 +2311,7 @@ const connectToEthWallet=()=>
                               <li>
                                 <div className="wallets__details">
                                   <div className="wallets__info">Liquidity</div>
-                                  <div className="wallets__number h5">${liquidity ? separator(liquidity.toFixed(4)) : null}</div>
+                                  <div className="wallets__number h5">{liquidity?"$":null}{liquidity ? separator(liquidity.toFixed(4)) : "NA"}</div>
                                 </div>
                               </li>
 

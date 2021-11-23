@@ -7,6 +7,8 @@ import JsCookie from "js-cookie"
 //Live links - API
 export const api_url = 'https://api.coinpedia.org/';
 export const API_BASE_URL = 'https://api.coinpedia.org/'
+export const API_DIGITALOCEAN_URL = 'https://markets-nodejs-api-l9lg8.ondigitalocean.app/'
+
 
 // Live links
 export const website_url = 'https://markets.coinpedia.org/'; 

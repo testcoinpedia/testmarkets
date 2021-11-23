@@ -6031,7 +6031,10 @@ body.dark .promotion__line:first-child .icon {
   max-width: 380px;
   margin-bottom: 24px;
 }
-
+.tab-pane .pooledvalue{
+	font-weight:700;
+	font-size: 13px;
+}
 .popup__invite .popup__label {
   color: #ffffff;
 }

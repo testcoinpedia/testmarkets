@@ -34,9 +34,14 @@ function TokenDetails(props) {
   const [exchangelist, set_exchangelist]= useState([])
   const [exchangelistnew, set_exchange_list_new]= useState([])
   const [contract_address_new,set_contract_address_new]=useState("")
-  const [address,set_address]=useState("")
   const [element,set_element]=useState([])
-  const [exchangevalue,set_exchangevalue]=useState("")
+   const [exchangevalue,set_exchangevalue]=useState("")
+  const [exchange_name,set_exchange_name]=useState("")
+  const [exchange_address,set_exchange_address]=useState("")
+  const [pair_one_name,set_pair_one_name]=useState("")
+  const [pair_one_value,set_pair_one_value]=useState("")
+  const [pair_one_token_address,set_pair_one_token_address]=useState("")
+  const [pair_two_value,set_pair_two_value]=useState("")
   const [apiLimit]=useState(5)
   
   const [isBNB, set_isBNB]=useState(false) 
@@ -154,74 +159,7 @@ function TokenDetails(props) {
               })
               .catch(console.error);
   } 
-  const getexchangedata=(id)=> { 
-    const query = `
-      query {
-        ethereum(network: bsc) {
-          dexTrades(
-            quoteCurrency: {is: "`+id+`"}
-            options: {desc: ["tradeAmount","trades"] limit: 100}
-            date: {after: "2021-11-19"}
-          ) {
-            poolToken: smartContract {
-              address {
-                address
-              }
-            }
-            exchange {
-              fullName
-            }
-            pair:baseCurrency {
-              symbol
-              address
-              name
-            }
-            trades: count
-            tradeAmount(in: USD)
-          }
-        }
-      }
-          ` ;
-
-    const url = "https://graphql.bitquery.io/";
-    const opts = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
-      },
-      body: JSON.stringify({
-        query
-      })
-    };
-    fetch(url, opts)
-      .then(res => res.json())
-      .then(result => {
-        if (result.data.ethereum != null) { 
-          console.log(result.data.ethereum)
-          set_exchange_list_new(result.data.ethereum.dexTrades)
-        //   let ele=exchangelistnew.map((e, i) =>{
-        //     return<tr key={i}>
-        //       <td title= {e.poolToken.address.address}>{e.exchange.fullName}</td>
-        //       <td title={e.pair.address}>{e.pair.name}/{symbol}</td>
-        //       <td></td>
-        //       <td></td>
-        //       <td></td>
-        //      </tr>
-        // })
-        //   set_element(ele)
-        //   console.log(ele)
-          
-          // set_contract_address_new(result.data.ethereum.dexTrades.pair)
-          // set_address(result.data.ethereum.dexTrades.poolToken)
-          // getexchangevalue()
-          // console.log(contract_address_new)
-          
-        }
-      })
-      .catch(console.error);
-  }
-  // const getexchangedata= async (id)=> { 
+  // const getexchangedata=(id)=> { 
   //   const query = `
   //     query {
   //       ethereum(network: bsc) {
@@ -261,76 +199,128 @@ function TokenDetails(props) {
   //       query
   //     })
   //   };
-    
-    // var resultArray = new Array()
-    // var response1 = 0
-    // var response2 = 0
-    // const res=await fetch(url, opts)
-    //  const result = await res.json()
-    //     if (result.data.ethereum) { 
-    //      // console.log(result.data.ethereum)
-    //      // set_exchange_list_new(result.data.ethereum.dexTrades)
-    //       if(result.data.ethereum.dexTrades)
-    //       {
-    //         result.data.ethereum.dexTrades.map(async (item,i) => 
-    //         {
-    //           var createObj = {}
-    //           createObj['fullName'] = item.exchange.fullName
-    //           createObj['pairName'] = item.pair.name
-    //           createObj['poolTokenAddress']=item.poolToken.address.address
-    //           createObj['pairAddress']=item.pair.address
-    //           if(i<5){
-               
-    //           response1 = await getexchangevalue(id, item.poolToken.address.address)
-    //           response2 = await getexchangevalue(item.pair.address, item.poolToken.address.address)
-    //           }
-              
-    //           if(response1)
-    //           {
-    //             createObj['value'] = response1
-    //           }
-    //           else
-    //           {
-    //             createObj['value'] = 0
-    //           }
-    //           if(response2)
-    //           {
-    //             createObj['value2'] = response2
-    //           }
-    //           else
-    //           {
-    //             createObj['value2'] = 0
-    //           }
-              
-    //           // const response2 =  await getexchangevalue(item.pair.address, item.poolToken.address.address)
-    //           //console.log(createObj)
-    //          // console.log(response1)
-
-    //          await resultArray.push(createObj)
-    //         })
-    //       }
-    //       console.log(resultArray)
-        //   let ele=exchangelistnew.map((e, i) =>{
-        //     return<tr key={i}>
-        //       <td title= {e.poolToken.address.address}>{e.exchange.fullName}</td>
-        //       <td title={e.pair.address}>{e.pair.name}/{symbol}</td>
-        //       <td></td>
-        //       <td></td>
-        //       <td></td>
-        //      </tr>
-        // })
-        //   set_element(ele)
-        //   console.log(ele)
+  //   fetch(url, opts)
+  //     .then(res => res.json())
+  //     .then(result => {
+  //       if (result.data.ethereum != null) { 
+  //         console.log(result.data.ethereum)
+  //         set_exchange_list_new(result.data.ethereum.dexTrades)
+  //       //   let ele=exchangelistnew.map((e, i) =>{
+  //       //     return<tr key={i}>
+  //       //       <td title= {e.poolToken.address.address}>{e.exchange.fullName}</td>
+  //       //       <td title={e.pair.address}>{e.pair.name}/{symbol}</td>
+  //       //       <td></td>
+  //       //       <td></td>
+  //       //       <td></td>
+  //       //      </tr>
+  //       // })
+  //       //   set_element(ele)
+  //       //   console.log(ele)
           
-  //         set_contract_address_new(result.data.ethereum.dexTrades.pair)
-  //         set_address(result.data.ethereum.dexTrades.poolToken)
-  //         getexchangevalue()
-  //         console.log(contract_address_new)
+  //         // set_contract_address_new(result.data.ethereum.dexTrades.pair)
+  //         // set_address(result.data.ethereum.dexTrades.poolToken)
+  //         // getexchangevalue()
+  //         // console.log(contract_address_new)
           
   //       }
-      
-      
+  //     })
+  //     .catch(console.error);
   // }
+  const getexchangedata= async (id)=> { 
+    const query = `
+      query {
+        ethereum(network: bsc) {
+          dexTrades(
+            quoteCurrency: {is: "`+id+`"}
+            options: {desc: ["tradeAmount","trades"] limit: 100}
+            date: {after: "2021-11-19"}
+          ) {
+            poolToken: smartContract {
+              address {
+                address
+              }
+            }
+            exchange {
+              fullName
+            }
+            pair:baseCurrency {
+              symbol
+              address
+              name
+            }
+            trades: count
+            tradeAmount(in: USD)
+          }
+        }
+      }
+          ` ;
+
+    const url = "https://graphql.bitquery.io/";
+    const opts = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+      },
+      body: JSON.stringify({
+        query
+      })
+    };
+    
+    const resultArray = new Array()
+    var response1 = 0
+    var response2 = 0
+    const res=await fetch(url, opts)
+     const result = await res.json()
+        if (result.data.ethereum) { 
+         // console.log(result.data.ethereum)
+         // set_exchange_list_new(result.data.ethereum.dexTrades)
+         var request_API_Status = false
+          if(result.data.ethereum.dexTrades)
+          {
+            result.data.ethereum.dexTrades.map(async (item,i) => 
+            {
+              var createObj = {}
+              createObj['exchange_name'] = item.exchange.fullName
+              createObj['pair_one_name'] = item.pair.name
+              createObj['exchange_address']=item.poolToken.address.address
+              createObj['pair_one_token_address']=item.pair.address
+              response1 = await getexchangevalue(id, item.poolToken.address.address,item.pair.address)
+               if(response1)
+              {
+                response1.map((e)=>{
+                       if(item.pair.address==e.currency.address){
+                        createObj['pair_one_value']=e.value
+                          
+                       }
+                       if(id.toLowerCase() ==e.currency.address){
+                        createObj['pair_two_value']=e.value
+                        
+                      }
+                })
+              }
+              await resultArray.push(createObj) 
+              set_exchange_list_new(resultArray)
+
+              var reqObj = {
+                contract_address:id,
+                network_type:"bsc",
+                exchanges: [createObj]
+              }
+              console.log('req Obj',reqObj)
+              const config = { headers: { "Content-Type": "application/json" } }
+              const sadfdsf = await Axios.post(constant.API_DIGITALOCEAN_URL+"tokens/exchanges_save_data", reqObj, config) 
+              console.log("Api Response", sadfdsf)
+            })
+              
+              
+              
+          }
+
+        }
+      
+      
+  }
   const getexchangelist =()=>
   { 
     let ele = exchangelistnew.map((e, i) => {
@@ -346,10 +336,52 @@ function TokenDetails(props) {
      // console.log(ele)
     
   } 
-  const getexchangevalue = async (contract_address_new,address)=>
+  const getexchangevalue = async (contract_address_new,pool_token_address,pair_address)=>
   { 
+    const query = `
+      query {
+        ethereum(network: bsc) {
+        address(address: {is: "`+pool_token_address+`"}) {
+        balances {
+        value
+        currency {
+        address
+        symbol
+        tokenType
+        }
+        }
+        }
+        }
+        }
+          ` ;
+    var valuePairAddress=0
+    var valueAddress=0
+    const url = "https://graphql.bitquery.io/";
+    const opts = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+      },
+      body: JSON.stringify({
+        query
+      })
+    };
+    console.log("ghbjh")
+    const res=await fetch(url, opts)
+     const result = await res.json()
+        if (result.data.ethereum) {
+         if(result.data.ethereum.address)
+          {
+            //console.log(result.data.ethereum.address)
+            if(result.data.ethereum.address[0].balances)
+            {
+              return result.data.ethereum.address[0].balances
+            }
+          }
+        }
     
-    return await Axios.get("https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress="+contract_address_new+"&address="+address+"&tag=latest&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2");
+    // return await Axios.get("https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress="+contract_address_new+"&address="+address+"&tag=latest&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2");
   
     
   } 
@@ -2067,8 +2099,8 @@ const connectToEthWallet=()=>
                                   {
                                     exchangelistnew.map((e, i) => {
                                       return <tr key={i}>
-                                        <td title= {e.poolToken.address.address}>{e.exchange.fullName}</td>
-                                        <td title={e.pair.address}>{e.pair.name}/{symbol}<br/> </td>
+                                        <td title= {e.exchange_address}>{e.exchange_name}</td>
+                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({constant.separator(e.pair_one_value.toFixed(3))}) / ({constant.separator(e.pair_two_value.toFixed(3))})</span> </td>
                                         <td>--</td>
                                         <td>--</td>
                                         <td>--</td>

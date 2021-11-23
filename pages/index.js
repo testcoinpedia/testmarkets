@@ -2,12 +2,15 @@ import React , {useState, useEffect} from 'react';
 import Link from 'next/link' 
 import ReactPaginate from 'react-paginate'; 
 import Head from 'next/head';
+import cookie from "cookie"
+import Axios from 'axios'
 
 import TableContentLoader from '../components/loaders/tableLoader'
 import { API_BASE_URL, config, separator, website_url, app_coinpedia_url} from '../components/constants'; 
 var $ = require( "jquery" );
 
-export default function Home({post}) {   
+export default function Home({post,userAgent,data_new,reqConfig}) { 
+  const [user_token]= useState(userAgent.user_token)  
   const [data, setData] = useState([]); 
   const [pageCount, setPageCount] = useState(Math.ceil(post.length / 15))
   const [firstcount, setfirstcount] = useState(1)
@@ -20,12 +23,18 @@ export default function Home({post}) {
   const [search_contract_address, set_search_contract_address] = useState("")    
   const [validSearchContract, setvalidContractAddress] = useState("")
   const [dataLoaderStatus, setDataLoaderStatus] = useState(true)
-
+  const [voting_status, set_voting_status] = useState(data.voting_status)
   const [filteredTokens, setFilteredTokens] = useState([])  
   const [searchTokens, setsearchTokens] = useState("")
   const [searchParam] = useState(["token_name"])
-
-  console.log('asdf', post);
+  const [current_url]= useState(website_url)
+   const [handleModalVote, setHandleModalVote] = useState(false)
+   const [votes, set_votes] = useState(post.total_voting_count)
+   const [token_id, set_Token_id] = useState("")
+   const [voting_message, set_voting_message] = useState("")
+   
+  console.log(post);
+  
   // const [handleModalVote, setHandleModalVote] = useState(false)
  
   useEffect(()=>{  
@@ -43,7 +52,42 @@ const handlePageClick = (e) => {
   getTokensList(tokenslist , selectPage * 15)
 
 }; 
+const ModalVote=(token_id)=> 
+  {    
+    setHandleModalVote(!handleModalVote) 
+    set_Token_id(token_id)
+  }
 
+  const vote = (param) =>
+  {
+    ModalVote()
+    if(param == 1)
+    {
+      Axios.get(API_BASE_URL+"listing_tokens/save_voting_details/"+token_id, reqConfig)
+      .then(res=>{ 
+      console.log(res)
+      if(res.data.status === true) 
+      {
+        set_votes(votes+1)
+        set_voting_status(true)
+        set_voting_message(res.data.message)
+      }
+    })
+    }
+    else
+    {
+      Axios.get(API_BASE_URL+"listing_tokens/remove_voting_details/"+token_id, reqConfig)
+      .then(res=>{ 
+      console.log(res)
+      if(res.data.status === true) 
+      {
+        set_votes(votes-1)
+        set_voting_status(false)
+        set_voting_message(res.data.message)
+      }
+    })
+    }
+  }
   const getSearchData=(searchValue) =>
   {  
     var curren=0
@@ -270,11 +314,19 @@ const CheckContractAddress =(address)=>{
                         {
                           // userAgent.user_token ?
                           <td className="market_list_price">
-                            <Link href={"/"+e.token_id}>
-                              <span className="market_list_price">
-                                <button data-toggle="tooltip" > Vote </button>
-                              </span>
-                            </Link>
+                             <Link href={"/"+e.token_id}>
+                               <span className="market_list_price"><button data-toggle="tooltip" > Vote </button></span></Link>
+                            {/* {
+                                          user_token ?
+                                            voting_status === false ?
+                                            <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id)} >Vote</button></span>
+                                            :
+                                            <span className="market_list_price"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id)} >Voted</button></span>
+                                          :
+                                          <Link href={app_coinpedia_url+"login?ref="+current_url}><span className="market_list_price"><button data-toggle="tooltip" > Vote </button></span></Link>
+                            } */}
+                              
+                           
                           </td>  
                           // :
                           // <td className="market_list_price">
@@ -442,6 +494,7 @@ const CheckContractAddress =(address)=>{
                             <th className="mobile_hide table_circulating_supply">Circulating Supply</th>  
                             <th className="table_circulating_supply">Votes</th>  
                             <th className="table_circulating_supply">Vote</th>  
+                           
                           </tr>
                       </thead>
                       <tbody>
@@ -465,6 +518,8 @@ const CheckContractAddress =(address)=>{
                 </div> 
 
                   {
+                    !dataLoaderStatus
+                    ?
                     alltokens > 15
                     ? 
                   <div className="col-md-12">
@@ -500,6 +555,8 @@ const CheckContractAddress =(address)=>{
                   </div>
                   :
                   null
+                  :
+                  null
                 } 
 
 
@@ -529,7 +586,38 @@ const CheckContractAddress =(address)=>{
             </div>
           </div>
       </div>
-
+      <div className={"modal connect_wallet_error_block"+ (handleModalVote ? " collapse show" : "")}>
+            <div className="modal-dialog modal-sm">
+              <div className="modal-content">
+                <div className="modal-body">
+                  <button type="button" className="close" data-dismiss="modal" onClick={()=>ModalVote()}>&times;</button>
+                  {
+                    voting_status == false ?
+                    <h4> Do you want to support this token ? </h4>
+                    :
+                    <h4> Do not support this token ? </h4>
+                  }
+                  
+                  <div className="vote_yes_no">
+                    {/* className={voting_status == 1 ? "vote_yes" : "vote_no"} */}
+                    {
+                      voting_status == false ?
+                      <>
+                      <button onClick={()=>vote(1)}>Confirm</button>  
+                      <button onClick={()=>ModalVote()}>Cancel</button>
+                      </>
+                      :
+                      <>
+                      <button onClick={()=>vote(0)}>Confirm</button>  
+                      <button onClick={()=>ModalVote()}>Cancel</button>
+                      </>
+                    }
+                    
+                  </div>
+                </div>
+              </div> 
+            </div>
+          </div> 
       <div className="coming_soon_modal">
         <div className="modal" id="comingSoon">
           <div className="modal-dialog modal-sm">
@@ -554,14 +642,31 @@ const CheckContractAddress =(address)=>{
 export async function getServerSideProps({query, req}) { 
 
   // const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
-
+  const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
+  const token_id = query.token_id
+  var reqConfig = config 
+  if(userAgent.user_token)
+  {
+    reqConfig = {
+      headers : {
+        "token": userAgent.user_token,
+        "X-API-KEY": "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS"
+      }
+    } 
+  } 
+  const tokenQuery = await fetch(API_BASE_URL+"listing_tokens/individual_details/"+token_id, reqConfig)
+  const tokenQueryRun = await tokenQuery.json() 
+  if(tokenQueryRun.status)
+  {
+    return { props: {data_new: tokenQueryRun.message,token_id}}
+  }
   return await fetch(API_BASE_URL+"listing_tokens/tokens_list", config)
               .then(res => res.json())
               .then(result => { 
 
                 if(result.status)
                 {  
-                  return { props: {post: result.message}}
+                  return { props: {post: result.message,userAgent:userAgent,reqConfig}}
                 }
                 else
                 {
