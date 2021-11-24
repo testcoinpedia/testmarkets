@@ -28,6 +28,7 @@ function TokenDetails(props) {
 
   const [checked, set_checked] = useState(false) 
   const [live_price, setLivePrice] = useState("")
+  const [live_price_pair, setLivePricePair] = useState("")
   const [price_change_24h, set_priceChange24H] = useState("") 
   const [contract_24h_volume,set_contract_24h_volume]=useState(0)  
   const [tokentransactions, set_tokentransactions]= useState([])
@@ -159,81 +160,16 @@ function TokenDetails(props) {
               })
               .catch(console.error);
   } 
-  // const getexchangedata=(id)=> { 
-  //   const query = `
-  //     query {
-  //       ethereum(network: bsc) {
-  //         dexTrades(
-  //           quoteCurrency: {is: "`+id+`"}
-  //           options: {desc: ["tradeAmount","trades"] limit: 100}
-  //           date: {after: "2021-11-19"}
-  //         ) {
-  //           poolToken: smartContract {
-  //             address {
-  //               address
-  //             }
-  //           }
-  //           exchange {
-  //             fullName
-  //           }
-  //           pair:baseCurrency {
-  //             symbol
-  //             address
-  //             name
-  //           }
-  //           trades: count
-  //           tradeAmount(in: USD)
-  //         }
-  //       }
-  //     }
-  //         ` ;
 
-  //   const url = "https://graphql.bitquery.io/";
-  //   const opts = {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
-  //     },
-  //     body: JSON.stringify({
-  //       query
-  //     })
-  //   };
-  //   fetch(url, opts)
-  //     .then(res => res.json())
-  //     .then(result => {
-  //       if (result.data.ethereum != null) { 
-  //         console.log(result.data.ethereum)
-  //         set_exchange_list_new(result.data.ethereum.dexTrades)
-  //       //   let ele=exchangelistnew.map((e, i) =>{
-  //       //     return<tr key={i}>
-  //       //       <td title= {e.poolToken.address.address}>{e.exchange.fullName}</td>
-  //       //       <td title={e.pair.address}>{e.pair.name}/{symbol}</td>
-  //       //       <td></td>
-  //       //       <td></td>
-  //       //       <td></td>
-  //       //      </tr>
-  //       // })
-  //       //   set_element(ele)
-  //       //   console.log(ele)
-          
-  //         // set_contract_address_new(result.data.ethereum.dexTrades.pair)
-  //         // set_address(result.data.ethereum.dexTrades.poolToken)
-  //         // getexchangevalue()
-  //         // console.log(contract_address_new)
-          
-  //       }
-  //     })
-  //     .catch(console.error);
-  // }
   const getexchangedata= async (id)=> { 
+    const dateSince =((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString())
     const query = `
       query {
         ethereum(network: bsc) {
           dexTrades(
             quoteCurrency: {is: "`+id+`"}
             options: {desc: ["tradeAmount","trades"] limit: 100}
-            date: {after: "2021-11-19"}
+            date: {after: "`+dateSince+`"}
           ) {
             poolToken: smartContract {
               address {
@@ -269,15 +205,16 @@ function TokenDetails(props) {
     
     const resultArray = new Array()
     var response1 = 0
-    var response2 = 0
+    var pair_two_value_in_Usd=0
+    var pair_one_value_in_usd=0
     const res=await fetch(url, opts)
      const result = await res.json()
         if (result.data.ethereum) { 
-         // console.log(result.data.ethereum)
-         // set_exchange_list_new(result.data.ethereum.dexTrades)
+        
          var request_API_Status = false
           if(result.data.ethereum.dexTrades)
-          {
+          { 
+            console.log("dexTrades", result.data.ethereum.dexTrades)
             result.data.ethereum.dexTrades.map(async (item,i) => 
             {
               var createObj = {}
@@ -285,32 +222,43 @@ function TokenDetails(props) {
               createObj['pair_one_name'] = item.pair.name
               createObj['exchange_address']=item.poolToken.address.address
               createObj['pair_one_token_address']=item.pair.address
-              response1 = await getexchangevalue(id, item.poolToken.address.address,item.pair.address)
+              response1 = await getexchangevalue( item.poolToken.address.address)
                if(response1)
               {
-                response1.map((e)=>{
+                response1.map(async(e)=>{
                        if(item.pair.address==e.currency.address){
                         createObj['pair_one_value']=e.value
+                        var res =await livePrice(item.pair.address)
+                        console.log(item.pair.name, res)
+                        createObj['pair_one_live_price']=res
+                        pair_one_value_in_usd = e.value*res
+                       // console.log(pair_one_value_in_usd)
                           
                        }
                        if(id.toLowerCase() ==e.currency.address){
+                       
                         createObj['pair_two_value']=e.value
-                        
+                        //var result =await livePrice( id)
+                        //console.log(result)
+                        pair_two_value_in_Usd = e.value*live_price
+                        //console.log(pair_two_value_in_Usd)
                       }
+                      createObj['liquidity_in_pool']=pair_one_value_in_usd
                 })
               }
+              
               await resultArray.push(createObj) 
               set_exchange_list_new(resultArray)
-
+              //console.log(resultArray)
               var reqObj = {
                 contract_address:id,
                 network_type:"bsc",
                 exchanges: [createObj]
               }
-              console.log('req Obj',reqObj)
+              //console.log('req Obj',reqObj)
               const config = { headers: { "Content-Type": "application/json" } }
               const sadfdsf = await Axios.post(constant.API_DIGITALOCEAN_URL+"tokens/exchanges_save_data", reqObj, config) 
-              console.log("Api Response", sadfdsf)
+              //console.log("Api Response", sadfdsf)
             })
               
               
@@ -321,22 +269,78 @@ function TokenDetails(props) {
       
       
   }
-  const getexchangelist =()=>
+  const livePrice =async(id)=>
   { 
-    let ele = exchangelistnew.map((e, i) => {
-        return <tr key={i}>
-          <td title= {e.poolToken.address.address}>{e.exchange.fullName}</td>
-          <td title={e.pair.address}>{e.pair.name}/{symbol}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-    })
-      set_element(ele)
-     // console.log(ele)
+    const dateSince = ((new Date()).toISOString())
+    const query = `
+    query
+    {
+      ethereum(network: bsc) {
+        dexTrades(
+          date: {since: "` + dateSince + `"}
+          any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}}, {baseCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}, quoteCurrency: {is: "0xe9e7cea3dedca5984780bafc599bd69add087d56"}}]
+          options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
+        ) {
+          baseCurrency {
+            symbol
+          }
+          block {
+            height
+          }
+          transaction {
+            index
+          }
     
+          quoteCurrency {
+            symbol
+          }
+          quote: quotePrice
+        }
+      }
+    }
+` ;
+const url = "https://graphql.bitquery.io/";
+  const opts = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+    },
+    body: JSON.stringify({
+      query
+    })
+  };
+  const res=await fetch(url, opts)
+     const result = await res.json()
+     
+      if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
+      { 
+        console.log(result.data.ethereum.dexTrades)
+        
+        if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c")
+        {
+          return result.data.ethereum.dexTrades[0].quote
+        }
+        else
+        {
+          if(result.data.ethereum.dexTrades.length == 1)
+          {
+            return result.data.ethereum.dexTrades[0].quote
+          }
+          else if(result.data.ethereum.dexTrades.length == 2)
+          {
+            return result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote
+          }
+          else
+          {
+            return 0
+          }
+        }
+      } 
+
   } 
-  const getexchangevalue = async (contract_address_new,pool_token_address,pair_address)=>
+       
+  const getexchangevalue = async (pool_token_address)=>
   { 
     const query = `
       query {
@@ -367,15 +371,16 @@ function TokenDetails(props) {
         query
       })
     };
-    console.log("ghbjh")
+    
     const res=await fetch(url, opts)
      const result = await res.json()
         if (result.data.ethereum) {
          if(result.data.ethereum.address)
           {
-            //console.log(result.data.ethereum.address)
+           
             if(result.data.ethereum.address[0].balances)
             {
+              console.log("pool_token_address", result.data.ethereum.address[0].balances)
               return result.data.ethereum.address[0].balances
             }
           }
@@ -702,12 +707,13 @@ function TokenDetails(props) {
             getTokendetails(id, result.data.ethereum.dexTrades[0].quote) 
             get24hChange(result.data.ethereum.dexTrades[0].quote) 
             setLivePrice(result.data.ethereum.dexTrades[0].quote) 
+            setLivePricePair(result.data.ethereum.dexTrades[0].quote)
           }
           else{
             getTokendetails(id, result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) 
             get24hChange(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) 
             setLivePrice(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) 
-
+            setLivePricePair(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote)
           }
  
         }  
@@ -963,11 +969,11 @@ function TokenDetails(props) {
   useEffect(()=>{   
     
     set_search_contract_address(contract_address)
-    getexchangedata(contract_address)
+    
     getTokenUsdPrice(contract_address)
     get24hVolume(contract_address) 
     getGraphData(4, isBNB, dxSale, contract_address)     
-    
+    getexchangedata(contract_address)
     if(localStorage.getItem("walletconnectedtype") === "1"){
       getBEPAccountDetails(0) 
       getETHAccountDetails(0) 
@@ -2087,6 +2093,7 @@ const connectToEthWallet=()=>
                               <tr>
                                   <th>Exchange</th>
                                   <th>Pairs</th>
+                                  <th>Liquidity in Pool</th>
                                   <th>Trades Count</th>
                                   <th>Takers</th>
                                   <th>Makers</th>
@@ -2101,6 +2108,12 @@ const connectToEthWallet=()=>
                                       return <tr key={i}>
                                         <td title= {e.exchange_address}>{e.exchange_name}</td>
                                         <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({constant.separator(e.pair_one_value.toFixed(3))}) / ({constant.separator(e.pair_two_value.toFixed(3))})</span> </td>
+                                        {
+                                          e.pair_one_token_address== "0x3ff997eaea488a082fb7efc8e6b9951990d0c3ab"?
+                                          "--"
+                                          :<td>${constant.separator(e.liquidity_in_pool+(e.pair_two_value*live_price))} </td>
+                                        }
+                                        {/* <td>${constant.separator(e.liquidity_in_pool+(e.pair_two_value*live_price))} </td> */}
                                         <td>--</td>
                                         <td>--</td>
                                         <td>--</td>

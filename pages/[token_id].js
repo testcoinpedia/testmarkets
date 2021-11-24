@@ -34,20 +34,19 @@ export default function LauchPadDetails({errorCode, data, token_id, paymentTypes
     const explorerRef = useRef(null);
     const contractRef = useRef(null);  
     const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")     
-   
+    const [symbol] = useState(data.symbol)
     const [user_token]= useState(userAgent.user_token)
     const [wallet_data, setWalletData] = useState([]); 
     const [perPage] = useState(10);
     const [walletspageCount, setWalletsPageCount] = useState(0) ; 
     const [current_url]= useState(website_url+token_id)
-    
+    const [exchangelistnew, set_exchange_list_new]= useState([])
     const [exchangelist, set_exchangelist]= useState([])
     const [exchangelistData, set_exchangelistdata]= useState([])
     const [exchangesPageCount, setExchnagesPageCount] = useState(0)
     const [exchangesCurrentPage , setExchangesCurrentPage] = useState(0)
     const [circulating_supply , setcirculating_supply] = useState(0)
     const [token_max_supply , settoken_max_supply] = useState(0)
-    
     const [tokentransactions, set_tokentransactions]= useState([])
     const [tokentransactionsData, set_tokentransactionsdata]= useState([])
     const [tokentransactionsPageCount, settokentransactionsPageCount] = useState(0)
@@ -731,10 +730,10 @@ useEffect(()=>{
   }  
 
   if(data.contract_addresses.length > 0){ 
-    
+    getexchangedata(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
     get24hVolume(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
     getTokenTransactions(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
-    getTokenexchange(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
+    //getTokenexchange(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
     getGraphData(4, data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)     
     getTokenUsdPrice(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
     // console.log(data.contract_addresses[0].contract_address)
@@ -765,7 +764,197 @@ const handleClickOutside = event => {
  
   
 };
+const getexchangedata= async (id,networks)=> { 
+  let query = "" 
+  if(networks === "1"){
+   query = `
+    query {
+      ethereum(network: ethereum) {
+        dexTrades(
+          quoteCurrency: {is: "`+id+`"}
+          options: {desc: ["tradeAmount","trades"] limit: 100}
+          date: {after: "2021-11-19"}
+        ) {
+          poolToken: smartContract {
+            address {
+              address
+            }
+          }
+          exchange {
+            fullName
+          }
+          pair:baseCurrency {
+            symbol
+            address
+            name
+          }
+          trades: count
+          tradeAmount(in: USD)
+        }
+      }
+    }
+        ` ;
+  }
+  else{
+     query = `
+    query {
+      ethereum(network: bsc) {
+        dexTrades(
+          quoteCurrency: {is: "`+id+`"}
+          options: {desc: ["tradeAmount","trades"] limit: 100}
+          date: {after: "2021-11-19"}
+        ) {
+          poolToken: smartContract {
+            address {
+              address
+            }
+          }
+          exchange {
+            fullName
+          }
+          pair:baseCurrency {
+            symbol
+            address
+            name
+          }
+          trades: count
+          tradeAmount(in: USD)
+        }
+      }
+    }
+        ` ;
+  }
+  const url = "https://graphql.bitquery.io/";
+  const opts = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+    },
+    body: JSON.stringify({
+      query
+    })
+  };
+  
+  const resultArray = new Array()
+  var response1 = 0
+  var response2 = 0
+  const res=await fetch(url, opts)
+   const result = await res.json()
+      if (result.data.ethereum) { 
+       // console.log(result.data.ethereum)
+       // set_exchange_list_new(result.data.ethereum.dexTrades)
+       var request_API_Status = false
+        if(result.data.ethereum.dexTrades)
+        {
+          result.data.ethereum.dexTrades.map(async (item,i) => 
+          {
+            var createObj = {}
+            createObj['exchange_name'] = item.exchange.fullName
+            createObj['pair_one_name'] = item.pair.name
+            createObj['exchange_address']=item.poolToken.address.address
+            createObj['pair_one_token_address']=item.pair.address
+            response1 = await getexchangevalue( item.poolToken.address.address,networks)
+             if(response1)
+            {
+              response1.map((e)=>{
+                     if(item.pair.address==e.currency.address){
+                      createObj['pair_one_value']=e.value
+                        
+                     }
+                     if(id.toLowerCase() ==e.currency.address){
+                      createObj['pair_two_value']=e.value
+                      
+                    }
+              })
+            }
+            await resultArray.push(createObj) 
+            set_exchange_list_new(resultArray)
 
+            var reqObj = {
+              contract_address:id,
+              network_type:"bsc",
+              exchanges: [createObj]
+            }
+            console.log('req Obj',reqObj)
+            const config = { headers: { "Content-Type": "application/json" } }
+            const sadfdsf = await Axios.post(API_DIGITALOCEAN_URL+"tokens/exchanges_save_data", reqObj, config) 
+            console.log("Api Response", sadfdsf)
+          })
+            
+            
+            
+        }
+
+      }
+    
+    
+}
+const getexchangevalue = async (pool_token_address,networks)=>
+{ 
+  let query = "" 
+  if(networks === "1"){
+   query = `
+    query {
+      ethereum(network: ethereum) {
+      address(address: {is: "`+pool_token_address+`"}) {
+      balances {
+      value
+      currency {
+      address
+      symbol
+      tokenType
+      }
+      }
+      }
+      }
+      }
+        ` ;
+    }
+    else{
+       query = `
+    query {
+      ethereum(network: bsc) {
+      address(address: {is: "`+pool_token_address+`"}) {
+      balances {
+      value
+      currency {
+      address
+      symbol
+      tokenType
+      }
+      }
+      }
+      }
+      }
+        ` ;
+    }
+  var valuePairAddress=0
+  var valueAddress=0
+  const url = "https://graphql.bitquery.io/";
+  const opts = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+    },
+    body: JSON.stringify({
+      query
+    })
+  };
+  const res=await fetch(url, opts)
+   const result = await res.json()
+      if (result.data.ethereum) {
+       if(result.data.ethereum.address)
+        {
+         if(result.data.ethereum.address[0].balances)
+          {
+            return result.data.ethereum.address[0].balances
+          }
+        }
+      }
+  
+} 
 const getTokenUsdPrice=async(id, networks)=> {  
   
   let query = ""  
@@ -854,7 +1043,7 @@ const getTokenUsdPrice=async(id, networks)=> {
           getTokendetails(id, result.data.ethereum.dexTrades[0].quote, networks)
           setLivePrice(result.data.ethereum.dexTrades[0].quote) 
           get24hChange(result.data.ethereum.dexTrades[0].quote, id, networks)
-          
+         // set_symbol(result.data.ethereum.dexTrades[0].baseCurrency.symbol)
           saveTokenDetails(networks, id, result.data.ethereum.dexTrades[0].quote)
           
         }
@@ -2799,7 +2988,7 @@ const connectToEthWallet=()=>
                         </div>
 
                         <div id="home" className="tab-pane fade">
-                          <h4>Exchange</h4>
+                          {/* <h4>Exchange</h4>
                           <div className="table-responsive">
                             <table className="table table-borderless">
                                 <thead>
@@ -2824,7 +3013,45 @@ const connectToEthWallet=()=>
                                         } 
                                       </tbody>
                             </table>
-                          </div>
+                          </div> */}
+                       
+                      <div className="table-responsive">
+                        <table className="table table-borderless">
+                            <thead>
+                              <tr>
+                                  <th>Exchange</th>
+                                  <th>Pairs</th>
+                                  <th>Trades Count</th>
+                                  <th>Takers</th>
+                                  <th>Makers</th>
+                                  <th>Amount</th>
+                              </tr>
+                            </thead>
+                              {
+                               
+                                <tbody>
+                                  {
+                                    exchangelistnew.map((e, i) => {
+                                      return <tr key={i}>
+                                        <td title= {e.exchange_address}>{e.exchange_name}</td>
+                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({separator(e.pair_one_value.toFixed(3))}) / ({separator(e.pair_two_value.toFixed(3))})</span> </td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                      </tr>
+                                    } )
+                                    
+                                    
+                                  }
+                                  </tbody>
+
+
+                                
+                              }
+                        </table>
+                      </div>
+                      
     
                         {
                             exchangelist.length > 10

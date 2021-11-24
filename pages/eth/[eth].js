@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import Web3 from 'web3'
 import Switch from "react-switch";   
 import Head from 'next/head'; 
+import Axios from 'axios'
 import moment from 'moment'
 import Link from 'next/link'
 import Datetime from "react-datetime"
@@ -28,6 +29,7 @@ function TokenDetails(props) {
 
   const [checked, set_checked] = useState(false) 
   const [symbol] = useState(props.post.smartContract.currency.symbol)
+  const [exchangelistnew, set_exchange_list_new]= useState([])
   const [live_price, setLivePrice] = useState("")
   const [price_change_24h, set_priceChange24H] = useState("") 
   const [contract_24h_volume,set_contract_24h_volume]=useState(0)  
@@ -82,7 +84,150 @@ const valid2=(current)=>
 {    
   return current.isBefore(yesterday)
 }
+const getexchangedata= async (id)=> { 
+  const query = `
+    query {
+      ethereum(network: ethereum) {
+        dexTrades(
+          quoteCurrency: {is: "`+id+`"}
+          options: {desc: ["tradeAmount","trades"] limit: 100}
+          date: {after: "2021-11-19"}
+        ) {
+          poolToken: smartContract {
+            address {
+              address
+            }
+          }
+          exchange {
+            fullName
+          }
+          pair:baseCurrency {
+            symbol
+            address
+            name
+          }
+          trades: count
+          tradeAmount(in: USD)
+        }
+      }
+    }
+        ` ;
+
+  const url = "https://graphql.bitquery.io/";
+  const opts = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+    },
+    body: JSON.stringify({
+      query
+    })
+  };
   
+  const resultArray = new Array()
+  var response1 = 0
+  var response2 = 0
+  const res=await fetch(url, opts)
+   const result = await res.json()
+      if (result.data.ethereum) { 
+       // console.log(result.data.ethereum)
+       // set_exchange_list_new(result.data.ethereum.dexTrades)
+       var request_API_Status = false
+        if(result.data.ethereum.dexTrades)
+        {
+          result.data.ethereum.dexTrades.map(async (item,i) => 
+          {
+            var createObj = {}
+            createObj['exchange_name'] = item.exchange.fullName
+            createObj['pair_one_name'] = item.pair.name
+            createObj['exchange_address']=item.poolToken.address.address
+            createObj['pair_one_token_address']=item.pair.address
+            response1 = await getexchangevalue( item.poolToken.address.address)
+             if(response1)
+            {
+              response1.map((e)=>{
+                     if(item.pair.address==e.currency.address){
+                      createObj['pair_one_value']=e.value
+                        
+                     }
+                     if(id.toLowerCase() ==e.currency.address){
+                      createObj['pair_two_value']=e.value
+                      
+                    }
+              })
+            }
+            await resultArray.push(createObj) 
+            set_exchange_list_new(resultArray)
+
+            var reqObj = {
+              contract_address:id,
+              network_type:"bsc",
+              exchanges: [createObj]
+            }
+            console.log('req Obj',reqObj)
+            const config = { headers: { "Content-Type": "application/json" } }
+            const sadfdsf = await Axios.post(constant.API_DIGITALOCEAN_URL+"tokens/exchanges_save_data", reqObj, config) 
+            console.log("Api Response", sadfdsf)
+          })
+            
+            
+            
+        }
+
+      }
+    
+    
+}
+const getexchangevalue = async (pool_token_address)=>
+  { 
+    const query = `
+      query {
+        ethereum(network: ethereum) {
+        address(address: {is: "`+pool_token_address+`"}) {
+        balances {
+        value
+        currency {
+        address
+        symbol
+        tokenType
+        }
+        }
+        }
+        }
+        }
+          ` ;
+    var valuePairAddress=0
+    var valueAddress=0
+    const url = "https://graphql.bitquery.io/";
+    const opts = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+      },
+      body: JSON.stringify({
+        query
+      })
+    };
+   
+    const res=await fetch(url, opts)
+     const result = await res.json()
+        if (result.data.ethereum) {
+         if(result.data.ethereum.address)
+          {
+            
+            if(result.data.ethereum.address[0].balances)
+            {
+              return result.data.ethereum.address[0].balances
+            }
+          }
+        }
+    
+   
+  
+    
+  } 
   const getTokenTransactions=(id)=>{ 
     const dateSince = ((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString()) 
     const query = `
@@ -707,7 +852,7 @@ const valid2=(current)=>
     getTokendetails(window.location.pathname.substring(5))
     getTokenexchange(window.location.pathname.substring(5), 0)
     getTokenTransactions(window.location.pathname.substring(5))
-
+    getexchangedata(window.location.pathname.substring(5))
     getGraphData(4, isBNB, window.location.pathname.substring(5))  
     getTokenUsdPrice(window.location.pathname.substring(5))
     get24hVolume(window.location.pathname.substring(5)) 
@@ -1729,7 +1874,7 @@ const CheckContractAddress =(address)=>{
                       </div> 
                       <div id="home" className="tab-pane fade ">
                       <div className="table-responsive">
-                        <table className="table table-borderless">
+                        {/* <table className="table table-borderless">
                             <thead>
                               <tr>
                                   <th>Exchange</th>
@@ -1753,6 +1898,40 @@ const CheckContractAddress =(address)=>{
                                 </tbody>
                                 :
                                 null
+                              }
+                        </table> */}
+                        <table className="table table-borderless">
+                            <thead>
+                              <tr>
+                                  <th>Exchange</th>
+                                  <th>Pairs</th>
+                                  <th>Trades Count</th>
+                                  <th>Takers</th>
+                                  <th>Makers</th>
+                                  <th>Amount</th>
+                              </tr>
+                            </thead>
+                              {
+                               
+                                <tbody>
+                                  {
+                                    exchangelistnew.map((e, i) => {
+                                      return <tr key={i}>
+                                        <td title= {e.exchange_address}>{e.exchange_name}</td>
+                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({constant.separator(e.pair_one_value.toFixed(3))}) / ({constant.separator(e.pair_two_value.toFixed(3))})</span> </td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                        <td>--</td>
+                                      </tr>
+                                    } )
+                                    
+                                    
+                                  }
+                                  </tbody>
+
+
+                                
                               }
                         </table>
                         {

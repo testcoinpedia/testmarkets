@@ -9,7 +9,7 @@ import TableContentLoader from '../components/loaders/tableLoader'
 import { API_BASE_URL, config, separator, website_url, app_coinpedia_url} from '../components/constants'; 
 var $ = require( "jquery" );
 
-export default function Home({post,userAgent,data_new,reqConfig}) { 
+export default function Home({post,userAgent,reqConfig}) { 
   const [user_token]= useState(userAgent.user_token)  
   const [data, setData] = useState([]); 
   const [pageCount, setPageCount] = useState(Math.ceil(post.length / 15))
@@ -643,7 +643,6 @@ export async function getServerSideProps({query, req}) {
 
   // const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
-  const token_id = query.token_id
   var reqConfig = config 
   if(userAgent.user_token)
   {
@@ -654,12 +653,7 @@ export async function getServerSideProps({query, req}) {
       }
     } 
   } 
-  const tokenQuery = await fetch(API_BASE_URL+"listing_tokens/individual_details/"+token_id, reqConfig)
-  const tokenQueryRun = await tokenQuery.json() 
-  if(tokenQueryRun.status)
-  {
-    return { props: {data_new: tokenQueryRun.message,token_id}}
-  }
+ 
   return await fetch(API_BASE_URL+"listing_tokens/tokens_list", config)
               .then(res => res.json())
               .then(result => { 
