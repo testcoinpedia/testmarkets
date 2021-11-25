@@ -238,10 +238,8 @@ function TokenDetails(props) {
                        if(id.toLowerCase() ==e.currency.address){
                        
                         createObj['pair_two_value']=e.value
-                        //var result =await livePrice( id)
-                        //console.log(result)
                         pair_two_value_in_Usd = e.value*live_price
-                        //console.log(pair_two_value_in_Usd)
+                        
                       }
                       createObj['liquidity_in_pool']=pair_one_value_in_usd
                 })
@@ -249,16 +247,16 @@ function TokenDetails(props) {
               
               await resultArray.push(createObj) 
               set_exchange_list_new(resultArray)
-              //console.log(resultArray)
+             
               var reqObj = {
                 contract_address:id,
                 network_type:"bsc",
                 exchanges: [createObj]
               }
-              //console.log('req Obj',reqObj)
+              
               const config = { headers: { "Content-Type": "application/json" } }
               const sadfdsf = await Axios.post(constant.API_DIGITALOCEAN_URL+"tokens/exchanges_save_data", reqObj, config) 
-              //console.log("Api Response", sadfdsf)
+              
             })
               
               

@@ -85,13 +85,14 @@ const valid2=(current)=>
   return current.isBefore(yesterday)
 }
 const getexchangedata= async (id)=> { 
+  const dateSince =((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString())
   const query = `
     query {
       ethereum(network: ethereum) {
         dexTrades(
           quoteCurrency: {is: "`+id+`"}
           options: {desc: ["tradeAmount","trades"] limit: 100}
-          date: {after: "2021-11-19"}
+          date: {after: "`+dateSince+`"}
         ) {
           poolToken: smartContract {
             address {
@@ -127,7 +128,8 @@ const getexchangedata= async (id)=> {
   
   const resultArray = new Array()
   var response1 = 0
-  var response2 = 0
+  var pair_two_value_in_Usd=0
+  var pair_one_value_in_usd=0
   const res=await fetch(url, opts)
    const result = await res.json()
       if (result.data.ethereum) { 
@@ -146,14 +148,19 @@ const getexchangedata= async (id)=> {
             response1 = await getexchangevalue( item.poolToken.address.address)
              if(response1)
             {
-              response1.map((e)=>{
+              response1.map(async(e)=>{
                      if(item.pair.address==e.currency.address){
                       createObj['pair_one_value']=e.value
+                      var res =await livePrice(item.pair.address)
+                        console.log(item.pair.name, res)
+                        createObj['pair_one_live_price']=res
+                        pair_one_value_in_usd = e.value*res
                         
                      }
                      if(id.toLowerCase() ==e.currency.address){
                       createObj['pair_two_value']=e.value
-                      
+                      pair_two_value_in_Usd = e.value*live_price
+                      console.log(pair_two_value_in_Usd)
                     }
               })
             }
@@ -179,6 +186,76 @@ const getexchangedata= async (id)=> {
     
     
 }
+const livePrice =async(id)=>
+  { 
+    const dateSince = ((new Date()).toISOString())
+    const query = `
+    query
+    {
+      ethereum(network:ethereum ) {
+        dexTrades(
+          date: {since: "` + dateSince + `"}
+          any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}, {baseCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}, quoteCurrency: {is: "0xdac17f958d2ee523a2206206994597c13d831ec7"}}]
+          options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
+        ) {
+          baseCurrency {
+            symbol
+          }
+          block {
+            height
+          }
+          transaction {
+            index
+          }
+    
+          quoteCurrency {
+            symbol
+          }
+          quote: quotePrice
+        }
+      }
+    }
+` ;
+const url = "https://graphql.bitquery.io/";
+  const opts = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+    },
+    body: JSON.stringify({
+      query
+    })
+  };
+  const res=await fetch(url, opts)
+     const result = await res.json()
+     
+      if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
+      { 
+        console.log(result.data.ethereum.dexTrades)
+        
+        if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c")
+        {
+          return result.data.ethereum.dexTrades[0].quote
+        }
+        else
+        {
+          if(result.data.ethereum.dexTrades.length == 1)
+          {
+            return result.data.ethereum.dexTrades[0].quote
+          }
+          else if(result.data.ethereum.dexTrades.length == 2)
+          {
+            return result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote
+          }
+          else
+          {
+            return 0
+          }
+        }
+      } 
+
+  }
 const getexchangevalue = async (pool_token_address)=>
   { 
     const query = `
@@ -1758,7 +1835,7 @@ const CheckContractAddress =(address)=>{
                         <li>
                           <div className="wallets__details">
                             <div className="wallets__info">Crypto Market Cap</div>
-                            <div className="wallets__number h5">${market_cap ? constant.separator(market_cap.toFixed(4)): null}</div>
+                            <div className="wallets__number h5">{market_cap?"$":null}{market_cap ? constant.separator(market_cap.toFixed(4)): "NA"}</div>
                           </div>
                         </li>
                         <li>
@@ -1905,6 +1982,7 @@ const CheckContractAddress =(address)=>{
                               <tr>
                                   <th>Exchange</th>
                                   <th>Pairs</th>
+                                  <th>Liquidity in Pool</th>
                                   <th>Trades Count</th>
                                   <th>Takers</th>
                                   <th>Makers</th>
@@ -1919,6 +1997,8 @@ const CheckContractAddress =(address)=>{
                                       return <tr key={i}>
                                         <td title= {e.exchange_address}>{e.exchange_name}</td>
                                         <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({constant.separator(e.pair_one_value.toFixed(3))}) / ({constant.separator(e.pair_two_value.toFixed(3))})</span> </td>
+                                        {/* <td>${constant.separator(e.liquidity_in_pool+(e.pair_two_value*live_price))} </td> */}
+                                        <td>--</td>
                                         <td>--</td>
                                         <td>--</td>
                                         <td>--</td>
@@ -1934,7 +2014,7 @@ const CheckContractAddress =(address)=>{
                                 
                               }
                         </table>
-                        {
+                        {/* {
                           pageCount > 0
                           ?   
                             <div className="pager__list pagination_element"> 
@@ -1953,7 +2033,7 @@ const CheckContractAddress =(address)=>{
                             </div> 
                             :
                             null 
-                        }
+                        } */}
                       </div>
                       </div>
                       <div id="menu1" className="tab-pane fade in">

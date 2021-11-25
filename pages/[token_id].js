@@ -573,7 +573,8 @@ else{
 }
 const getTotalMaxSupply=(id,decimal,networktype)=>{
   if(networktype==1){
-    Axios.get("https://api.Etherscan.com/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=E9DBMPJU7N6FK7ZZDK86YR2EZ4K4YTHZJ1")
+   // https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0x57d90b64a1a57749b0f932f1a3395792e12e7055&apikey=YourApiKeyToken
+    Axios.get("https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=E9DBMPJU7N6FK7ZZDK86YR2EZ4K4YTHZJ1")
     .then(response=>{
           if(response.status){ 
             console.log(response) 
@@ -765,6 +766,7 @@ const handleClickOutside = event => {
   
 };
 const getexchangedata= async (id,networks)=> { 
+  const dateSince =((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString())
   let query = "" 
   if(networks === "1"){
    query = `
@@ -773,7 +775,7 @@ const getexchangedata= async (id,networks)=> {
         dexTrades(
           quoteCurrency: {is: "`+id+`"}
           options: {desc: ["tradeAmount","trades"] limit: 100}
-          date: {after: "2021-11-19"}
+          date: {after: "`+dateSince+`"}
         ) {
           poolToken: smartContract {
             address {
@@ -802,7 +804,7 @@ const getexchangedata= async (id,networks)=> {
         dexTrades(
           quoteCurrency: {is: "`+id+`"}
           options: {desc: ["tradeAmount","trades"] limit: 100}
-          date: {after: "2021-11-19"}
+          date: {after: "`+dateSince+`"}
         ) {
           poolToken: smartContract {
             address {
@@ -838,7 +840,8 @@ const getexchangedata= async (id,networks)=> {
   
   const resultArray = new Array()
   var response1 = 0
-  var response2 = 0
+  var pair_two_value_in_Usd=0
+  var pair_one_value_in_usd=0
   const res=await fetch(url, opts)
    const result = await res.json()
       if (result.data.ethereum) { 
@@ -857,15 +860,21 @@ const getexchangedata= async (id,networks)=> {
             response1 = await getexchangevalue( item.poolToken.address.address,networks)
              if(response1)
             {
-              response1.map((e)=>{
+              response1.map(async (e)=>{
                      if(item.pair.address==e.currency.address){
                       createObj['pair_one_value']=e.value
+                      var res =await livePrice(item.pair.address,networks)
+                        console.log(item.pair.name, res)
+                        createObj['pair_one_live_price']=res
+                        pair_one_value_in_usd = e.value*res
                         
                      }
                      if(id.toLowerCase() ==e.currency.address){
                       createObj['pair_two_value']=e.value
+                      pair_two_value_in_Usd = e.value*live_price
                       
                     }
+                    createObj['liquidity_in_pool']=pair_one_value_in_usd
               })
             }
             await resultArray.push(createObj) 
@@ -890,6 +899,109 @@ const getexchangedata= async (id,networks)=> {
     
     
 }
+const livePrice =async(id,networks)=>
+  { 
+    const dateSince = ((new Date()).toISOString())
+    let query = "" 
+   if(networks === "1"){
+    
+     query = `
+    query
+    {
+      ethereum(network: ethereum) {
+        dexTrades(
+          date: {since: "` + dateSince + `"}
+          any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}, {baseCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}, quoteCurrency: {is: "0xdac17f958d2ee523a2206206994597c13d831ec7"}}]
+          options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
+        ) {
+          baseCurrency {
+            symbol
+          }
+          block {
+            height
+          }
+          transaction {
+            index
+          }
+    
+          quoteCurrency {
+            symbol
+          }
+          quote: quotePrice
+        }
+      }
+    }
+` ;
+  }
+  else{
+    query = `
+    query
+    {
+      ethereum(network: bsc) {
+        dexTrades(
+          date: {since: "` + dateSince + `"}
+          any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}}, {baseCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}, quoteCurrency: {is: "0xe9e7cea3dedca5984780bafc599bd69add087d56"}}]
+          options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
+        ) {
+          baseCurrency {
+            symbol
+          }
+          block {
+            height
+          }
+          transaction {
+            index
+          }
+    
+          quoteCurrency {
+            symbol
+          }
+          quote: quotePrice
+        }
+      }
+    }
+` ;
+  }
+const url = "https://graphql.bitquery.io/";
+  const opts = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+    },
+    body: JSON.stringify({
+      query
+    })
+  };
+  const res=await fetch(url, opts)
+     const result = await res.json()
+     
+      if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
+      { 
+        console.log(result.data.ethereum.dexTrades)
+        
+        if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c")
+        {
+          return result.data.ethereum.dexTrades[0].quote
+        }
+        else
+        {
+          if(result.data.ethereum.dexTrades.length == 1)
+          {
+            return result.data.ethereum.dexTrades[0].quote
+          }
+          else if(result.data.ethereum.dexTrades.length == 2)
+          {
+            return result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote
+          }
+          else
+          {
+            return 0
+          }
+        }
+      } 
+
+  } 
 const getexchangevalue = async (pool_token_address,networks)=>
 { 
   let query = "" 
@@ -3021,6 +3133,7 @@ const connectToEthWallet=()=>
                               <tr>
                                   <th>Exchange</th>
                                   <th>Pairs</th>
+                                  <th>Liquidity in Pool</th>
                                   <th>Trades Count</th>
                                   <th>Takers</th>
                                   <th>Makers</th>
@@ -3035,6 +3148,11 @@ const connectToEthWallet=()=>
                                       return <tr key={i}>
                                         <td title= {e.exchange_address}>{e.exchange_name}</td>
                                         <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({separator(e.pair_one_value.toFixed(3))}) / ({separator(e.pair_two_value.toFixed(3))})</span> </td>
+                                        {
+                                          e.pair_one_token_address== "0x3ff997eaea488a082fb7efc8e6b9951990d0c3ab"?
+                                          "--"
+                                          :<td>${separator(e.liquidity_in_pool+(e.pair_two_value*live_price))} </td>
+                                        }
                                         <td>--</td>
                                         <td>--</td>
                                         <td>--</td>

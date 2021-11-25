@@ -12,6 +12,7 @@ var $ = require( "jquery" );
 export default function Home({post,userAgent,reqConfig}) { 
   const [user_token]= useState(userAgent.user_token)  
   const [data, setData] = useState([]); 
+ 
   const [pageCount, setPageCount] = useState(Math.ceil(post.length / 15))
   const [firstcount, setfirstcount] = useState(1)
   const [finalcount, setfinalcount] = useState(15)
@@ -149,8 +150,37 @@ const Pages_Counts = (page_selected, length_value) =>
    setfinalcount(final_count)
 }
 const CheckContractAddress =(address)=>{
+  // for(const i of listData)
+  //   {
+  //     list.push({value: i.country_id, label: i.country_name})  
+  //   }
+    
   setvalidContractAddress("")
-
+  var status=true
+//   tokenslist.map((e)=>
+//   {
+//     e.contract_addresses.map((item)=>
+//     {
+//       if(address==item.contract_address)
+//       {
+//         status=false
+//         window.location.replace(website_url+e.token_id)
+//       }
+//    })
+//  })
+for(const i of tokenslist)
+    {
+      if(i.contract_addresses.length>0){
+      if(address==i.contract_addresses[0].contract_address) {
+        status=false
+         window.location.replace(website_url+i.token_id)
+         break
+      }
+      }
+    }
+ if(!status){
+   return
+ }
   let query = "";
 
   if(searchBy === "0"){
@@ -216,21 +246,23 @@ const CheckContractAddress =(address)=>{
     query: query, 
   })
   };
-
+ 
  return fetch(url, opts)
   .then(res => res.json())
   .then(result => {  
-    if(result.data.ethereum !== null){
+    if(result.data.ethereum !== null)
+    {
       if(result.data.ethereum.address[0].smartContract){
         if(result.data.ethereum.address[0].smartContract.currency){
-          if(searchBy === "0"){
-            window.location.replace(website_url+'eth/'+address)
-            // router.push('/eth/'+address)
-          }
-          else{
-            window.location.replace(website_url+'bsc/'+address)
-            // router.push('/bsc/'+address)
-          } 
+        if(searchBy === "0"){
+          window.location.replace(website_url+'eth/'+address)
+          // router.push('/eth/'+address)
+        }
+        else{
+          window.location.replace(website_url+'bsc/'+address)
+          // router.push('/bsc/'+address)
+        } 
+          
         }
         else{
           setvalidContractAddress("Contract address or network type is invalid.")
