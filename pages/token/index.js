@@ -1,7 +1,7 @@
 import React , {useState, useEffect} from 'react';  
 import Link from 'next/link' 
 import ReactPaginate from 'react-paginate';  
-import {x_api_key, API_BASE_URL, convertvalue, Logout, app_coinpedia_url, market_coinpedia_url } from '../../components/constants'; 
+import {x_api_key, API_BASE_URL, convertvalue, Logout, app_coinpedia_url, market_coinpedia_url ,config,IMAGE_BASE_URL,graphqlApiKEY} from '../../components/constants'; 
 import TableContentLoader from '../../components/loaders/tableLoader'
 import Web3 from 'web3'
 import moment from 'moment'
@@ -14,11 +14,9 @@ import { useRouter } from 'next/router'
 export default function WalletTokensList({userAgent, config}) 
  {
   const router = useRouter()
-  const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")
-   
   const [rejectreason, setRejectReason] = useState("")
   const [loader_status, set_loader_status]= useState(false)
-
+  const [image_base_url]=useState(IMAGE_BASE_URL+"/tokens/")
   const [pageCount, setPageCount] = useState(0)
   const [perPage] = useState(10)
   const [currentPage, setCurrentPage] = useState(0)
@@ -42,7 +40,7 @@ export default function WalletTokensList({userAgent, config})
     
     const getTokens=()=>
     {
-      Axios.get(API_BASE_URL+"listing_tokens/listed_tokens", config)
+      Axios.get(API_BASE_URL+"markets/listing_tokens/listed_tokens", config)
       .then(res => 
       {   
         if(res.data.status===true)
@@ -111,6 +109,7 @@ export default function WalletTokensList({userAgent, config})
 const getTokensCurrentList=(items, offset)=>
 {  
   const token_list = items.slice(offset, offset + perPage) 
+  console.log(token_list)
   const postData = token_list.map((e, i)=>
     <tr key={i}>
        <td>
@@ -122,8 +121,10 @@ const getTokensCurrentList=(items, offset)=>
             </div>
           </div>
         </td>
-        <td> ${e.token_max_supply ? convertvalue(parseFloat(e.token_max_supply).toFixed(2)) : "-"}</td>
-        <td> ${e.circulating_supply ? convertvalue(parseFloat(e.circulating_supply).toFixed(2)) : "-"} {e.symbol}</td>
+        {/* <td> ${e.token_max_supply ? convertvalue(parseFloat(e.token_max_supply).toFixed(2)) : "-"}</td>
+        <td> ${e.circulating_supply ? convertvalue(parseFloat(e.circulating_supply).toFixed(2)) : "-"} {e.symbol}</td> */}
+        <td> {e.total_max_supply ? convertvalue(parseFloat(e.total_max_supply).toFixed(2)) : "--"}</td>
+        <td> {e.market_cap ? convertvalue(parseFloat(e.market_cap).toFixed(2)) : "--"}</td>
         <td>
           {
               e.launch_pad_type === "1"
@@ -236,7 +237,7 @@ const getTokensCurrentList=(items, offset)=>
           <tr>
               <th className="table_token_name">Token</th>
               <th className="table_token_max_supply">Max Supply</th>
-              <th className="table_token_ciruclating_supply">Circulating Supply</th>
+              <th className="table_token_ciruclating_supply">Market Cap</th>
               <th className="table_token_launchpad_type">Launchpad Type</th>
               <th className="table_token_launchpad_date">Launchpad Date</th> 
               <th>Status</th> 
@@ -307,19 +308,14 @@ export async function getServerSideProps({req})
 {
   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
   var user_token = userAgent.user_token 
-  const config = {
-    headers: {
-      "X-API-KEY": x_api_key,
-      "token": user_token
-    }
-  }
+ 
 
   if(userAgent.user_token)
   {
     
       if(userAgent.user_email_status==1)
       {
-          return { props: { userAgent: userAgent, config: config}} 
+          return { props: { userAgent: userAgent, config: config(user_token)}} 
       }
       else
       {

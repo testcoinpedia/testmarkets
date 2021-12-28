@@ -338,6 +338,7 @@ export default function Topmenu()
                           <div className="dropdown-menu " aria-labelledby="navbarDropdown">
                             <ul>
                             <li><Link href={app_coinpedia_url+"companies"}><a className="dropdown-item">Companies</a></Link></li>
+                            <li><Link href={app_coinpedia_url+"partners"}><a className="dropdown-item">Partners</a></Link></li>
                             {/* <li><Link href="#"><a className="dropdown-item">Person</a></Link></li> */}
                             </ul>
                           </div>

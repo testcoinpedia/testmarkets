@@ -6,18 +6,19 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import cookie from 'cookie'
 import "react-datetime/css/react-datetime.css"
-import {x_api_key, API_BASE_URL, app_coinpedia_url, website_url} from '../../../components/constants'
+import {x_api_key, API_BASE_URL, app_coinpedia_url,config,website_url,graphqlApiKEY,IMAGE_BASE_URL} from '../../../components/constants'
 import Popupmodal from '../../../components/popupmodal' 
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Editor } from '@tinymce/tinymce-react';
 
+ 
 export default function UpdateToken({userAgent,config,token_id}) {  
 
   const editorRef = useRef(null);
   const router = useRouter()
    
-
+ console.log(token_id)
   const [wallet_address, setWalletAddress] = useState('') 
   const [contract_address, setContractAddress] = useState([])
   const [err_contract_address, setErrContractAddress] = useState("")
@@ -27,19 +28,20 @@ export default function UpdateToken({userAgent,config,token_id}) {
   const [website_link, setWebsiteLink] = useState("")
   const [whitepaper, setWhitepaper] = useState("")
   const [token_max_supply, setTokenMaxSupply] = useState("")
-  const [circulating_supply, setCirculatingSupply] = useState("") 
+  const [market_cap, setmarket_cap] = useState("") 
   const [token_description, setTokenDescription] = useState("")
   const [token_image, setTokenImage] = useState("")
+  const [disply_token_image, set_disply_token_image] = useState("")
   const [source_code_link, seSourceCodeLink] = useState("")
   const [imagebaseurl, setImageUrl] = useState("") 
-  const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/") 
+  const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/") 
   
   const [err_symbol, setErrSymbol] = useState('') 
   const [err_token_name, setErrTokenName] = useState('')
   const [err_website_link, setErrWebsiteLink] = useState('')
   const [err_whitepaper, setErrWhitepaper] = useState('')
   const [err_token_max_supply, setErrTokenMaxSupply] = useState('')
-  const [err_circulating_supply, setErrCirculatingSupply] = useState('') 
+  const [err_market_cap, setErrmarket_cap] = useState('') 
   const [err_token_description, setErrTokenDescription] = useState('')
   const [err_token_image, setErrTokenImage] = useState('')
 
@@ -156,7 +158,7 @@ const onLoad = useCallback((img) => {
     setErrWebsiteLink('')
     setErrWhitepaper('')
     setErrTokenMaxSupply('')
-    setErrCirculatingSupply('') 
+    setErrmarket_cap('') 
     setErrTokenDescription('')
     setErrTokenImage('') 
  
@@ -188,7 +190,7 @@ const onLoad = useCallback((img) => {
         list = "Contract address field is required"
         formValid = false
       }
-      else if((contract_address[0].contract_address).length !== 42){  
+      else if((contract_address[0].contract_address).length != 41){  
         list = "Contract address field must be equal to 34 digits"
         formValid = false
       }
@@ -208,7 +210,7 @@ const onLoad = useCallback((img) => {
         list = "Contract address field is required"
         formValid = false   
       }
-      else if((contract_address[1].contract_address).length !== 42){
+      else if((contract_address[1].contract_address).length !== 41){
         list = "Contract address field must be equal to 34 digits"
         formValid = false
       }
@@ -243,7 +245,7 @@ const onLoad = useCallback((img) => {
           list = "Contract address field is required"
           formValid = false
         }
-        else if((contract_address[0].contract_address).length !== 42){  
+        else if((contract_address[0].contract_address).length != 42){  
           list = "Contract address field must be equal to 34 digits"
           formValid = false
         }
@@ -320,37 +322,37 @@ const onLoad = useCallback((img) => {
       setExchangesList(exchanges_link)
     }  
     
-    if(token_max_supply === '')
-    {
-        setErrTokenMaxSupply('The token max supply field must contain only numbers.')
-        formValid = false
-    }
-    else if(token_max_supply.length < 1)
-    {
-        setErrTokenMaxSupply('The token max supply must be at least 2 characters.')
-        formValid = false
-    }
-    else if(token_max_supply.length > 24)
-    {
-        setErrTokenMaxSupply('The token max supply must be less than 24 characters in length.')
-        formValid = false
-    }
+    // if(token_max_supply === '')
+    // {
+    //     setErrTokenMaxSupply('The token max supply field must contain only numbers.')
+    //     formValid = false
+    // }
+    // else if(token_max_supply.length < 0)
+    // {
+    //     setErrTokenMaxSupply('The token max supply must be at least 2 characters.')
+    //     formValid = false
+    // }
+    // else if(token_max_supply.length > 24)
+    // {
+    //     setErrTokenMaxSupply('The token max supply must be less than 24 characters in length.')
+    //     formValid = false
+    // }
 
-    if(circulating_supply === '')
-    {
-        setErrCirculatingSupply('The circulating supply field is required.')
-        formValid = false
-    } 
-    else if(circulating_supply.length < 1)
-    {
-        setErrCirculatingSupply('The circulating supply must be at least 2 characters.')
-        formValid = false
-    }
-    else if(circulating_supply.length > 24)
-    {
-        setErrCirculatingSupply('The circulating supply must be less than 24 characters in length.')
-        formValid = false
-    }
+    // if(market_cap === '')
+    // {
+    //   setErrmarket_cap('The market cap field is required.')
+    //     formValid = false
+    // } 
+    // else if(market_cap.length < 1)
+    // {
+    //   setErrmarket_cap('The market cap must be at least 2 characters.')
+    //     formValid = false
+    // }
+    // else if(market_cap.length > 24)
+    // {
+    //   setErrmarket_cap('The market cap must be less than 24 characters in length.')
+    //     formValid = false
+    // }
 
     if(token_description === '')
     {
@@ -377,7 +379,7 @@ const onLoad = useCallback((img) => {
       website_link: website_link,
       whitepaper: whitepaper,
       token_max_supply: token_max_supply,
-      circulating_supply: circulating_supply, 
+      market_cap: market_cap, 
       token_description: token_description,
       source_code_link: source_code_link,
       explorer: explorer,
@@ -388,10 +390,14 @@ const onLoad = useCallback((img) => {
 
     if(formValid)
     { 
-      Axios.post(API_BASE_URL+"listing_tokens/update_token_details", reqObj, config)
-      .then(response=>{ 
+      
+      Axios.post(API_BASE_URL+"markets/listing_tokens/update_token_details/", reqObj, config)
+      .then(response=> { 
+        console.log(response)
         if(response.data.status)
         { 
+            setTokenImage("")
+            getTokenDetails() 
           // console.log(response.data)
           setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: response.data.message.alert_message})
         } 
@@ -409,7 +415,7 @@ const onLoad = useCallback((img) => {
   
           if(response.data.message.token_description)
           {  
-            setErrTokenDescription(response.data.message.circulating_supply)
+            setErrTokenDescription(response.data.message.market_cap)
           }
           
           if(response.data.message.token_max_supply)
@@ -417,21 +423,19 @@ const onLoad = useCallback((img) => {
             setErrTokenMaxSupply(response.data.message.token_max_supply)
           }
           
-          if(response.data.message.circulating_supply)
+          if(response.data.message.market_cap)
           {  
-            setErrCirculatingSupply(response.data.message.circulating_supply)
+            setErrmarket_cap(response.data.message.market_cap)
           }
           
           if(response.data.message.token_image)
           {  
             setErrTokenImage(response.data.message.token_image)
-          } 
-          
+          }  
           if(response.data.message.token_name)
           {
             setErrTokenName(response.data.message.token_name)
           } 
-   
         }
       })
     }
@@ -439,55 +443,67 @@ const onLoad = useCallback((img) => {
   }  
   
  
-  const getTokenDetails=(wallet_address)=>
+  const getTokenDetails=()=>
   {
   
-    Axios.get(API_BASE_URL+"listing_tokens/listed_individual_details/"+token_id, config)
+    Axios.get(API_BASE_URL+"markets/listing_tokens/individual_details/"+token_id, config)
     .then(response=>{
-      if(response.data.status){  
-        // console.log(response.data) 
+      if(response.data.status){ 
+      
+        console.log(response.data) 
         setContractAddress(response.data.message.contract_addresses)
         setErrContractAddress("")  
         setSymbol(response.data.message.symbol) 
         setTokenName(response.data.message.token_name)
         setWebsiteLink(response.data.message.website_link)
-        setWhitepaper(response.data.message.whitepaper)
-        setTokenMaxSupply(response.data.message.token_max_supply)
-        setCirculatingSupply(response.data.message.circulating_supply) 
+        setWhitepaper(response.data.message.whitepaper) 
+        setTokenMaxSupply(response.data.message.total_max_supply)
+        setmarket_cap(response.data.message.market_cap) 
         setTokenDescription(response.data.message.token_description)
         if(response.data.message.token_image)
         {
-          setTokenImage(image_base_url+response.data.message.token_image)
+          set_disply_token_image(image_base_url+response.data.message.token_image)
         }
         else{
-          setTokenImage(image_base_url+"default.png")
+          set_disply_token_image(image_base_url+"default.png")
         }
         
         seSourceCodeLink(response.data.message.source_code_link) 
         // setToken_id(response.data.message.token_id)
 
-        if(response.data.message.explorer.length < 1)
+        if(response.data.message.explorer)
         {
-          setExplorersList([""])
-        }
-        else
-        {
+          if(response.data.message.explorer.length < 1){
+            setExplorersList([""])
+          }
+          else
+         {
           setExplorersList(response.data.message.explorer)
+         }
+         
         }
+        
 
-        if(response.data.message.exchange_link.length < 1){
-          setExchangesList([""])
+        if(response.data.message.exchange_link){
+          if(response.data.message.exchange_link.length < 1){
+            setExchangesList([""])
+          }
+          else{
+            setExchangesList(response.data.message.exchange_link)
+          }
+          
         }
-        else{
-          setExchangesList(response.data.message.exchange_link)
-        }
+        
 
-        if(response.data.message.community_address.length < 1){
-          setCommunitysList([""])
+        if(response.data.message.community_address){
+          if(response.data.message.community_address.length < 1){ 
+            setCommunitysList([""])
+          }
+          else{
+            setCommunitysList (response.data.message.community_address)
+          }
         }
-        else{
-          setCommunitysList (response.data.message.community_address)
-        }
+        
  
 
         setImageUrl(response.data.image_base_url)
@@ -630,7 +646,7 @@ const getTokensDetails = (type, address) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -664,7 +680,7 @@ const getTokensDetails = (type, address) =>{
   return(
     <>
       <Head>
-        <title>Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap</title>
+        <title>Cryptocurrency Market Insights - Live Price, Charts, Trading   lume and Market Cap</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
@@ -887,7 +903,15 @@ const getTokensDetails = (type, address) =>{
                                <div className="form-group">
                                   <label> 
                                       <input className="choose_logo" type="file" accept="image/*" onChange={onSelectFile} />
-                                      <span >Choose Logo </span> 
+                                      <span>
+                                      {
+                                          token_image  ?
+                                          <img src={token_image} height="30" alt="token image" width="30"/>  
+                                          : 
+                                          " Choose Logo"
+                                        }
+                                        
+                                      </span> 
                                     </label> 
                                 </div>
                                 <div className="error">{err_token_image}</div>
@@ -896,14 +920,12 @@ const getTokensDetails = (type, address) =>{
                     </div>
     
                    <div className="col-md-6 mb-3">
-                   {
-        
-                    token_image 
-                    ?
-                    <img src={token_image} height="50" alt="token image" width="50"/>  
-                    : 
-                    null
-                  }
+                    {
+                      disply_token_image  ?
+                      <img src={disply_token_image} height="50" alt="token image" width="50"/>  
+                      : 
+                      null
+                    }
                    </div>
                 </div>
                     
@@ -911,10 +933,10 @@ const getTokensDetails = (type, address) =>{
                     <div className="row">
                       <div className="col-md-4 mb-3">
                         <div className="form-custom">
-                          <label htmlFor="email">Token Max Supply<span className="label_star">*</span></label>
+                          <label htmlFor="email">Token Max Supply</label>
                           <div className="input_block_outline">
                             <div className="input-group">
-                              <input type="number" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)}/>
+                              <input type="number" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
                               <div className="input-group-prepend">
                                 <span className="input-group-text">{symbol}</span>
                               </div>
@@ -926,11 +948,11 @@ const getTokensDetails = (type, address) =>{
 
                       <div className="col-md-4">
                         <div className="form-custom">
-                          <label htmlFor="email">Circulating Supply<span className="label_star">*</span></label>
+                          <label htmlFor="email">Market Cap</label>
                           <div className="form-group input_block_outline">
-                            <input type="number" value={circulating_supply} onChange={(e)=>setCirculatingSupply(e.target.value)}/> 
+                            <input type="number" value={market_cap} onChange={(e)=>setmarket_cap(e.target.value)} readOnly/> 
                           </div>
-                          <div className="error">{err_circulating_supply}</div>
+                          <div className="error">{err_market_cap}</div>
                         </div>
                       </div>
                       
@@ -1184,18 +1206,13 @@ export async function getServerSideProps({ query ,req})
 {  
   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
     var user_token = userAgent.user_token 
-      const config = {
-        headers: {
-          "X-API-KEY": x_api_key,
-          "token": user_token
-        }
-      }
+      
 
     if(userAgent.user_token)
     {
         if(userAgent.user_email_status==1)
         {
-            return { props: { userAgent: userAgent, config: config, token_id: query.edit_token_id}} 
+            return { props: { userAgent: userAgent, config: config(user_token), token_id: query.edit_token_id}} 
         }
         else
         {

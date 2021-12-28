@@ -1,6 +1,6 @@
 import React , {useEffect, useState} from 'react' 
 import Highcharts from 'highcharts';    
-import * as constant from '../../components/constants'
+import {website_url,graphqlApiKEY,API_BASE_URL,separator} from '../../components/constants'
 import { ethers } from 'ethers';
 import Web3 from 'web3'
 import Switch from "react-switch";   
@@ -37,12 +37,11 @@ function TokenDetails(props) {
   const [exchangelist, set_exchangelist]= useState([])
   const [isBNB, set_isBNB]=useState(false) 
   const [graphDate , set_graphDate] = useState(1)
-  const [website_url]=useState(constant.website_url)
   const [market_cap, set_market_cap] = useState(0) 
-    
+  const [token_max_supply , settoken_max_supply] = useState(0)  
   const [search_contract_address, set_search_contract_address] = useState("")    
-
-  // const [liquidity, set_liquidity] = useState(0)      
+  
+  const [liquidity, set_liquidity] = useState(0)      
  
   const [connected_address , set_connected_address]=useState("")
  
@@ -84,6 +83,21 @@ const valid2=(current)=>
 {    
   return current.isBefore(yesterday)
 }
+const getTotalMaxSupply=(id,decimal)=>{
+  
+   // https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0x57d90b64a1a57749b0f932f1a3395792e12e7055&apikey=YourApiKeyToken
+    Axios.get("https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=E9DBMPJU7N6FK7ZZDK86YR2EZ4K4YTHZJ1")
+    .then(response=>{
+          if(response.status){ 
+            console.log(response) 
+            settoken_max_supply(response.data.result/10**decimal) 
+          }
+    })
+  
+ 
+  
+  
+  }
 const getexchangedata= async (id)=> { 
   const dateSince =((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString())
   const query = `
@@ -119,7 +133,7 @@ const getexchangedata= async (id)=> {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+      "X-API-KEY": graphqlApiKEY
     },
     body: JSON.stringify({
       query
@@ -133,8 +147,6 @@ const getexchangedata= async (id)=> {
   const res=await fetch(url, opts)
    const result = await res.json()
       if (result.data.ethereum) { 
-       // console.log(result.data.ethereum)
-       // set_exchange_list_new(result.data.ethereum.dexTrades)
        var request_API_Status = false
         if(result.data.ethereum.dexTrades)
         {
@@ -159,22 +171,26 @@ const getexchangedata= async (id)=> {
                      }
                      if(id.toLowerCase() ==e.currency.address){
                       createObj['pair_two_value']=e.value
-                      pair_two_value_in_Usd = e.value*live_price
+                      //var res =await livePrice(id)
+                     // console.log("symbol", res)
+                     // pair_two_value_in_Usd = e.value*res
+                     // createObj['pair_two_live_price']=res
                       console.log(pair_two_value_in_Usd)
                     }
+                    createObj['liquidity_in_pool']=pair_one_value_in_usd
               })
             }
             await resultArray.push(createObj) 
             set_exchange_list_new(resultArray)
-
+             console.log(resultArray)
             var reqObj = {
               contract_address:id,
-              network_type:"bsc",
+              network_type:"ethereum",
               exchanges: [createObj]
             }
             console.log('req Obj',reqObj)
             const config = { headers: { "Content-Type": "application/json" } }
-            const sadfdsf = await Axios.post(constant.API_DIGITALOCEAN_URL+"tokens/exchanges_save_data", reqObj, config) 
+            const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
             console.log("Api Response", sadfdsf)
           })
             
@@ -221,7 +237,7 @@ const url = "https://graphql.bitquery.io/";
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+      "X-API-KEY": graphqlApiKEY
     },
     body: JSON.stringify({
       query
@@ -234,7 +250,7 @@ const url = "https://graphql.bitquery.io/";
       { 
         console.log(result.data.ethereum.dexTrades)
         
-        if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c")
+        if(id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
         {
           return result.data.ethereum.dexTrades[0].quote
         }
@@ -274,20 +290,19 @@ const getexchangevalue = async (pool_token_address)=>
         }
         }
           ` ;
-    var valuePairAddress=0
-    var valueAddress=0
+    
     const url = "https://graphql.bitquery.io/";
     const opts = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
       })
     };
-   
+    
     const res=await fetch(url, opts)
      const result = await res.json()
         if (result.data.ethereum) {
@@ -351,7 +366,7 @@ const getexchangevalue = async (pool_token_address)=>
               method: "POST",
               headers: {
                   "Content-Type": "application/json",
-                "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+                "X-API-KEY": graphqlApiKEY
               },
               body: JSON.stringify({
                   query
@@ -397,7 +412,7 @@ const getexchangevalue = async (pool_token_address)=>
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -411,10 +426,10 @@ const getexchangevalue = async (pool_token_address)=>
         const postData = slice.map((e, i) => {
           return <tr key={i}>
                     <td>{e.exchange.fullName}</td>
-                    <td>{constant.separator(e.trades)}</td>
-                    <td>{constant.separator(e.takers)}</td>
-                    <td>{constant.separator(e.makers)}</td>
-                    <td>{constant.separator(e.amount.toFixed(2))}</td>
+                    <td>{separator(e.trades)}</td>
+                    <td>{separator(e.takers)}</td>
+                    <td>{separator(e.makers)}</td>
+                    <td>{separator(e.amount.toFixed(2))}</td>
                  </tr>
         })
         setData(postData) 
@@ -461,7 +476,7 @@ const getexchangevalue = async (pool_token_address)=>
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -474,7 +489,9 @@ const getexchangevalue = async (pool_token_address)=>
           setContractAddress("")
         } 
         else {    
-          getMarketCap(window.location.pathname.substring(5), result.data.ethereum.address[0].smartContract.currency.decimals, usd_price) 
+          getTotalMaxSupply(id,result.data.ethereum.address[0].smartContract.currency.decimals)
+          getMarketCap(window.location.pathname.substring(5), result.data.ethereum.address[0].smartContract.currency.decimals, usd_price)
+           
         } 
       })
       .catch(console.error);
@@ -534,7 +551,7 @@ const getexchangevalue = async (pool_token_address)=>
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -585,7 +602,7 @@ const getexchangevalue = async (pool_token_address)=>
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -598,7 +615,7 @@ const getexchangevalue = async (pool_token_address)=>
       .then(res => res.json())
       .then(result => { 
         if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) { 
-          if(contract_address === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"){
+          if(contract_address == "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"){
             change24h = ((contract_usdt_price - (result.data.ethereum.dexTrades[0].quote)) / (contract_usdt_price) * 100) 
               set_priceChange24H(change24h)
           }
@@ -615,7 +632,7 @@ const getexchangevalue = async (pool_token_address)=>
     set_search_contract_address(id)
     setContractAddress(id)   
         
-    const dateSince = ((new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).toISOString())
+    const dateSince = ((new Date()).toISOString())
     const query = `
                 query
                 {
@@ -649,7 +666,7 @@ const getexchangevalue = async (pool_token_address)=>
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -807,7 +824,7 @@ const getexchangevalue = async (pool_token_address)=>
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+          "X-API-KEY": graphqlApiKEY
         },
         body: JSON.stringify({
           query
@@ -927,7 +944,6 @@ const getexchangevalue = async (pool_token_address)=>
  
 
     getTokendetails(window.location.pathname.substring(5))
-    getTokenexchange(window.location.pathname.substring(5), 0)
     getTokenTransactions(window.location.pathname.substring(5))
     getexchangedata(window.location.pathname.substring(5))
     getGraphData(4, isBNB, window.location.pathname.substring(5))  
@@ -939,7 +955,7 @@ const getexchangevalue = async (pool_token_address)=>
       getBEPAccountDetails(0) 
       getETHAccountDetails(0) 
     } 
-  },[])
+  },[connected_address])
   
 
 
@@ -991,7 +1007,7 @@ const getexchangevalue = async (pool_token_address)=>
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -1044,7 +1060,7 @@ const getexchangevalue = async (pool_token_address)=>
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+                "X-API-KEY": graphqlApiKEY
               },
               body: JSON.stringify({
                 query
@@ -1118,7 +1134,7 @@ const getexchangevalue = async (pool_token_address)=>
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+                "X-API-KEY": graphqlApiKEY
               },
               body: JSON.stringify({
                 query
@@ -1220,7 +1236,7 @@ const getexchangevalue = async (pool_token_address)=>
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -1257,8 +1273,8 @@ const getexchangevalue = async (pool_token_address)=>
             <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{moment(e.e.block.timestamp.time).format("ll")}</a></td>
             <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{e.type == 1 ? <div>IN</div> : <div>OUT</div>}</a></td>
             <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{e.e.currency.symbol}</a></td>
-            <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{constant.separator(parseFloat((e.e.amount).toFixed(6)))}</a></td>
-            <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{constant.separator(parseFloat((e.e.amountInUSD).toFixed(6)))}</a></td>
+            <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{separator(parseFloat((e.e.amount).toFixed(6)))}</a></td>
+            <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{separator(parseFloat((e.e.amountInUSD).toFixed(6)))}</a></td>
           </tr>
           })
           setWalletData(postData) 
@@ -1640,7 +1656,7 @@ const CheckContractAddress =(address)=>{
   method: "POST",
   headers: {
   "Content-Type": "application/json",
-  "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+  "X-API-KEY": graphqlApiKEY
   },
   body: JSON.stringify({
     query: query, 
@@ -1815,7 +1831,7 @@ const CheckContractAddress =(address)=>{
                       </div> 
                     
                       <div className="widgets__line">
-                        <div className="widgets__price">USD {live_price ? constant.separator(live_price.toFixed(4)) : "-"} </div>
+                        <div className="widgets__price">{live_price?"$":null} {live_price ? separator(live_price.toFixed(8)) : "NA"} </div>
                         {
                           price_change_24h
                           ?
@@ -1832,16 +1848,37 @@ const CheckContractAddress =(address)=>{
                     
                     <div className="wallets__inner wallet_bottom_space">
                       <ul className="overview_ul token_contract_details">
+                      <li>
+                                <div className="wallets__details">
+                                  <div className="wallets__info">Circulating Supply</div>
+                                  <div className="wallets__number h5">NA</div>
+                                  {/* <div className="wallets__number h5">{circulating_supply ? separator(circulating_supply) : "-"}</div> */}
+                                  {/* <div className="circulating_progress">
+                                    <div className="progress">
+                                      <div className="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={{width:"60%"}}></div>
+                                    </div>
+                                    <p className="progress_bar_status">75%</p>
+                                  </div> */}
+                                </div>
+                              </li>
+                              <li>
+                                <div className="wallets__details">
+                                  <div className="wallets__info">Total Max Supply</div>
+                                  <div className="wallets__number h5">{token_max_supply ? separator(token_max_supply) : "NA"}</div>
+                                </div>
+                              </li>
+                              
+                        
                         <li>
                           <div className="wallets__details">
-                            <div className="wallets__info">Crypto Market Cap</div>
-                            <div className="wallets__number h5">{market_cap?"$":null}{market_cap ? constant.separator(market_cap.toFixed(4)): "NA"}</div>
+                            <div className="wallets__info">24H Volume</div>  
+                            <div className="wallets__number h5">{contract_24h_volume?"$":null}{contract_24h_volume ? separator(contract_24h_volume.toFixed(4)): "NA"}</div>
                           </div>
                         </li>
                         <li>
                           <div className="wallets__details">
-                            <div className="wallets__info">24H Volume</div>  
-                            <div className="wallets__number h5">${contract_24h_volume ? constant.separator(contract_24h_volume.toFixed(4)): null}</div>
+                            <div className="wallets__info">Crypto Market Cap</div>
+                            <div className="wallets__number h5">{market_cap?"$":null}{market_cap ? separator(market_cap.toFixed(4)): "NA"}</div>
                           </div>
                         </li>
                         <li>
@@ -1996,9 +2033,8 @@ const CheckContractAddress =(address)=>{
                                     exchangelistnew.map((e, i) => {
                                       return <tr key={i}>
                                         <td title= {e.exchange_address}>{e.exchange_name}</td>
-                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({constant.separator(e.pair_one_value.toFixed(3))}) / ({constant.separator(e.pair_two_value.toFixed(3))})</span> </td>
-                                        {/* <td>${constant.separator(e.liquidity_in_pool+(e.pair_two_value*live_price))} </td> */}
-                                        <td>--</td>
+                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({e.pair_one_value?separator(e.pair_one_value.toFixed(3)):"0.00"}) / ({ e.pair_two_value?separator(e.pair_two_value.toFixed(3)):"0.00"})</span> </td>
+                                        <td>${separator(e.liquidity_in_pool+(e.pair_two_value*live_price))} </td>
                                         <td>--</td>
                                         <td>--</td>
                                         <td>--</td>
@@ -2014,8 +2050,8 @@ const CheckContractAddress =(address)=>{
                                 
                               }
                         </table>
-                        {/* {
-                          pageCount > 0
+                        {
+                          exchangelistnew.length > 10
                           ?   
                             <div className="pager__list pagination_element"> 
                               <ReactPaginate 
@@ -2033,7 +2069,7 @@ const CheckContractAddress =(address)=>{
                             </div> 
                             :
                             null 
-                        } */}
+                        }
                       </div>
                       </div>
                       <div id="menu1" className="tab-pane fade in">
@@ -2055,10 +2091,10 @@ const CheckContractAddress =(address)=>{
                                     {
                                         tokentransactions.map((e,i)=>{
                                         return <tr key={i}>
-                                          <td>{constant.separator(Number.parseFloat((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd).toFixed(2))} {(e.baseCurrency.symbol === "WBNB") ? e.quoteCurrency.symbol : e.baseCurrency.symbol}</td>
+                                          <td>{separator(Number.parseFloat((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd).toFixed(2))} {(e.baseCurrency.symbol === "WBNB") ? e.quoteCurrency.symbol : e.baseCurrency.symbol}</td>
                                           <td>{moment(e.block.timestamp.time).format("ll")}</td>
-                                          <td>{constant.separator(Number.parseFloat((e.tradeAmountInUsd / ((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd)).toString()).toFixed(7))} USD</td>
-                                          <td>{constant.separator(Number.parseFloat(e.tradeAmountInUsd).toFixed(4))} USD</td>
+                                          <td>{separator(Number.parseFloat((e.tradeAmountInUsd / ((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd)).toString()).toFixed(7))} USD</td>
+                                          <td>{separator(Number.parseFloat(e.tradeAmountInUsd).toFixed(4))} USD</td>
                                           <td><a rel="noreferrer" href={"https://bscscan.com/tx/"+e.transaction.hash} target="_blank">{e.exchange.name ? e.exchange.name : "-"}</a></td>
                                         </tr>
                                         }
@@ -2197,7 +2233,7 @@ export async function getServerSideProps({ resolvedUrl }) {
     method: "POST",
     headers: {
     "Content-Type": "application/json",
-    "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+    "X-API-KEY": graphqlApiKEY
     },
     body: JSON.stringify({
       query: query, 

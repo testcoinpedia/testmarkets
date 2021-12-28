@@ -3,7 +3,7 @@ import React , {useState, useEffect} from 'react';
 import Axios from 'axios';
 import Link from 'next/link' 
 import Head from 'next/head';
-import {x_api_key, API_BASE_URL,separator, app_coinpedia_url, website_url} from '../../../components/constants'
+import {x_api_key, API_BASE_URL,separator, app_coinpedia_url, website_url,config} from '../../../components/constants'
 import Popupmodal from '../../../components/popupmodal' 
 import { useRouter } from 'next/router'
 import moment from 'moment' 
@@ -50,7 +50,7 @@ var object =  {
 } 
 
 export default function CreateLauchPad({userAgent, config, payment_types, token_id}) {   
-
+  console.log(payment_types)
   const router = useRouter()
   const [validError, setValidError] = useState("")
   const [alert_message, setAlertMessage] = useState('')
@@ -100,12 +100,10 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
 
   const editLaunchpadDetails = (object)=>
   {
-    // console.log(object)
+     console.log(object)
     set_edit_launchpad_object(object)
-    set_edit_launchpad_row_id(parseInt(object.id))
+    set_edit_launchpad_row_id(parseInt(object._id))
     set_launch_pad_type(object.launch_pad_type)
-   // set_start_date(object.start_date)
-   // set_end_date(object.end_date)
     setStartDate(new Date(object.start_date))
     setEndDate(new Date(object.end_date))
     set_tokens_sold(parseInt(object.tokens_sold))
@@ -117,7 +115,7 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
     set_percentage_total_supply(parseFloat(object.percentage_total_supply))
     set_how_to_participate(object.how_to_participate)
     set_accept_payment_type_ids(object.accept_payment_type)
-    set_accept_payment_type(object.accept_payment_names)
+    set_accept_payment_type(object.accept_payment_type)
    
   }
   
@@ -131,7 +129,7 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
       if(edit_launchpad_row_id==id){
         createLaunchpad()
       }
-    Axios.post(API_BASE_URL+"listing_tokens/remove_launch_pad", reqObj, config)
+    Axios.post(API_BASE_URL+"markets/listing_tokens/remove_launch_pad", reqObj, config)
     .then(res=>
     {
       // console.log(res.data)
@@ -175,7 +173,7 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
   
   const getTokenDetails = ()=>
   {
-    Axios.get(API_BASE_URL+"listing_tokens/listed_individual_details/"+token_id, config)
+    Axios.get(API_BASE_URL+"markets/listing_tokens/individual_details/"+token_id, config)
     .then(res=>
     {
       // console.log(res.data)
@@ -359,7 +357,7 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
     } 
     // console.log("reqObj",reqObj);
    
-    Axios.post(API_BASE_URL+'listing_tokens/update_launch_pad', reqObj, config  )
+    Axios.post(API_BASE_URL+'markets/listing_tokens/update_launch_pad', reqObj, config  )
     .then(res=>{ 
       // console.log(res.data)
       if(res.data.status)
@@ -464,13 +462,13 @@ const redirectToPage = () =>
 }
 
 const onSelect =(selectedList, selectedItem)=> {  
-  // console.log(selectedItem)
-  accept_payment_type_ids.push(selectedItem.id)
+   console.log(selectedItem)
+  accept_payment_type_ids.push(selectedItem._id)
   accept_payment_type.push(selectedItem)  
 }
 
 const onRemove = (selectedList, removedItem) => {
-  accept_payment_type_ids.splice(accept_payment_type_ids.indexOf(removedItem.id), 1)
+  accept_payment_type_ids.splice(accept_payment_type_ids.indexOf(removedItem._id), 1)
   accept_payment_type.splice(accept_payment_type.indexOf(removedItem), 1)
 }
 
@@ -551,7 +549,7 @@ const onRemove = (selectedList, removedItem) => {
                             
                             <td>
                               <button className="edit_launchpad" onClick={()=>editLaunchpadDetails(e)}>Edit</button>
-                              <button className="edit_launchpad" onClick={()=>btnremove(e.id)} data-toggle="modal" data-target="#removeConnection">Remove</button>
+                              <button className="edit_launchpad" onClick={()=>btnremove(e._id)} data-toggle="modal" data-target="#removeConnection">Remove</button>
                             </td>
                         
 
@@ -884,17 +882,11 @@ export async function getServerSideProps({query, req})
   {
       if(parseInt(userAgent.user_email_status))
       {
-          var config = {
-              headers: {
-                  "X-API-KEY": x_api_key,
-                  "token": userAgent.user_token
-              }
-          }
-
-          const paymentdetails = await fetch(API_BASE_URL+"listing_tokens/payment_types", config)
+          
+          const paymentdetails = await fetch(API_BASE_URL+"markets/listing_tokens/payment_types", config(userAgent.user_token))
           const payment_types = await paymentdetails.json() 
 
-          return { props: { userAgent: userAgent, config: config, payment_types:payment_types.message, token_id:query.launchpad_token_id } }
+          return { props: { userAgent: userAgent, config: config(userAgent.user_token), payment_types:payment_types.message, token_id:query.launchpad_token_id } }
       }
       else
       {

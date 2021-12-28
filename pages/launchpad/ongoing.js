@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Axios from 'axios'; 
 import Head from 'next/head';
 import cookie from 'cookie'
-import {API_BASE_URL,config,website_url, app_coinpedia_url, separator} from '../../components/constants' 
+import {API_BASE_URL,config,website_url, app_coinpedia_url, separator,IMAGE_BASE_URL} from '../../components/constants' 
 import TableContentLoader from '../../components/loaders/tableLoader'
 import moment from 'moment'
  
@@ -14,7 +14,7 @@ export default function OngoingLaunchPad({userAgent}) {
   const [user_token] = useState(userAgent.user_token)
   const [ongoing, setOngoing] = useState([])
   const [apistatus, setapistatus] = useState(false)
-  const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")
+  const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")
  
 
   useEffect(()=>{ 
@@ -22,9 +22,10 @@ export default function OngoingLaunchPad({userAgent}) {
   },[])
 
   const GetAllOngoing = ()=>{ 
-    Axios.get(API_BASE_URL+"listing_tokens/launchpad_ongoing", config)
+    Axios.get(API_BASE_URL+"markets/launchpads/ongoing", config(""))
     .then(response=>{
           if(response.data.status){  
+            console.log(response)
             setapistatus(true)
             setOngoing(response.data.message) 
           }
@@ -144,15 +145,15 @@ export default function OngoingLaunchPad({userAgent}) {
                                   <a href={"/"+e.token_id}><h5>
                                     {/* <img src="/assets/img/bnb.svg" />  */}
                                     {
-                                      e.network_type_array.length > 0 
+                                      e.network_type.length > 0 
                                       ?
-                                        e.network_type_array.map((ntwrk,i)=>
+                                        e.network_type.map((ntwrk,i)=>
                                         {
-                                          if(ntwrk == 1)
+                                          if(ntwrk.network_type == 1)
                                           {
                                             return <>{i>0 ? "," : null} BNB</>
                                           }
-                                          else if(ntwrk == 2)
+                                          else if(ntwrk.network_type == 2)
                                           {
                                             return <>{i>0 ? "," : null} ETH</>
                                           }
@@ -160,7 +161,7 @@ export default function OngoingLaunchPad({userAgent}) {
                                         }
                                         )
                                       :
-                                      "-"
+                                      "--"
                                     }
                                   </h5></a>
                                 </td>

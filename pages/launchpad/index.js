@@ -6,14 +6,14 @@ import Axios from 'axios';
 import Head from 'next/head';
 import cookie from 'cookie'
 import moment from 'moment'
-import {API_BASE_URL,config,separator,website_url, app_coinpedia_url} from '../../components/constants' 
+import {API_BASE_URL,config,separator,website_url, app_coinpedia_url,IMAGE_BASE_URL} from '../../components/constants' 
 
  
 export default function LaunchPad({userAgent}) 
 { 
 
   const [user_token] = useState(userAgent.user_token)
-  const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")
+  const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")
   const [ongoing , set_ongoing] = useState([])
   const [upcoming , set_upcoming] = useState([])
   const [ended , set_ended] = useState([])
@@ -27,10 +27,10 @@ export default function LaunchPad({userAgent})
   const launchpadList=()=> 
   {
     
-    Axios.get(API_BASE_URL+"listing_tokens/launchpad_list", config)
+    Axios.get(API_BASE_URL+"markets/launchpads/list", config(""))
     .then(res=>
     {   
-      // console.log(res)
+      console.log(res)
         if(res.data.status)
         {
           setapistatus(true)
@@ -157,21 +157,21 @@ export default function LaunchPad({userAgent})
                                   </a>
                                 </Link>
                               </td>
-                              {/* {moment(e.start_date, 'd m  Y')} */}
-                              <td><Link href={"/"+e.token_id}><a><h5>{e.launch_pad_type === "1" ? "ICO" : e.launch_pad_type === "2" ? "IDO" : e.launch_pad_type === "3" ? "IEO" : "-"}</h5></a></Link></td>
+                                {/* {moment(e.start_date, 'd m  Y')} */}
+                              <td><Link href={"/"+e.token_id}><a><h5>{e.launch_pad_type === 1 ? "ICO" : e.launch_pad_type === 2 ? "IDO" : e.launch_pad_type === 3 ? "IEO" : "-"}</h5></a></Link></td>
                               <td className="market_list_price">
                                 <Link href={"/"+e.token_id}><a><h5>
                                   {/* <img src="/assets/img/bnb.svg" />  */}
                                   {
-                                    e.network_type_array.length > 0 
+                                    e.network_type.length > 0 
                                     ?
-                                      e.network_type_array.map((ntwrk,i)=>
+                                      e.network_type.map((ntwrk,i)=>
                                       {
-                                        if(ntwrk == 1)
+                                        if(ntwrk.network_type == 1)
                                         {
                                           return <>{i>0 ? "," : null} BNB</>
                                         }
-                                        else if(ntwrk == 2)
+                                        else if(ntwrk.network_type == 2)
                                         {
                                           return <>{i>0 ? "," : null} ETH</>
                                         }
@@ -181,6 +181,7 @@ export default function LaunchPad({userAgent})
                                     :
                                     "-"
                                   }
+                                
                                 </h5></a></Link>
                               </td>
                               <td><Link href={"/"+e.token_id}><a><h5>{moment(e.start_date).format("MMM DD, YYYY")}</h5></a></Link></td>
@@ -257,15 +258,15 @@ export default function LaunchPad({userAgent})
                                   <Link href={"/"+e.token_id}><a><h5>
                                         {/* <img src="/assets/img/bnb.svg" />  */}
                                         {
-                                          e.network_type_array.length > 0 
+                                          e.network_type.length > 0 
                                           ?
-                                            e.network_type_array.map((ntwrk,i)=>
+                                            e.network_type.map((ntwrk,i)=>
                                             {
-                                              if(ntwrk == 1)
+                                              if(ntwrk.network_type == 1)
                                               {
                                                 return <>{i>0 ? "," : null} BNB</>
                                               }
-                                              else if(ntwrk == 2)
+                                              else if(ntwrk.network_type == 2)
                                               {
                                                 return <>{i>0 ? "," : null} ETH</>
                                               }
@@ -347,20 +348,20 @@ export default function LaunchPad({userAgent})
                                   </div>
                               </a>
                             </td>
-                            <td className="market_list_price"><a href={"/"+e.token_id}><h5>${parseFloat(e.price)}</h5></a></td>
+                            <td className="market_list_price"><a href={"/"+e.token_id}><h5>{e.price ?parseFloat(e.price):"--"}</h5></a></td>
                             <td className="market_list_price">
                               <a href={"/"+e.token_id}><h5>
                                 {/* <img src="/assets/img/bnb.svg" />  */}
                                 {
-                                  e.network_type_array.length > 0 
+                                  e.network_type.length > 0 
                                   ?
-                                    e.network_type_array.map((ntwrk,i)=>
+                                    e.network_type.map((ntwrk,i)=>
                                     {
-                                      if(ntwrk == 1)
+                                      if(ntwrk.network_type == 1)
                                       {
                                         return <>{i>0 ? "," : null} BNB</>
                                       }
-                                      else if(ntwrk == 2)
+                                      else if(ntwrk.network_type == 2)
                                       {
                                         return <>{i>0 ? "," : null} ETH</>
                                       }
@@ -370,6 +371,7 @@ export default function LaunchPad({userAgent})
                                   :
                                   "-"
                                 }
+                              
                               </h5></a>
                             </td>
                             <td className="market_list_price"><a href={"/"+e.token_id}><h5>{separator(parseFloat(e.tokens_sold))}</h5></a></td>

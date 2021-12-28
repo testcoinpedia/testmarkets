@@ -1,9 +1,9 @@
 {
-  "name": "markets_coinpedia_new",
+  "name": "markets_coinpedia",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3200",
+    "dev": "next dev -p 4500",
     "build": "next build",
     "start": "next start"
   },
@@ -19,6 +19,7 @@
     "highcharts-react-official": "^3.0.0",
     "jquery": "^3.6.0",
     "js-cookie": "^3.0.1",
+    "lightweight-charts": "^3.7.0",
     "moment": "^2.29.1",
     "multiselect-react-dropdown": "^2.0.5",
     "next": "10.2.3",

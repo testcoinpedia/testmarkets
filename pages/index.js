@@ -4,37 +4,40 @@ import ReactPaginate from 'react-paginate';
 import Head from 'next/head';
 import cookie from "cookie"
 import Axios from 'axios'
-
+import moment from 'moment'
 import TableContentLoader from '../components/loaders/tableLoader'
-import { API_BASE_URL, config, separator, website_url, app_coinpedia_url} from '../components/constants'; 
+import { API_BASE_URL, config, separator, website_url, app_coinpedia_url,IMAGE_BASE_URL,market_coinpedia_url} from '../components/constants'; 
 var $ = require( "jquery" );
 
-export default function Home({post,userAgent,reqConfig}) { 
-  const [user_token]= useState(userAgent.user_token)  
-  const [data, setData] = useState([]); 
- 
-  const [pageCount, setPageCount] = useState(Math.ceil(post.length / 15))
+export default function Home({resData,userAgent,config, user_token}) { 
+  const [tokenslist] = useState(resData.message)
+  const [total_tokens_count, set_total_tokens_count] = useState(resData.message.length)  
+  const [current_page_token_list, set_current_page_token_list] = useState([]); 
+  const [voting_ids, setvoting_ids] = useState(resData.voting_ids)
+  
+  const [pageCount, setPageCount] = useState(Math.ceil(resData.message.length / 15))
   const [firstcount, setfirstcount] = useState(1)
   const [finalcount, setfinalcount] = useState(15)
   const [selectedPage, setSelectedPage] = useState(0) ;
-  const [image_base_url] = useState(API_BASE_URL + 'uploads/tokens/')
-  const [tokenslist] = useState(post)
-  const [alltokens, setalltokens] = useState(post.length) 
+  const [image_base_url] = useState(IMAGE_BASE_URL + '/tokens/')
+ 
   const [searchBy, setSearchBy] = useState("0")   
   const [search_contract_address, set_search_contract_address] = useState("")    
   const [validSearchContract, setvalidContractAddress] = useState("")
   const [dataLoaderStatus, setDataLoaderStatus] = useState(true)
-  const [voting_status, set_voting_status] = useState(data.voting_status)
+  const [voting_status, set_voting_status] = useState(false)
   const [filteredTokens, setFilteredTokens] = useState([])  
   const [searchTokens, setsearchTokens] = useState("")
   const [searchParam] = useState(["token_name"])
   const [current_url]= useState(website_url)
    const [handleModalVote, setHandleModalVote] = useState(false)
-   const [votes, set_votes] = useState(post.total_voting_count)
+   const [total_votes, set_total_votes] = useState()
    const [token_id, set_Token_id] = useState("")
+   const [vote_id, set_vote_id] = useState("")
    const [voting_message, set_voting_message] = useState("")
+
    
-  console.log(post);
+  console.log(resData);
   
   // const [handleModalVote, setHandleModalVote] = useState(false)
  
@@ -53,10 +56,12 @@ const handlePageClick = (e) => {
   getTokensList(tokenslist , selectPage * 15)
 
 }; 
-const ModalVote=(token_id)=> 
+const ModalVote=(token_id,status,_id)=> 
   {    
     setHandleModalVote(!handleModalVote) 
+    set_voting_status(status)
     set_Token_id(token_id)
+    set_vote_id(_id)
   }
 
   const vote = (param) =>
@@ -64,27 +69,31 @@ const ModalVote=(token_id)=>
     ModalVote()
     if(param == 1)
     {
-      Axios.get(API_BASE_URL+"listing_tokens/save_voting_details/"+token_id, reqConfig)
+      Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+token_id, config)
       .then(res=>{ 
       console.log(res)
       if(res.data.status === true) 
       {
-        set_votes(votes+1)
-        set_voting_status(true)
+        
+        set_total_votes(total_votes+1)
+        voting_ids.push(vote_id)
         set_voting_message(res.data.message)
+        
+        
       }
     })
     }
     else
     {
-      Axios.get(API_BASE_URL+"listing_tokens/remove_voting_details/"+token_id, reqConfig)
+      Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+token_id, config)
       .then(res=>{ 
       console.log(res)
       if(res.data.status === true) 
       {
-        set_votes(votes-1)
-        set_voting_status(false)
+        set_total_votes(total_votes-1)
+        voting_ids.splice(voting_ids.indexOf(vote_id), 1)
         set_voting_message(res.data.message)
+        
       }
     })
     }
@@ -112,7 +121,7 @@ const ModalVote=(token_id)=>
         // console.log(filteredTokens)
         setPageCount(Math.ceil(filteredTokens.length / 15)) 
         getTokensList(filteredTokens, 0) 
-        setalltokens(filteredTokens.length)
+        set_total_tokens_count(filteredTokens.length)
         Pages_Counts(curren , filteredTokens.length)
         
     }
@@ -121,7 +130,7 @@ const ModalVote=(token_id)=>
         setFilteredTokens(tokenslist)
         setPageCount(Math.ceil(tokenslist.length / 15)) 
         getTokensList(tokenslist, 0) 
-        setalltokens(tokenslist.length)
+        set_total_tokens_count(tokenslist.length)
         Pages_Counts(curren , tokenslist.length)
     }
   }
@@ -131,7 +140,7 @@ const ModalVote=(token_id)=>
     setFilteredTokens(tokenslist)
     setPageCount(Math.ceil(tokenslist.length / 15)) 
     getTokensList(tokenslist,0) 
-    setalltokens(tokenslist.length)
+    set_total_tokens_count(tokenslist.length)
    // document.getElementById("formID").reset() 
    }    
 
@@ -279,102 +288,11 @@ for(const i of tokenslist)
 
 }
    
-  const getTokensList=(tokenslist, offset)=>{   
-    setDataLoaderStatus(false)
-    let slice = tokenslist.slice(offset, offset + 15)  
-    const postData = slice.map((e, i) => {
-        return  <tr key={i}>
-                      <td>
-                        <Link href={"/"+e.token_id}>
-                          <a>
-                          <div className="media">
-                            <div className="media-left">
-                              <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
-                            </div>
-                            <div className="media-body">
-                              <h4 className="media-heading">{e.token_name}</h4>
-                              <p>{e.symbol.toUpperCase()}</p>
-                            </div>
-                          </div> 
-                          </a>
-                        </Link>
-                      </td> 
-                      {/* <td>{e.price === null? "-":"$"+ Number(e.price).toFixed(2)}</td> */}
-                      {/* <td>
-                        <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span>
-                      </td> */}
-
-                      <td className="market_list_price"> 
-                        <Link href={"/"+e.token_id}>
-                          <a>
-                          
-                            <span className="block_price">$ 00.00</span>
-                            <br/>
-                            {
-                              e.network_types.length > 0
-                              ?
-                              e.network_types[0] === "1" ? "ERC20" : "BEP20" 
-                              :
-                              null
-                            } 
-                          </a>
-
-                          </Link>
-                      </td>
-                      <td className="market_list_price">
-                        <Link href={"/"+e.token_id}>
-                          <a>
-                            {e.token_max_supply ? separator(e.token_max_supply) : "-"} 
-                          </a>
-                        </Link>
-                      </td>
-
-                      <td className="market_list_price mobile_hide">
-                        <Link href={"/"+e.token_id}><a>
-                          {e.circulating_supply ?separator(e.circulating_supply) : "-"}
-                        </a></Link>
-                      </td>  
-
-                      <td className="market_list_price">
-                        <Link href={"/"+e.token_id}>
-                          <a>
-                            <span className="vote_value">{e.total_voting_count == 0 ? "-" :e.total_voting_count}</span>
-                          </a>
-                        </Link>
-                      </td>  
-
-                        {
-                          // userAgent.user_token ?
-                          <td className="market_list_price">
-                             <Link href={"/"+e.token_id}>
-                               <span className="market_list_price"><button data-toggle="tooltip" > Vote </button></span></Link>
-                            {/* {
-                                          user_token ?
-                                            voting_status === false ?
-                                            <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id)} >Vote</button></span>
-                                            :
-                                            <span className="market_list_price"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id)} >Voted</button></span>
-                                          :
-                                          <Link href={app_coinpedia_url+"login?ref="+current_url}><span className="market_list_price"><button data-toggle="tooltip" > Vote </button></span></Link>
-                            } */}
-                              
-                           
-                          </td>  
-                          // :
-                          // <td className="market_list_price">
-                          //   <Link href={app_coinpedia_url+"login"}>
-                          //     <span className="market_list_price">
-                          //       <button data-toggle="tooltip">Vote</button>
-                          //     </span>
-                          //   </Link>
-                          // </td>  
-                        } 
-                </tr> 
-    })  
-
-    setData(postData) 
-
-    }  
+  const getTokensList=(tokenslist, offset)=>
+  {   
+    let slice = tokenslist.slice(offset, offset + 15) 
+    set_current_page_token_list(slice)
+  }  
  
   const makeJobSchema=()=>{  
     return { 
@@ -507,7 +425,7 @@ for(const i of tokenslist)
               <div className="">
               <div className="row">
                 <div className="col-lg-4 col-sm-6 col-12">
-                  <p className="companies_found">{alltokens} Tokens Found</p>
+                  <p className="companies_found">{total_tokens_count} Tokens Found</p>
                 </div>
               </div>
               </div>
@@ -521,9 +439,10 @@ for(const i of tokenslist)
                             <th className="table_index_token">Token</th>
                             {/* <th className="table_live_price">Live price </th> */}
                             {/* <th className="table_price_change">24h %</th> */}
+                            <th className="table_token">Live Price</th>
                             <th className="table_token">Token type</th>
                             <th className="table_max_supply">Total max supply</th> 
-                            <th className="mobile_hide table_circulating_supply">Circulating Supply</th>  
+                            <th className="mobile_hide table_circulating_supply">Market Cap</th>  
                             <th className="table_circulating_supply">Votes</th>  
                             <th className="table_circulating_supply">Vote</th>  
                            
@@ -531,18 +450,111 @@ for(const i of tokenslist)
                       </thead>
                       <tbody>
                         {
-                          dataLoaderStatus === false ?
-                          data.length > 0
+                          current_page_token_list.length > 0
                           ?
-                          data
+                          current_page_token_list.map((e, i) => 
+                          <tr key={i}>
+                                      <td>
+                                        <Link href={"/"+e.token_id}>
+                                          <a>
+                                          <div className="media">
+                                            <div className="media-left">
+                                              <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                            </div>
+                                            <div className="media-body">
+                                              <h4 className="media-heading">{e.token_name}</h4>
+                                              <p>{e.symbol.toUpperCase()}</p>
+                                            </div>
+                                          </div> 
+                                          </a>
+                                        </Link>
+                                      </td> 
+                                      {/* <td>{e.price === null? "-":"$"+ Number(e.price).toFixed(2)}</td> */}
+                                      {/* <td>
+                                        <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span>
+                                      </td> */}
+                
+                                      <td className="market_list_price"> 
+                                        <Link href={"/"+e.token_id}>
+                                          <a>
+                                          
+                                            <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(6)):"$0.00"}</span>
+                                            <br/>
+                                            {e.price_updated_on?moment(e.price_updated_on).format("MMM DD, YYYY HH:mm:ss"):null} 
+                                          </a>
+                
+                                          </Link>
+                                      </td>
+                                      <td className="market_list_price"> 
+                                        <Link href={"/"+e.token_id}>
+                                          <a>
+                                          {
+                                              e.contract_addresses.length > 0
+                                              ?
+                                               e.contract_addresses[0].network_type === "1" ? "ERC20" : "BEP20" 
+                                              // e.contract_addresses.map((ca)=>
+                                              //   parseInt(ca.network_type) === 1 ? "ERC20" : "BEP20" 
+                                              //)
+                                              :
+                                              null
+                                            } 
+                                          </a>
+                
+                                          </Link>
+                                      </td>
+                                      <td className="market_list_price">
+                                        <Link href={"/"+e.token_id}>
+                                          <a>
+                                            {e.total_max_supply ? separator(e.total_max_supply) : "-"} 
+                                          </a>
+                                        </Link>
+                                      </td>
+                
+                                      <td className="market_list_price mobile_hide">
+                                        <Link href={"/"+e.token_id}><a>
+                                          {e.market_cap ?separator(e.market_cap.toFixed(2)) : "-"}
+                                        </a></Link>
+                                      </td>  
+                                     
+                                       <td className="market_list_price">
+                                       {
+                                       e.total_votes == 0 ?
+                                        "--"
+                                       :
+                                        <Link href={"/"+e.token_id}>
+                                          <a>
+                                            <span className="vote_value">{e.total_votes}</span>
+                                          </a>
+                                        </Link>
+                                      }
+                                      </td>
+                                     
+                                      
+                                      <td className="market_list_price">
+                                        {
+                                          user_token ?
+                                          <>
+                                          {
+                                             
+                                              voting_ids.includes(e._id) ?
+                                              <span className="market_list_price"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,true,e._id)} >Voted</button></span>
+                                              :
+                                              <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,false,e._id)} >Vote</button></span>
+                                              
+                                           }
+                                          </>
+                                          :
+                                          <Link href={app_coinpedia_url+"login?prev_url=/"+market_coinpedia_url}><a><span className="market_list_price"><button data-toggle="tooltip">Vote</button></span></a></Link>
+                                        }
+                                        </td> 
+                                </tr> 
+                          ) 
                           :
                           <tr >
                             <td className="text-center" colSpan="4">
                                 Sorry, No related data found.
                             </td>
                           </tr>
-                          :
-                          <TableContentLoader row="10" col="4" />
                         }
                       </tbody>
                     </table>
@@ -550,9 +562,8 @@ for(const i of tokenslist)
                 </div> 
 
                   {
-                    !dataLoaderStatus
-                    ?
-                    alltokens > 15
+                   
+                    total_tokens_count > 15
                     ? 
                   <div className="col-md-12">
                     <div className="pagination_block">
@@ -585,8 +596,6 @@ for(const i of tokenslist)
                       </div>
                     </div>
                   </div>
-                  :
-                  null
                   :
                   null
                 } 
@@ -669,36 +678,24 @@ for(const i of tokenslist)
     </>
   )
 }
- 
 
-export async function getServerSideProps({query, req}) { 
-
-  // const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
-  const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
-  var reqConfig = config 
-  if(userAgent.user_token)
-  {
-    reqConfig = {
-      headers : {
-        "token": userAgent.user_token,
-        "X-API-KEY": "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS"
-      }
-    } 
-  } 
- 
-  return await fetch(API_BASE_URL+"listing_tokens/tokens_list", config)
-              .then(res => res.json())
-              .then(result => { 
-
-                if(result.status)
-                {  
-                  return { props: {post: result.message,userAgent:userAgent,reqConfig}}
-                }
-                else
-                {
-                  return { props: {post: [], imgurl: ""}}
-                } 
-
-              }) 
-
+export async function getServerSideProps({query, req}) 
+{ 
+   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
+   var user_token = ''
+   if(userAgent.user_token)
+   {
+     user_token = userAgent.user_token
+   }
+   
+   const link = await fetch(API_BASE_URL+"markets/tokens/list", config(user_token))
+   const result = await link.json()
+   if(result.status)
+    {  
+      return { props: {resData:result, userAgent:userAgent, config:config(user_token), user_token:user_token}}
+    }
+    else
+    {
+      return { props: {resData: [], user_token:user_token}}
+    }
 }

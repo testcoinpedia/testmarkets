@@ -1,13 +1,13 @@
 import JsCookie from "js-cookie"
 
 //local links - API
-// export const api_url = 'http://192.168.1.100:81/apicoinpedia/';
-// export const API_BASE_URL = 'http://192.168.1.100:81/apicoinpedia/';
+//export const API_BASE_URL = 'http://192.168.1.100:3010/';
 
 //Live links - API
-export const api_url = 'https://api.coinpedia.org/';
-export const API_BASE_URL = 'https://api.coinpedia.org/'
-export const API_DIGITALOCEAN_URL = 'https://markets-nodejs-api-l9lg8.ondigitalocean.app/'
+// export const api_url = 'https://api.coinpedia.org/';
+ export const API_BASE_URL ='https://markets-nodejs-api-l9lg8.ondigitalocean.app/';
+ export const IMAGE_BASE_URL = 'https://image.coinpedia.org/app_uploads';
+// export const API_DIGITALOCEAN_URL = 'https://markets-nodejs-api-l9lg8.ondigitalocean.app/'
 
 
 // Live links
@@ -23,10 +23,10 @@ export const favicon =  '/assets/img/favicon.png'
 
 
 // Local Links
-// export const website_url = 'http://192.168.1.100:3200/'; 
-// export const app_coinpedia_url="http://192.168.1.100:3400/"
+// export const website_url = 'http://192.168.1.100:4500/'; 
+// export const app_coinpedia_url="http://192.168.1.100:4400/"
 // export const coinpedia_url="http://192.168.1.100:81/cpnews/"
-// export const market_coinpedia_url = 'http://192.168.1.100:3200/';
+// export const market_coinpedia_url = 'http://192.168.1.100:4500/';
 // export const cookieDomainExtension = '192.168.1.100';
 // export const logo =  '/assets/img/dummy-logo.png'
 // export const favicon =  '/assets/img/dummy-favicon.png'
@@ -40,12 +40,25 @@ export const separator=(numb)=> {
 }
  
 export const x_api_key = "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS"
-export const config = {
-    headers : {
-      "X-API-KEY": "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS"
-    }
-}  
-
+export const config=(user_token)=> 
+{
+  if(user_token)
+  {
+     return { headers :
+      {
+          "api_key" : "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS",
+          "token" : user_token,
+      }}
+  }
+  else
+  {
+    return { 
+      headers : {
+      "api_key" : "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS"
+      }}
+  }
+}
+export const graphqlApiKEY = "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
 export const strLenTrim=(title, length)=>
 {
     return title.length > length ? (title).slice(0, length)+"..." : title

@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import Link from 'next/link' 
 import Head from 'next/head';
 import Error from './404'
-import { API_BASE_URL, config, website_url, separator, strLenTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL,graphqlApiKEY} from '../components/constants'
+import { API_BASE_URL, config, website_url, separator, strLenTrim, getDomainName, app_coinpedia_url, x_api_key,API_DIGITALOCEAN_URL} from '../components/constants'
 import moment from 'moment'  
 import Web3 from 'web3'
 import Highcharts from 'highcharts';    
@@ -27,16 +27,13 @@ let inputProps2 = {
 } 
 
 
-export default function LauchPadDetails({errorCode, data, token_id, paymentTypes, userAgent, config}) 
-{   
-  // console.log(paymentTypes);
-  // console.log(data);
-    
+export default function LauchPadDetails({errorCode, data, token_id, paymentTypes, userAgent, reqConfig}) {   
+
     if(errorCode) {return <Error/> }
     const communityRef = useRef(null);
     const explorerRef = useRef(null);
     const contractRef = useRef(null);  
-    const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")     
+    const [image_base_url] = useState(API_BASE_URL+"uploads/tokens/")     
     const [symbol] = useState(data.symbol)
     const [user_token]= useState(userAgent.user_token)
     const [wallet_data, setWalletData] = useState([]); 
@@ -201,7 +198,7 @@ const getTokenTransactions=(id, networktype)=>
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-              "X-API-KEY": graphqlApiKEY
+              "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
             },
             body: JSON.stringify({
                 query
@@ -324,7 +321,7 @@ const getWalletDetails=(id, networktype, wallettype)=>{
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
     },
     body: JSON.stringify({
       query
@@ -429,7 +426,7 @@ const getTokenexchange=(id, networktype)=> {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
     },
     body: JSON.stringify({
       query
@@ -479,9 +476,85 @@ const getTokenexchange=(id, networktype)=> {
     exchangespagination(exchangelist , selectPage)
   };  
  
+const getTokendetails=(id, usd_price, network_type)=> {  
 
+  let query =""
 
+  if(network_type === "1"){
+    query = `
+        query
+        { 
+          ethereum(network: ethereum) {
+            address(address: {is: `+ '"' +id+ '"' + `}){
 
+              annotation
+              address
+
+              smartContract {
+                contractType
+                currency{
+                  symbol
+                  name
+                  decimals
+                  tokenType
+                }
+              }
+              balance
+            }
+          } 
+        }
+      ` ;
+  }
+  else{
+    query = `
+        query
+        { 
+          ethereum(network: bsc) {
+            address(address: {is: `+ '"' +id+ '"' + `}){
+
+              annotation
+              address
+
+              smartContract {
+                contractType
+                currency{
+                  symbol
+                  name
+                  decimals
+                  tokenType
+                }
+              }
+              balance
+            }
+          } 
+        }
+      ` ;
+  }
+ 
+  const url = "https://graphql.bitquery.io/";
+  const opts = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+    },
+    body: JSON.stringify({
+      query
+    })
+  }; 
+  fetch(url, opts)
+    .then(res => res.json())
+    .then(result => {  
+      if (result.data.ethereum !== null) { 
+        setdecimal(result.data.ethereum.address[0].smartContract.currency.decimals)
+        console.log(decimal)
+        getCirculatingSupply(id,result.data.ethereum.address[0].smartContract.currency.decimals, network_type)
+        getTotalMaxSupply(id,result.data.ethereum.address[0].smartContract.currency.decimals, network_type)
+        getMarketCap(id, result.data.ethereum.address[0].smartContract.currency.decimals, usd_price, network_type) 
+      }  
+    })
+    .catch(console.error);
+}
 const getCirculatingSupply=(id,decimal,networktype)=>{
 if(networktype==1){
 
@@ -490,13 +563,104 @@ else{
   Axios.get("https://api.bscscan.com/api?module=stats&action=tokenCsupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
     .then(response=>{
           if(response.status){ 
-            // console.log(response)
+            console.log(response) 
             setcirculating_supply(response.data.result/10**decimal) 
           }
     })
 }
 
 
+}
+const getTotalMaxSupply=(id,decimal,networktype)=>{
+  if(networktype==1){
+   // https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0x57d90b64a1a57749b0f932f1a3395792e12e7055&apikey=YourApiKeyToken
+    Axios.get("https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=E9DBMPJU7N6FK7ZZDK86YR2EZ4K4YTHZJ1")
+    .then(response=>{
+          if(response.status){ 
+            console.log(response) 
+            settoken_max_supply(response.data.result/10**decimal) 
+          }
+    })
+  }
+  else{
+    Axios.get("https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
+      .then(response=>{
+            if(response.status){ 
+              console.log(response) 
+              settoken_max_supply(response.data.result/10**decimal) 
+            }
+      })
+  }
+  
+  
+  }
+const getMarketCap =async(id, decval, usd_price, network_type)=> {  
+
+  let mainnetUrl = ""
+
+  if(network_type === "1" ){
+    mainnetUrl = 'https://mainnet.infura.io/v3/5fd436e2291c47fe9b20a17372ad8057'
+  }
+  else{
+    mainnetUrl = "https://bsc-dataseed.binance.org/";
+  }
+ 
+ 
+    const provider = new ethers.providers.JsonRpcProvider(mainnetUrl); 
+
+    const tokenAbi = ["function totalSupply() view returns (uint256)"];
+    const tokenContract = new ethers.Contract(id, tokenAbi, provider);
+    const supply = await tokenContract.totalSupply() / (10 ** decval);  
+    console.log(supply)
+    console.log(usd_price)
+    set_market_cap(supply * usd_price)  
+
+  if(network_type === "1"){
+    if(id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' || id !== '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984'){
+      
+          const pairAbi = ["function getPair(address first, address second) view returns (address)"]
+          const pairContract = new ethers.Contract("0x1f9840a85d5af5bf1d1762f925bdaddc4201f984", pairAbi, provider);
+          const pairAddr = await pairContract.getPair(id, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2');
+  
+          const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
+          const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
+          const reserve = await liqContract.getReserves();
+          const token0 = await liqContract.token0();
+          const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
+          set_liquidity(liquidity) 
+          console.log(liquidity)
+      } 
+  }
+  else{
+    if(id !== '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'){
+      
+      const pairAbi = ["function getPair(address first, address second) view returns (address)"]
+      const pairContract = new ethers.Contract("0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73", pairAbi, provider);
+      const pairAddr = await pairContract.getPair(id, '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c');
+     
+      const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
+      const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
+      const reserve = await liqContract.getReserves();
+      const token0 = await liqContract.token0();
+      const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
+      set_liquidity(liquidity)
+      console.log(liquidity)
+      }
+      else{
+        const pairAbi = ["function getPair(address first, address second) view returns (address)"]
+        const pairContract = new ethers.Contract("0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73", pairAbi, provider);
+        const pairAddr = await pairContract.getPair(id, '0xe9e7cea3dedca5984780bafc599bd69add087d56');
+       
+          const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
+          const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
+          const reserve = await liqContract.getReserves();
+          const token0 = await liqContract.token0();
+          const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
+          set_liquidity(liquidity)
+    
+      }
+
+  } 
 }
 
 const get24hVolume=(id, networktype)=> {   
@@ -542,7 +706,7 @@ const get24hVolume=(id, networktype)=> {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
     },
     body: JSON.stringify({
       query
@@ -560,15 +724,14 @@ const get24hVolume=(id, networktype)=> {
 }
 
 
-useEffect(()=>
-{ 
+useEffect(()=>{ 
+
   if(localStorage.getItem("walletconnectedtype") === "1"){
     getBEPAccountDetails(0) 
     getETHAccountDetails(0) 
   }  
 
-  if(data.contract_addresses.length > 0)
-  { 
+  if(data.contract_addresses.length > 0){ 
     getexchangedata(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
     get24hVolume(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
     getTokenTransactions(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
@@ -669,7 +832,7 @@ const getexchangedata= async (id,networks)=> {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
     },
     body: JSON.stringify({
       query
@@ -725,7 +888,7 @@ const getexchangedata= async (id,networks)=> {
               }
               console.log('req Obj',reqObj)
               const config = { headers: { "Content-Type": "application/json" } }
-              const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
+              const sadfdsf = await Axios.post(API_DIGITALOCEAN_URL+"tokens/exchanges_save_data", reqObj, config) 
               console.log("Api Response", sadfdsf)
             
            }
@@ -738,7 +901,7 @@ const getexchangedata= async (id,networks)=> {
             }
             console.log('req Obj',reqObj)
             const config = { headers: { "Content-Type": "application/json" } }
-            const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
+            const sadfdsf = await Axios.post(API_DIGITALOCEAN_URL+"tokens/exchanges_save_data", reqObj, config) 
             console.log("Api Response", sadfdsf)
            }
             
@@ -820,7 +983,7 @@ const url = "https://graphql.bitquery.io/";
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
     },
     body: JSON.stringify({
       query
@@ -901,7 +1064,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
     },
     body: JSON.stringify({
       query
@@ -920,13 +1083,13 @@ const getexchangevalue = async (pool_token_address,networks)=>
       }
   
 } 
-
-const getTokenUsdPrice=async(id, networks)=>
-{  
-  let query = "" 
+const getTokenUsdPrice=async(id, networks)=> {  
+  
+  let query = ""  
+  
   const dateSince = ((new Date()).toISOString())
-  if(networks === "1")
-  {
+
+  if(networks === "1"){
     query = `
     query
     {
@@ -990,241 +1153,55 @@ const getTokenUsdPrice=async(id, networks)=>
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
     },
     body: JSON.stringify({
       query
     })
   };
-  const livePriceQuery = await fetch(url, opts)
-  const liveQueryRun = await livePriceQuery.json() 
-  if(liveQueryRun)
-  {
-      if(liveQueryRun.data.ethereum != null && liveQueryRun.data.ethereum.dexTrades != null) 
+  await fetch(url, opts)
+    .then(res => res.json())
+    .then(result => {  
+      if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
       { 
-        console.log("Live Price",liveQueryRun.data)   
-        var cal_live_price = 0
+        // console.log("Live Price",result.data)   
+        // result.data.ethereum.dexTrades[0].baseCurrency.symbol === "WBNB" || 
         if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c")
         {
-          cal_live_price = liveQueryRun.data.ethereum.dexTrades[0].quote
+          getTokendetails(id, result.data.ethereum.dexTrades[0].quote, networks)
+          setLivePrice(result.data.ethereum.dexTrades[0].quote) 
+          get24hChange(result.data.ethereum.dexTrades[0].quote, id, networks)
+         // set_symbol(result.data.ethereum.dexTrades[0].baseCurrency.symbol)
+          saveTokenDetails(networks, id, result.data.ethereum.dexTrades[0].quote)
+          
         }
-        else if(liveQueryRun.data.ethereum.dexTrades.length == 2)
+        else
         {
-          cal_live_price = liveQueryRun.data.ethereum.dexTrades[0].quote*liveQueryRun.data.ethereum.dexTrades[1].quote
-        }
-        getTokendetails(id, cal_live_price, networks)
-        setLivePrice(cal_live_price) 
-        get24hChange(cal_live_price, id, networks) 
-          // getTotalMaxSupply(id,decimal, networks)
-          // getMarketCap(id, decimal, result.data.ethereum.dexTrades[0].quote, networks) 
+          getTokendetails(id, result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote, networks)
+          setLivePrice(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) 
+          get24hChange(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote , id, networks)  
+          saveTokenDetails(networks, id, result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote)
           
-          
-      } 
-       
-  }
-}
-
-
-
-const getTokendetails=async (id, usd_price, network_type)=> 
-{  
-  let query =""
-  if(network_type === "1")
-  {
-    query = `
-        query
-        { 
-          ethereum(network: ethereum) {
-            address(address: {is: `+ '"' +id+ '"' + `}){
-
-              annotation
-              address
-
-              smartContract {
-                contractType
-                currency{
-                  symbol
-                  name
-                  decimals
-                  tokenType
-                }
-              }
-              balance
-            }
-          } 
         }
-      ` ;
-  }
-  else{
-    query = `
-        query
-        { 
-          ethereum(network: bsc) {
-            address(address: {is: `+ '"' +id+ '"' + `}){
-
-              annotation
-              address
-
-              smartContract {
-                contractType
-                currency{
-                  symbol
-                  name
-                  decimals
-                  tokenType
-                }
-              }
-              balance
-            }
-          } 
-        }
-      ` ;
-  }
- 
-  const url = "https://graphql.bitquery.io/";
-  const opts = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
-    },
-    body: JSON.stringify({
-      query
+        
+      }  
     })
-  }
-  const liveDecimalQuery = await fetch(url, opts)
-  const liveDecimalRun = await liveDecimalQuery.json()
-  if(liveDecimalRun.data.ethereum !== null) 
-  { 
-    setdecimal(liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals)
-    var get_total_supply_value = await getTotalMaxSupply(id, network_type)
-    var cal_total_supply_value = get_total_supply_value/10**liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals
-    settoken_max_supply(cal_total_supply_value) 
-    var cal_market_cap = cal_total_supply_value * usd_price
-    set_market_cap(cal_market_cap)
-    getMarketCap(id, liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals, usd_price, network_type) 
-    //getCirculatingSupply(id,liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals, network_type)
-    const reqObj = {
-      network_type : network_type,
-      contract_address: id,
-      live_price: usd_price,
-      total_max_supply:cal_total_supply_value,
-      market_cap:cal_market_cap
-    } 
-
-    await Axios.post(API_BASE_URL+'markets/tokens/save_token_live_price', reqObj, config)
-  }  
+    .catch(console.error);
 }
 
 
-const getTotalMaxSupply= async (id, networktype)=>
+const saveTokenDetails=(network_type, contract_address, live_price) =>
 {
-  var req_url = "https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=E9DBMPJU7N6FK7ZZDK86YR2EZ4K4YTHZJ1"
-  if(networktype==2)
-  {
-    req_url = "https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2"
-  }
-  const resObj = await Axios.get(req_url)
-  if(resObj.status)
-  { 
-    return resObj.data.result
-  }
-  else
-  {
-    return 0
-  }
-}
-const getMarketCap =async(id, decval, usd_price, network_type)=> {  
-
-  let mainnetUrl = ""
-
-  if(network_type === "1" ){
-    mainnetUrl = 'https://mainnet.infura.io/v3/5fd436e2291c47fe9b20a17372ad8057'
-  }
-  else{
-    mainnetUrl = "https://bsc-dataseed.binance.org/";
-  }
- 
- 
-    const provider = new ethers.providers.JsonRpcProvider(mainnetUrl); 
-
-    const tokenAbi = ["function totalSupply() view returns (uint256)"];
-    const tokenContract = new ethers.Contract(id, tokenAbi, provider);
-    const supply = await tokenContract.totalSupply() / (10 ** decval);  
-    console.log("supply", supply)
-    // set_market_cap(supply * usd_price) 
-    console.log(market_cap) 
-
-  if(network_type === "1")
-  {
-    // if(id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' || id !== '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984'){
-      
-    //       const pairAbi = ["function getPair(address first, address second) view returns (address)"]
-    //       const pairContract = new ethers.Contract("0x1f9840a85d5af5bf1d1762f925bdaddc4201f984", pairAbi, provider);
-    //       const pairAddr = await pairContract.getPair(id, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2');
-  
-    //       const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
-    //       const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
-    //       const reserve = await liqContract.getReserves();
-    //       const token0 = await liqContract.token0();
-    //       const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
-    //       set_liquidity(liquidity) 
-    //       console.log(liquidity)
-     // } 
-  }
-  else
-  {
-    if(id !== '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c')
-    {
-      
-      const pairAbi = ["function getPair(address first, address second) view returns (address)"]
-      const pairContract = new ethers.Contract("0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73", pairAbi, provider);
-      const pairAddr = await pairContract.getPair(id, '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c');
-     
-      const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
-      const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
-      const reserve = await liqContract.getReserves();
-      const token0 = await liqContract.token0();
-      const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
-      set_liquidity(liquidity)
-      console.log(liquidity)
-      }
-      else
-      {
-        const pairAbi = ["function getPair(address first, address second) view returns (address)"]
-        const pairContract = new ethers.Contract("0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73", pairAbi, provider);
-        const pairAddr = await pairContract.getPair(id, '0xe9e7cea3dedca5984780bafc599bd69add087d56');
-       
-          const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
-          const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
-          const reserve = await liqContract.getReserves();
-          const token0 = await liqContract.token0();
-          const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
-          set_liquidity(liquidity)
-    
-      }
-
-  } 
-}
-
-
-const saveLivePricingDetails=(network_type, contract_address, live_price) =>
-{ 
     const reqObj = {
       network_type : network_type,
       contract_address: contract_address,
-      live_price: live_price,
-      total_max_supply:token_max_supply,
-      market_cap:market_cap
-     
+      live_price: live_price
     } 
-    // total_max_supply:
-    // market_cap:
 
-    Axios.post(API_BASE_URL+'markets/tokens/save_token_live_price', reqObj,config).then(res => 
-    {  
-        console.log(res)   
-    })
+  Axios.post(API_DIGITALOCEAN_URL+'api_tokens/save_token', reqObj).then(res => 
+  {  
+      console.log(res.data)   
+  })
 }
 
 const get24hChange=(fun_live_price, id, networks)=>
@@ -1233,7 +1210,7 @@ const get24hChange=(fun_live_price, id, networks)=>
   let query = ""
 
   const date = ((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString()) 
-  // console.log(date)
+  console.log(date)
   if(networks === "1"){
 
   query = `
@@ -1299,7 +1276,7 @@ const get24hChange=(fun_live_price, id, networks)=>
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
     },
     body: JSON.stringify({
       query
@@ -1331,6 +1308,7 @@ const get24hChange=(fun_live_price, id, networks)=>
     })
     .catch(console.error);
 } 
+
 
 const getGraphData=(datetime, id,networks  )=> 
 {   
@@ -1529,7 +1507,7 @@ const getGraphData=(datetime, id,networks  )=>
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": graphqlApiKEY
+        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
       },
       body: JSON.stringify({
         query
@@ -1555,7 +1533,7 @@ const getGraphData=(datetime, id,networks  )=>
 
 
             prices.push(val)
-            // console.log(prices)
+            console.log(prices)
           }
         }  
 
@@ -1723,7 +1701,7 @@ const getTokensList=(wallet_address, networktype)=> {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
+      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
     },
     body: JSON.stringify({
       query
@@ -1775,7 +1753,7 @@ const getTokensList=(wallet_address, networktype)=> {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-API-KEY": graphqlApiKEY
+              "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
             },
             body: JSON.stringify({
               query
@@ -1849,7 +1827,7 @@ const getTokensList=(wallet_address, networktype)=> {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-API-KEY": graphqlApiKEY
+              "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
             },
             body: JSON.stringify({
               query
@@ -2160,8 +2138,8 @@ const connectToEthWallet=()=>
   {
     ModalVote()
     if(param == 1)
-    {   
-      Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+data.token_id, config)
+    {
+      Axios.get(API_BASE_URL+"listing_tokens/save_voting_details/"+data.token_id, reqConfig)
       .then(res=>{ 
       console.log(res)
       if(res.data.status === true) 
@@ -2174,7 +2152,7 @@ const connectToEthWallet=()=>
     }
     else
     {
-      Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+data.token_id, config)
+      Axios.get(API_BASE_URL+"listing_tokens/remove_voting_details/"+data.token_id, reqConfig)
       .then(res=>{ 
       console.log(res)
       if(res.data.status === true) 
@@ -2319,19 +2297,12 @@ const connectToEthWallet=()=>
                                             <p>Where to buy<a href={e.where_to_buy_link} target="_blank"><b>{e.where_to_buy_title ? e.where_to_buy_title : "-"} </b></a></p>
                                             <p>% of Total Supply <b>{e.percentage_total_supply ? e.percentage_total_supply : "-"}%</b></p>
                                             <p>Accept <b> 
-                                            {/* {   
-                                              e.accept_payment_type.map((item, index)=>{
-                                                
+                                            {  
+                                              e.accept_payment_names.map((item, index)=>{
                                                 return  <>{item.payment_name}<span>/</span></>
-                                              })   } */}
-                                            {
-                                                 paymentTypes.map((inner)=>
-                                                 e.accept_payment_type.includes(inner._id.toString()) ?
-                                                 <>{inner.payment_name}<span>/</span></>
-                                                   :
-                                                 null
-                                                )
-                                             }
+                                              })  
+                                            } 
+                                            
                                             </b></p>
                                             <p>Access <b>{e.access_type === "1" ? "Public" : "Private"}</b></p>
                                           </div>
@@ -2407,7 +2378,7 @@ const connectToEthWallet=()=>
                                             <button className="market_vote" onClick={()=>ModalVote()} >Vote</button>
                                             :
                                             <button className="market_vote" onClick={()=>ModalVote()} >Voted</button>
-                                            :
+                                          :
                                           <Link href={app_coinpedia_url+"login?ref="+current_url}><button className="market_vote">Vote</button></Link>
                                         }
                                         <p className="votes_market"><span className="votes">Votes: <span className="total_votes">{votes}</span></span></p>
@@ -3480,16 +3451,24 @@ export async function getServerSideProps({ query, req})
 { 
   const token_id = query.token_id
   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
- 
- 
-  const paymentQuery = await fetch(API_BASE_URL+"markets/listing_tokens/payment_types", config(userAgent.user_token))
+  var reqConfig = config 
+  if(userAgent.user_token)
+  {
+    reqConfig = {
+      headers : {
+        "token": userAgent.user_token,
+        "X-API-KEY": "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS"
+      }
+    } 
+  } 
+  const paymentQuery = await fetch(API_BASE_URL+"listing_tokens/payment_types", config)
   const paymentQueryRun = await paymentQuery.json() 
 
-  const tokenQuery = await fetch(API_BASE_URL+"markets/tokens/individual_details/"+token_id, config(userAgent.user_token))
+  const tokenQuery = await fetch(API_BASE_URL+"listing_tokens/individual_details/"+token_id, reqConfig)
   const tokenQueryRun = await tokenQuery.json() 
   if(tokenQueryRun.status)
   {
-    return { props: {data: tokenQueryRun.message, paymentTypes:paymentQueryRun.message, errorCode:false, token_id, userAgent:userAgent, config:config(userAgent.user_token)}}
+    return { props: {data: tokenQueryRun.message, paymentTypes:paymentQueryRun.message, errorCode:false, token_id, userAgent:userAgent, reqConfig}}
   }
   else
   {

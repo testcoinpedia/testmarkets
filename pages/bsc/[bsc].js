@@ -1,6 +1,6 @@
 import React , {useEffect,  useState} from 'react' 
 import Highcharts from 'highcharts';    
-import * as constant from '../../components/constants'
+import {graphqlApiKEY,website_url,API_BASE_URL,separator} from '../../components/constants'
 import { ethers } from 'ethers';
 import Web3 from 'web3'
 import Axios from 'axios'
@@ -47,7 +47,7 @@ function TokenDetails(props) {
   
   const [isBNB, set_isBNB]=useState(false) 
   const [graphDate , set_graphDate] = useState(1)
-  const [website_url]=useState(constant.website_url)
+  
   const [market_cap, set_market_cap] = useState(0) 
   const [liquidity, set_liquidity] = useState(0)  
   const [circulatingSupply, setCirculatingSupply] = useState("") 
@@ -144,7 +144,7 @@ function TokenDetails(props) {
               method: "POST",
               headers: {
                   "Content-Type": "application/json",
-                "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+                "X-API-KEY": graphqlApiKEY
               },
               body: JSON.stringify({
                   query
@@ -196,7 +196,7 @@ function TokenDetails(props) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -255,7 +255,7 @@ function TokenDetails(props) {
               }
               
               const config = { headers: { "Content-Type": "application/json" } }
-              const sadfdsf = await Axios.post(constant.API_DIGITALOCEAN_URL+"tokens/exchanges_save_data", reqObj, config) 
+              const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
               
             })
               
@@ -302,7 +302,7 @@ const url = "https://graphql.bitquery.io/";
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+      "X-API-KEY": graphqlApiKEY
     },
     body: JSON.stringify({
       query
@@ -363,7 +363,7 @@ const url = "https://graphql.bitquery.io/";
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -429,7 +429,7 @@ const url = "https://graphql.bitquery.io/";
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -476,7 +476,7 @@ const url = "https://graphql.bitquery.io/";
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -564,7 +564,7 @@ const url = "https://graphql.bitquery.io/";
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -617,7 +617,7 @@ const url = "https://graphql.bitquery.io/";
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -684,7 +684,7 @@ const url = "https://graphql.bitquery.io/";
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -848,7 +848,7 @@ const url = "https://graphql.bitquery.io/";
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+          "X-API-KEY": graphqlApiKEY
         },
         body: JSON.stringify({
           query
@@ -1029,7 +1029,7 @@ const url = "https://graphql.bitquery.io/";
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -1082,7 +1082,7 @@ const url = "https://graphql.bitquery.io/";
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+                "X-API-KEY": graphqlApiKEY
               },
               body: JSON.stringify({
                 query
@@ -1157,7 +1157,7 @@ const url = "https://graphql.bitquery.io/";
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+                "X-API-KEY": graphqlApiKEY
               },
               body: JSON.stringify({
                 query
@@ -1260,7 +1260,7 @@ const url = "https://graphql.bitquery.io/";
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+        "X-API-KEY": graphqlApiKEY
       },
       body: JSON.stringify({
         query
@@ -1297,8 +1297,8 @@ const url = "https://graphql.bitquery.io/";
                     <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{moment(e.e.block.timestamp.time).format("ll")}</a></td>
                     <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{e.type == 1 ? <div>IN</div> : <div>OUT</div>}</a></td>
                     <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{e.e.currency.symbol}</a></td>
-                    <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{constant.separator(parseFloat((e.e.amount).toFixed(6)))}</a></td>
-                    <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{constant.separator(parseFloat((e.e.amountInUSD).toFixed(6)))}</a></td>
+                    <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{separator(parseFloat((e.e.amount).toFixed(6)))}</a></td>
+                    <td><a href={(wallettype === 1 ? "https://etherscan.io/tx/" : "https://bscscan.com/tx/")+e.e.transaction.hash} target="_blank">{separator(parseFloat((e.e.amountInUSD).toFixed(6)))}</a></td>
                   </tr>
           })
           setWalletData(postData) 
@@ -1689,7 +1689,7 @@ const connectToEthWallet=()=>
   method: "POST",
   headers: {
   "Content-Type": "application/json",
-  "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+  "X-API-KEY": graphqlApiKEY
   },
   body: JSON.stringify({
     query: query, 
@@ -1871,7 +1871,7 @@ const connectToEthWallet=()=>
                       
                     
                       <div className="widgets__line">
-                        <div className="widgets__price">$ {live_price ? constant.separator(live_price.toFixed(8)) : "-"} 
+                        <div className="widgets__price">$ {live_price ? separator(live_price.toFixed(8)) : "-"} 
                           {
                             price_change_24h
                             ?
@@ -1902,25 +1902,25 @@ const connectToEthWallet=()=>
                             <li>
                               <div className="wallets__details">
                               <div className="wallets__info">Total Max Supply</div>
-                              <div className="wallets__number h5">{token_max_supply ? constant.separator(token_max_supply) : "-"}</div>
+                              <div className="wallets__number h5">{token_max_supply ? separator(token_max_supply) : "-"}</div>
                               </div>
                             </li>
                         <li>
                           <div className="wallets__details">
                             <div className="wallets__info">Crypto Market Cap</div>
-                            <div className="wallets__number h5">${market_cap ? constant.separator(market_cap.toFixed(4)) : null}</div>
+                            <div className="wallets__number h5">${market_cap ? separator(market_cap.toFixed(4)) : null}</div>
                           </div>
                         </li>
                         <li>
                           <div className="wallets__details">
                             <div className="wallets__info">24H Volume</div>
-                            <div className="wallets__number h5">${contract_24h_volume ? constant.separator(contract_24h_volume.toFixed(2)) : null}</div>
+                            <div className="wallets__number h5">${contract_24h_volume ? separator(contract_24h_volume.toFixed(2)) : null}</div>
                           </div>
                         </li>
                         <li>
                           <div className="wallets__details">
                             <div className="wallets__info">Liquidity</div>
-                            <div className="wallets__number h5">${liquidity ? constant.separator(liquidity.toFixed(4)) : null}</div>
+                            <div className="wallets__number h5">${liquidity ? separator(liquidity.toFixed(4)) : null}</div>
                           </div>
                         </li>
                         <li>
@@ -2105,11 +2105,11 @@ const connectToEthWallet=()=>
                                     exchangelistnew.map((e, i) => {
                                       return <tr key={i}>
                                         <td title= {e.exchange_address}>{e.exchange_name}</td>
-                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({constant.separator(e.pair_one_value.toFixed(3))}) / ({constant.separator(e.pair_two_value.toFixed(3))})</span> </td>
+                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({separator(e.pair_one_value.toFixed(3))}) / ({separator(e.pair_two_value.toFixed(3))})</span> </td>
                                         {
                                           e.pair_one_token_address== "0x3ff997eaea488a082fb7efc8e6b9951990d0c3ab"?
                                           "--"
-                                          :<td>${constant.separator(e.liquidity_in_pool+(e.pair_two_value*live_price))} </td>
+                                          :<td>${separator(e.liquidity_in_pool+(e.pair_two_value*live_price))} </td>
                                         }
                                         {/* <td>${constant.separator(e.liquidity_in_pool+(e.pair_two_value*live_price))} </td> */}
                                         <td>--</td>
@@ -2163,9 +2163,9 @@ const connectToEthWallet=()=>
                                         tokentransactions.map((e,i)=>{
                                         return <tr key={i}>
                                           <td>{moment(e.block.timestamp.time).format("ll")}</td>
-                                          <td>{constant.separator(Number.parseFloat((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd).toFixed(2))} {(e.baseCurrency.symbol === "WBNB") ? e.quoteCurrency.symbol : e.baseCurrency.symbol}</td>
-                                          <td>{constant.separator(Number.parseFloat((e.tradeAmountInUsd / ((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd)).toString()).toFixed(7))} USD</td>
-                                          <td>{constant.separator(Number.parseFloat(e.tradeAmountInUsd).toFixed(4))} USD</td>
+                                          <td>{separator(Number.parseFloat((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd).toFixed(2))} {(e.baseCurrency.symbol === "WBNB") ? e.quoteCurrency.symbol : e.baseCurrency.symbol}</td>
+                                          <td>{separator(Number.parseFloat((e.tradeAmountInUsd / ((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd)).toString()).toFixed(7))} USD</td>
+                                          <td>{separator(Number.parseFloat(e.tradeAmountInUsd).toFixed(4))} USD</td>
                                           <td><a rel="noreferrer" href={"https://bscscan.com/tx/"+e.transaction.hash} target="_blank">{e.exchange.name ? e.exchange.name : "-"}</a></td>
                                         </tr>
                                         }
@@ -2315,7 +2315,7 @@ export async function getServerSideProps({ resolvedUrl }) {
     method: "POST",
     headers: {
     "Content-Type": "application/json",
-    "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+    "X-API-KEY": graphqlApiKEY
     },
     body: JSON.stringify({
       query: query, 
