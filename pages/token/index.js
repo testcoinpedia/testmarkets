@@ -221,7 +221,7 @@ const getTokensCurrentList=(items, offset)=>
             </select>
             <div className="input-group-prepend">
               <span className="input-group-text reset_filter" onClick={()=> resetFilter()}>
-                Reset
+                <img src="/assets/img/reset.png" />
               </span>
             </div>
           </div>

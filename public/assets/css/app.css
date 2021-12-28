@@ -13064,6 +13064,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 #formID .search_filter select {
   border: 0;
+  outline: none;
+  box-shadow: none;
 }
 
 .token_overview_block {

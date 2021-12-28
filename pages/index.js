@@ -41,12 +41,13 @@ export default function Home({resData,userAgent,config, user_token}) {
   
   // const [handleModalVote, setHandleModalVote] = useState(false)
  
-  useEffect(()=>{  
+  useEffect(()=>
+  {  
     getTokensList(tokenslist , 0) 
     var $j = jQuery.noConflict();
     $j(document).ready(function() {
       $j('[data-toggle="tooltip"]').tooltip();
-    });
+    })
   },[])
  
 const handlePageClick = (e) => {  
@@ -288,6 +289,7 @@ for(const i of tokenslist)
 
 }
    
+
   const getTokensList=(tokenslist, offset)=>
   {   
     let slice = tokenslist.slice(offset, offset + 15) 
@@ -478,11 +480,10 @@ for(const i of tokenslist)
                                         <Link href={"/"+e.token_id}>
                                           <a>
                                           
-                                            <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(6)):"$0.00"}</span>
+                                            <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(7)):"-"}</span>
                                             <br/>
-                                            {e.price_updated_on?moment(e.price_updated_on).format("MMM DD, YYYY HH:mm:ss"):null} 
+                                            {e.price_updated_on ? moment(e.price_updated_on).fromNow():null} 
                                           </a>
-                
                                           </Link>
                                       </td>
                                       <td className="market_list_price"> 

@@ -13,12 +13,14 @@ import Popupmodal from './popupmodal'
 
 export default function Topmenu()
 { 
-
+  const router = useRouter()
   const [login_dropdown, set_login_dropdown] = useState(0)
   const [live_prices_list, set_live_prices_list] = useState({});
   const [dark_mode, set_dark_mode]=useState(JsCookie.get('dark_mode')) 
+  const check_in_array = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SCUSDT', 'XRPUSDT']
 
-  useEffect(()=>{
+  useEffect(()=>
+  {
     getLivePricesList()
     $(".primary_navbar").hover(
       function () {
@@ -46,20 +48,42 @@ export default function Topmenu()
     $(".main_menu_header").toggleClass("fixed_toggle_navbar");
   }
 
-  const getLivePricesList=()=>
+
+  const getLivePricesList = async ()=>
   {
-    Axios.get("https://api.coingecko.com/api/v3/simple/price?ids=ethereum%2Cbitcoin%2Cbinancecoin%2Ctether%2Csiacoin&vs_currencies=usd&include_24hr_change=true", config)
-        .then(response => {  
-          
-          if(response.status) 
-          {
-            set_live_prices_list(response.data)
-          }
-        })
+    var my_array = []
+    const resOutput = await Axios.get("https://api.binance.com/api/v3/ticker/24hr")
+    if(resOutput.data)
+    {
+      for(var key in resOutput.data) 
+      {  
+        if(check_in_array.includes(resOutput.data[key].symbol))
+        {  
+            var createObj = {} 
+            createObj['price'] =  resOutput.data[key].lastPrice 
+            createObj['usd_24h_change'] = resOutput.data[key].priceChangePercent
+            createObj['symbol'] =  resOutput.data[key].symbol.replace('USDT', '')
+            await my_array.push(createObj)
+        }
+      }
+      await set_live_prices_list(my_array)
+    }
   }
 
+  // const getLivePricesList=()=>
+  // {
+  //   Axios.get("https://api.coingecko.com/api/v3/simple/price?ids=ethereum%2Cbitcoin%2Cbinancecoin%2Ctether%2Csiacoin&vs_currencies=usd&include_24hr_change=true", config)
+  //       .then(response => {  
+          
+  //         if(response.status) 
+  //         {
+  //           set_live_prices_list(response.data)
+  //         }
+  //       })
+  // }
+
  
-  const router = useRouter()
+
   
   const logoutFunction=()=>
   {
@@ -100,45 +124,21 @@ export default function Topmenu()
                             </div>
                             <div className="col-lg-6 market_live_price_desktop">
                               <div className="market_live_price">
-                                 {
-                                    live_prices_list.bitcoin   ?
-                                    <ul>
-                                    <li key="1">
+                              <ul>
+                              {    
+                                   live_prices_list.length > 0 ?
+                                   live_prices_list.map((e)=>
+                                   <li key="101">
                                         <a>
-                                          <h4 className="text-uppercase">BTC</h4>
-                                          <h6>$ {separator(((parseFloat(live_prices_list.bitcoin.usd))).toFixed(2))} <span className={(parseFloat(live_prices_list.bitcoin.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(live_prices_list.bitcoin.usd_24h_change)).toFixed(2)}%)</span></h6>
+                                          <h4 className="text-uppercase">{e.symbol}</h4>
+                                          <h6>$ {separator(((parseFloat(e.price))).toFixed(2))} <span className={(parseFloat(e.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(e.usd_24h_change)).toFixed(2)}%)</span></h6>
                                         </a>
                                     </li>
-                                    <li key="1">
-                                        <a>
-                                          <h4 className="text-uppercase">ETH</h4>
-                                          <h6>$ {separator(((parseFloat(live_prices_list.ethereum.usd))).toFixed(2))} <span className={(parseFloat(live_prices_list.ethereum.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(live_prices_list.ethereum.usd_24h_change)).toFixed(2)}%)</span></h6>
-                                        </a>
-                                    </li>
-                                    <li key="1">
-                                        <a>
-                                          <h4 className="text-uppercase">BNB</h4>
-                                          <h6>$ {separator(((parseFloat(live_prices_list.binancecoin.usd))).toFixed(2))} <span className={(parseFloat(live_prices_list.binancecoin.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(live_prices_list.binancecoin.usd_24h_change)).toFixed(2)}%)</span></h6>
-                                        </a>
-                                    </li>
-                                    <li key="1">
-                                        <a>
-                                          <h4 className="text-uppercase">SC</h4>
-                                          <h6>$ {separator(((parseFloat(live_prices_list.siacoin.usd))).toFixed(2))} <span className={(parseFloat(live_prices_list.siacoin.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(live_prices_list.siacoin.usd_24h_change)).toFixed(2)}%)</span></h6>
-                                        </a>
-                                    </li>
-                                    <li key="1">
-                                        <a>
-                                          <h4 className="text-uppercase">USDT</h4>
-                                          <h6>$ {separator(((parseFloat(live_prices_list.tether.usd))).toFixed(2))} <span className={(parseFloat(live_prices_list.tether.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(live_prices_list.tether.usd_24h_change)).toFixed(2)}%)</span></h6>
-                                        </a>
-                                    </li>
-                                 
-                                </ul>
+                                    )
                                     :
                                     null
-                                  }
-                                
+                               }
+                               </ul>
                               </div>
                               
                             </div>
@@ -224,30 +224,16 @@ export default function Topmenu()
                     </div>
                     <div className="mobile_view_crypto"> 
                       <marquee width="100%" direction="left">
-                        {
-                           live_prices_list.bitcoin   ?
-                           <>
-                            <div className="block_crypto">
-                              <h6 className="text-uppercase">[BTC <span className="crypto_value">${separator(((parseFloat(live_prices_list.bitcoin.usd))).toFixed(2))}</span> <span className={(parseFloat(live_prices_list.bitcoin.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(live_prices_list.bitcoin.usd_24h_change)).toFixed(2)}%</span>]</h6>
-                            </div>
-                            <div className="block_crypto">
-                              <h6 className="text-uppercase">[ETH <span className="crypto_value">${separator(((parseFloat(live_prices_list.ethereum.usd))).toFixed(2))}</span> <span className={(parseFloat(live_prices_list.ethereum.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(live_prices_list.ethereum.usd_24h_change)).toFixed(2)}%</span>]</h6>
-                            </div>
-                            <div className="block_crypto">
-                              <h6 className="text-uppercase">[BNB <span className="crypto_value">${separator(((parseFloat(live_prices_list.binancecoin.usd))).toFixed(2))}</span> <span className={(parseFloat(live_prices_list.binancecoin.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(live_prices_list.binancecoin.usd_24h_change)).toFixed(2)}%</span>]</h6>
-                            </div>
-                            <div className="block_crypto">
-                              <h6 className="text-uppercase">[SC <span className="crypto_value">${separator(((parseFloat(live_prices_list.siacoin.usd))).toFixed(2))}</span> <span className={(parseFloat(live_prices_list.siacoin.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(live_prices_list.siacoin.usd_24h_change)).toFixed(2)}%</span>]</h6>
-                            </div>
-                            <div className="block_crypto">
-                              <h6 className="text-uppercase">[USDT <span className="crypto_value">${separator(((parseFloat(live_prices_list.tether.usd))).toFixed(2))}</span> <span className={(parseFloat(live_prices_list.tether.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(live_prices_list.tether.usd_24h_change)).toFixed(2)}%</span>]</h6>
-                            </div>
-                          </>
+                      {    
+                          live_prices_list.length > 0 ?
+                          live_prices_list.map((e)=>
+                          <div className="block_crypto">
+                            <h6 className="text-uppercase">[{e.symbol} <span className="crypto_value">${separator(((parseFloat(e.price))).toFixed(2))}</span> <span className={(parseFloat(e.usd_24h_change) >= 0 ? "green":"red")}>{(parseFloat(e.usd_24h_change)).toFixed(2)}%</span>]</h6>
+                          </div>
+                          )
                           :
                           null
-                        }
-                            
-                            
+                      }    
                       </marquee>
                   </div>
                   </div>

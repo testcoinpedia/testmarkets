@@ -272,21 +272,21 @@ const onLoad = useCallback((img) => {
         formValid = false
     }
 
-    if(whitepaper === '')
-    {
-        setErrWhitepaper('The whitepaper field is required.')
-        formValid = false
-    }
-    else if(whitepaper.length < 2)
-    {
-        setErrWhitepaper('The whitepaper must be at least 2 characters.')
-        formValid = false
-    }
-    else if(whitepaper.length > 100)
-    {
-        setErrWhitepaper('The whitepaper must be less than 100 characters in length.')
-        formValid = false
-    }
+    // if(whitepaper === '')
+    // {
+    //     setErrWhitepaper('The whitepaper field is required.')
+    //     formValid = false
+    // }
+    // else if(whitepaper.length < 2)
+    // {
+    //     setErrWhitepaper('The whitepaper must be at least 2 characters.')
+    //     formValid = false
+    // }
+    // else if(whitepaper.length > 100)
+    // {
+    //     setErrWhitepaper('The whitepaper must be less than 100 characters in length.')
+    //     formValid = false
+    // }
 
 
     let communities_address = []
@@ -958,7 +958,7 @@ const getTokensDetails = (type, address) =>{
                       
                       <div className="col-md-4">
                         <div className="form-custom">
-                          <label htmlFor="email">Whitepaper<span className="label_star">*</span></label>
+                          <label htmlFor="email">Whitepaper</label>
                           <div className="form-group input_block_outline">
                             <input type="text" value={whitepaper} onChange={(e)=>setWhitepaper(e.target.value)}/>
                           </div>
