@@ -773,7 +773,6 @@ const clearform = () =>
           }
           else{
             setErrContractAddress("Invalid contract address or network type.")
-            setSymbol('') 
             setTokenName('')
           }
         })
@@ -948,7 +947,7 @@ const clearform = () =>
                       null
                     }   */}
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="form-custom"> 
                           <label htmlFor="email">Token Name<span className="label_star">*</span></label>
                           <div className="form-group input_block_outline">
@@ -958,7 +957,7 @@ const clearform = () =>
                         </div>
                       </div>
                       
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="form-custom">
                           <label htmlFor="email">Symbol<span className="label_star">*</span></label>
                           <div className="form-group input_block_outline">
@@ -967,11 +966,8 @@ const clearform = () =>
                           <div className="error">{err_symbol}</div>
                         </div>
                       </div> 
-                    </div>  
-
                     
-                    <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="form-custom">
                           <label htmlFor="email">Source code Link</label>
                           <div className="form-group input_block_outline">
@@ -979,7 +975,10 @@ const clearform = () =>
                           </div>
                         </div>
                       </div>
-                      <div className="col-md-6">
+                    </div>
+            
+                    <div className="row">
+                      <div className="col-md-4">
                         <div className="form-custom">
                           <label htmlFor="email">Website Link</label>
                           <div className="form-group input_block_outline">
@@ -988,37 +987,8 @@ const clearform = () =>
                           </div>
                         </div>
                       </div>
-                    </div>
-            
 
-                    <div className="row">
-                       <div className="col-md-6">
-                          <form id="imageUploadForm">
-                           <div className="choose_file_input">
-                               <div className="form-group">
-                                  <label> 
-                                      <input className="choose_logo" type="file" accept="image/*" onChange={onSelectFile} />
-                                      <span >Choose Logo </span> 
-                                    </label> 
-                                </div>
-                                <div className="error">{err_token_image}</div>
-                          </div>
-                          </form>
-                    </div>
-    
-                   <div className="col-md-6 mb-3">
-                       {
-                        token_image !== '' ?
-                        <img src={token_image} alt="token image" id="tokenlogo" width="50" height="50"/> 
-                        :
-                        null
-                       }
-                   </div>
-                </div>
-                    
-                    
-                    <div className="row">
-                    <div className="col-md-4 mb-3">
+                      <div className="col-md-4">
                         <div className="form-custom">
                           <label htmlFor="email">Token Max Supply<span className="label_star">*</span></label>
                           <div className="input_block_outline">
@@ -1051,6 +1021,29 @@ const clearform = () =>
                           </div>
                           <div className="error">{err_whitepaper}</div>
                         </div>
+                      </div>
+
+                      <div className="col-md-4">
+                        <form id="imageUploadForm" className="mt-4">
+                          <div className="choose_file_input">
+                            <div className="form-group">
+                              <label> 
+                                  <input className="choose_logo" type="file" accept="image/*" onChange={onSelectFile} />
+                                  <span >Choose Logo </span> 
+                                </label> 
+                            </div>
+                            <div className="error">{err_token_image}</div>
+                          </div>
+                        </form>
+                      </div>
+    
+                      <div className="col-md-4">
+                        {
+                          token_image !== '' ?
+                          <img src={token_image} alt="token image" id="tokenlogo" width="50" height="50" className="mt-2"/> 
+                          :
+                          null
+                        }
                       </div>
                   
                     </div> 

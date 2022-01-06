@@ -61,7 +61,7 @@ export default function Footer (){
             <div className="container">
                <div className="row">  
                   <div className="col-md-12">
-                     <div className="copyright-text copyright-text-first">© Copyright 2021, All Rights Reserved &nbsp;|&nbsp; 
+                     <div className="copyright-text copyright-text-first">© Copyright 2022, All Rights Reserved &nbsp;|&nbsp; 
                         <img src="/assets/img/heart.svg" className="red_heart" /> 
                         <a href={coinpedia_url} target="_blank" rel="nofollow noopener">Coinpedia</a>
                      </div>  

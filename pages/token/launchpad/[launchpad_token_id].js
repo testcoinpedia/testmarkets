@@ -627,15 +627,15 @@ const onRemove = (selectedList, removedItem) => {
                             :
                             null
                         }
-                        &nbsp;
-                      <Link href="/token" ><a className="btn btn-primary"><i className="la la-arrow-left"></i>Go Back</a></Link>
+                      <div className="panel_title_go_back">
+                      <Link href="/token" ><a className="btn btn-primary"><i className="la la-arrow-left"></i>Go Back</a></Link></div>
                     </div>
                   </div>
                 </div>
                 
                 <div className="token_list_table">
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-xl-6 col-lg-12 col-md-12">
                     <div className="form-custom">
                       <label htmlFor="email">Tokens For sale<span className="label_star">*</span></label>
                       <div class="input-group mb-3">
@@ -669,7 +669,7 @@ const onRemove = (selectedList, removedItem) => {
                   <div className="error">{err_launchpad} {err_tokens_sale}</div>
                  </div>
                  
-                  <div className="col-md-6">
+                  <div className="col-xl-6 col-lg-12 col-md-12">
                     <div className="form-custom">
                     <label htmlFor="access_type">Enter Access Type<span className="label_star">*</span></label>
                       <div className="form-group input_block_outline">

@@ -10843,7 +10843,7 @@ a:not([href]):not([class]):hover {
   border: 1px solid #e5e4ec;
   background: #fff;
   padding: 7px 15px;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .input_block_outline .form-group {
@@ -13018,7 +13018,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .create_token_btn a {
   background: #4a3b88;
   color: #fff;
-  padding: 12px 20px;
+  padding: 9px 20px;
   border-radius: 4px;
   float: right;
 }
@@ -13066,6 +13066,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border: 0;
   outline: none;
   box-shadow: none;
+  font-size: 14px;
 }
 
 .token_overview_block {
@@ -13783,6 +13784,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .votes_market {
   color: green;
+  padding-left: 7px;
 }
 
 .votes_market .total_votes {
@@ -13864,7 +13866,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   .top_menu_skin {
     padding: 3px 8px 35px 10px;
-    width: 32px;
+    width: 36px;
   }
   .header_button {
     padding: 8px 12px 7px;
@@ -16791,3 +16793,122 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 } */
 
 /*# sourceMappingURL=app.css.map */
+
+/* custom css */
+
+.markets_list_quick_links .active_category:hover div {
+  color: #000;
+}
+.airdrop_single_page .token_content p{
+  word-break: break-all;
+}
+.token-pg-height{
+  min-height: 50vh;
+}
+.market-page .new_page_title_block .market_insights .search_filter .input-group-text img{
+  width: 15px;
+ }
+ .panel_title_go_back .btn-primary {
+  padding: 5px;
+  min-width: 86px;
+  height: 34px;
+  border-radius: 3px;
+ }
+.market-page .new_page_title_block .market_insights .search_filter .input-group-prepend {
+  margin-right: 0px;
+}
+.market_insights #formID .search_filter .input-group-text img {
+  width: 15px;
+}
+.form-control:focus{
+  box-shadow: none;
+}
+.market_insights #formID .search_filter .input-group-prepend {
+  margin-right: 0px;
+}
+.btn-primary:focus {
+  box-shadow: unset;
+}
+.btn-primary:not(:disabled):not(.disabled):active:focus{
+  box-shadow: unset;
+}
+.main_create_form .token_list_table .input-group {
+  border-radius: 4px;
+  padding: 2px 0px;
+}
+@media (max-width: 1199px){
+  .referral_dropdown .dropdown_dots {
+    padding: 0 8px;
+  }
+
+}
+@media (max-width: 767px){
+  .market_insights #formID .search_filter .input-group-prepend .reset_filter{
+    margin: 0px;
+  }
+  .panel_title_go_back .btn-primary {
+    padding: 5px;
+    min-width: 70px;
+    height: 32px;
+    font-size: 13px;
+   
+}
+  .referral_dropdown .dropdown_dots {
+    padding: 0 7px;
+}
+  #myForm .main_create_form .token_steps .btn-primary{
+    min-width: 100px;
+    height: 32px;
+    padding: 0 10px;
+    font-size: 13px;
+
+  }
+}
+/* menu alignment */
+@media (max-width: 991px) {
+  .main_menu_header .nav > li > a{
+    border: 0 !important;
+    padding: 12px 50px 12px 0;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .dark_theme_toggle, .notification_bell{
+    display: none;
+  }
+  .main_menu_header .nav > li{
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 5px 25px 5px 0;
+  }
+  .market_top_header .nav-item.show .dropdown-toggle {
+    color: #fff !important;
+}
+.main_menu_header .dropdown .dropdown-menu{
+  box-shadow: unset;
+  border-top: 0;
+  border: 0;
+}
+.main_menu_header .dropdown .dropdown-menu li a{
+  font-weight: normal !important;
+  font-size: 14px !important;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+.main_menu_header .nav > li .dropdown-toggle::after{
+  float: right;
+  margin-top: 10px;
+}
+.main_menu_header .close_navbar{
+  padding: 18px 0px;
+}
+}
+
+
+@media (max-width: 450px) {
+  .transaction_table_block .pager__list.pagination_element ul li{
+    margin-top: 6px;
+
+  }
+
+}
+
+

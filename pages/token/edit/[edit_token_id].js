@@ -14,7 +14,7 @@ import { Editor } from '@tinymce/tinymce-react';
 
  
 export default function UpdateToken({userAgent,config,token_id}) {  
-
+ console.log(token_id)
   const editorRef = useRef(null);
   const router = useRouter()
    
@@ -716,9 +716,15 @@ const getTokensDetails = (type, address) =>{
           <div className="container">
             <div className="for_padding">
               <div className=" token_steps">
-                <h1>Edit Token</h1>
+                <div className="row">
+                  <div className="col-lg-9 col-md-9 col-8">
+                  <h1>Edit Token</h1>
                 <p className="token_form_sub_text">Enter all these fields to Edit tokens details</p>
-                <p className="panel_title_go_back"><div onClick={() => router.back()}><a><i className="la la-arrow-left"></i>back</a></div></p>
+                  </div>
+                  <div className="col-lg-3 col-md-3 col-4">
+                  <div className="panel_title_go_back"><div class="text-right" onClick={() => router.back()}><a class="btn btn-primary"><i className="la la-arrow-left"></i>Go Back</a></div></div>
+                  </div>
+                </div>
               </div>
               
               <div className="main_create_form"> 
@@ -1039,8 +1045,9 @@ const getTokensDetails = (type, address) =>{
                         </div>
                       </div>
                       }
-                      <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.png" /> Add More Exchange</span></button>
+                    
                       </div>
+                      <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.png" /> Add More Exchange</span></button>
                       </div>
                       <div className="col-md-4 create_token_create_space">
                       {

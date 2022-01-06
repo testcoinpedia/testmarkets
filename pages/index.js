@@ -6,21 +6,20 @@ import cookie from "cookie"
 import Axios from 'axios'
 import moment from 'moment'
 import TableContentLoader from '../components/loaders/tableLoader'
-import { API_BASE_URL, config, separator, website_url, app_coinpedia_url,IMAGE_BASE_URL,market_coinpedia_url} from '../components/constants'; 
+import { API_BASE_URL, config, separator, website_url, app_coinpedia_url,IMAGE_BASE_URL,market_coinpedia_url,graphqlApiKEY} from '../components/constants'; 
 var $ = require( "jquery" );
 
 export default function Home({resData,userAgent,config, user_token}) { 
-  const [tokenslist] = useState(resData.message)
+  const [tokenslist,set_tokenslist] = useState(resData.message)
   const [total_tokens_count, set_total_tokens_count] = useState(resData.message.length)  
   const [current_page_token_list, set_current_page_token_list] = useState([]); 
   const [voting_ids, setvoting_ids] = useState(resData.voting_ids)
-  
+  const [err_contract_address, setErrContractAddress] = useState("")
   const [pageCount, setPageCount] = useState(Math.ceil(resData.message.length / 15))
   const [firstcount, setfirstcount] = useState(1)
   const [finalcount, setfinalcount] = useState(15)
   const [selectedPage, setSelectedPage] = useState(0) ;
   const [image_base_url] = useState(IMAGE_BASE_URL + '/tokens/')
- 
   const [searchBy, setSearchBy] = useState("0")   
   const [search_contract_address, set_search_contract_address] = useState("")    
   const [validSearchContract, setvalidContractAddress] = useState("")
@@ -34,8 +33,9 @@ export default function Home({resData,userAgent,config, user_token}) {
    const [total_votes, set_total_votes] = useState()
    const [token_id, set_Token_id] = useState("")
    const [vote_id, set_vote_id] = useState("")
+   const [item, set_item] = useState("")
    const [voting_message, set_voting_message] = useState("")
-
+   
    
   console.log(resData);
   
@@ -57,12 +57,16 @@ const handlePageClick = (e) => {
   getTokensList(tokenslist , selectPage * 15)
 
 }; 
-const ModalVote=(token_id,status,_id)=> 
-  {    
+//i_value, item
+const ModalVote=(token_id,status,_id,item)=> 
+  { 
+    console.log(item)   
     setHandleModalVote(!handleModalVote) 
     set_voting_status(status)
     set_Token_id(token_id)
     set_vote_id(_id)
+    set_item(item)
+   
   }
 
   const vote = (param) =>
@@ -76,10 +80,26 @@ const ModalVote=(token_id,status,_id)=>
       if(res.data.status === true) 
       {
         
-        set_total_votes(total_votes+1)
-        voting_ids.push(vote_id)
-        set_voting_message(res.data.message)
-        
+       
+        var list = []
+        var j=0
+        for(const i of tokenslist)
+        {  
+        if(item == j)
+        { 
+          list.push({_id:i._id,contract_addresses:i.contract_addresses, created_by:i.created_by,date_n_time:i.date_n_time,market_cap:i.market_cap, price:i.price, price_updated_on:i.price_updated_on, symbol:i.symbol,token_id:i.token_id,token_image:i.token_image,total_max_supply:i.total_max_supply,total_votes:i.total_votes+1,user_row_id:i.user_row_id})
+        }
+        else
+        {
+          list.push(i)
+        }
+        j++
+    }
+    voting_ids.push(vote_id)
+    set_voting_message(res.data.message) 
+      set_tokenslist(list)
+      getTokensList(tokenslist , selectedPage) 
+      
         
       }
     })
@@ -91,10 +111,24 @@ const ModalVote=(token_id,status,_id)=>
       console.log(res)
       if(res.data.status === true) 
       {
-        set_total_votes(total_votes-1)
+        var list = []
+        var j=0
+      for(const i of tokenslist)
+      {  
+      if(item == j)
+      { 
+        list.push({_id:i._id,contract_addresses:i.contract_addresses, created_by:i.created_by,date_n_time:i.date_n_time,market_cap:i.market_cap, price:i.price, price_updated_on:i.price_updated_on, symbol:i.symbol,token_id:i.token_id,token_image:i.token_image,total_max_supply:i.total_max_supply,total_votes:i.total_votes-1,user_row_id:i.user_row_id})
+      }
+      else
+      {
+        list.push(i)
+      }
+      j++
+    }
+       set_tokenslist(list)
         voting_ids.splice(voting_ids.indexOf(vote_id), 1)
         set_voting_message(res.data.message)
-        
+        getTokensList(tokenslist , selectedPage)
       }
     })
     }
@@ -159,6 +193,92 @@ const Pages_Counts = (page_selected, length_value) =>
    setfirstcount(first_count)
    setfinalcount(final_count)
 }
+const getTokenData =(type, address)=>{  
+  let network_type = ""
+
+  if(type === "1"){ 
+    network_type = "ethereum"
+  }
+  else if(type === "2"){ 
+    network_type = "bsc"
+  }
+  else{
+    return null
+  }
+  getTokenDetails(network_type, address)
+  
+}
+const getTokenDetails = (network_type, address) =>{  
+
+  // let network_type = ""
+
+  // if(type === "1"){ 
+  //   network_type = "ethereum"
+  // }
+  // else if(type === "2"){ 
+  //   network_type = "bsc"
+  // }
+  // else{
+  //   return null
+  // }
+
+  const query = `
+              query
+              { 
+                ethereum(network: `+network_type+`) {
+                  address(address: {is: "`+address+`"}){
+
+                    annotation
+                    address
+
+                    smartContract {
+                      contractType
+                      currency{
+                        symbol
+                        name
+                        decimals
+                        tokenType
+                      }
+                    }
+                    balance
+                  }
+                } 
+            }
+        ` ;
+
+  const url = "https://graphql.bitquery.io/";
+  const opts = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-KEY":graphqlApiKEY
+    },
+    body: JSON.stringify({
+      query
+    })
+  }; 
+  fetch(url, opts)
+    .then(res => res.json())
+    .then(result => {    
+        if(result.data.ethereum.address[0].smartContract){
+        if (result.data.ethereum.address[0].smartContract.currency) { 
+          setvalidContractAddress("")
+          CheckContractAddress(address)
+        } 
+        else { 
+          setvalidContractAddress("Invalid contract address or network type.")
+        
+          
+        } 
+      }
+      else{
+        setvalidContractAddress("Invalid contract address or network type.")
+        
+      }
+    })
+    .catch(console.error);
+
+}
 const CheckContractAddress =(address)=>{
   // for(const i of listData)
   //   {
@@ -180,7 +300,7 @@ const CheckContractAddress =(address)=>{
 //  })
 for(const i of tokenslist)
     {
-      if(i.contract_addresses.length>0){
+      if(i.contract_addresses.length>0  ){
       if(address==i.contract_addresses[0].contract_address) {
         status=false
          window.location.replace(website_url+i.token_id)
@@ -193,7 +313,7 @@ for(const i of tokenslist)
  }
   let query = "";
 
-  if(searchBy === "0"){
+  if(searchBy === "1"){
     query = `
     query
     { 
@@ -264,7 +384,7 @@ for(const i of tokenslist)
     {
       if(result.data.ethereum.address[0].smartContract){
         if(result.data.ethereum.address[0].smartContract.currency){
-        if(searchBy === "0"){
+        if(searchBy === "1"){
           window.location.replace(website_url+'eth/'+address)
           // router.push('/eth/'+address)
         }
@@ -291,9 +411,11 @@ for(const i of tokenslist)
    
 
   const getTokensList=(tokenslist, offset)=>
-  {   
+  {  
+    
     let slice = tokenslist.slice(offset, offset + 15) 
     set_current_page_token_list(slice)
+    console.log(current_page_token_list)
   }  
  
   const makeJobSchema=()=>{  
@@ -354,16 +476,18 @@ for(const i of tokenslist)
                   <div className="input-group search_filter">
                     <input value={search_contract_address} onChange={(e)=> set_search_contract_address(e.target.value)} type="text" placeholder="Search token here" className="form-control search-input-box" placeholder="Search by contract address" />
                     <div className="input-group-prepend markets_index">
-                      <select  className="form-control" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}>
-                        <option value="0">ETH</option>
-                        <option value="1">BSC</option>
+                      {/* <select  className="form-control" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}>*/}
+                        <select  className="form-control" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}> 
+                      <option value="0">Type</option>
+                        <option value="1">ETH</option>
+                        <option value="2">BSC</option>
                       </select>
                     </div>
                     <div className="input-group-prepend ">
                     {
                       search_contract_address
                       ?
-                      <span className="input-group-text" onClick={()=> CheckContractAddress(search_contract_address)}><img src="/assets/img/search-box.png" alt="search-box"  width="100%" height="100%"/></span>
+                      <span className="input-group-text" onClick={()=> getTokenData(searchBy, search_contract_address)}><img src="/assets/img/search-box.png" alt="search-box"  width="100%" height="100%"/></span>
                       :
                       <span className="input-group-text"><img src="/assets/img/search-box.png" alt="search-box" width="100%" height="100%" /></span>
                     }                  
@@ -538,9 +662,9 @@ for(const i of tokenslist)
                                           {
                                              
                                               voting_ids.includes(e._id) ?
-                                              <span className="market_list_price"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,true,e._id)} >Voted</button></span>
+                                              <span className="market_list_price"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,true,e._id,i)} >Voted</button></span>
                                               :
-                                              <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,false,e._id)} >Vote</button></span>
+                                              <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,false,e._id,i)} >Vote</button></span>
                                               
                                            }
                                           </>

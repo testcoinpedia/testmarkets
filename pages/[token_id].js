@@ -1909,8 +1909,9 @@ const myReferrlaLink=()=> {
     // document.execCommand("Copy"); 
     // copytext.remove()
     set_contract_copy_status(type)
-    // console.log(type)
-    // console.log(data)
+     console.log(type)
+   
+
     var copyText = document.createElement("input")
     copyText.value = data;
     document.body.appendChild(copyText)
@@ -1920,7 +1921,7 @@ const myReferrlaLink=()=> {
     // setTimeout(3000)
     setTimeout(() => set_contract_copy_status(""), 3000)
   }
- 
+
   const connectToWallet=()=> {   
     setSelectedWalletType(2)
     if(window.web3)
@@ -2839,7 +2840,7 @@ const connectToEthWallet=()=>
                                             </span>
                                           </a>&nbsp;
                                           {
-                                            contract_copy_status == 'ETH' ? 
+                                            contract_copy_status === 'ETH' ? 
                                             <span>Copied</span>
                                             :
                                             <img  onClick={()=> {copyContract(data.contract_addresses[0].contract_address, 'ETH')}} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
@@ -2858,7 +2859,7 @@ const connectToEthWallet=()=>
                                                   </a>
                                                   &nbsp; 
                                                   {
-                                                    contract_copy_status == 'BNB'?
+                                                    contract_copy_status === 'BNB'?
                                                     <span>Copied</span>
                                                     :
                                                     <img onClick={()=> copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
@@ -2875,13 +2876,20 @@ const connectToEthWallet=()=>
                                           data.contract_addresses[0].network_type === "2"
                                           ?
                                           <> 
-                                          <a href={"https://bscscan.com/token/"+data.contract_addresses[1].contract_address} target="_blank">
+                                          <a href={"https://bscscan.com/token/" + data.contract_addresses[0].contract_address} target="_blank">
                                             <span >Binance smart chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
                                             </span>
                                           </a>
-                                          <span id="copyTooltip">
-                                          <img onClick={()=> copyContract(data.contract_addresses[0].contract_address)} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" /> 
-                                          </span>
+                                          {
+                                             contract_copy_status === 'BNB'?
+                                             <span  className="votes_market">Copied</span>
+                                             :
+                                             <span id="copyTooltip">
+                                             <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" /> 
+                                             </span>
+                                          }
+                                         
+                                          
                                           <img  ref={contractRef} onClick={()=> setOtherContract(!otherContract)} src="/assets/img/down-arrow.png" className="dropdown_arrow_img" />
                                           {
                                             otherContract
@@ -2889,10 +2897,17 @@ const connectToEthWallet=()=>
                                             <div className="dropdown_block">
                                               <p>Ethereum</p> 
                                               <p>
-                                                <a  href={"https://etherscan.io/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}</a> 
-                                                <span id="copyTooltip">
-                                                <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address)} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                <a  href={"https://etherscan.io/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}</a>
+                                                {
+                                                  
+                                            contract_copy_status === 'ETH' ? 
+                                            <span className="votes_market" >Copied</span>
+                                            :
+                                            <span id="copyTooltip">
+                                                <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address,"ETH")} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
                                                 </span>
+                                                } 
+                                                
                                               </p>
                                             </div>
                                             :
@@ -2908,21 +2923,33 @@ const connectToEthWallet=()=>
                                           <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
                                             Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
                                           </a> 
-                                          <span id="copyTooltip">
-                                          <img onClick={()=> copyContract(data.contract_addresses[0].contract_address)} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
-                                          </span>
+                                          {
+                                              contract_copy_status === 'ETH' ? 
+                                              <span className="votes_market" >Copied</span>
+                                              :
+                                            <span id="copyTooltip">
+                                            <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,"ETH")} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
+                                            </span>
+                                          }
+                                          
                                         </span>
                                         : 
                                         <span  onClick={()=> setOtherContract(!otherContract)}>
                                           <a href={"https://bscscan.com/token/"+data.contract_addresses[0].contract_address} target="_blank">Binance Smart Chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
                                           </a> 
-                                          <span id="copyTooltip">
-                                          <img onClick={()=> copyContract(data.contract_addresses[0].contract_address)} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          {
+                                             contract_copy_status === 'BNB'?
+                                             <span  className="votes_market">Copied</span>
+                                             :
+                                            <span id="copyTooltip">
+                                          <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,'BNB')} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
                                           </span>
+                                          }
+                                          
                                         </span>
-                                        
                                       } 
-                                    </span>
+                                    </span> 
+                                    {/* <span className="votes_market">Copied</span> */}
                                   </div>
                                 </div>
                                 :

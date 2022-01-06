@@ -188,7 +188,7 @@ const getTokensCurrentList=(items, offset)=>
 
     return ( 
       <div className="container">
-        <div className="prices transaction_table_block">
+        <div className="prices transaction_table_block token-pg-height">
           <div className="col-md-12">
             <div className="row">
               <div className="col-md-8 col-lg-8 col-sm-6 col-6">
