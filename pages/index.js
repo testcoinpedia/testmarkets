@@ -467,12 +467,12 @@ for(const i of tokenslist)
           <div className="container">
             <div className="col-md-12">
               <div className="row market_insights ">
-                <div className="col-md-7 col-lg-6">
+                <div className="col-md-6 col-lg-6">
                   <h1 className="page_title">Cryptocurrency Market Insights</h1>
                   <p>Companies with tech innovation into finance and technology, Globally.</p>
                 </div>
                 <div className="col-md-1 col-lg-2"></div>
-                <div className="col-md-4 col-lg-4">
+                <div className="col-md-5 col-lg-4">
                   <div className="input-group search_filter">
                     <input value={search_contract_address} onChange={(e)=> set_search_contract_address(e.target.value)} type="text" placeholder="Search token here" className="form-control search-input-box" placeholder="Search by contract address" />
                     <div className="input-group-prepend markets_index">
@@ -514,33 +514,33 @@ for(const i of tokenslist)
                           </a>
                         </Link> 
                       </li>
-                      <li>
-                        <Link href="#">
+                      <li data-toggle="modal" data-target="#comingSoon">
+                       
                           <a className="categories__item">
                             <div className="categories__text">Gainers & Losers</div>
                           </a>
-                        </Link>
+                       
                       </li>
-                      <li>
-                        <Link href="#">
+                      <li data-toggle="modal" data-target="#comingSoon">
+                        {/* <Link href="#"> */}
                           <a className="categories__item ">
                             <div className="categories__text">Stable Coins</div>
                           </a>
-                        </Link>
+                        {/* </Link> */}
                       </li>
-                      <li>
-                        <Link href="#">
+                      <li data-toggle="modal" data-target="#comingSoon">
+                        {/* <Link href="#"> */}
                           <a className="categories__item ">
                             <div className="categories__text">Trending Coins</div>
                           </a>
-                        </Link>
+                        {/* </Link> */}
                       </li>
-                      <li>
-                        <Link href="#">
+                      <li data-toggle="modal" data-target="#comingSoon">
+                        {/* <Link href="#"> */}
                           <a className="categories__item ">
                             <div className="categories__text">NFT Marketplace</div>
                           </a>
-                        </Link>
+                        {/* </Link> */}
                       </li>
                     </ul>
                    

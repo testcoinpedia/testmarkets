@@ -96,7 +96,9 @@ html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
-
+body {
+  min-width: 280px !important;
+}
 img,
 fieldset,
 a img {
@@ -16802,6 +16804,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .airdrop_single_page .token_content p{
   word-break: break-all;
 }
+
 .token-pg-height{
   min-height: 50vh;
 }
@@ -16836,9 +16839,39 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border-radius: 4px;
   padding: 2px 0px;
 }
+.coming_soon_modal .modal-header {
+  border-bottom: 0px;
+  padding: 0px 10px;
+}
+.coming_soon_modal .modal-body {
+  padding: 0px 13px;
+}
+.coming_soon_subtext {
+  color: #888;
+}
+.coming_soon_modal .modal-content {
+  padding: 5px;
+  border-radius: 3px;
+}
+.coming_soon_modal .modal-dialog {
+  margin-top: 20%;
+}
+.coming_soon_title {
+  color: #3a325b;
+  font-size: 20px;
+}
+.button:focus{
+  outline: 0;
+}
+@media (max-width: 1299px){
+  .launchpad .launchpad_title{
+    width: 110px;
+  }
+
+}
 @media (max-width: 1199px){
   .referral_dropdown .dropdown_dots {
-    padding: 0 8px;
+    padding: 0 7px;
   }
 
 }
@@ -16863,6 +16896,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 13px;
 
   }
+
 }
 /* menu alignment */
 @media (max-width: 991px) {
@@ -16871,6 +16905,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 12px 50px 12px 0;
     font-size: 15px;
     font-weight: 500;
+  }
+  .transaction_table_block{
+    margin-bottom: 20px;
+  }
+  .pager__list.pagination_element ul li{
+    margin-top: 10px;
+  }
+  .categories__container .markets_list_quick_links:first-child .categories__item{
+    margin-top: 8px;
+  }
+  .market_insights .search_filter .search-input-box{
+    font-size: 13px;
   }
   .dark_theme_toggle, .notification_bell{
     display: none;
@@ -16907,6 +16953,48 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .transaction_table_block .pager__list.pagination_element ul li{
     margin-top: 6px;
 
+  }
+
+}
+@media (max-width: 320px) {
+.token-list-pd-rm .create_token_btn a {
+  font-size: 11px;
+}
+.token-list-pd-rm{
+  padding-left: 0px;
+  padding-right: 0px;
+}
+.tox .tox-statusbar{
+  height: 30px;
+}
+.token_form .tox .tox-statusbar a, .token_form .tox .tox-statusbar__wordcount{
+  font-size: 9px;
+}
+.company_profile_tabs .nav-tabs {
+  border-bottom: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  height: 22px;
+}
+}
+
+@media (max-width: 299px) {
+
+  .navbar-toggler-icon{
+    width: 20px;
+  }
+  .market-details-custom-search-block{
+    max-width: 230px;
+    min-width: 200px;
+  }
+  .navbar_border_bottom .main_menu_header{
+    width: 260px;
+  }
+  .main_menu_header .nav > li > a{
+    font-size: 14px !important;
+  }
+  .main_menu_header .dropdown .dropdown-menu li a{
+    font-size: 12px !important;
   }
 
 }

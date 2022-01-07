@@ -1,4 +1,3 @@
-
 import React, {useState, useRef, useEffect} from 'react';  
 import { ethers } from 'ethers';
 import Link from 'next/link' 
@@ -3235,6 +3234,15 @@ const connectToEthWallet=()=>
                                     
                                     
                                   }
+                                   {
+                                        tokentransactionsData.length > 0
+                                        ?
+                                        tokentransactionsData
+                                        :
+                                        <tr>
+                                          <td colSpan="5"><h5 className="text-center no_data_found">No data found</h5></td>
+                                        </tr>
+                                      } 
                                   </tbody>
 
 
