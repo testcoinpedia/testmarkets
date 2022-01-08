@@ -2425,38 +2425,7 @@ const connectToEthWallet=()=>
                                           </div>
                                         </div>
                                       </li> */}
-                                      <div className="modal" id="market_share_page">
-                                        <div className="modal-dialog">
-                                          <div className="modal-content">
-                                            <div className="modal-header">
-                                              <h4 className="modal-title">Share</h4>
-                                              <button type="button" className="close" data-dismiss="modal">×</button>
-                                            </div>
-                                            <div className="modal-body">
-                                              <div className="row">
-                                                <div className="col-md-1" />
-                                                <div className="col-md-10">
-                                                  <div className="input-group">
-                                                    <input type="text" id="referral-link" className="form-control" defaultValue={website_url+data.token_id} readOnly />
-                                                    <div className="input-group-prepend">
-                                                      <span className="input-group-text" id="myTooltip" onClick={()=>myReferrlaLink()}>
-                                                        <img src="/assets/img/copy-file.png" className="copy_link" width="100%" height="100%" />
-                                                      </span>
-                                                    </div>
-                                                  </div>
-                                                  <h6>Share with </h6>
-                                                  <p className="share_social">
-                                                    <a href={"https://www.facebook.com/sharer/sharer.php?u="+website_url+data.token_id} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
-                                                    <a href={"https://www.linkedin.com/shareArticle?mini=true&url="+website_url+data.token_id} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
-                                                    <a href={"http://twitter.com/share?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
-                                                    <a href={"https://wa.me/?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
-                                                  </p>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
+                                      
                                     </ul>
 
                                     
@@ -2959,8 +2928,7 @@ const connectToEthWallet=()=>
                             <div class="col-4 text-right token_share_block token_share_for_left">
                               <ul className="market_details_share_wishlist mobile_view">
                                 <li>
-                                  {/* <div className="share_market_detail_page" data-toggle="modal" data-target="#market_share_page"><img src="/assets/img/share-icon.png"  width="100%" height="100%" /> Share</div> */}
-                                  <div className="share_market_detail_page" data-toggle="modal" data-target="#market_share_page1">Share</div>
+                                  <div className="share_market_detail_page" data-toggle="modal" data-target="#market_share_page">Share</div>
                                 </li>
                                 {/* <li>
                                   <div className="wishlist_market_detail_page">
@@ -2968,38 +2936,7 @@ const connectToEthWallet=()=>
                                     </div>
                                   </div>
                                 </li> */}
-                                <div className="modal" id="market_share_page1">
-                                  <div className="modal-dialog">
-                                    <div className="modal-content">
-                                      <div className="modal-header">
-                                        <h4 className="modal-title">Share</h4>
-                                        <button type="button" className="close" data-dismiss="modal">×</button>
-                                      </div>
-                                      <div className="modal-body">
-                                        <div className="row">
-                                          <div className="col-md-1" />
-                                          <div className="col-md-10">
-                                            <div className="input-group">
-                                              <input type="text" id="referral-link" className="form-control" defaultValue={website_url+data.token_id} readOnly />
-                                              <div className="input-group-prepend">
-                                                <span className="input-group-text" id="myTooltip" onClick={()=>myReferrlaLink()}>
-                                                  <img src="/assets/img/copy-file.png" className="copy_link" width="100%" height="100%" />
-                                                </span>
-                                              </div>
-                                            </div>
-                                            <h6>Share with </h6>
-                                            <p className="share_social">
-                                              <a href={"https://www.facebook.com/sharer/sharer.php?u="+website_url+data.token_id} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
-                                              <a href={"https://www.linkedin.com/shareArticle?mini=true&url="+website_url+data.token_id} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
-                                              <a href={"http://twitter.com/share?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
-                                              <a href={"https://wa.me/?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                                
                               </ul>
                             </div>
                             
@@ -3460,6 +3397,39 @@ const connectToEthWallet=()=>
                 </div> 
             </div>
           </div> 
+
+          <div className="modal" id="market_share_page">
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h4 className="modal-title">Share</h4>
+                    <button type="button" className="close" data-dismiss="modal">×</button>
+                  </div>
+                  <div className="modal-body">
+                    <div className="row">
+                      <div className="col-md-1" />
+                      <div className="col-md-10">
+                        <div className="input-group">
+                          <input type="text" id="referral-link" className="form-control" defaultValue={website_url+data.token_id} readOnly />
+                          <div className="input-group-prepend">
+                            <span className="input-group-text" id="myTooltip" onClick={()=>myReferrlaLink()}>
+                              <img src="/assets/img/copy-file.png" className="copy_link" width="100%" height="100%" />
+                            </span>
+                          </div>
+                        </div>
+                        <h6>Share with </h6>
+                        <p className="share_social">
+                          <a href={"https://www.facebook.com/sharer/sharer.php?u="+website_url+data.token_id} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
+                          <a href={"https://www.linkedin.com/shareArticle?mini=true&url="+website_url+data.token_id} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
+                          <a href={"http://twitter.com/share?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
+                          <a href={"https://wa.me/?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
           <div className={"modal connect_wallet_error_block"+ (handleModalVote ? " collapse show" : "")}>
             <div className="modal-dialog modal-sm">
