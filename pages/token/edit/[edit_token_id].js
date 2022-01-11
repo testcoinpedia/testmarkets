@@ -674,7 +674,7 @@ const getTokensDetails = (type, address) =>{
         }
       })
       .catch(console.error);
- 
+
 }
  
   return(

@@ -146,39 +146,47 @@ const getTokensCurrentList=(items, offset)=>
         <td>
           {
             parseInt(e.approval_status) === 0 ?
-            <span className="table_status status_pending">Pending</span>
+            <span className="table_status status_pending">Pending({parseInt(e.active_status) === 0 ? "Disabled": "Enabled"})</span>
             :
             parseInt(e.approval_status) === 1 ?
-            <span className="table_status status_approved">Approved</span>
+            <span className="table_status status_approved">Approved({parseInt(e.active_status) === 0 ? "Disabled": "Enabled"})</span>
             :
             parseInt(e.approval_status) === 2 ?
-            <span className="table_status status_rejected">Rejected</span>
+            <span className="table_status status_rejected">Rejected({parseInt(e.active_status) === 0 ? "Disabled": "Enabled"})</span>
             :
             null
           }
         </td>
-        <td className="referral_dropdown">
-          <div className="dropdown" >
-            <img src="/assets/img/table_dropdown_dots.png" data-toggle="dropdown" className="dropdown_dots" />
-            <div className="dropdown-menu">
-              <Link href={market_coinpedia_url + "token/edit/"+e.token_id}><a className="dropdown-item">
-                <img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Token
-              </a></Link>
-              <Link href={market_coinpedia_url + "token/launchpad/"+e.token_id}><a className="dropdown-item">
-                <img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Launchpad
-              </a></Link>
-
-               {
-                 parseInt(e.approval_status) === 1 ?
-                 <Link href={market_coinpedia_url + e.token_id}><a className="dropdown-item">
-                    <img src="/assets/img/table_dropdown_view.png" className="dropdown_images" />View
-                  </a></Link>
-                 :
-                 null
-               }
+        {
+          parseInt(e.approval_status) === 1 ?
+          <td className="referral_dropdown">
+            <div className="dropdown" >
+              <img src="/assets/img/table_dropdown_dots.png" data-toggle="dropdown" className="dropdown_dots" />
+                <div className="dropdown-menu">
+                  {
+                    parseInt(e.active_status) === 1 ?
+                    <>
+                    <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
+                      <a className="dropdown-item"><img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Token</a>
+                    </Link>
+                    <Link href={market_coinpedia_url + "token/launchpad/"+e.token_id}>
+                      <a className="dropdown-item"><img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Launchpad</a>
+                    </Link>
+                    </>
+                    :
+                    null
+                  }
+                  
+                  <Link href={market_coinpedia_url + e.token_id}>
+                    <a className="dropdown-item"><img src="/assets/img/table_dropdown_view.png" className="dropdown_images" />View</a>
+                  </Link>
+                </div>
             </div>
-          </div>
-        </td>       
+          </td> 
+          :
+          null
+        }
+              
     </tr>
   )  
   setCurrentPageArray(postData) 
@@ -240,7 +248,7 @@ const getTokensCurrentList=(items, offset)=>
               <th className="table_token_ciruclating_supply">Market Cap</th>
               <th className="table_token_launchpad_type">Launchpad Type</th>
               <th className="table_token_launchpad_date">Launchpad Date</th> 
-              <th>Status</th> 
+              <th>Status(Active Status)</th> 
               <th className="token-list-last-column"  width="200px">Action</th> 
           </tr> 
     </thead>

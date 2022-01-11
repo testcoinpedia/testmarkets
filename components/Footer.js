@@ -15,13 +15,13 @@ export default function Footer (){
                <div className="footer-widget-area ">
                   <div className="row">
 
-                     <div className="col-sm-4 normal-side">
+                     <div className="col-md-4 normal-side">
                         <div className="container-wrapper footer_logo">
                            <img src={logo} alt="cp-logo" />
                         </div>
                      </div>
 
-                     <div className="col-sm-4 normal-side">
+                     <div className="col-md-4 normal-side">
                         <div id="author-bio-widget-4" className="container-wrapper widget aboutme-widget">
                            <div className="about-author about-content-wrapper">
                               <div className="aboutme-widget-content">Coinpedia - Trusted Crypto Agency for News, Information, Exchange, PR, Blockchain Events, Crypto Wallet and Else related to Decentralized World.
@@ -32,7 +32,7 @@ export default function Footer (){
                         <div className="clearfix" /></div>		
                      </div>
 
-                     <div className="col-sm-4 normal-side twitter_side">
+                     <div className="col-md-4 normal-side twitter_side">
                         <h5>Follow Us</h5>	
 
                         <div className="media">

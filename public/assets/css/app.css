@@ -13123,7 +13123,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .sticky_footer_menu ul .footer_menu_items img {
   display: block;
-  margin: 0 auto;
+  margin: 6px auto 0;
   width: 16px;
   margin-bottom: 0px;
 }
@@ -13152,13 +13152,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .center_fixed_menu_img img {
   position: relative;
   width: 65px;
-  top: -25px;
+  top: -30px;
   left: 0;
   margin-left: 0;
 }
 
 .dcma_protected {
-  margin-top: 10px;
+  margin-top: 30px;
 }
 
 #footer {
@@ -13169,7 +13169,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #footer .copyright-text {
   color: #fff;
   margin: 2px 5px 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 300;
   float: left;
 }
@@ -13181,18 +13181,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #footer #menu-footer-menu li a {
   color: #fff;
   margin: 0 5px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 300;
 }
 
 #site-info {
   background: #1f173c;
   padding: 23px 0;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 #footer .aboutme-widget-content {
   color: #fff;
+  font-size: 13px;
 }
 
 #footer .twitter_side h5 {
@@ -13941,7 +13942,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   #footer .aboutme-widget-content {
-    text-align: left;
+    text-align: center;
     margin-bottom: 12px;
     line-height: 1.5;
     font-size: 14px;
@@ -16774,6 +16775,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .token_share_for_left {
     text-align: unset !important;
   }
+  .sticky_footer_menu ul .footer_menu_items img{
+    margin: 8px auto 0;
+  }
+  .sticky_footer_menu ul li{
+    height: 32px;
+  }
+  .center_fixed_menu_img img{
+    top: -38px;
+  }
 }
 
 @media (max-width: 350px) {
@@ -16797,7 +16807,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /*# sourceMappingURL=app.css.map */
 
 /* custom css */
-
+.footer-widget-area .normal-side .aboutme-widget .about-author{
+  padding: 15px 20px;
+}
+#footer .container-wrapper {
+  padding: 15px 0;
+}
 .markets_list_quick_links .active_category:hover div {
   color: #000;
 }
@@ -16879,6 +16894,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .market_insights #formID .search_filter .input-group-prepend .reset_filter{
     margin: 0px;
   }
+  .addmore_ico span img{
+    width: 14px;
+  }
   .panel_title_go_back .btn-primary {
     padding: 5px;
     min-width: 70px;
@@ -16896,6 +16914,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 13px;
 
   }
+  .footer-widget-area .normal-side .aboutme-widget .about-author {
+    padding: 0px 10px 10px 10px;
+}
 
 }
 /* menu alignment */
@@ -16905,6 +16926,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 12px 50px 12px 0;
     font-size: 15px;
     font-weight: 500;
+  }
+  .footer-widget-area .normal-side .aboutme-widget .about-author{
+    text-align: center;
   }
   .transaction_table_block{
     margin-bottom: 20px;
@@ -16954,6 +16978,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: 6px;
 
   }
+  .token_form .input_block_outline select{
+    font-size: 13px;
+  }
 
 }
 @media (max-width: 320px) {
@@ -16975,6 +17002,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   flex-wrap: nowrap;
   overflow-x: auto;
   height: 22px;
+}
+.token_form .form-custom .input_block_outline .input-group input{
+  padding: 0 0 0 2px;
 }
 }
 

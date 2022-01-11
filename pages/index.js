@@ -6,21 +6,21 @@ import cookie from "cookie"
 import Axios from 'axios'
 import moment from 'moment'
 import TableContentLoader from '../components/loaders/tableLoader'
-import { API_BASE_URL, config, separator, website_url, app_coinpedia_url,IMAGE_BASE_URL,market_coinpedia_url,graphqlApiKEY} from '../components/constants'; 
+import { API_BASE_URL, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY} from '../components/constants'; 
 var $ = require( "jquery" );
 
-export default function Home({resData,userAgent,config, user_token}) { 
+export default function Home({resData, userAgent, config, user_token}) { 
   const [tokenslist,set_tokenslist] = useState(resData.message)
   const [total_tokens_count, set_total_tokens_count] = useState(resData.message.length)  
   const [current_page_token_list, set_current_page_token_list] = useState([]); 
   const [voting_ids, setvoting_ids] = useState(resData.voting_ids)
-  const [err_contract_address, setErrContractAddress] = useState("")
+  const [err_searchBy, setErrsearchBy] = useState("")
   const [pageCount, setPageCount] = useState(Math.ceil(resData.message.length / 15))
   const [firstcount, setfirstcount] = useState(1)
   const [finalcount, setfinalcount] = useState(15)
   const [selectedPage, setSelectedPage] = useState(0) ;
   const [image_base_url] = useState(IMAGE_BASE_URL + '/tokens/')
-  const [searchBy, setSearchBy] = useState("0")   
+  const [searchBy, setSearchBy] = useState("")   
   const [search_contract_address, set_search_contract_address] = useState("")    
   const [validSearchContract, setvalidContractAddress] = useState("")
   const [dataLoaderStatus, setDataLoaderStatus] = useState(true)
@@ -29,13 +29,12 @@ export default function Home({resData,userAgent,config, user_token}) {
   const [searchTokens, setsearchTokens] = useState("")
   const [searchParam] = useState(["token_name"])
   const [current_url]= useState(website_url)
-   const [handleModalVote, setHandleModalVote] = useState(false)
-   const [total_votes, set_total_votes] = useState()
-   const [token_id, set_Token_id] = useState("")
-   const [vote_id, set_vote_id] = useState("")
-   const [item, set_item] = useState("")
-   const [voting_message, set_voting_message] = useState("")
-   
+  const [handleModalVote, setHandleModalVote] = useState(false)
+  const [total_votes, set_total_votes] = useState()
+  const [token_id, set_Token_id] = useState("")
+  const [vote_id, set_vote_id] = useState("")
+  const [item, set_item] = useState("")
+  const [voting_message, set_voting_message] = useState("")
    
   console.log(resData);
   
@@ -58,7 +57,8 @@ const handlePageClick = (e) => {
 
 }; 
 //i_value, item
-const ModalVote=(token_id,status,_id,item)=> 
+
+  const ModalVote=(token_id,status,_id,item)=> 
   { 
     console.log(item)   
     setHandleModalVote(!handleModalVote) 
@@ -66,11 +66,12 @@ const ModalVote=(token_id,status,_id,item)=>
     set_Token_id(token_id)
     set_vote_id(_id)
     set_item(item)
-   
+    
   }
 
   const vote = (param) =>
   {
+    
     ModalVote()
     if(param == 1)
     {
@@ -80,29 +81,17 @@ const ModalVote=(token_id,status,_id,item)=>
       if(res.data.status === true) 
       {
         
-       
-        var list = []
-        var j=0
-        for(const i of tokenslist)
-        {  
-        if(item == j)
-        { 
-          list.push({_id:i._id,contract_addresses:i.contract_addresses, created_by:i.created_by,date_n_time:i.date_n_time,market_cap:i.market_cap, price:i.price, price_updated_on:i.price_updated_on, symbol:i.symbol,token_id:i.token_id,token_image:i.token_image,total_max_supply:i.total_max_supply,total_votes:i.total_votes+1,user_row_id:i.user_row_id})
-        }
-        else
-        {
-          list.push(i)
-        }
-        j++
-    }
-    voting_ids.push(vote_id)
-    set_voting_message(res.data.message) 
-      set_tokenslist(list)
-      getTokensList(tokenslist , selectedPage) 
-      
-        
+        var testList = tokenslist
+        var testObj = testList[item]
+        var test_total_votes = testObj.total_votes+1
+        testObj['total_votes'] = test_total_votes
+        testList[item] = testObj
+        set_tokenslist(testList)
+        voting_ids.push(vote_id)
+        set_voting_message(res.data.message) 
+        // getTokensList(tokenslist , selectedPage) 
       }
-    })
+      })
     }
     else
     {
@@ -111,24 +100,16 @@ const ModalVote=(token_id,status,_id,item)=>
       console.log(res)
       if(res.data.status === true) 
       {
-        var list = []
-        var j=0
-      for(const i of tokenslist)
-      {  
-      if(item == j)
-      { 
-        list.push({_id:i._id,contract_addresses:i.contract_addresses, created_by:i.created_by,date_n_time:i.date_n_time,market_cap:i.market_cap, price:i.price, price_updated_on:i.price_updated_on, symbol:i.symbol,token_id:i.token_id,token_image:i.token_image,total_max_supply:i.total_max_supply,total_votes:i.total_votes-1,user_row_id:i.user_row_id})
-      }
-      else
-      {
-        list.push(i)
-      }
-      j++
-    }
-       set_tokenslist(list)
+        var testList = tokenslist
+        var testObj = testList[item]
+        var test_total_votes = 0
+        test_total_votes = testObj.total_votes-1
+        testObj['total_votes'] = test_total_votes
+        testList[item] = testObj
+        set_tokenslist(testList)
         voting_ids.splice(voting_ids.indexOf(vote_id), 1)
         set_voting_message(res.data.message)
-        getTokensList(tokenslist , selectedPage)
+        // getTokensList(tokenslist , selectedPage)
       }
     })
     }
@@ -140,33 +121,33 @@ const ModalVote=(token_id,status,_id,item)=>
     var filteredReferrals = null;
     if(searchValue != '')
     {  
-        var tokenslistData = tokenslist
-        var filteredTokens =  tokenslistData.filter((item) => {
-          return searchParam.some((newItem) => {
-            console.log(newItem)
-              return (
-                  item[newItem]
-                      .toString()
-                      .toLowerCase()
-                      .indexOf(searchValue) > -1
-              )
-          })
+      var tokenslistData = tokenslist
+      var filteredTokens =  tokenslistData.filter((item) => {
+        return searchParam.some((newItem) => {
+          console.log(newItem)
+            return (
+                item[newItem]
+                    .toString()
+                    .toLowerCase()
+                    .indexOf(searchValue) > -1
+            )
+        })
       })
-        setFilteredTokens(filteredTokens)
-        // console.log(filteredTokens)
-        setPageCount(Math.ceil(filteredTokens.length / 15)) 
-        getTokensList(filteredTokens, 0) 
-        set_total_tokens_count(filteredTokens.length)
-        Pages_Counts(curren , filteredTokens.length)
+      setFilteredTokens(filteredTokens)
+      // console.log(filteredTokens)
+      setPageCount(Math.ceil(filteredTokens.length / 15)) 
+      getTokensList(filteredTokens, 0) 
+      set_total_tokens_count(filteredTokens.length)
+      Pages_Counts(curren , filteredTokens.length)
         
     }
     else
     {
-        setFilteredTokens(tokenslist)
-        setPageCount(Math.ceil(tokenslist.length / 15)) 
-        getTokensList(tokenslist, 0) 
-        set_total_tokens_count(tokenslist.length)
-        Pages_Counts(curren , tokenslist.length)
+      setFilteredTokens(tokenslist)
+      setPageCount(Math.ceil(tokenslist.length / 15)) 
+      getTokensList(tokenslist, 0) 
+      set_total_tokens_count(tokenslist.length)
+      Pages_Counts(curren , tokenslist.length)
     }
   }
   const resetFilter=() =>
@@ -187,15 +168,31 @@ const Pages_Counts = (page_selected, length_value) =>
    var sadf = presentPage*15
    if((presentPage*15) > totalcompany)
    {
-      sadf = totalcompany
+    sadf = totalcompany
    }
    const final_count=sadf
    setfirstcount(first_count)
    setfinalcount(final_count)
 }
-const getTokenData =(type, address)=>{  
-  let network_type = ""
+const getTokenData =(type, address)=>{ 
 
+  setErrsearchBy("")
+
+  let formValid=true 
+  if(searchBy=="")
+  {
+    setErrsearchBy("Please Select Network Type")
+    formValid=false
+  }
+
+  if(search_contract_address == "")
+  {
+    setErrsearchBy("Please Enter Contract Address")
+    formValid=false
+  }
+   
+  let network_type = ""
+  
   if(type === "1"){ 
     network_type = "ethereum"
   }
@@ -205,8 +202,9 @@ const getTokenData =(type, address)=>{
   else{
     return null
   }
-  getTokenDetails(network_type, address)
   
+  getTokenDetails(network_type, address)
+
 }
 const getTokenDetails = (network_type, address) =>{  
 
@@ -259,7 +257,8 @@ const getTokenDetails = (network_type, address) =>{
   }; 
   fetch(url, opts)
     .then(res => res.json())
-    .then(result => {    
+    .then(result => {  
+      if(result.data.ethereum) 
         if(result.data.ethereum.address[0].smartContract){
         if (result.data.ethereum.address[0].smartContract.currency) { 
           setvalidContractAddress("")
@@ -270,6 +269,10 @@ const getTokenDetails = (network_type, address) =>{
         
           
         } 
+      }
+      else{
+        setvalidContractAddress("Invalid contract address or network type.")
+        
       }
       else{
         setvalidContractAddress("Invalid contract address or network type.")
@@ -475,6 +478,7 @@ for(const i of tokenslist)
                 <div className="col-md-5 col-lg-4">
                   <div className="input-group search_filter">
                     <input value={search_contract_address} onChange={(e)=> set_search_contract_address(e.target.value)} type="text" placeholder="Search token here" className="form-control search-input-box" placeholder="Search by contract address" />
+                   
                     <div className="input-group-prepend markets_index">
                       {/* <select  className="form-control" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}>*/}
                         <select  className="form-control" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}> 
@@ -484,15 +488,10 @@ for(const i of tokenslist)
                       </select>
                     </div>
                     <div className="input-group-prepend ">
-                    {
-                      search_contract_address
-                      ?
-                      <span className="input-group-text" onClick={()=> getTokenData(searchBy, search_contract_address)}><img src="/assets/img/search-box.png" alt="search-box"  width="100%" height="100%"/></span>
-                      :
-                      <span className="input-group-text"><img src="/assets/img/search-box.png" alt="search-box" width="100%" height="100%" /></span>
-                    }                  
+                    <span className="input-group-text" onClick={()=> getTokenData(searchBy, search_contract_address)}><img src="/assets/img/search-box.png" alt="search-box"  width="100%" height="100%"/></span>                 
                     </div>
                   </div> 
+                  <div className="error">  {err_searchBy}</div>
                     {validSearchContract && <div className="error">{validSearchContract}</div>}
                 </div>
               </div>
@@ -643,15 +642,15 @@ for(const i of tokenslist)
                                      
                                        <td className="market_list_price">
                                        {
-                                       e.total_votes == 0 ?
-                                        "--"
-                                       :
+                                        e.total_votes == 0 ?
+                                        voting_ids.includes(e._id) ? <span className="vote_value">1</span> : "--"
+                                        :
                                         <Link href={"/"+e.token_id}>
                                           <a>
                                             <span className="vote_value">{e.total_votes}</span>
                                           </a>
                                         </Link>
-                                      }
+                                        }
                                       </td>
                                      
                                       
@@ -660,16 +659,14 @@ for(const i of tokenslist)
                                           user_token ?
                                           <>
                                           {
-                                             
-                                              voting_ids.includes(e._id) ?
-                                              <span className="market_list_price"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,true,e._id,i)} >Voted</button></span>
-                                              :
-                                              <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,false,e._id,i)} >Vote</button></span>
-                                              
+                                            voting_ids.includes(e._id) ?
+                                            <span className="market_list_price"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,true,e._id,i)} >Voted</button></span>
+                                            :
+                                            <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,false,e._id,i)} >Vote</button></span>
                                            }
                                           </>
                                           :
-                                          <Link href={app_coinpedia_url+"login?prev_url=/"+market_coinpedia_url}><a><span className="market_list_price"><button data-toggle="tooltip">Vote</button></span></a></Link>
+                                          <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><span className="market_list_price"><button data-toggle="tooltip">Vote</button></span></a></Link>
                                         }
                                         </td> 
                                 </tr> 
@@ -690,37 +687,35 @@ for(const i of tokenslist)
                    
                     total_tokens_count > 15
                     ? 
-                  <div className="col-md-12">
-                    <div className="pagination_block">
-                      <div className="row">
-                        <div className="col-lg-3 col-md-3  col-sm-3 col-4">
-                            <p className="page_range">{firstcount}-{finalcount} of {pageCount} Pages</p>
-                        </div>
-                        <div className="col-lg-9 col-md-9 col-sm-9 col-8">
+                    <div className="col-md-12">
+                      <div className="pagination_block">
+                        <div className="row">
+                          <div className="col-lg-3 col-md-3  col-sm-3 col-4">
+                              <p className="page_range">{firstcount}-{finalcount} of {pageCount} Pages</p>
+                          </div>
+                          <div className="col-lg-9 col-md-9 col-sm-9 col-8">
                             <div className="pagination_div">
                               <div className="pagination_element">
-                                  
-                                  <div className="pager__list pagination_element"> 
-                                    <ReactPaginate 
-                                      previousLabel={selectedPage+1 !== 1 ? "Previous" : ""}
-                                      nextLabel={selectedPage+1 !== pageCount ? "Next" : ""}
-                                      breakLabel={"..."}
-                                      breakClassName={"break-me"}
-                                      forcePage={selectedPage}
-                                      pageCount={pageCount}
-                                      marginPagesDisplayed={2} 
-                                      onPageChange={handlePageClick}
-                                      containerClassName={"pagination"}
-                                      subContainerClassName={"pages pagination"}
-                                      activeClassName={"active"} />
-                                  </div> 
-                                  
+                                <div className="pager__list pagination_element"> 
+                                  <ReactPaginate 
+                                    previousLabel={selectedPage+1 !== 1 ? "Previous" : ""}
+                                    nextLabel={selectedPage+1 !== pageCount ? "Next" : ""}
+                                    breakLabel={"..."}
+                                    breakClassName={"break-me"}
+                                    forcePage={selectedPage}
+                                    pageCount={pageCount}
+                                    marginPagesDisplayed={2} 
+                                    onPageChange={handlePageClick}
+                                    containerClassName={"pagination"}
+                                    subContainerClassName={"pages pagination"}
+                                    activeClassName={"active"} />
+                                </div> 
                               </div>
                             </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
                   :
                   null
                 } 

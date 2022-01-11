@@ -2592,7 +2592,7 @@ const connectToEthWallet=()=>
                               <li>
                                 <div className="wallets__details">
                                   <div className="wallets__info">Total Max Supply</div>
-                                  <div className="wallets__number h5">{token_max_supply ? separator(token_max_supply) : "NA"}</div>
+                                  <div className="wallets__number h5">{token_max_supply ? separator(token_max_supply) : data.total_max_supply ? separator(data.total_max_supply.toFixed(4)) : "NA"}</div>
                                 </div>
                               </li>
                               <li>
@@ -2617,7 +2617,7 @@ const connectToEthWallet=()=>
                               <li>
                                 <div className="wallets__details">
                                   <div className="wallets__info">Market cap</div>
-                                  <div className="wallets__number h5">{market_cap?"$":null}{market_cap ? separator(market_cap.toFixed(4)) : "NA"}</div>
+                                  <div className="wallets__number h5">{market_cap?"$":null}{market_cap ? separator(market_cap.toFixed(4)) : data.market_cap ? separator(data.market_cap.toFixed(4)) : "NA"}</div>
                                   <div className="twenty_block">
                                     {/* <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span> */}
                                     {/* <span className="twenty_high"><img src="/assets/img/red-down.png" />2.79%</span> */}
