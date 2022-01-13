@@ -68,11 +68,9 @@ const handlePageClick = (e) => {
     set_item(item)
     
   }
-
   const vote = (param) =>
   {
     
-    ModalVote()
     if(param == 1)
     {
       Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+token_id, config)
@@ -89,6 +87,8 @@ const handlePageClick = (e) => {
         set_tokenslist(testList)
         voting_ids.push(vote_id)
         set_voting_message(res.data.message) 
+        setHandleModalVote(!handleModalVote) 
+        set_voting_status(false)
         // getTokensList(tokenslist , selectedPage) 
       }
       })
@@ -109,6 +109,8 @@ const handlePageClick = (e) => {
         set_tokenslist(testList)
         voting_ids.splice(voting_ids.indexOf(vote_id), 1)
         set_voting_message(res.data.message)
+        setHandleModalVote(!handleModalVote) 
+        set_voting_status(true)
         // getTokensList(tokenslist , selectedPage)
       }
     })
