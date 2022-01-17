@@ -170,29 +170,29 @@ export default function UpcomingLaunchPad({userAgent}) {
                                     }
                                   </h5></a>
                                 </td>
-                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>{separator(parseFloat(e.token_max_supply))}</h5></a></td>
+                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>{e.token_max_supply ? separator(parseFloat(e.token_max_supply)) : "-"}</h5></a></td>
                           <td className="market_list_price"><a href={"/"+e.token_id}><h5><a>
-                                                    {
-                                                    e.launch_pad_type==1
-                                                    ?
-                                                    "ICO"
-                                                    :
-                                                    e.launch_pad_type==2
-                                                    ?
-                                                    "IDO"
-                                                    :
-                                                    e.launch_pad_type==3
-                                                    ?
-                                                    "IEO"
-                                                    :
-                                                    null
-                                                    }
-                                                </a></h5></a>
+                          {
+                          e.launch_pad_type==1
+                          ?
+                          "ICO"
+                          :
+                          e.launch_pad_type==2
+                          ?
+                          "IDO"
+                          :
+                          e.launch_pad_type==3
+                          ?
+                          "IEO"
+                          :
+                          null
+                          }
+                      </a></h5></a>
                           </td>
                           {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>88778899</h5></a></td>
                           <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td> */}
-                          <td className="table_date"><p>{moment.utc(e.start_date).format('lll')}</p></td>
-                          <td className="table_date"><p>{moment.utc(e.end_date).format('lll')}</p></td>
+                          <td className="table_date"><p>{moment.utc(e.start_date).format('ll')}</p></td>
+                          <td className="table_date"><p>{moment.utc(e.end_date).format('ll')}</p></td>
                         </tr>
 
                       )

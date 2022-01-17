@@ -146,16 +146,17 @@ const getTokensCurrentList=(items, offset)=>
         <td>
           {
             parseInt(e.approval_status) === 0 ?
-            <span className="table_status status_pending">Pending({parseInt(e.active_status) === 0 ? "Disabled": "Enabled"})</span>
+            <div><strong>Pending</strong></div>
             :
             parseInt(e.approval_status) === 1 ?
-            <span className="table_status status_approved">Approved({parseInt(e.active_status) === 0 ? "Disabled": "Enabled"})</span>
+            <div><strong>Approved</strong></div>
             :
             parseInt(e.approval_status) === 2 ?
-            <span className="table_status status_rejected">Rejected({parseInt(e.active_status) === 0 ? "Disabled": "Enabled"})</span>
+            <div><strong>Rejected</strong></div>
             :
             null
           }
+          ({parseInt(e.active_status) === 0 ? "Disabled": "Enabled"})
         </td>
         {
           parseInt(e.approval_status) === 1 ?
@@ -165,17 +166,22 @@ const getTokensCurrentList=(items, offset)=>
                 <div className="dropdown-menu">
                   {
                     parseInt(e.active_status) === 1 ?
-                    <>
                     <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
                       <a className="dropdown-item"><img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Token</a>
                     </Link>
-                    <Link href={market_coinpedia_url + "token/launchpad/"+e.token_id}>
-                      <a className="dropdown-item"><img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Launchpad</a>
-                    </Link>
-                    </>
                     :
                     null
                   }
+
+                  {
+                    parseInt(e.active_status) === 1 ?
+                    <Link href={market_coinpedia_url + "token/launchpad/"+e.token_id}>
+                      <a className="dropdown-item"><img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Launchpad</a>
+                    </Link>
+                    :
+                    null
+                  }
+                   
                   
                   <Link href={market_coinpedia_url + e.token_id}>
                     <a className="dropdown-item"><img src="/assets/img/table_dropdown_view.png" className="dropdown_images" />View</a>

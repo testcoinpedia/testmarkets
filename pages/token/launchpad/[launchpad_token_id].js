@@ -623,13 +623,12 @@ const onRemove = (selectedList, removedItem) => {
                     <div className="col-md-6 text-right">
                         {
                             edit_launchpad_row_id ? 
-                            <button type="button" onClick={()=> createLaunchpad()} className="btn btn-primary" >Create Launchpad</button>
+                            <button type="button" onClick={()=> createLaunchpad()} className="edit_launchpad" >Create Launchpad</button>
                             :
                             null
                         }
-                      <div className="panel_title_go_back">
-                      <Link href="/token" ><a className="btn btn-primary"><i className="la la-arrow-left"></i>Go Back</a></Link></div>
-                    </div>
+                         <Link href="/token" ><a className="edit_launchpad"><i className="la la-arrow-left"></i>Go Back</a></Link></div>
+                      
                   </div>
                 </div>
                 
@@ -698,7 +697,6 @@ const onRemove = (selectedList, removedItem) => {
                         selectsStart
                         startDate={startDate}
                         endDate={endDate}
-                        minDate={startDate}
                       />
                         
                       </div>

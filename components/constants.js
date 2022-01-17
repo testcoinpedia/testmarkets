@@ -1,7 +1,7 @@
 import JsCookie from "js-cookie"
 
 //local links - API
-//export const API_BASE_URL = 'http://192.168.1.100:3010/';
+// export const API_BASE_URL = 'http://192.168.1.100:3010/';
 
 //Live links - API
 // export const api_url = 'https://api.coinpedia.org/';

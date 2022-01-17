@@ -28,8 +28,8 @@ let inputProps2 = {
 
 export default function LauchPadDetails({errorCode, data, token_id, paymentTypes, userAgent, config}) 
 {   
-  // console.log(paymentTypes);
-  // console.log(data);
+   console.log("paymentTypes", paymentTypes);
+   console.log("data", data);
     
     if(errorCode) {return <Error/> }
     const communityRef = useRef(null);
@@ -1309,24 +1309,35 @@ const get24hChange=(fun_live_price, id, networks)=>
   let change24h = 0
   fetch(url, opts)
     .then(res => res.json())
-    .then(result => {    
+    .then(result => 
+      {     
+        if(result.data.ethereum != null && result.data.ethereum.dexTrades != null)
+        {    
+          if(result.data.ethereum.dexTrades[0].baseCurrency.symbol === "WBNB" || id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
+          {
+            var quote_zero = 0
+            if(result.data.ethereum.dexTrades)
+            {
+              quote_zero = result.data.ethereum.dexTrades[0].quote
+            }
 
-      if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) {   
+            var quote_one = 0
+            if(result.data.ethereum.dexTrades.length > 1)
+            {
+              quote_one = result.data.ethereum.dexTrades[1].quote
+            }
 
-        if(result.data.ethereum.dexTrades[0].baseCurrency.symbol === "WBNB" || id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"){
-          change24h = ((contract_usdt_price - (result.data.ethereum.dexTrades[0].quote*result.data.ethereum.dexTrades[1].quote)) / (contract_usdt_price) * 100) 
-          set_priceChange24H(change24h)
-          console.log(change24h)
-        } 
-        else{
-          change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) - 1) * 100
-          // change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote ) - 1) * 100
-          set_priceChange24H(change24h)
-         
-
+            change24h = ((contract_usdt_price - (quote_zero*quote_one)) / (contract_usdt_price) * 100) 
+            set_priceChange24H(change24h)
+            console.log(change24h)
+          } 
+          else
+          {
+            change24h = (contract_usdt_price / (quote_zero * quote_one) - 1) * 100
+            // change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote ) - 1) * 100
+            set_priceChange24H(change24h) 
+          } 
         }
- 
-      }
     })
     .catch(console.error);
 } 
@@ -1786,7 +1797,9 @@ const getTokensList=(wallet_address, networktype)=> {
             .then(tokenBalResult => { 
               if (item.currency.address === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2") {
                 item.quotePrice = tokenBalResult.data.ethereum.dexTrades[0].quote;  
-              } else {
+              } 
+              else 
+              {
                 item.quotePrice = tokenBalResult.data.ethereum.dexTrades[0].quote * tokenBalResult.data.ethereum.dexTrades[1].quote;
                 balance = (balance+item.quotePrice * item.value) 
               }   
@@ -2261,25 +2274,25 @@ const connectToEthWallet=()=>
                                         <h4 className="panel-title">
                                           <a role="button" data-toggle="collapse" data-parent="#accordion"  href={"#upComing"+i} aria-expanded="true" aria-controls="collapseOne">
                                             {
-                                            e.launch_pad_type === "1" ? 
+                                            e.launch_pad_type === 1 ? 
                                               "ICO" 
                                             : 
-                                            e.launch_pad_type === "2" ?
+                                            e.launch_pad_type === 2 ?
                                             "IDO" : "IEO" 
                                             }
 
                                             {
-                                              moment(data.today_date).isBefore(e.start_date) ?
+                                              moment(data.today_date).isBefore(moment(e.start_date).format('ll')) ?
                                               <span className="badge ico_upcoming_badge ongoing_ico">Upcoming</span> 
                                               :
-                                              moment(data.today_date).isAfter(e.start_date) && moment(data.today_date).isBefore(e.end_date) ?
+                                              moment(data.today_date).isAfter(moment(e.start_date).format('ll')) && moment(data.today_date).isBefore(e.end_date) ?
                                               <span className="badge ico_ongoing_badge ongoing_ico">Ongoing</span>
                                               :
-                                              moment(e.end_date).isSame(data.today_date) || moment(e.start_date).isSame(data.today_date)
+                                              moment(moment(e.end_date).format('ll')).isSame(data.today_date) || moment(moment(e.start_date).format('ll')).isSame(data.today_date)
                                               ?
                                               <span className="badge ico_ongoing_badge ongoing_ico">Ongoing</span>
                                               :
-                                              moment(e.end_date).isBefore(data.today_date) ?
+                                              moment(moment(e.end_date).format('ll')).isBefore(data.today_date) ?
                                               <span className="badge ico_completed_badge  ongoing_ico">Completed</span> 
                                               : 
                                               null
@@ -2311,29 +2324,29 @@ const connectToEthWallet=()=>
                                         <div className="row">
                                           <div className="col-md-6"> 
                                             <p>ICO Price <b>${e.price ? e.price : "-"}</b></p>
-                                            <p>Soft Cap <b>${e.soft_cap ? e.soft_cap : "-"}</b></p>
-                                            <p>Fundraising Goal <b>${e.fundraising_goal ? e.fundraising_goal : "-"}</b></p>
+                                            <p>Soft Cap <b>{e.soft_cap ? "$"+e.soft_cap : "-"}</b></p>
+                                            {/* <p>Fundraising Goal <b>${e.fundraising_goal ? e.fundraising_goal : "-"}</b></p> */}
                                             <p>Tokens Sold <b>{e.tokens_sold ? e.tokens_sold : "-"}</b></p>
                                           </div>
                                           <div className="col-md-6">
                                             <p>Where to buy<a href={e.where_to_buy_link} target="_blank"><b>{e.where_to_buy_title ? e.where_to_buy_title : "-"} </b></a></p>
                                             <p>% of Total Supply <b>{e.percentage_total_supply ? e.percentage_total_supply : "-"}%</b></p>
-                                            <p>Accept <b> 
-                                            {/* {   
-                                              e.accept_payment_type.map((item, index)=>{
-                                                
-                                                return  <>{item.payment_name}<span>/</span></>
-                                              })   } */}
-                                            {
-                                                 paymentTypes.map((inner)=>
-                                                 e.accept_payment_type.includes(inner._id.toString()) ?
-                                                 <>{inner.payment_name}<span>/</span></>
-                                                   :
-                                                 null
-                                                )
+                                           
+                                            { 
+                                                e.accept_payment_type.length > 0 ?
+                                                <>
+                                                 <p>Accept <b> 
+                                                  {
+                                                    e.accept_payment_type.map((inner)=>
+                                                    <>{inner.payment_name}<span>/</span></>
+                                                   )}
+                                                  </b></p>
+                                                </>
+                                                :
+                                                ""
                                              }
-                                            </b></p>
-                                            <p>Access <b>{e.access_type === "1" ? "Public" : "Private"}</b></p>
+                                            
+                                            <p>Access <b>{e.access_type === 1 ? "Public" : "Private"}</b></p>
                                           </div>
                                         </div>
                                       </div>

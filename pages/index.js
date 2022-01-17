@@ -35,11 +35,7 @@ export default function Home({resData, userAgent, config, user_token}) {
   const [vote_id, set_vote_id] = useState("")
   const [item, set_item] = useState("")
   const [voting_message, set_voting_message] = useState("")
-   
-  console.log(resData);
-  
-  // const [handleModalVote, setHandleModalVote] = useState(false)
- 
+  const [tokens] = useState(resData.message)
   useEffect(()=>
   {  
     getTokensList(tokenslist , 0) 
@@ -84,12 +80,13 @@ const handlePageClick = (e) => {
         var test_total_votes = testObj.total_votes+1
         testObj['total_votes'] = test_total_votes
         testList[item] = testObj
+        console.log(testObj)
         set_tokenslist(testList)
         voting_ids.push(vote_id)
         set_voting_message(res.data.message) 
         setHandleModalVote(!handleModalVote) 
-        set_voting_status(false)
-        // getTokensList(tokenslist , selectedPage) 
+        
+         //getTokensList(tokenslist , selectedPage) 
       }
       })
     }
@@ -106,12 +103,13 @@ const handlePageClick = (e) => {
         test_total_votes = testObj.total_votes-1
         testObj['total_votes'] = test_total_votes
         testList[item] = testObj
+        console.log(testObj)
         set_tokenslist(testList)
         voting_ids.splice(voting_ids.indexOf(vote_id), 1)
         set_voting_message(res.data.message)
         setHandleModalVote(!handleModalVote) 
-        set_voting_status(true)
-        // getTokensList(tokenslist , selectedPage)
+       
+         //getTokensList(tokenslist , selectedPage)
       }
     })
     }
