@@ -2326,26 +2326,37 @@ const connectToEthWallet=()=>
                                             <p>ICO Price <b>${e.price ? e.price : "-"}</b></p>
                                             <p>Soft Cap <b>{e.soft_cap ? "$"+e.soft_cap : "-"}</b></p>
                                             {/* <p>Fundraising Goal <b>${e.fundraising_goal ? e.fundraising_goal : "-"}</b></p> */}
-                                            <p>Tokens Sold <b>{e.tokens_sold ? e.tokens_sold : "-"}</b></p>
+                                            <p>Tokens Sold <b>{e.tokens_sold ? e.tokens_sold : "--"}</b></p>
                                           </div>
                                           <div className="col-md-6">
                                             <p>Where to buy<a href={e.where_to_buy_link} target="_blank"><b>{e.where_to_buy_title ? e.where_to_buy_title : "-"} </b></a></p>
-                                            <p>% of Total Supply <b>{e.percentage_total_supply ? e.percentage_total_supply : "-"}%</b></p>
+                                            <p>% of Total Supply <b>{e.percentage_total_supply ? e.percentage_total_supply+"%" : "--"}</b></p>
                                            
                                             { 
                                                 e.accept_payment_type.length > 0 ?
                                                 <>
                                                  <p>Accept <b> 
                                                   {
-                                                    e.accept_payment_type.map((inner)=>
-                                                    <>{inner.payment_name}<span>/</span></>
-                                                   )}
+                                                   paymentTypes.map((inner)=>
+                                                   <>{e.accept_payment_type.includes(inner._id) ?
+                                                    <>{inner.payment_name } <span>/</span></>
+                                                    
+                                                  :
+                                                  null
+                                                   }</> 
+                                                 )
+                                                 }
                                                   </b></p>
                                                 </>
                                                 :
                                                 ""
                                              }
-                                            
+                                            {/* business_model_name.map((inner)=>
+                              e.business_model_id.includes(inner._id) ?
+                              <ul>{inner.business_name}</ul>
+                              :
+                              null
+                              ) */}
                                             <p>Access <b>{e.access_type === 1 ? "Public" : "Private"}</b></p>
                                           </div>
                                         </div>
@@ -3184,7 +3195,7 @@ const connectToEthWallet=()=>
                                     
                                     
                                   }
-                                   {
+                                   {/* {
                                         tokentransactionsData.length > 0
                                         ?
                                         tokentransactionsData
@@ -3192,7 +3203,7 @@ const connectToEthWallet=()=>
                                         <tr>
                                           <td colSpan="5"><h5 className="text-center no_data_found">No data found</h5></td>
                                         </tr>
-                                      } 
+                                      }  */}
                                   </tbody>
 
 
@@ -3234,7 +3245,7 @@ const connectToEthWallet=()=>
                                   <tr>
                                    
                                     <th>Traded</th>
-                                    <th>Time</th>
+                                    <th>Date</th>
                                     <th className="market_trades_count">Token Price</th>
                                     <th>Value</th>
                                     <th>DEX</th>

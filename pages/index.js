@@ -36,6 +36,7 @@ export default function Home({resData, userAgent, config, user_token}) {
   const [item, set_item] = useState("")
   const [voting_message, set_voting_message] = useState("")
   const [tokens] = useState(resData.message)
+  
   useEffect(()=>
   {  
     getTokensList(tokenslist , 0) 
@@ -76,8 +77,11 @@ const handlePageClick = (e) => {
       {
         
         var testList = tokenslist
+        console.log(testList)
         var testObj = testList[item]
+        console.log(testObj)
         var test_total_votes = testObj.total_votes+1
+        console.log(test_total_votes)
         testObj['total_votes'] = test_total_votes
         testList[item] = testObj
         console.log(testObj)
@@ -819,3 +823,5 @@ export async function getServerSideProps({query, req})
       return { props: {resData: [], user_token:user_token}}
     }
 }
+
+

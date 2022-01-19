@@ -71,7 +71,8 @@ export const strTrim=(string)=>
 
 export const getDomainName = (link)=>
 {
-  var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+  if(link != ''){
+    var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
     let url = ""
     {
       regexp.test(link) 
@@ -80,12 +81,20 @@ export const getDomainName = (link)=>
       : 
       link = "http://"+link
       url = new URL(link);
+     
     }
     
 
     var arr = url.hostname.split(".")
     
     return (arr[0] == "www" || arr[0] == "in" || arr[1] == "medium") ? arr[1] :  arr[0]
+
+  }
+  else
+  {
+    return null
+  }
+  
 }
 
 
