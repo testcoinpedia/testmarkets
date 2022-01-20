@@ -97,6 +97,44 @@ export const getDomainName = (link)=>
   
 }
 
+export const createValidURL = (link)=>
+{
+  // if(link != '')
+  // {
+  //   var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+  //   let url = ""
+  //   {
+  //     regexp.test(link) 
+  //     ? 
+  //     url = new URL(link) 
+  //     : 
+  //     link = "http://"+link
+  //     url = new URL(link);
+     
+  //   }
+    
+  //   if(url.href)
+  //   {
+  //     return url.href
+  //   }
+  //   else
+  //   {
+  //     link
+  //   }
+  // }
+  // else
+  // {
+  //   return "#"
+  // }
+  if(link.includes("https") || link.includes("http")){
+    return link
+  }
+  else
+  {
+    return "https://"+link
+  }
+}
+
 
 export const convertvalue=(labelValue)=> 
 {

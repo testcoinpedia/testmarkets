@@ -304,7 +304,7 @@ export default function LaunchPad({userAgent})
                 <div className="row">
                   <div className="col-md-7 col-8 col-sm-8">
                     <div className="title_block">
-                      <h2>Completed Events</h2>
+                      <h2>Completed launchpads</h2>
                       <p className="lauchpad_completed_overview_p">These are the completed launchpads</p>
                     </div>
                   </div>
@@ -350,7 +350,9 @@ export default function LaunchPad({userAgent})
                                   </div>
                               </a>
                             </td>
-                            <td className="market_list_price"><a href={"/"+e.token_id}><h5>{e.price ?parseFloat(e.price):"--"}</h5></a></td>
+                            <td className="market_list_price">
+                              <a href={"/"+e.token_id}><h5>{e.price ? "$"+parseFloat(e.price) : "-"}</h5></a>
+                            </td>
                             <td className="market_list_price">
                               <a href={"/"+e.token_id}><h5>
                                 {/* <img src="/assets/img/bnb.svg" />  */}

@@ -161,7 +161,35 @@ const getTokensCurrentList=(items, offset)=>
         {
           parseInt(e.approval_status) === 1 ?
           <td className="referral_dropdown">
-            <div className="dropdown" >
+
+          {
+            parseInt(e.active_status) === 1 ?
+            <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
+              <a><span className="badge badge-primary">Edit Token</span></a>
+            </Link>
+            :
+            null
+          }
+
+          {
+            parseInt(e.active_status) === 1 ?
+            <Link href={market_coinpedia_url + "token/launchpad/"+e.token_id}>
+              <a><span className="badge badge-primary">Edit Launchpad</span></a>
+            </Link>
+            :
+            null
+          }
+            
+          
+          <Link href={market_coinpedia_url + e.token_id}>
+            <a><span className="badge badge-warning">View</span></a>
+          </Link>
+
+
+            
+            
+            
+            {/* <div className="dropdown" >
               <img src="/assets/img/table_dropdown_dots.png" data-toggle="dropdown" className="dropdown_dots" />
                 <div className="dropdown-menu">
                   {
@@ -187,7 +215,7 @@ const getTokensCurrentList=(items, offset)=>
                     <a className="dropdown-item"><img src="/assets/img/table_dropdown_view.png" className="dropdown_images" />View</a>
                   </Link>
                 </div>
-            </div>
+            </div> */}
           </td> 
           :
           null

@@ -128,11 +128,9 @@ export default function UpcomingLaunchPad({userAgent}) {
                     </thead>
                     <tbody>
                        
-                        {
-                           
-                            upcoming.length > 0
-                            ?
-                                upcoming.map((e,i)=> 
+                   {     
+                      upcoming.length > 0 ?
+                         upcoming.map((e,i)=> 
                                    
                         <tr key={i}>
                           <td>

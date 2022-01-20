@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import Link from 'next/link' 
 import Head from 'next/head';
 import Error from './404'
-import { API_BASE_URL, config, website_url, separator, strLenTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL,graphqlApiKEY} from '../components/constants'
+import { API_BASE_URL, config, website_url, separator,createValidURL, strLenTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL,graphqlApiKEY} from '../components/constants'
 import moment from 'moment'  
 import Web3 from 'web3'
 import Highcharts from 'highcharts';    
@@ -28,8 +28,8 @@ let inputProps2 = {
 
 export default function LauchPadDetails({errorCode, data, token_id, paymentTypes, userAgent, config}) 
 {   
-   console.log("paymentTypes", paymentTypes);
-   console.log("data", data);
+   console.log("source_code_link", getDomainName(data.source_code_link))
+   console.log("data", data)
     
     if(errorCode) {return <Error/> }
     const communityRef = useRef(null);
@@ -333,7 +333,7 @@ const getWalletDetails=(id, networktype, wallettype)=>{
   fetch(url, opts)
     .then(res => res.json())
     .then(result => { 
-
+      console.log("wallet_details",result)
       let get_inbond_list = []
       let get_outbond_list = []
 
@@ -2485,11 +2485,17 @@ const connectToEthWallet=()=>
                                     <div className="widgets__select links_direct"><a href="#" target="_blank"> # Rank -07 </a></div>
                                   </div>
                                 </li> */}
-                                <li className="coin_individual_list">
+                                {
+                                  data.website_link==""?
+                                  null
+                                  :
+                                  <li className="coin_individual_list">
                                   <div className="quick_block_links">
-                                    <div className="widgets__select links_direct"><a href={data.website_link ? data.website_link :"#"} target="_blank"> <img src="/assets/img/website.svg" className="coin_cat_img" />Website </a></div>
+                                    <div className="widgets__select links_direct"><a href={createValidURL(data.website_link)} target="_blank"> <img src="/assets/img/website.svg" className="coin_cat_img" />Website </a></div>
                                   </div>
                                 </li>
+                                }
+                                
 
                                 
                                 {/* { 
@@ -2575,7 +2581,7 @@ const connectToEthWallet=()=>
                                     ?
                                     <li className="coin_individual_list">
                                       <div className="quick_block_links">
-                                        <div className="widgets__select links_direct"><a href={data.source_code_link} target="_blank"><img src="/assets/img/source_code.svg" className="coin_cat_img" /> Source Code </a></div>
+                                        <div className="widgets__select links_direct"><a href={createValidURL(data.source_code_link)} target="_blank"><img src="/assets/img/source_code.svg" className="coin_cat_img" /> Source Code </a></div>
                                       </div>
                                     </li>
                                     :
@@ -2586,7 +2592,7 @@ const connectToEthWallet=()=>
                                     ?
                                     <li className="coin_individual_list">
                                       <div className="quick_block_links">
-                                        <div className="widgets__select links_direct"><a href={data.whitepaper} target="_blank"> <img src="/assets/img/whitepaper.png" className="coin_cat_img" /> White paper </a></div>
+                                        <div className="widgets__select links_direct"><a href={createValidURL(data.whitepaper)} target="_blank"> <img src="/assets/img/whitepaper.png" className="coin_cat_img" /> White paper </a></div>
                                       </div>
                                     </li>
                                     :

@@ -140,7 +140,9 @@ export default function OngoingLaunchPad({userAgent}) {
                               </div>
                             </a>
                           </td>
-                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>$ {parseFloat(e.price)}</h5></a></td>
+                          <td className="market_list_price">
+                            <a href={"/"+e.token_id}><h5>{e.price ? "$"+parseFloat(e.price) : "-"}</h5></a>
+                          </td>
                           <td className="market_list_price">
                                   <a href={"/"+e.token_id}><h5>
                                     {/* <img src="/assets/img/bnb.svg" />  */}

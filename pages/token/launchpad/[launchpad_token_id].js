@@ -1,5 +1,5 @@
 
-import React , {useState, useEffect} from 'react';   
+import React , {useState, useEffect,useRef} from 'react';   
 import Axios from 'axios';
 import Link from 'next/link' 
 import Head from 'next/head';
@@ -15,6 +15,7 @@ import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import dynamic from 'next/dynamic'; 
 import cookie from "cookie"
 import JsCookie from "js-cookie"
+import { Editor } from '@tinymce/tinymce-react';
 const Multiselect = dynamic(
     () => import('multiselect-react-dropdown').then(module => module.Multiselect),
     {
@@ -50,6 +51,7 @@ var object =  {
 } 
 
 export default function CreateLauchPad({userAgent, config, payment_types, token_id}) {   
+  const editorRef = useRef(null)
   console.log(payment_types)
   const router = useRouter()
   const [validError, setValidError] = useState("")
@@ -805,9 +807,31 @@ const onRemove = (selectedList, removedItem) => {
                   <div className="col-md-12">
                     <div className="form-custom">
                     <label htmlFor="how_to_participate">Enter About Airdrop<span className="label_star">*</span></label>
-                      <div className="form-group input_block_outline ">
+                      {/* <div className="form-group input_block_outline ">
                        <textarea type="text" placeholder="About Airdrop"  rows="3" value={how_to_participate} onChange={(e)=>set_how_to_participate(e.target.value)}/>
-                       </div>
+                       </div> */}
+                       <div className="form-group input_block_outline">
+                            <Editor apiKey="s6mr8bfc8y6a2ok76intx4ifoxt3ald11z2o8f23c98lpxnk" 
+                            onEditorChange={(e)=>set_how_to_participate(e)}
+                            value={how_to_participate} 
+                                onInit={(evt, editor) => {editorRef.current = editor}}
+                                initialValue=""
+                                init={{
+                                  height: 300,
+                                  menubar: false,
+                                  plugins: [
+                                    'advlist autolink lists link image charmap print preview anchor',
+                                    'searchreplace visualblocks code fullscreen',
+                                    'insertdatetime media table paste code help wordcount'
+                                  ],
+                                  toolbar: 'undo redo | formatselect | ' +
+                                  'bold italic backcolor | alignleft aligncenter ' +
+                                  'alignright alignjustify | bullist numlist outdent indent | ' +
+                                  'removeformat | help'
+                                
+                                }}
+                              />
+                          </div>
                       </div>
                      </div>
                     

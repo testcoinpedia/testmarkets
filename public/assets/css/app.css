@@ -11818,7 +11818,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .launchpad_table_overview tbody td {
   vertical-align: middle;
-  padding: 10px 0;
+  padding: 10px;
   border-bottom: 1px solid #eee !important;
 }
 
@@ -12481,7 +12481,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .token_list_table .table td {
-  padding: 22px 20px 22px 20px;
+  padding: 10px;
 }
 
 .token_list_table .table tr {
@@ -12490,6 +12490,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .token_list_table .table tr:last-child {
   border-bottom: 0px !important;
+}
+
+.referral_dropdown span {
+  padding: 0.4em 0.7em;
+  margin: 0 5px;
 }
 
 /* referral list ends here */
