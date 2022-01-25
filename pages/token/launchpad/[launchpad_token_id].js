@@ -50,13 +50,14 @@ var object =  {
   err_launch_pad_type :"" 
 } 
 
-export default function CreateLauchPad({userAgent, config, payment_types, token_id}) {   
+export default function CreateLauchPad({config, token_id}) {   
   const editorRef = useRef(null)
-  console.log(payment_types)
+  
   const router = useRouter()
   const [validError, setValidError] = useState("")
   const [alert_message, setAlertMessage] = useState('')
   const [element,set_element]=useState([])
+  const [payment_types,set_payment_types]=useState([])
   const [launch_pad, setLaunchPadList] = useState([])
   const [err_launch_pad, set_err_launch_pad] = useState([])
   const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
@@ -107,7 +108,7 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
     set_edit_launchpad_row_id(parseInt(object._id))
     set_launch_pad_type(object.launch_pad_type)
     setStartDate(new Date(object.start_date))
-    setEndDate(new Date(object.end_date))
+    setEndDate(new Date(new Date(object.end_date)))
     set_tokens_sold(parseInt(object.tokens_sold))
     set_access_type(object.access_type)
     set_soft_cap(object.soft_cap)
@@ -184,6 +185,7 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
           if(res.data.message.launch_pads_data.length)
           {
             setLaunchPadList(res.data.message.launch_pads_data)
+            set_payment_types(res.data.message.payment_types)
           }
           else
           {
@@ -275,6 +277,11 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
       formIsValid=false
       set_err_price("Price field is required.")
     }
+    else if(price <=0 )
+    {
+      formIsValid=false
+      set_err_price("Price field should not be zero")
+    }
     else{
       set_err_price("")
     }
@@ -307,8 +314,10 @@ export default function CreateLauchPad({userAgent, config, payment_types, token_
       formIsValid=false
       set_err_total_supply("Percentage total supply field is required.")
     }
-    else if(percentage_total_supply>100) {
-      set_err_total_supply("The total supply percentage must be less than 100.")
+    else if(percentage_total_supply <=0 || percentage_total_supply > 100)
+    {
+      formIsValid=false
+      set_err_total_supply("The total supply percentage must be greater than 0 and  less than 100.")
     }
     else {
       set_err_total_supply("")
@@ -733,7 +742,6 @@ const onRemove = (selectedList, removedItem) => {
                     <label htmlFor="price"> Enter Price<span className="label_star">*</span></label>
                         <div className="form-group input_block_outline">
                           <input type="number" placeholder="Eg.,$00.00"  value={price} onChange={(e)=>set_price(e.target.value)}  />
-                       
                       </div>
                     </div>
                     <div className="error">{err_price}</div>
@@ -903,12 +911,8 @@ export async function getServerSideProps({query, req})
   else 
   {
       if(parseInt(userAgent.user_email_status))
-      {
-          
-          const paymentdetails = await fetch(API_BASE_URL+"markets/listing_tokens/payment_types", config(userAgent.user_token))
-          const payment_types = await paymentdetails.json() 
-
-          return { props: { userAgent: userAgent, config: config(userAgent.user_token), payment_types:payment_types.message, token_id:query.launchpad_token_id } }
+      { 
+          return { props: { userAgent: userAgent, config: config(userAgent.user_token), token_id:query.launchpad_token_id } }
       }
       else
       {

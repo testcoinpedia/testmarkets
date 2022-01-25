@@ -956,7 +956,7 @@ const getTokensDetails = (type, address) =>{
                         <div className="form-custom">
                           <label htmlFor="email">Market Cap</label>
                           <div className="form-group input_block_outline">
-                            <input type="number" value={market_cap} onChange={(e)=>setmarket_cap(e.target.value)} readOnly/> 
+                            <input type="number" value={market_cap ? market_cap:""} onChange={(e)=>setmarket_cap(e.target.value)} readOnly/> 
                           </div>
                           <div className="error">{err_market_cap}</div>
                         </div>

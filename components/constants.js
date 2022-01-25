@@ -1,12 +1,12 @@
 import JsCookie from "js-cookie"
 
 //local links - API
-// export const API_BASE_URL = 'http://192.168.1.100:3010/';
+ //export const API_BASE_URL = 'http://192.168.1.100:3010/';
 
 //Live links - API
 // export const api_url = 'https://api.coinpedia.org/';
- export const API_BASE_URL ='https://markets-nodejs-api-l9lg8.ondigitalocean.app/';
- export const IMAGE_BASE_URL = 'https://image.coinpedia.org/app_uploads';
+export const API_BASE_URL ='https://markets-nodejs-api-l9lg8.ondigitalocean.app/';
+export const IMAGE_BASE_URL = 'https://image.coinpedia.org/app_uploads';
 // export const API_DIGITALOCEAN_URL = 'https://markets-nodejs-api-l9lg8.ondigitalocean.app/'
 
 

@@ -24,7 +24,7 @@ export default function Create_token({config})
   const [wallet_address, setWalletAddress] = useState('')
   const [contract_address, setContractAddress] = useState([{network_type: "0", contract_address: ""}])
   const [live_price, setLivePrice] = useState("")
-  const [market_cap, set_market_cap] = useState(0) 
+  const [market_cap, set_market_cap] = useState("") 
   const [err_contract_address, setErrContractAddress] = useState("")
    
   const [symbol, setSymbol] = useState('')  
@@ -502,13 +502,13 @@ const clearform = () =>
     await fetch(url, opts)
       .then(res => res.json())
       .then(result => {  
+        console.log(result)
         if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
         { 
          
           if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c" || id=== "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
           {
-           setLivePrice(result.data.ethereum.dexTrades[0].quote) 
-           
+           setLivePrice(result.data.ethereum.dexTrades[0].quote)
           }
           else
           {
@@ -558,6 +558,7 @@ const clearform = () =>
       const tokenContract = new ethers.Contract(id, tokenAbi, provider);
       const supply = await tokenContract.totalSupply() / (10 ** decval);  
       console.log(supply)
+      getTokenUsdPrice(id,network_type)
       console.log(live_price)
       set_market_cap(supply * live_price)  
   }
@@ -759,10 +760,11 @@ const clearform = () =>
             if(result.data.ethereum.address[0].smartContract){
             if (result.data.ethereum.address[0].smartContract.currency) { 
               setErrContractAddress("")
+              getTokenUsdPrice(address,type) 
               setSymbol(result.data.ethereum.address[0].smartContract.currency.symbol) 
               setTokenName(result.data.ethereum.address[0].smartContract.currency.name) 
               getTotalMaxSupply(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
-              getTokenUsdPrice(address,type ) 
+              
               getMarketCap(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
             } 
             else { 
@@ -990,7 +992,7 @@ const clearform = () =>
 
                       <div className="col-md-4">
                         <div className="form-custom">
-                          <label htmlFor="email">Token Max Supply<span className="label_star">*</span></label>
+                          <label htmlFor="email">Token Max Supply</label>
                           <div className="input_block_outline">
                             <div className="input-group">
                               <input type="number" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
@@ -1005,7 +1007,7 @@ const clearform = () =>
 
                       <div className="col-md-4">
                         <div className="form-custom">
-                          <label htmlFor="email">Market Cap<span className="label_star">*</span></label>
+                          <label htmlFor="email">Market Cap</label>
                           <div className="form-group input_block_outline">
                             <input type="number" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)} readOnly/> 
                           </div>
