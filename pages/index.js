@@ -65,57 +65,61 @@ const handlePageClick = (e) => {
     set_item(item)
     
   }
+
   const vote = (param) =>
   {
     
     if(param == 1)
     {
       Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+token_id, config)
-      .then(res=>{ 
-      console.log(res)
-      if(res.data.status === true) 
-      {
-        
-        var testList = tokenslist
-        console.log(testList)
-        var testObj = testList[item]
-        console.log(testObj)
-        var test_total_votes = testObj.total_votes+1
-        console.log(test_total_votes)
-        testObj['total_votes'] = test_total_votes
-        testList[item] = testObj
-        console.log(testObj)
-        set_tokenslist(testList)
-        voting_ids.push(vote_id)
-        set_voting_message(res.data.message) 
-        setHandleModalVote(!handleModalVote) 
-        
-         //getTokensList(tokenslist , selectedPage) 
-      }
+      .then(res=>
+      { 
+        console.log(res)
+        if(res.data.status === true) 
+        {
+          
+          var testList = tokenslist
+          var result = testList.filter(obj => {
+            return obj._id === vote_id
+          })
+          var testObj = result ? result[0] : "" 
+          console.log("testObj",testObj)
+          var test_total_votes = testObj.total_votes+1
+          testObj['total_votes'] = test_total_votes
+          testList[item] = testObj
+          set_tokenslist(testList)
+          voting_ids.push(vote_id)
+          set_voting_message(res.data.message) 
+          setHandleModalVote(!handleModalVote)
+        }
       })
     }
     else
     {
       Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+token_id, config)
-      .then(res=>{ 
-      console.log(res)
-      if(res.data.status === true) 
-      {
-        var testList = tokenslist
-        var testObj = testList[item]
-        var test_total_votes = 0
-        test_total_votes = testObj.total_votes-1
-        testObj['total_votes'] = test_total_votes
-        testList[item] = testObj
-        console.log(testObj)
-        set_tokenslist(testList)
-        voting_ids.splice(voting_ids.indexOf(vote_id), 1)
-        set_voting_message(res.data.message)
-        setHandleModalVote(!handleModalVote) 
-       
-         //getTokensList(tokenslist , selectedPage)
-      }
-    })
+      .then(res=>
+      { 
+        console.log(res)
+        if(res.data.status === true) 
+        {
+          var testList = tokenslist
+          var result = testList.filter(obj => {
+            return obj._id === vote_id
+          })
+          var testObj = result ? result[0] : "" 
+          var test_total_votes = 0
+          test_total_votes = testObj.total_votes-1
+          testObj['total_votes'] = test_total_votes
+          testList[item] = testObj
+          console.log(testObj)
+          set_tokenslist(testList)
+          voting_ids.splice(voting_ids.indexOf(vote_id), 1)
+          set_voting_message(res.data.message)
+          setHandleModalVote(!handleModalVote) 
+        
+          //getTokensList(tokenslist , selectedPage)
+        }
+      })
     }
   }
   const getSearchData=(searchValue) =>

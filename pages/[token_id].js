@@ -2369,14 +2369,14 @@ const connectToEthWallet=()=>
                                           <>
                                           {
                                             read_more == e.id ? 
-                                            <p className="participate_link">
-                                            {e.how_to_participate}
+                                            <p className="participate_link" dangerouslySetInnerHTML={{ __html: e.how_to_participate }}>
+                                            {/* {e.how_to_participate} */}
                                             <br />
                                             <a onClick={() =>set_read_more("")}><span>Read Less</span></a>
                                             </p>
                                             :
-                                            <p className="participate_link">
-                                            {strLenTrim(e.how_to_participate, 800)}
+                                            <p className="participate_link" dangerouslySetInnerHTML={{ __html: strLenTrim(e.how_to_participate, 800)}}>
+                                            {/* {strLenTrim(e.how_to_participate, 800)} */}
                                             <br />
                                             <a onClick={() =>set_read_more(e.id)}><span>Read More</span></a>
                                             </p>
@@ -2384,7 +2384,8 @@ const connectToEthWallet=()=>
                                             
                                           </>
                                           :
-                                          e.how_to_participate
+                                          // e.how_to_participate
+                                          <div dangerouslySetInnerHTML={{ __html: e.how_to_participate }}></div>
                                         }
                                         </p>
                                        

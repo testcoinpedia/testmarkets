@@ -185,7 +185,7 @@ export default function LaunchPad({userAgent})
                                 </h5></a></Link>
                               </td>
                               <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.start_date).format('ll')}</p></Link></td>
-                              <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.end_date).format('ll')}</p></Link></td>
+                              <td><Link href={"/"+e.token_id} className="table_date"><p>{moment(e.end_date).format("MMM D, YYYY")}</p></Link></td>
                             </tr>
                             )
                             :
@@ -279,7 +279,7 @@ export default function LaunchPad({userAgent})
                                       </h5></a></Link>
                                     </td>
                                     <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.start_date).format('ll')}</p></Link></td>
-                                    <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.end_date).format('ll')}</p></Link></td>
+                                    <td><Link href={"/"+e.token_id} className="table_date"><p>{moment(e.end_date).format("MMM D, YYYY")}</p></Link></td>
                                 {/* <td><Link href={"/"+e.token_id}><a><h5>{moment(e.start_date).format("MMM DD, YYYY")}</h5></a></Link></td>
                                 <td><Link href={"/"+e.token_id}><a><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></Link> */}
                                 {/* </td> */}
@@ -379,7 +379,7 @@ export default function LaunchPad({userAgent})
                               </h5></a>
                             </td>
                             <td className="market_list_price"><a href={"/"+e.token_id}><h5>{separator(parseFloat(e.tokens_sold))}</h5></a></td>
-                            <td className="market_list_price"><a href={"/"+e.token_id}><h5>{separator(parseFloat(e.token_max_supply))}</h5></a></td>
+                            <td className="market_list_price"><a href={"/"+e.token_id}><h5>{e.token_max_supply ? separator(parseFloat(e.token_max_supply)) : "--"}</h5></a></td>
                             <td className="market_list_price"><a href={"/"+e.token_id}><h5>{parseFloat(e.percentage_total_supply)}%</h5></a></td>
                             <td className="market_list_price"><a href={"/"+e.token_id}><h5> 
                               {
@@ -401,7 +401,7 @@ export default function LaunchPad({userAgent})
                             
                             {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>8578</h5></a></td>
                             <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td> */}
-                            <td><Link href={"/"+e.token_id} className="table_date"><p>{moment(e.end_date).format('ll')}</p></Link></td>
+                            <td><Link href={"/"+e.token_id} className="table_date"><p>{moment(e.end_date).format("MMM D, YYYY")}</p></Link></td>
 
                             {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></td> */}
                         </tr>
