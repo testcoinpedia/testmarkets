@@ -6,7 +6,7 @@ import cookie from "cookie"
 import Axios from 'axios'
 import moment from 'moment'
 import TableContentLoader from '../components/loaders/tableLoader'
-import { API_BASE_URL, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY} from '../components/constants'; 
+import { API_BASE_URL, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY,count_live_price} from '../components/constants'; 
 var $ = require( "jquery" );
 
 export default function Home({resData, userAgent, config, user_token}) { 
@@ -186,18 +186,18 @@ const getTokenData =(type, address)=>{
 
   setErrsearchBy("")
 
-  let formValid=true 
-  if(searchBy=="")
-  {
-    setErrsearchBy("Please Select Network Type")
-    formValid=false
-  }
+  // let formValid=true 
+  // if(searchBy=="")
+  // {
+  //   setErrsearchBy("Please Select Network Type")
+  //   formValid=false
+  // }
 
-  if(search_contract_address == "")
-  {
-    setErrsearchBy("Please Enter Contract Address")
-    formValid=false
-  }
+  // if(search_contract_address == "")
+  // {
+  //   setErrsearchBy("Please Enter Contract Address")
+  //   formValid=false
+  // }
    
   let network_type = ""
   
@@ -310,15 +310,15 @@ const CheckContractAddress =(address)=>{
 //    })
 //  })
 for(const i of tokenslist)
-    {
-      if(i.contract_addresses.length>0  ){
-      if(address==i.contract_addresses[0].contract_address) {
-        status=false
-         window.location.replace(website_url+i.token_id)
-         break
-      }
-      }
-    }
+{
+  if(i.contract_addresses.length>0  ){
+  if(address==i.contract_addresses[0].contract_address) {
+    status=false
+      window.location.replace(website_url+i.token_id)
+      break
+  }
+  }
+}
  if(!status){
    return
  }
@@ -381,7 +381,7 @@ for(const i of tokenslist)
   method: "POST",
   headers: {
   "Content-Type": "application/json",
-  "X-API-KEY": "BQYAxReidkpahNsBUrHdRYfjUs5Ng7lD"
+  "X-API-KEY": graphqlApiKEY
   },
   body: JSON.stringify({
     query: query, 
@@ -610,8 +610,8 @@ for(const i of tokenslist)
                                       <td className="market_list_price"> 
                                         <Link href={"/"+e.token_id}>
                                           <a>
-                                          
-                                            <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(7)):"-"}</span>
+                                          <span className="block_price">{e.price?"$":null}{e.price?count_live_price(e.price):"-"}</span>
+                                            {/* <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(9)):"-"}</span> */}
                                             <br/>
                                             {e.price_updated_on ? moment(e.price_updated_on).fromNow():null} 
                                           </a>

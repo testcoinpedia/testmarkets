@@ -263,7 +263,7 @@ export default function Topmenu()
                               <li><a href={coinpedia_url+"stocks-shares/"}  className="dropdown-item">Stocks &amp; Shares</a></li> 
                               <li><a href={coinpedia_url+"press-release/"}  className="dropdown-item">Press Release</a></li>
                               <li><a href={coinpedia_url+"guest-post/"}  className="dropdown-item">Guest Post</a></li>
-                              <li><a href="https://coinpedia.org/sponsored/"  className="dropdown-item">Sponsered</a></li>
+                              <li><a href="https://coinpedia.org/sponsored/"  className="dropdown-item">Sponsored</a></li>
                               <li><a href={coinpedia_url+"top-10/"}  className="dropdown-item">Top 10's</a></li> 
                               <li><a href={coinpedia_url+"cryptocurrency-regulation/"}  className="dropdown-item">Press Release</a></li>
                               <li><a href={coinpedia_url+"interesting-crypto-stories/"}  className="dropdown-item">Guest Post</a></li>
@@ -294,7 +294,7 @@ export default function Topmenu()
                           <div className="dropdown-menu " aria-labelledby="navbarDropdown">
                             <ul>
                               <li><a href={coinpedia_url+"decentralized-exchange/"}  className="dropdown-item">Decentralized Exchange</a></li>
-                              <li><a href={coinpedia_url+"crypto-wallet/"}  className="dropdown-item">Cryptocurreny Wallet</a></li>
+                              <li><a href={coinpedia_url+"crypto-wallet/"}  className="dropdown-item">Cryptocurrency Wallet</a></li>
                               <li><a href={coinpedia_url+"crypto-tracking-tools/"}  className="dropdown-item">Crypto Tracking Tools</a></li>
                               <li><a href={coinpedia_url+"dapplist/"}  className="dropdown-item">DApp</a></li>
                               <li><a href={coinpedia_url+"earning-site/"}  className="dropdown-item">Earning sites</a></li>

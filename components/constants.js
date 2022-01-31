@@ -134,7 +134,28 @@ export const createValidURL = (link)=>
     return "https://"+link
   }
 }
+export const count_live_price=(live_price)=> 
+{
 
+  if (Math.abs(live_price) < 1.0) {
+    var e = parseInt(live_price.toString().split('e-')[1]);
+    if (e) {
+      live_price *= Math.pow(10,e-1);
+      live_price = '0.' + (new Array(e)).join('0') + live_price.toString().substring(2);
+      return live_price
+    }
+  } else {
+    var e = parseInt(live_price.toString().split('+')[1]);
+    if (e > 20) {
+        e -= 20;
+        live_price /= Math.pow(10,e);
+        live_price += (new Array(e+1)).join('0');
+       
+    }
+    return parseFloat(live_price.toFixed(2))
+  }
+  return (live_price.toFixed(2))
+}
 
 export const convertvalue=(labelValue)=> 
 {

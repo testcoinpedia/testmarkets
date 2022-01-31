@@ -28,7 +28,7 @@ let inputProps2 = {
 
 export default function LauchPadDetails({errorCode, data, token_id, paymentTypes, userAgent, config}) 
 {   
-   console.log("source_code_link", getDomainName(data.source_code_link))
+   
    console.log("data", data)
     
     if(errorCode) {return <Error/> }
@@ -561,6 +561,8 @@ const get24hVolume=(id, networktype)=> {
 
 useEffect(()=>
 { 
+  toFixed(5.8510178440405195e-8)
+  
   if(localStorage.getItem("walletconnectedtype") === "1"){
     getBEPAccountDetails(0) 
     getETHAccountDetails(0) 
@@ -586,7 +588,23 @@ useEffect(()=>
  
 },[])
 
-
+const toFixed=(x)=>{
+  if (Math.abs(x) < 1.0) {
+    var e = parseInt(x.toString().split('e-')[1]);
+    if (e) {
+        x *= Math.pow(10,e-1);
+        x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
+    }
+  } else {
+    var e = parseInt(x.toString().split('+')[1]);
+    if (e > 20) {
+        e -= 20;
+        x /= Math.pow(10,e);
+        x += (new Array(e+1)).join('0');
+    }
+  }
+  console.log("Exponential",x)
+}
 const handleClickOutside = event => {  
   if (communityRef.current && !communityRef.current.contains(event.target)) { 
     set_community_links(false)
@@ -1095,6 +1113,7 @@ const getTokendetails=async (id, usd_price, network_type)=>
   const liveDecimalRun = await liveDecimalQuery.json()
   if(liveDecimalRun.data.ethereum !== null) 
   { 
+    console.log("usd price",usd_price)
     setdecimal(liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals)
     var get_total_supply_value = await getTotalMaxSupply(id, network_type)
     var cal_total_supply_value = get_total_supply_value/10**liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals

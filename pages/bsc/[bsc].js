@@ -356,8 +356,7 @@ const url = "https://graphql.bitquery.io/";
         }
         }
           ` ;
-    var valuePairAddress=0
-    var valueAddress=0
+    
     const url = "https://graphql.bitquery.io/";
     const opts = {
       method: "POST",
@@ -388,18 +387,7 @@ const url = "https://graphql.bitquery.io/";
   
     
   } 
-  const getexchangevaluePair = (contract_address_new,address)=>{ 
-    Axios.get("https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress="+contract_address_new+"&address="+address+"&tag=latest&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
-    //Axios.get("https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress=0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c&address=0xdd901faf9652d474b0a70263e13da294990d49ae&tag=latest&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
-    .then(response=>{
-          if(response.status){ 
-            console.log(response.data.result) 
-            set_exchangevalue(response.data.result)
-          }
-    })
-  } 
   
- 
  const getTokenexchange=(id)=> { 
     const query = `
           query{
