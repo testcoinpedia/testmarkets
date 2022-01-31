@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import Link from 'next/link' 
 import Head from 'next/head';
 import Error from './404'
-import { API_BASE_URL, config, website_url, separator,createValidURL, strLenTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL,graphqlApiKEY} from '../components/constants'
+import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, graphqlApiKEY,count_live_price} from '../components/constants'
 import moment from 'moment'  
 import Web3 from 'web3'
 import Highcharts from 'highcharts';    
@@ -1614,7 +1614,7 @@ const getGraphData=(datetime, id,networks  )=>
                     formatter: function () {
                         var point = this.points[0];
                         return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
-                        '<strong>Price :</strong> '+ ('$ ') + Highcharts.numberFormat(point.y, 10) + '';  
+                        '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
                     },
       shared: true
          },
@@ -2387,23 +2387,20 @@ const connectToEthWallet=()=>
                                           ((e.how_to_participate != null) && ((e.how_to_participate).length > 800)) ?
                                           <>
                                           {
-                                            read_more == e.id ? 
+                                            read_more == e._id ? 
                                             <p className="participate_link" dangerouslySetInnerHTML={{ __html: e.how_to_participate }}>
-                                            {/* {e.how_to_participate} */}
                                             <br />
                                             <a onClick={() =>set_read_more("")}><span>Read Less</span></a>
                                             </p>
                                             :
                                             <p className="participate_link" dangerouslySetInnerHTML={{ __html: strLenTrim(e.how_to_participate, 800)}}>
-                                            {/* {strLenTrim(e.how_to_participate, 800)} */}
                                             <br />
-                                            <a onClick={() =>set_read_more(e.id)}><span>Read More</span></a>
+                                            <a onClick={() =>set_read_more(e._id)}><span>Read More</span></a>
                                             </p>
                                           }
                                             
                                           </>
                                           :
-                                          // e.how_to_participate
                                           <div dangerouslySetInnerHTML={{ __html: e.how_to_participate }}></div>
                                         }
                                         </p>
@@ -3206,7 +3203,7 @@ const connectToEthWallet=()=>
                                     exchangelistnew.map((e, i) => {
                                       return <tr key={i}>
                                         <td title= {e.exchange_address}>{e.exchange_name}</td>
-                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({separator(e.pair_one_value.toFixed(3))}) / ({separator(e.pair_two_value.toFixed(3))})</span> </td>
+                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({e.pair_one_value?separator(e.pair_one_value.toFixed(3)):null}) / ({e.pair_two_value?separator(e.pair_two_value.toFixed(3)):null})</span> </td>
                                         {
                                           e.pair_one_token_address== "0x3ff997eaea488a082fb7efc8e6b9951990d0c3ab"?
                                           "--"
@@ -3544,13 +3541,13 @@ export async function getServerSideProps({ query, req})
   const tokenQueryRun = await tokenQuery.json() 
   if(tokenQueryRun.status)
   {
-    return { props: {data: tokenQueryRun.message, paymentTypes:paymentQueryRun.message, errorCode:false, token_id, userAgent:userAgent, config:config(userAgent.user_token)}}
+    return { props: {data: tokenQueryRun.message, paymentTypes:paymentQueryRun.message, errorCode:false, token_id:token_id, userAgent:userAgent, config:config(userAgent.user_token)}}
   }
   else
   {
-    const errorCode = true
+    // const errorCode = true
     // {redirect:{ permanent:false, destination: "/" }}
-    return  {props: { errorCode }}
+    return  {props: { errorCode:true }}
   }
 
 }

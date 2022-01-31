@@ -186,18 +186,18 @@ const getTokenData =(type, address)=>{
 
   setErrsearchBy("")
 
-  // let formValid=true 
-  // if(searchBy=="")
-  // {
-  //   setErrsearchBy("Please Select Network Type")
-  //   formValid=false
-  // }
+  let formValid=true 
+  if(searchBy=="")
+  {
+    setErrsearchBy("Please Select Network Type")
+    formValid=false
+  }
 
-  // if(search_contract_address == "")
-  // {
-  //   setErrsearchBy("Please Enter Contract Address")
-  //   formValid=false
-  // }
+  if(search_contract_address == "")
+  {
+    setErrsearchBy("Please Enter Contract Address")
+    formValid=false
+  }
    
   let network_type = ""
   

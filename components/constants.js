@@ -152,9 +152,9 @@ export const count_live_price=(live_price)=>
         live_price += (new Array(e+1)).join('0');
        
     }
-    return parseFloat(live_price.toFixed(2))
+    return parseFloat(live_price.toFixed(7))
   }
-  return (live_price.toFixed(2))
+  return live_price.toFixed(7)
 }
 
 export const convertvalue=(labelValue)=> 
