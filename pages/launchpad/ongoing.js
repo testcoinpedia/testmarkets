@@ -194,8 +194,8 @@ export default function OngoingLaunchPad({userAgent}) {
                           </td>
                           {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>88778899</h5></a></td>
                           <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td> */}
-                          <td className="table_date"><p>{moment.utc(e.start_date).format('ll')}</p></td>
-                          <td className="table_date"><p>{moment.utc(e.end_date).format('ll')}</p></td>
+                          <td className="table_date"><p>{moment.utc(e.start_date).format("MMM D, YYYY")}</p></td>
+                          <td className="table_date"><p>{moment.utc(e.end_date).format("MMM D, YYYY")}</p></td>
                         </tr>
                          )
                          :

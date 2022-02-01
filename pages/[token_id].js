@@ -108,6 +108,7 @@ const valid2=(current)=>
   return current.isBefore(yesterday)
 }
 
+
 const getTokenTransactions=(id, networktype)=>
 { 
   let query =""
@@ -2393,7 +2394,7 @@ const connectToEthWallet=()=>
                                             <a onClick={() =>set_read_more("")}><span>Read Less</span></a>
                                             </p>
                                             :
-                                            <p className="participate_link" dangerouslySetInnerHTML={{ __html: strLenTrim(e.how_to_participate, 800)}}>
+                                            <p className="participate_link" dangerouslySetInnerHTML={{__html: strLenTrim(e.how_to_participate, 800) }}>  
                                             <br />
                                             <a onClick={() =>set_read_more(e._id)}><span>Read More</span></a>
                                             </p>
@@ -3137,7 +3138,7 @@ const connectToEthWallet=()=>
                                       </>
                                       :
                                       <>
-                                      <div className="promotion__text" style={{wordBreak: "break-all"}} dangerouslySetInnerHTML={{ __html:strLenTrim(data.token_description, 900)}}></div>
+                                      <div className="promotion__text" style={{wordBreak: "break-all"}} dangerouslySetInnerHTML={{ __html: strLenTrim(data.token_description, 900)}}></div>
                                       <p className="participate_link">
                                       <a onClick={() =>set_desc_read_more(true)}><span>Read More</span></a>
                                       </p>
@@ -3146,8 +3147,7 @@ const connectToEthWallet=()=>
                                       
                                     </>
                                     :
-                                    <div dangerouslySetInnerHTML={{ __html:data.token_description}}>
-                                     </div> 
+                                    <div dangerouslySetInnerHTML={{ __html:data.token_description}}></div> 
                                   }
                                 </div>
                               </div> 

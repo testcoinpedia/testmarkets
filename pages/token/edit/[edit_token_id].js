@@ -20,7 +20,7 @@ export default function UpdateToken({userAgent,config,token_id}) {
    
  console.log(token_id)
   const [wallet_address, setWalletAddress] = useState('') 
-  const [contract_address, setContractAddress] = useState([])
+  const [contract_address, setContractAddress] = useState([{network_type: "0", contract_address: ""}])
   const [err_contract_address, setErrContractAddress] = useState("")
   const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
   const [symbol, setSymbol] = useState("") 

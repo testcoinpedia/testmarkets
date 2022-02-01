@@ -194,7 +194,7 @@ const getTokensCurrentList=(items, offset)=>
                 <div className="dropdown-menu">
                   {
                     parseInt(e.active_status) === 1 ?
-                    <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
+                    <Link href={   + "token/edit/"+e.token_id}>
                       <a className="dropdown-item"><img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Token</a>
                     </Link>
                     :
