@@ -16,7 +16,9 @@ import dynamic from 'next/dynamic';
 import cookie from "cookie"
 import JsCookie from "js-cookie"
 import { Editor } from '@tinymce/tinymce-react';
-const Multiselect = dynamic(
+
+export default function CreateLauchPad({config, token_id}) {  
+  const Multiselect = dynamic(
     () => import('multiselect-react-dropdown').then(module => module.Multiselect),
     {
         ssr: false
@@ -50,7 +52,8 @@ var object =  {
   err_launch_pad_type :"" 
 } 
 
-export default function CreateLauchPad({config, token_id}) {   
+  
+
   const editorRef = useRef(null)
   
   const router = useRouter()
@@ -910,7 +913,7 @@ export async function getServerSideProps({query, req})
   }
   else 
   {
-      if(parseInt(userAgent.user_email_status))
+      if(parseInt(userAgent.user_email_status)==1)
       { 
           return { props: { userAgent: userAgent, config: config(userAgent.user_token), token_id:query.launchpad_token_id } }
       }
