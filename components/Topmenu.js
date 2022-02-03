@@ -283,6 +283,7 @@ export default function Topmenu()
                             <li><a href={coinpedia_url+"price-prediction/"}  className="dropdown-item">Price Prediction</a></li>
                             
                             <li><a href={market_coinpedia_url+"launchpad"}  className="dropdown-item">Launchpad</a></li> 
+                            <li><a href={app_coinpedia_url+"nft"}  className="dropdown-item">NFTs</a></li> 
                           </ul>
                           </div>
                         </li>

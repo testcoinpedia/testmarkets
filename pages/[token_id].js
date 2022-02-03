@@ -108,6 +108,15 @@ const valid2=(current)=>
   return current.isBefore(yesterday)
 }
 
+const removeTags=(str)=>
+{
+  if ((str===null) || (str===''))
+      return false;
+  else
+      str = str.toString();
+  return str.replace( /(<([^>]+)>)/ig, '');
+}
+
 
 const getTokenTransactions=(id, networktype)=>
 { 
@@ -2384,17 +2393,17 @@ const connectToEthWallet=()=>
                                       <div className="how_to_participate">
                                         <h4>How to participate ?</h4>
                                         <p className="participate_para_one">
-                                        {
+                                        {/* {
                                           ((e.how_to_participate != null) && ((e.how_to_participate).length > 800)) ?
                                           <>
                                           {
                                             read_more == e._id ? 
-                                            <p className="participate_link" dangerouslySetInnerHTML={{ __html: e.how_to_participate }}>
+                                            <p className="participate_link" dangerouslySetInnerHTML={{ __html: "<div>"+e.how_to_participate+"</div>" }}>
                                             <br />
                                             <a onClick={() =>set_read_more("")}><span>Read Less</span></a>
                                             </p>
                                             :
-                                            <p className="participate_link" dangerouslySetInnerHTML={{__html: strLenTrim(e.how_to_participate, 800) }}>  
+                                            <p className="participate_link" dangerouslySetInnerHTML={{__html: "<div>"+strLenTrim(e.how_to_participate, 800)+"</div>" }}>  
                                             <br />
                                             <a onClick={() =>set_read_more(e._id)}><span>Read More</span></a>
                                             </p>
@@ -2402,13 +2411,14 @@ const connectToEthWallet=()=>
                                             
                                           </>
                                           :
-                                          <div dangerouslySetInnerHTML={{ __html: e.how_to_participate }}></div>
-                                        }
+                                          <div dangerouslySetInnerHTML={{ __html: "<div>"+e.how_to_participate+"</div>" }}></div>
+                                        } */}
                                         </p>
                                        
-                                        {/* <p className="participate_para_two">
-                                        {e.how_to_participate}
-                                        </p> */}
+                                        <p className="participate_para_two">
+                                        {/* {removeTags(e.how_to_participate)}*/}
+                                        {e.how_to_participate} 
+                                        </p>
                                       </div>
                                     </div>
                                   </div>

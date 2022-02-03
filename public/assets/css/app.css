@@ -16795,6 +16795,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .weekly_updates {
     display: none;
   }
+
+  .chart_tabs .nav-tabs .nav-link {
+    padding: 2px 7px;
+  }
 }
 
 @media (max-width: 323px) {

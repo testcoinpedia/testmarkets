@@ -152,17 +152,17 @@ export default function OngoingLaunchPad({userAgent}) {
                                         {
                                           if(ntwrk.network_type == 1)
                                           {
-                                            return <>{i>0 ? "," : null} BNB</>
+                                            return <>{i>0 ? "," : null} ETH</>
                                           }
                                           else if(ntwrk.network_type == 2)
                                           {
-                                            return <>{i>0 ? "," : null} ETH</>
+                                            return <>{i>0 ? "," : null} BSC</>
                                           }
                                           
                                         }
                                         )
                                       :
-                                      "-"
+                                      "--"
                                     }
                                   </h5></a>
                                 </td>
