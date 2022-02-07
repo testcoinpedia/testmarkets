@@ -92,7 +92,7 @@ export default function UpcomingLaunchPad({userAgent}) {
                           <span className="btn__text"><img src="/assets/img/create-token-icon.png" />Create token</span>
                         </button></a></Link> */}
                         <Link href={user_token ? "/token/create-new":app_coinpedia_url+"/login" }><a><button className="btn-gradient-primary">
-                          <span className="btn__text"><img src="/assets/img/create-token-icon.png" />List your Token</span>
+                          <span className="btn__text">List your Token</span>
                         </button></a></Link>
                       </div>
                 </div> 
@@ -116,9 +116,11 @@ export default function UpcomingLaunchPad({userAgent}) {
                   <table className="table table-borderless">
                     <thead>
                       <tr>
-                        <th className="ongoing_token">Project</th>
+                        <th style={{width: '40px'}} className="mobile_hide"></th>
+                        <th style={{width: '40px'}} className="mobile_hide">#</th>
+                        <th className="ongoing_token mobile_th_fixed">Project</th>
                         <th className="">Network</th>
-                        <th className="table_live_price">Total Supply</th>
+                        {/* <th className="table_live_price">Total Supply</th> */}
                         <th className="">Type</th>
                         {/* <th className="">Holders</th>
                         <th className="">Trading On</th> */}
@@ -133,13 +135,16 @@ export default function UpcomingLaunchPad({userAgent}) {
                          upcoming.map((e,i)=> 
                                    
                         <tr key={i}>
-                          <td>
+                          <td className="mobile_hide">
+                            <img src="/assets/img/wishlist_star.svg" className="wishlist_star" />
+                          </td>
+                          <td className="mobile_hide">{i+1}</td>
+                          <td className="mobile_td_fixed">
                             <a href={"/"+e.token_id}>
-                              <div className="media">
-                                <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" className="mr-1rounded-circle" />
-                                <div className="media-body">
-                                  <h5 className="launchpad_title">{e.token_name}</h5>
-                                  <p className="launchpad_value">{e.symbol}</p>
+                              <div class="media">
+                                <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" />
+                                <div class="media-body">
+                                  <h5 className="launchpad_token_title">{e.token_name} <span>{e.symbol}</span></h5>
                                 </div>
                               </div>
                             </a>
@@ -168,7 +173,7 @@ export default function UpcomingLaunchPad({userAgent}) {
                                     }
                                   </h5></a>
                                 </td>
-                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>{e.token_max_supply ? separator(parseFloat(e.token_max_supply)) : "-"}</h5></a></td>
+                          {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>{e.token_max_supply ? separator(parseFloat(e.token_max_supply)) : "-"}</h5></a></td> */}
                           <td className="market_list_price"><a href={"/"+e.token_id}><h5><a>
                           {
                           e.launch_pad_type==1
@@ -204,7 +209,7 @@ export default function UpcomingLaunchPad({userAgent}) {
                              </td>
                            </tr>
                            :
-                          <TableContentLoader row="5" col="6" />
+                          <TableContentLoader row="5" col="8" />
                                                
                          }
                          </>

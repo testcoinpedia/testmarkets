@@ -2333,7 +2333,7 @@ const connectToEthWallet=()=>
                                       <div className="col-lg-8 col-9 col-sm-8 col-md-8">
                                         <a role="button" data-toggle="collapse" data-parent="#accordion"  href={"#upComing"+i} aria-expanded="true" aria-controls="collapseOne">
                                           <span className="start-end-date"><img src="/assets/img/calander.png" className="ico_calender" />
-                                          {e.start_date !== "0000-00-00" ? moment(e.start_date).format("MMM D, YYYY") : "-"} - {e.start_date !== "0000-00-00" ? moment(e.end_date).format("MMM D, YYYY") : "-"}
+                                          {e.start_date !== "0000-00-00" ? moment.utc(e.start_date).format("MMM D, YYYY") : "-"} - {e.start_date !== "0000-00-00" ? moment.utc(e.end_date).format("MMM D, YYYY") : "-"}
                                           
                                           {/* {
                                             moment(data.today_date).isBefore(e.start_date) ?
@@ -2437,7 +2437,7 @@ const connectToEthWallet=()=>
                         <div className="widgets__head">
                           <div className="">
                             <div className="media">
-                              <div className="widgets__logo"><img src={data.token_image ? image_base_url+data.token_image : "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579"} alt="logo" width="100%" height="100%" /></div>
+                              <div className="widgets__logo"><img src={data.token_image ? image_base_url+data.token_image : image_base_url+"default.png"} alt="logo" width="100%" height="100%" /></div>
                               <div className="media-body">
                                 <div className="row ">
                                   <div className="col-lg-7 col-sm-6 col-8">

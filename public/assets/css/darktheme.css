@@ -1,15 +1,15 @@
 /* html, */
 .dark_theme {
-  background-color: #27292d !important;
+  background-color: #17171a !important;
 }
 
 .dark_theme .market_top_header {
-  background-color: #27292d;
+  background-color: #17171a;
   box-shadow: 0 0 10px 5px rgb(0 0 0 / 10%);
 }
 
 .dark_theme .new_page_title_block {
-  background-color: #27292d !important;
+  background-color: #17171a !important;
 }
 .dark_theme .page_title {
   color: #fff;
@@ -42,7 +42,7 @@
 }
 
 .dark_theme .main_menu_header .dropdown .dropdown-menu {
-  background: #27292d;
+  background: #17171a;
   box-shadow: 0 0 15px #000;
 }
 .dark_theme .market_top_header .nav-item.show .dropdown-toggle {
@@ -130,7 +130,7 @@
 }
 
 .dark_theme .referral_dropdown .dropdown .dropdown-menu {
-  background: #27292d;
+  background: #17171a;
   box-shadow: 0 0 15px #000;
 }
 .dark_theme .referral_dropdown .dropdown .dropdown-item {
@@ -172,7 +172,7 @@
 }
 .dark_theme .token_list_table .form-control {
   color: #fff;
-  background: #27292d;
+  background: #17171a;
 }
 .dark_theme .token_list_table .form-control::placeholder {
   color: #fff;
@@ -182,7 +182,7 @@
 }
 .dark_theme .input_block_outline .access_type option {
   color: #fff !important;
-  background: #27292d !important;
+  background: #17171a !important;
 }
 
 .dark_theme .ico_plans .panel-default {
@@ -578,6 +578,10 @@
 
 .dark_theme .mobile_view_crypto {
   border-top: 1px solid #323232;
+}
+
+.dark_theme .sun {
+  background: #2c2c2f;
 }
 
 @media (max-width: 768px) {

@@ -126,23 +126,30 @@ const getTokensCurrentList=(items, offset)=>
         <td> {e.total_max_supply ? convertvalue(parseFloat(e.total_max_supply).toFixed(2)) : "--"}</td>
         <td> {e.market_cap ? convertvalue(parseFloat(e.market_cap).toFixed(2)) : "--"}</td>
         <td>
-          {
-              e.launch_pad_type === "1"
-              ?
-              "ICO"
-              :
-              e.launch_pad_type === "2"
-              ?
-              "IDO"
-              :
-              e.launch_pad_type === "3"
-              ?
-              "IEO" 
-                : 
-              "-"
-            } 
+        {
+                                        e.contract_addresses?
+                                        e.contract_addresses.length > 0 
+                                        ?
+                                          e.contract_addresses.map((ntwrk,i)=>
+                                          {
+                                            if(parseInt(ntwrk.network_type)=== 1)
+                                            {
+                                               return <>{i>0 ? "," : null} ETH</>
+                                            }
+                                            else if(parseInt(ntwrk.network_type) === 2)
+                                            {
+                                              return <>{i>0 ? "," : null} BSC</>
+                                            }
+                                            
+                                          }
+                                          )
+                                        :
+                                        "--"
+                                        :
+                                        "--"
+                                      } 
         </td>
-        <td>{e.start_date?e.start_date:"--"}</td>
+        {/* <td>{e.start_date?e.start_date:"--"}</td> */}
         <td>
           {
             parseInt(e.approval_status) === 0 ?
@@ -280,8 +287,8 @@ const getTokensCurrentList=(items, offset)=>
               <th className="table_token_name">Token</th>
               <th className="table_token_max_supply">Max Supply</th>
               <th className="table_token_ciruclating_supply">Market Cap</th>
-              <th className="table_token_launchpad_type">Launchpad Type</th>
-              <th className="table_token_launchpad_date">Launchpad Date</th> 
+              <th className="table_token_launchpad_type">Token Type</th>
+              {/* <th className="table_token_launchpad_date">Launchpad Date</th>  */}
               <th>Status(Active Status)</th> 
               <th className="token-list-last-column"  width="200px">Action</th> 
           </tr> 

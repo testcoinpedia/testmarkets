@@ -152,7 +152,7 @@ export default function Topmenu()
                                   ?
                                   <div className="dropdown connect_wallet_header">
                                     <button  className="btn connect_wallet" type="button" id="1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <img src="/assets/img/connect-wallet-header.png" className="login_img" /> {JsCookie.get('user_username')} <img src="/assets/img/caret-down.png" className="caret_down" />
+                                      <img src="/assets/img/connect-wallet-header.svg" className="login_img" /> {JsCookie.get('user_username')} <img src="/assets/img/caret-down.svg" className="caret_down" />
                                     </button>
                                     <div className="dropdown-menu dropdown_wallet_header" aria-labelledby="1"> 
                                       <h6>User</h6>
@@ -200,7 +200,7 @@ export default function Topmenu()
                                   :
                                   <div className="dropdown connect_wallet_header">
                                     <button className="btn connect_wallet" type="button" id="2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <img src="/assets/img/connect-wallet-header.png" className="login_img" /> Login<span className="hide_connnect_wallet">/Connect Wallet</span> <img src="/assets/img/caret-down.png" className="caret_down" />
+                                      <img src="/assets/img/connect-wallet-header.svg" className="login_img" /> Login<span className="hide_connnect_wallet">/Connect Wallet</span> <img src="/assets/img/caret-down.svg" className="caret_down" />
                                     </button>
                                     <div className="dropdown-menu dropdown_wallet_header" aria-labelledby="2">
                                       <a className="dropdown-item" href={app_coinpedia_url+"login"}><img src="/assets/img/menu-wallet.png" /> Login via Wallet<br/><span>Connect wallet here</span></a>
@@ -265,8 +265,8 @@ export default function Topmenu()
                               <li><a href={coinpedia_url+"guest-post/"}  className="dropdown-item">Guest Post</a></li>
                               <li><a href="https://coinpedia.org/sponsored/"  className="dropdown-item">Sponsored</a></li>
                               <li><a href={coinpedia_url+"top-10/"}  className="dropdown-item">Top 10's</a></li> 
-                              <li><a href={coinpedia_url+"cryptocurrency-regulation/"}  className="dropdown-item">Press Release</a></li>
-                              <li><a href={coinpedia_url+"interesting-crypto-stories/"}  className="dropdown-item">Guest Post</a></li>
+                              <li><a href={coinpedia_url+"cryptocurrency-regulation/"}  className="dropdown-item">Cryptocurrency regulation</a></li>
+                              <li><a href={coinpedia_url+"interesting-crypto-stories/"}  className="dropdown-item">Interesting Crypto Stories</a></li>
                             </ul>
                             
                           </div>
@@ -347,10 +347,11 @@ export default function Topmenu()
                           </div>
                         </li>
 
-                        <li className="active hiring_btn"><a href={coinpedia_url+"careers"}>We Are Hiring</a></li>
+                        
  
                       </ul>
                       <ul className="nav navbar-nav navbar-right ml-auto ">
+                        <li className="active hiring_btn"><a href={coinpedia_url+"careers"}>We Are Hiring</a></li>
                         <li className="dark_theme_toggle" onClick={()=>setDarkMode()} id="theme_color">
                           {/* <img src="https://api.coinpedia.org/uploads/tokens/1636636942618d190eb91f9.png" /> */}
                           {
@@ -359,15 +360,15 @@ export default function Topmenu()
                               <div id="dark_mode_div" className="top_menu_skin moon" ><img id="dark_mode_image" src="/assets/img/top_menu_moon.png" /></div>
                               :
                               JsCookie.get('dark_mode') === "light" ?
-                              <div id="dark_mode_div" className="top_menu_skin sun" ><img id="dark_mode_image" src="/assets/img/top_menu_sun.png" /></div>
+                              <div id="dark_mode_div" className="top_menu_skin sun" ><img id="dark_mode_image" src="/assets/img/top_menu_sun.svg" /></div>
                               :
                               null
                             :
-                            <div id="dark_mode_div" className="top_menu_skin sun" ><img id="dark_mode_image" src="/assets/img/top_menu_sun.png" /></div>
+                            <div id="dark_mode_div" className="top_menu_skin sun" ><img id="dark_mode_image" src="/assets/img/top_menu_sun.svg" /></div>
                           }
 
                         </li>
-                        <li><a href="#"><button className="header_button notification_bell"><img src="/assets/img/notification.png" /></button></a></li> 
+                        <li><a href="#"><button className="header_button notification_bell"><img src="/assets/img/notification.svg" /></button></a></li> 
                       </ul>
                     </div>
                   </div>

@@ -99,7 +99,7 @@ export default function LaunchPad({userAgent})
                     <div className="launchpad-toke-button">
                       <Link href={user_token ? "/token/create-new":app_coinpedia_url+"/login"}><a>
                         <button className="btn-gradient-primary">
-                          <span className="btn__text"><img src="/assets/img/create-token-icon.png" />List your Token</span>
+                          <span className="btn__text">List your Token</span>
                         </button></a></Link>
                       {/* <Link href="/"><a><button className="btn-gradient-primary">
                         <span className="btn__text"><img src="/assets/img/weekly-updates.png" className="weekly_updates" />Get Weekly Updates</span>
@@ -122,20 +122,12 @@ export default function LaunchPad({userAgent})
                 <div className="row">
                   <div className="col-md-6">
                     <div className="ongoing_launchpad">
-                      <h4><span>Ongoing</span> <Link href="/launchpad/ongoing"><a>View All</a></Link></h4> 
+                      <h4><span>🔥 Ongoing</span> <Link href="/launchpad/ongoing"><a>More<img src="/assets/img/view_more.png" /></a></Link></h4> 
                     
 
                   <div className="table-responsive">
                     <table className="launchpad_table_overview">
-                      <thead>
-                        <tr>
-                          <th className="ongoing_token">Project</th>
-                          <th>Type</th>
-                          <th>Network</th>
-                          <th className="table_launchpad_date">Start Date</th>
-                          <th className="table_launchpad_date">End Date</th>
-                        </tr>
-                      </thead>
+                      
                       <tbody>
                         {
                           apistatus
@@ -144,48 +136,48 @@ export default function LaunchPad({userAgent})
                             ?
                             ongoing.map((e, i)=>
                             <tr key={i}>
+                              <td className="mobile_hide">
+                                {i+1}
+                              </td>
                               <td>
                                 <Link href={"/"+e.token_id}>
                                   <a>
-                                    <div className="media">
-                                      <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" className="mr-1rounded-circle" />
-                                      <div className="media-body">
-                                        <h5 className="launchpad_title">{e.token_name}</h5>
-                                        <p className="launchpad_value">{e.symbol}</p>
-                                      </div>
-                                    </div>
+                                    <h5 className="launchpad_title"><img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" className="" /> {e.token_name} <span>{e.symbol}</span></h5>
+                                    
                                   </a>
                                 </Link>
                               </td>
                                 {/* {moment(e.start_date, 'd m  Y')} */}
-                              <td><Link href={"/"+e.token_id}><a><h5>{e.launch_pad_type === 1 ? "ICO" : e.launch_pad_type === 2 ? "IDO" : e.launch_pad_type === 3 ? "IEO" : "-"}</h5></a></Link></td>
-                              <td className="market_list_price">
-                                <Link href={"/"+e.token_id}><a><h5>
-                                  {/* <img src="/assets/img/bnb.svg" />  */}
-                                  {
-                                    e.network_type.length > 0 
-                                    ?
-                                      e.network_type.map((ntwrk,i)=>
+                              <td>
+                                <Link href={"/"+e.token_id}>
+                                  <a>
+                                    <h5>
                                       {
-                                        if(ntwrk.network_type == 1)
-                                        {
-                                          return <>{i>0 ? "," : null} ETH</>
-                                        }
-                                        else if(ntwrk.network_type == 2)
-                                        {
-                                          return <>{i>0 ? "," : null} BSC</>
-                                        }
-                                        
-                                      }
-                                      )
-                                    :
-                                    "-"
-                                  }
-                                
-                                </h5></a></Link>
+                                        e.network_type.length > 0 
+                                        ?
+                                          e.network_type.map((ntwrk,i)=>
+                                          {
+                                            if(ntwrk.network_type == 1)
+                                            {
+                                              return <>{i>0 ? "," : null} ETH</>
+                                            }
+                                            else if(ntwrk.network_type == 2)
+                                            {
+                                              return <>{i>0 ? "," : null} BSC</>
+                                            }
+                                            
+                                          }
+                                          )
+                                        :
+                                        "-"
+                                      } 
+                                      <span> ({e.launch_pad_type === 1 ? "ICO" : e.launch_pad_type === 2 ? "IDO" : e.launch_pad_type === 3 ? "IEO" : "-"})</span></h5>
+                                  </a>
+                                </Link>
                               </td>
-                              <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.start_date).format("MMM D, YYYY")}</p></Link></td>
-                              <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.end_date).format("MMM D, YYYY")}</p></Link></td>
+                              
+                              <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.start_date).format("D MMM YYYY")}</p></Link></td>
+                              <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.end_date).format("D MMM YYYY")}</p></Link></td>
                             </tr>
                             )
                             :
@@ -202,18 +194,9 @@ export default function LaunchPad({userAgent})
                 </div>
                 <div className="col-md-6"> 
                   <div className="upcoming_launchpad">
-                    <h4><span>Upcoming </span> <Link href="/launchpad/upcoming"><a>View All</a></Link></h4> 
+                    <h4><span>📅 Upcoming </span> <Link href="/launchpad/upcoming"><a>More<img src="/assets/img/view_more.png" /></a></Link></h4> 
                     <div className="table-responsive">
                       <table className="launchpad_table_overview">
-                        <thead>
-                          <tr>
-                            <th className="ongoing_token"  >Project</th>
-                            <th>Type</th>
-                            <th>Network</th>
-                            <th className="table_launchpad_date">Start Date</th>
-                            <th className="table_launchpad_date">End Date</th>
-                          </tr>
-                        </thead>
                         <tbody>
                         {
                           apistatus
@@ -223,67 +206,49 @@ export default function LaunchPad({userAgent})
                               upcoming.map((e, i)=>
                           
                               <tr key={i}>
-                                <td>
-                                  <Link href={"/"+e.token_id}>
-                                    <a>
-                                      <div className="media">
-                                        <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" className="mr-1rounded-circle" />
-                                        <div className="media-body">
-                                          <h5 className="launchpad_title">{e.token_name}</h5>
-                                          <p className="launchpad_value">{e.symbol}</p>
-                                        </div>
-                                      </div>
-                                    </a>
-                                  </Link>
-                                </td>
-                                <td><Link href={"/"+e.token_id}><a><h5>
-                                  {
-                                    e.launch_pad_type==1
-                                    ?
-                                    "ICO"
-                                    :
-                                    e.launch_pad_type==2
-                                    ?
-                                    "IDO"
-                                    :
-                                    e.launch_pad_type==3
-                                    ?
-                                    "IEO"
-                                    :
-                                    null
-                                  }
-                                  </h5></a></Link>
-                                </td>
-                                <td className="market_list_price">
-                                  <Link href={"/"+e.token_id}><a><h5>
-                                        {/* <img src="/assets/img/bnb.svg" />  */}
-                                        {
-                                          e.network_type.length > 0 
-                                          ?
-                                            e.network_type.map((ntwrk,i)=>
+                              <td className="mobile_hide">
+                                {i+1}
+                              </td>
+                              <td>
+                                <Link href={"/"+e.token_id}>
+                                  <a>
+                                    <h5 className="launchpad_title"><img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" className="" /> {e.token_name} <span>{e.symbol}</span></h5>
+                                    
+                                  </a>
+                                </Link>
+                              </td>
+                                {/* {moment(e.start_date, 'd m  Y')} */}
+                              <td>
+                                <Link href={"/"+e.token_id}>
+                                  <a>
+                                    <h5>
+                                      {
+                                        e.network_type.length > 0 
+                                        ?
+                                          e.network_type.map((ntwrk,i)=>
+                                          {
+                                            if(ntwrk.network_type == 1)
                                             {
-                                              if(ntwrk.network_type == 1)
-                                              {
-                                                return <>{i>0 ? "," : null} ETH</>
-                                              }
-                                              else if(ntwrk.network_type == 2)
-                                              {
-                                                return <>{i>0 ? "," : null} BSC</>
-                                              }
-                                              
+                                              return <>{i>0 ? "," : null} ETH</>
                                             }
-                                            )
-                                          :
-                                          "-"
-                                        }
-                                      </h5></a></Link>
-                                    </td>
-                                    <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.start_date).format("MMM D, YYYY")}</p></Link></td>
-                                    <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.end_date).format("MMM D, YYYY")}</p></Link></td>
-                                {/* <td><Link href={"/"+e.token_id}><a><h5>{moment(e.start_date).format("MMM DD, YYYY")}</h5></a></Link></td>
-                                <td><Link href={"/"+e.token_id}><a><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></Link> */}
-                                {/* </td> */}
-                              </tr>
+                                            else if(ntwrk.network_type == 2)
+                                            {
+                                              return <>{i>0 ? "," : null} BSC</>
+                                            }
+                                            
+                                          }
+                                          )
+                                        :
+                                        "-"
+                                      } 
+                                      <span> ({e.launch_pad_type === 1 ? "ICO" : e.launch_pad_type === 2 ? "IDO" : e.launch_pad_type === 3 ? "IEO" : "-"})</span></h5>
+                                  </a>
+                                </Link>
+                              </td>
+                              
+                              <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.start_date).format("D MMM YYYY")}</p></Link></td>
+                              <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.end_date).format("D MMM YYYY")}</p></Link></td>
+                            </tr>
                               )
                             : 
                             <tr>
@@ -318,11 +283,13 @@ export default function LaunchPad({userAgent})
                   <table className="table table-borderless ">
                     <thead>
                       <tr>
-                        <th className="ongoing_token">Name</th>
+                        <th style={{width: '40px'}} className="mobile_hide"></th>
+                        <th style={{width: '40px'}} className="mobile_hide">#</th>
+                        <th className="ongoing_token mobile_th_fixed">Name</th>
                         <th className="table_ended_fields">Price</th>
                         <th className="table_ended_fields">Network</th>
                         <th className="table_ended_fields">Token Sold</th>
-                        <th className="table_live_price">Total Supply</th>
+                        {/* <th className="table_live_price">Total Supply</th> */}
                         <th className="table_pre_sale">Presale Supply(%)</th>
                         <th className="">Type</th>
                         {/* <th style={{minWidth:'80px'}}>Holders</th>
@@ -339,71 +306,74 @@ export default function LaunchPad({userAgent})
                         ?
                         ended.map((e,i)=>
                         <tr key={i}>
-                            <td>
-                              <a href={"/"+e.token_id}>
-                                  <div className="media">
-                                  <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" className="mr-1rounded-circle" />
-                                  <div className="media-body">
-                                      <h5 className="launchpad_title">{e.token_name}</h5>
-                                      <p className="launchpad_value">{e.symbol}</p>
-                                  </div>
-                                  </div>
-                              </a>
-                            </td>
-                            <td className="market_list_price">
-                              <a href={"/"+e.token_id}><h5>{e.price ? "$"+parseFloat(e.price) : "-"}</h5></a>
-                            </td>
-                            <td className="market_list_price">
-                              <a href={"/"+e.token_id}><h5>
-                                {/* <img src="/assets/img/bnb.svg" />  */}
-                                {
-                                  e.network_type.length > 0 
-                                  ?
-                                    e.network_type.map((ntwrk,i)=>
-                                    {
-                                      if(ntwrk.network_type == 1)
-                                      {
-                                        return <>{i>0 ? "," : null} ETH</>
-                                      }
-                                      else if(ntwrk.network_type == 2)
-                                      {
-                                        return <>{i>0 ? "," : null} BSC</>
-                                      }
-                                      
-                                    }
-                                    )
-                                  :
-                                  "-"
-                                }
-                              
-                              </h5></a>
-                            </td>
-                            <td className="market_list_price"><a href={"/"+e.token_id}><h5>{separator(parseFloat(e.tokens_sold))}</h5></a></td>
-                            <td className="market_list_price"><a href={"/"+e.token_id}><h5>{e.token_max_supply ? separator(parseFloat(e.token_max_supply)) : "--"}</h5></a></td>
-                            <td className="market_list_price"><a href={"/"+e.token_id}><h5>{parseFloat(e.percentage_total_supply)}%</h5></a></td>
-                            <td className="market_list_price"><a href={"/"+e.token_id}><h5> 
+                          <td className="mobile_hide" >
+                            <img src="/assets/img/wishlist_star.svg" className="wishlist_star" />
+                          </td>
+                          <td className="mobile_hide">{i+1}</td>
+                          <td className="mobile_td_fixed">
+                            <a href={"/"+e.token_id}>
+                              <div class="media">
+                                <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" />
+                                <div class="media-body">
+                                  <h5 className="launchpad_token_title">{e.token_name} <span>{e.symbol}</span></h5>
+                                </div>
+                              </div>
+                            </a>
+                          </td>
+                          <td className="market_list_price">
+                            <a href={"/"+e.token_id}><h5>{e.price ? "$"+parseFloat(e.price) : "-"}</h5></a>
+                          </td>
+                          <td className="market_list_price">
+                            <a href={"/"+e.token_id}><h5>
+                              {/* <img src="/assets/img/bnb.svg" />  */}
                               {
-                                e.launch_pad_type==1
+                                e.network_type.length > 0 
                                 ?
-                                "ICO"
+                                  e.network_type.map((ntwrk,i)=>
+                                  {
+                                    if(ntwrk.network_type == 1)
+                                    {
+                                      return <>{i>0 ? "," : null} ETH</>
+                                    }
+                                    else if(ntwrk.network_type == 2)
+                                    {
+                                      return <>{i>0 ? "," : null} BSC</>
+                                    }
+                                    
+                                  }
+                                  )
                                 :
-                                e.launch_pad_type==2
-                                ?
-                                "IDO"
-                                :
-                                e.launch_pad_type==3
-                                ?
-                                "IEO"
-                                :
-                                null
-                              }</h5></a>
-                            </td>
+                                "-"
+                              }
                             
-                            {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>8578</h5></a></td>
-                            <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td> */}
-                            <td><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.end_date).format("MMM D, YYYY")}</p></Link></td>
+                            </h5></a>
+                          </td>
+                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>{separator(parseFloat(e.tokens_sold))}</h5></a></td>
+                          {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>{e.token_max_supply ? separator(parseFloat(e.token_max_supply)) : "--"}</h5></a></td> */}
+                          <td className="market_list_price"><a href={"/"+e.token_id}><h5>{parseFloat(e.percentage_total_supply)}%</h5></a></td>
+                          <td className="market_list_price"><a href={"/"+e.token_id}><h5> 
+                            {
+                              e.launch_pad_type==1
+                              ?
+                              "ICO"
+                              :
+                              e.launch_pad_type==2
+                              ?
+                              "IDO"
+                              :
+                              e.launch_pad_type==3
+                              ?
+                              "IEO"
+                              :
+                              null
+                            }</h5></a>
+                          </td>
+                          
+                          {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>8578</h5></a></td>
+                          <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td> */}
+                          <td className="market_list_price"><Link href={"/"+e.token_id} className="table_date"><p>{moment.utc(e.end_date).format("MMM D, YYYY")}</p></Link></td>
 
-                            {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></td> */}
+                          {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>{moment(e.end_date).format("MMM DD, YYYY")}</h5></a></td> */}
                         </tr>
 
                            )

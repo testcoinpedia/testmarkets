@@ -10,6 +10,7 @@ import { API_BASE_URL, config, separator, website_url, app_coinpedia_url, IMAGE_
 var $ = require( "jquery" );
 
 export default function Home({resData, userAgent, config, user_token}) { 
+
   const [tokenslist,set_tokenslist] = useState(resData.message)
   const [total_tokens_count, set_total_tokens_count] = useState(resData.message.length)  
   const [current_page_token_list, set_current_page_token_list] = useState([]); 
@@ -192,7 +193,11 @@ const getTokenData =(type, address)=>{
     setErrsearchBy("Please Select Network Type")
     formValid=false
   }
-
+  if(searchBy=="0")
+  {
+    setErrsearchBy("Please Select Network Type")
+    formValid=false
+  }
   if(search_contract_address == "")
   {
     setErrsearchBy("Please Enter Contract Address")

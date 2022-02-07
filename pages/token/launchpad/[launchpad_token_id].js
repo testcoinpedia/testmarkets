@@ -111,7 +111,7 @@ var object =  {
     set_edit_launchpad_row_id(parseInt(object._id))
     set_launch_pad_type(object.launch_pad_type)
     setStartDate(new Date(object.start_date))
-    setEndDate(new Date(new Date(object.end_date)))
+    setEndDate(new Date((moment.utc(object.end_date).format("YYYY-MM-DD"))+" 00:00:00"))
     set_tokens_sold(parseInt(object.tokens_sold))
     set_access_type(object.access_type)
     set_soft_cap(object.soft_cap)
@@ -182,7 +182,7 @@ var object =  {
     Axios.get(API_BASE_URL+"markets/listing_tokens/individual_details/"+token_id, config)
     .then(res=>
     {
-      // console.log(res.data)
+       console.log(res.data)
         if(res.data.status)
         {
           if(res.data.message.launch_pads_data.length)
@@ -351,13 +351,23 @@ var object =  {
     {
       return
     }
+
+    if(edit_launchpad_row_id)
+    {
+      var req_end_date = moment(endDate).add(1, 'days')
+    }
+    else
+    {
+      var req_end_date = endDate
+    }
+
     setValidError("") 
     const reqObj = {
       token_id : token_id,
       launchpad_row_id:edit_launchpad_row_id, 
       launch_pad_type:launch_pad_type,
-      start_date:startDate,
-      end_date:endDate,
+      start_date: startDate,
+      end_date: req_end_date,
       tokens_sold:tokens_sold,
       price:price,
       where_to_buy_title:where_to_buy_title,
@@ -369,11 +379,11 @@ var object =  {
       how_to_participate:how_to_participate
 
     } 
-    // console.log("reqObj",reqObj);
+    console.log("reqObj", reqObj)
    
-    Axios.post(API_BASE_URL+'markets/listing_tokens/update_launch_pad', reqObj, config  )
+    Axios.post(API_BASE_URL+'markets/listing_tokens/update_launch_pad', reqObj, config)
     .then(res=>{ 
-      // console.log(res.data)
+       console.log(res.data)
       if(res.data.status)
       { 
         
@@ -559,7 +569,7 @@ const onRemove = (selectedList, removedItem) => {
                                                   null
                             }
                             </td>
-                            <td>{moment(e.start_date).format("MMM DD, YYYY")}<br/>{moment(e.end_date).format("MMM DD, YYYY")}</td>
+                            <td>{moment.utc(e.start_date).format("MMM DD, YYYY")}<br/>{moment.utc(e.end_date).format("MMM DD, YYYY")}</td>
                             
                             <td>
                               <button className="edit_launchpad" onClick={()=>editLaunchpadDetails(e)}>Edit</button>
