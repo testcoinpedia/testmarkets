@@ -26,7 +26,7 @@
 }
 
 .dark_theme #footer {
-  background-color: #1c1d21 !important;
+  background-color: #17171a;
 }
 
 .dark_theme .categories__item {
@@ -50,7 +50,7 @@
 }
 
 .dark_theme #site-info {
-  background: #24242a;
+  background: #1e1d1f;
 }
 
 .dark_theme .widgets__item,
@@ -205,7 +205,6 @@
 .dark_theme .token_content h1,
 .dark_theme .promotion__text,
 .dark_theme .promotion__text p,
-.dark_theme .launchpad_list p,
 .dark_theme
   .completed_events
   .title_block
@@ -228,23 +227,29 @@
 
 .dark_theme .launchpad .ongoing_launchpad,
 .dark_theme .launchpad .upcoming_launchpad {
-  background: #24262a;
-  border: 1px solid #24262a;
-}
-.dark_theme .tabs_for_navigation ul li a span {
-  color: #fff;
-}
-.dark_theme .tabs_for_navigation ul li .active span {
+  background: #1b1d26;
+  border: 1px solid #323546;
 }
 
-.dark_theme .btn-gradient-primary {
-  background-color: #18191c !important;
+.dark_theme .launchpad .launchpad_title {
+  color: #ffffff;
 }
+
+.dark_theme .launchpad {
+  background: #17171a;
+}
+
+.dark_theme .tabs_for_navigation ul li a span {
+  color: #fff;
+  font-weight: 500;
+}
+
 .dark_theme .launchpad-toke-button .btn-gradient-primary {
   box-shadow: 0 0;
 }
 .dark_theme .tabs_for_navigation ul li .active span {
-  background-color: #18191c !important;
+  background-color: #323546;
+  color: #f1b50a;
 }
 
 .dark_theme .launchpad .ongoing_launchpad h4 span,
@@ -256,16 +261,19 @@
 .dark_theme .launchpad_table_overview thead th {
   color: #fff;
 }
-.dark_theme .ongoing_launchpad h4,
-.dark_theme .upcoming_launchpad h4,
-.dark_theme .launchpad_table_overview thead {
-  border-bottom: 1px solid #323232 !important;
+
+.dark_theme .launchpad_table_overview tbody td h5 {
+  color: #fff;
 }
 
+.dark_theme .launchpad_table_overview tbody td p, .dark_theme .launchpad_table_overview tbody td {
+  color: #fff;
+} 
+
 .dark_theme .completed_events {
-  background: #24262a;
-  border: 1px solid #24262a;
+  background: transparent;
 }
+
 
 .dark_theme .launchpad_overview_data p a {
   border-bottom: 2px solid #fff;
@@ -275,15 +283,9 @@
 .dark_theme .completed_events .title_block h2 {
   color: #fff;
 }
-.dark_theme .completed_events .title_block p {
-  color: #fff;
-}
+
 .dark_theme .view_all_launchpad a {
   color: #fff;
-}
-
-.dark_theme .completed_events table thead th {
-  padding-top: 15px !important;
 }
 
 .dark_theme .launchpad_overview_data {
@@ -298,12 +300,22 @@
 }
 
 .dark_theme .completed_events table thead th {
-  color: #fff !important;
-  background: #323232;
+  background: transparent;
+  border-bottom: 1px solid #363636;
+  border-top: 1px solid #363636;
 }
 .dark_theme .create_token_btn a {
   background: #18191c !important;
   color: #fff;
+}
+
+.dark_theme .completed_events tbody td h5, .market_list_price p {
+  color: #fff;
+  font-weight: 400 !important;
+}
+
+.dark_theme .completed_events tbody td {
+  border-bottom: 1px solid #282828 !important;
 }
 
 .dark_theme .token-list-tbl th {
@@ -336,6 +348,14 @@
 
 .dark_theme .navbar_border_bottom {
   border-top: 1px solid #323232;
+}
+
+.dark_theme .navbar_menu_items {
+  border-bottom: 1px solid #323232;
+}
+
+.dark_theme .market_live_price ul li {
+  border-right: 1px solid #323232;
 }
 
 .dark_theme .pagination_div .pagination_element ul li a {
@@ -382,11 +402,16 @@
   border-top: 1px solid #18191c;
 }
 .dark_theme .market_top_header .connect_wallet_header .connect_wallet {
-  background: #18191c;
+  background: #2c2c2f;
   color: #fff;
 }
 .dark_theme .header_button {
-  background: #18191c;
+  background: #2c2c2f;
+}
+
+.dark_theme .launchpad .ongoing_launchpad h4 .right_caret,
+.dark_theme .launchpad .upcoming_launchpad h4 .right_caret {
+  margin-bottom: 0px;
 }
 
 .dark_theme .input_block_outline {
@@ -580,7 +605,7 @@
   border-top: 1px solid #323232;
 }
 
-.dark_theme .sun {
+.dark_theme .sun, .dark_theme .moon {
   background: #2c2c2f;
 }
 

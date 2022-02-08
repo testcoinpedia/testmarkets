@@ -122,7 +122,7 @@ export default function LaunchPad({userAgent})
                 <div className="row">
                   <div className="col-md-6">
                     <div className="ongoing_launchpad">
-                      <h4><span>🔥 Ongoing</span> <Link href="/launchpad/ongoing"><a>More<img src="/assets/img/view_more.png" /></a></Link></h4> 
+                      <h4><span>🔥 Ongoing</span> <Link href="/launchpad/ongoing"><a>More <span className="right_caret">›</span></a></Link></h4> 
                     
 
                   <div className="table-responsive">
@@ -194,7 +194,7 @@ export default function LaunchPad({userAgent})
                 </div>
                 <div className="col-md-6"> 
                   <div className="upcoming_launchpad">
-                    <h4><span>📅 Upcoming </span> <Link href="/launchpad/upcoming"><a>More<img src="/assets/img/view_more.png" /></a></Link></h4> 
+                    <h4><span>📅 Upcoming </span> <Link href="/launchpad/upcoming"><a>More <span className="right_caret">›</span></a></Link></h4> 
                     <div className="table-responsive">
                       <table className="launchpad_table_overview">
                         <tbody>

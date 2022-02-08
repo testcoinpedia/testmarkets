@@ -99,7 +99,7 @@ export default function Footer (){
             <ul>
                <li className="footer_menu_items"><a href="https://coinpedia.org/"><img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180325/home.svg" /><span>Home</span></a></li>
                <li className="footer_menu_items"><a href="https://markets.coinpedia.org/"><img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180327/market.svg" /><span>Market</span></a></li>
-               <li className="center_fixed_menu_img"><div className="col-md-12"><img src={favicon} /></div></li>
+               <li className="center_fixed_menu_img"><img src={favicon} /></li>
                <li className="footer_menu_items"><a href="https://coinpedia.org/news/"><img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180329/news.svg" /><span>News</span></a></li>
                <li className="footer_menu_items"><a href="https://app.coinpedia.org/"><img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180331/portfolio.svg" /><span>Portfolio</span></a></li>
             </ul>

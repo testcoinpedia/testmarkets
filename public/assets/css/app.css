@@ -9374,7 +9374,7 @@ a:hover {
 .launchpad .ongoing_launchpad,
 .launchpad .upcoming_launchpad {
   background: #f9f8fa;
-  border-radius: 5px;
+  border-radius: 7px;
   padding: 15px;
   min-height: 275px;
   margin-bottom: 20px;
@@ -9384,6 +9384,12 @@ a:hover {
 .launchpad .ongoing_launchpad h4,
 .launchpad .upcoming_launchpad h4 {
   margin-bottom: 0px;
+}
+
+.launchpad .ongoing_launchpad h4 .right_caret,
+.launchpad .upcoming_launchpad h4 .right_caret {
+  margin-bottom: 0px;
+  color: #3861fb;
 }
 
 .launchpad {
@@ -9547,6 +9553,7 @@ a:hover {
 
 .completed_events .table_date p {
   font-weight: 500;
+  font-size: 14px;
 }
 
 .market_details_share_wishlist {
@@ -12608,7 +12615,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   background: #f1b50a !important;
   line-height: 1;
   margin-top: 0px;
-  color: #15074d !important;
+  color: #111 !important;
   font-weight: 600 !important;
   border-radius: 7px;
   padding: 12px 15px !important;
@@ -12705,7 +12712,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .main_menu_header .dropdown .dropdown-menu {
-  background: #251c49;
+  background: #15074d;
   box-shadow: 0 0 15px #3a325b;
   padding: 7px;
   border-radius: 2px;
@@ -13250,7 +13257,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 #footer #menu-footer-menu li a {
   color: #fff;
-  margin: 0 5px;
+  margin: 0 10px;
   font-size: 13px;
   font-weight: 300;
 }
@@ -13263,6 +13270,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #footer .social-icons li {
   display: inline-block;
   margin-right: 7px;
+}
+
+#footer .social-icons li img {
+  width: 28px;
 }
 
 #site-info {
@@ -13331,7 +13342,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 #footer .footer_logo {
-  width: 300px;
+  width: 260px;
 }
 
 .completed_events .networks_type img {
@@ -13920,6 +13931,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .completed_events .launchpad_token_title {
   margin-top: 9px;
+}
+
+.completed_events .launchpad_token_title span {
+  color: #a7a7a7;
+  font-weight: 400;
 }
 
 @media (min-width: 992px) {
@@ -16953,7 +16969,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: #000;
 }
 .airdrop_single_page .token_content p{
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .token-pg-height{

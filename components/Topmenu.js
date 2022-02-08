@@ -241,7 +241,7 @@ export default function Topmenu()
               </div>
             </nav>
 
-            <nav className="navbar navbar-expand-lg  navbar-transparent navbar_border_bottom">
+            <nav className="navbar navbar-expand-lg  navbar-transparent navbar_border_bottom navbar_menu_items">
                 <div className="container">
                   
                   <div className="col-md-12 ">
