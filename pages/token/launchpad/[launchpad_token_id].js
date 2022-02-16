@@ -185,10 +185,11 @@ var object =  {
        console.log(res.data)
         if(res.data.status)
         {
+          set_payment_types(res.data.message.payment_types)
           if(res.data.message.launch_pads_data.length)
           {
             setLaunchPadList(res.data.message.launch_pads_data)
-            set_payment_types(res.data.message.payment_types)
+            
           }
           else
           {
@@ -473,17 +474,17 @@ const handleChange2=(value , name , i)=>  {
 }
 
 
-const closeNRedirect = () =>
-{
-  setAlertMessage('')
-  router.push('/token')
-}
+// const closeNRedirect = () =>
+// {
+//   setAlertMessage('')
+//   router.push('/token')
+// }
 
-const redirectToPage = () =>
-{
-  setEmptyAlertMessage('')
-  router.push('/token/launchpad/'+token_id)
-}
+// const redirectToPage = () =>
+// {
+//   setEmptyAlertMessage('')
+//   router.push('/token/launchpad/'+token_id)
+// }
 
 const onSelect =(selectedList, selectedItem)=> {  
    console.log(selectedItem)
@@ -880,7 +881,7 @@ const onRemove = (selectedList, removedItem) => {
         </div>
       </div>
 
-      <div className={"modal connect_wallet_error_block"+ (alert_message ? " collapse show" : "")}> 
+      {/* <div className={"modal connect_wallet_error_block"+ (alert_message ? " collapse show" : "")}> 
         <div className="modal-dialog modal-sm">
           <div className="modal-content">
             <div className="modal-body">
@@ -890,7 +891,7 @@ const onRemove = (selectedList, removedItem) => {
             </div>
           </div> 
         </div>
-      </div> 
+      </div>  */}
 
       {/* <div className={"modal connect_wallet_error_block"+ (empty_alert_message ? " collapse show" : "")}> 
         <div className="modal-dialog modal-sm">
