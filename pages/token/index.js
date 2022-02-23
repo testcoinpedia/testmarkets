@@ -112,121 +112,90 @@ const getTokensCurrentList=(items, offset)=>
   console.log(token_list)
   const postData = token_list.map((e, i)=>
     <tr key={i}>
-       <td>
+        <td>{i+1}</td>
+        <td>
           <div className="media">
             <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="token" className="rounded-circle"  alt="Token img" />
             <div className="media-body">
-              <h4>{e.token_name}</h4>
-              <p>{e.symbol}</p>
+              <h4 class="media-heading">{e.token_name} <span>{e.symbol}</span></h4>
             </div>
           </div>
         </td>
         {/* <td> ${e.token_max_supply ? convertvalue(parseFloat(e.token_max_supply).toFixed(2)) : "-"}</td>
         <td> ${e.circulating_supply ? convertvalue(parseFloat(e.circulating_supply).toFixed(2)) : "-"} {e.symbol}</td> */}
-        <td> {e.total_max_supply ? convertvalue(parseFloat(e.total_max_supply).toFixed(2)) : "--"}</td>
-        <td> {e.market_cap ? convertvalue(parseFloat(e.market_cap).toFixed(2)) : "--"}</td>
+        <td> {e.total_max_supply ? convertvalue(parseFloat(e.total_max_supply).toFixed(2)) : "-"}</td>
+        <td> {e.market_cap ? convertvalue(parseFloat(e.market_cap).toFixed(2)) : "-"}</td>
         <td>
-        {
-                                        e.contract_addresses?
-                                        e.contract_addresses.length > 0 
-                                        ?
-                                          e.contract_addresses.map((ntwrk,i)=>
-                                          {
-                                            if(parseInt(ntwrk.network_type)=== 1)
-                                            {
-                                               return <>{i>0 ? "," : null} ETH</>
-                                            }
-                                            else if(parseInt(ntwrk.network_type) === 2)
-                                            {
-                                              return <>{i>0 ? "," : null} BSC</>
-                                            }
-                                            
-                                          }
-                                          )
-                                        :
-                                        "--"
-                                        :
-                                        "--"
-                                      } 
+            {
+              e.contract_addresses?
+              e.contract_addresses.length > 0 
+              ?
+                e.contract_addresses.map((ntwrk,i)=>
+                {
+                  if(parseInt(ntwrk.network_type)=== 1)
+                  {
+                      return <>{i>0 ? "," : null} ETH</>
+                  }
+                  else if(parseInt(ntwrk.network_type) === 2)
+                  {
+                    return <>{i>0 ? "," : null} BSC</>
+                  }
+                  
+                }
+                )
+              :
+              "-"
+              :
+              "-"
+            } 
         </td>
-        {/* <td>{e.start_date?e.start_date:"--"}</td> */}
         <td>
           {
             parseInt(e.approval_status) === 0 ?
-            <div><strong>Pending</strong></div>
+            <div style={{color: '#f1b50a'}}>Pending</div>
             :
             parseInt(e.approval_status) === 1 ?
-            <div><strong>Approved</strong></div>
+            <div style={{color: '#339e00'}}>Approved</div>
             :
             parseInt(e.approval_status) === 2 ?
-            <div><strong>Rejected</strong></div>
+            <div style={{color: '#fb2c10'}}>Rejected</div>
             :
             null
           }
-          ({parseInt(e.active_status) === 0 ? "Disabled": "Enabled"})
         </td>
-        {
-          parseInt(e.approval_status) === 1 ?
-          <td className="referral_dropdown">
 
-          {
-            parseInt(e.active_status) === 1 ?
-            <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
-              <a><span className="badge badge-primary">Edit Token</span></a>
-            </Link>
-            :
-            null
-          }
+        <td>
+            {
+                parseInt(e.approval_status) !== 2 ?
+                <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
+                  <a><span className="manage_tokens_edit">Edit Token</span></a>
+                </Link>
+                :
+                ""
+            }
+            {
+              parseInt(e.approval_status) === 0 ?
+              <>
+               <span className="manage_tokens_edit_disbale">Edit Launchpad</span>
+               <span className="manage_tokens_edit_disbale">View</span>
+              </>
+              :
+              parseInt(e.approval_status) === 1 ?
+              <>
+               <Link href={market_coinpedia_url+"token/launchpad/"+e.token_id}>
+                  <a><span className="manage_tokens_edit">Edit Launchpad</span></a>
+              </Link>
 
-          {
-            parseInt(e.active_status) === 1 ?
-            <Link href={market_coinpedia_url + "token/launchpad/"+e.token_id}>
-              <a><span className="badge badge-primary">Edit Launchpad</span></a>
-            </Link>
-            :
-            null
-          }
-            
-          
-          <Link href={market_coinpedia_url + e.token_id}>
-            <a><span className="badge badge-warning">View</span></a>
-          </Link>
+              <Link href={market_coinpedia_url + e.token_id}>
+                <a><span className="manage_tokens_edit">View</span></a>
+              </Link>
+              </>
+              :
+              null
+            }
+       </td> 
 
-
-            
-            
-            
-            {/* <div className="dropdown" >
-              <img src="/assets/img/table_dropdown_dots.png" data-toggle="dropdown" className="dropdown_dots" />
-                <div className="dropdown-menu">
-                  {
-                    parseInt(e.active_status) === 1 ?
-                    <Link href={   + "token/edit/"+e.token_id}>
-                      <a className="dropdown-item"><img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Token</a>
-                    </Link>
-                    :
-                    null
-                  }
-
-                  {
-                    parseInt(e.active_status) === 1 ?
-                    <Link href={market_coinpedia_url + "token/launchpad/"+e.token_id}>
-                      <a className="dropdown-item"><img src="/assets/img/table_dropdow_edit.png" className="dropdown_images" />Edit Launchpad</a>
-                    </Link>
-                    :
-                    null
-                  }
-                   
-                  
-                  <Link href={market_coinpedia_url + e.token_id}>
-                    <a className="dropdown-item"><img src="/assets/img/table_dropdown_view.png" className="dropdown_images" />View</a>
-                  </Link>
-                </div>
-            </div> */}
-          </td> 
-          :
-          null
-        }
+       
               
     </tr>
   )  
@@ -240,116 +209,121 @@ const getTokensCurrentList=(items, offset)=>
         <div className="prices transaction_table_block token-pg-height">
           <div className="col-md-12">
             <div className="row">
-              <div className="col-md-8 col-lg-8 col-sm-6 col-6">
-                <div className="prices__title h5"><h1>Tokens list ({token_counts})</h1>
+              <div className="col-md-6 col-lg-6 col-sm-6 col-12">
+                <div className="prices__title h5"><h1>Manage your Tokens ({token_counts})</h1>
                   <p className="token_form_sub_text">List of token displayed here</p>
                 </div>
               </div>
-              <div className="col-md-4 col-lg-4 col-sm-6 col-6">
-                <div className="quick_block_links main_page_coin_filter create_token_btn"> 
-                  <Link href="/token/create-new"><a><img src="/assets/img/create-token-icon.png" />Create Token</a></Link>
-                </div>
+              <div className="col-md-6 col-lg-6 col-sm-6 col-12">
+                <ul className="manage_token_filter_create_token">
+                  <li>
+                    <form id="formID">
+                      <div className="input-group search_filter">
+                        <select className="form-control" onChange={(e)=> getSearchData(e.target.value)}>
+                          <option value="" >Select Type</option>
+                          <option value="1">Pending</option>
+                          <option value="2">Approved</option>
+                          <option value="3">Rejected</option>
+                        </select>
+                        {/* <div className="input-group-prepend">
+                          <span className="input-group-text reset_filter" onClick={()=> resetFilter()}>
+                            <img src="/assets/img/reset.png" />
+                          </span>
+                        </div> */}
+                      </div>
+                    </form>
+                  </li>
+                  <li>
+                    <div className="quick_block_links main_page_coin_filter create_token_btn"> 
+                      <Link href="/token/create-new"><a><img src="/assets/img/create-token.svg" />Create Token</a></Link>
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
 
 
-<div>
-  <div className="col-md-12">
-    <div className="row market_insights ">
-      {/* <div className="col-md-5 col-lg-5"></div> */}
-      <div className="col-md-8 col-lg-8"></div>
-      <div className="col-md-4 col-lg-4">
-          <form id="formID">
-          <div className="input-group search_filter">
-            <select className="form-control" onChange={(e)=> getSearchData(e.target.value)}>
-              <option value="" >Select Type</option>
-              <option value="1">Pending</option>
-              <option value="2">Approved</option>
-              <option value="3">Rejected</option>
-            </select>
-            <div className="input-group-prepend">
-              <span className="input-group-text reset_filter" onClick={()=> resetFilter()}>
-                <img src="/assets/img/reset.png" />
-              </span>
+          <div>
+            <div className="col-md-12">
+              <div className="row market_insights ">
+                {/* <div className="col-md-5 col-lg-5"></div> */}
+                <div className="col-md-8 col-lg-8"></div>
+                <div className="col-md-4 col-lg-4">
+                    
+                </div>
+              </div>
             </div>
+
+            <div className="col-md-12 market_page_data token_list_table ">
+              <div className="table-responsive">
+              <table className="table table-borderless">
+                <thead>
+                      <tr>
+                          <th>#</th>
+                          <th className="manage_token_name">Token</th>
+                          <th>Max Supply</th>
+                          <th>Market Cap</th>
+                          <th>Token Type</th>
+                          <th>Status</th> 
+                          <th className="manage_token_action">Actions</th> 
+                      </tr> 
+                </thead>
+                <tbody>
+                {
+                  loader_status 
+                  ?
+                  currentPageArray.length > 0 ?
+                  currentPageArray
+                  :
+                  <tr key="1">
+                      <td className="text-center" colSpan="7">
+                          Sorry, No related data found.
+                      </td>
+                    </tr>
+                  :
+                  <TableContentLoader row="10" col="7" />
+                  }
+                </tbody>
+              </table>
+              </div>
+            </div> 
           </div>
-          </form>
-      </div>
-    </div>
-  </div>
-
-  <div className="col-md-12 market_page_data token_list_table ">
-  <div className="table-responsive">
-  <table className="table table-borderless token-list-tbl">
-    <thead>
-          <tr>
-              <th className="table_token_name">Token</th>
-              <th className="table_token_max_supply">Max Supply</th>
-              <th className="table_token_ciruclating_supply">Market Cap</th>
-              <th className="table_token_launchpad_type">Token Type</th>
-              {/* <th className="table_token_launchpad_date">Launchpad Date</th>  */}
-              <th>Status(Active Status)</th> 
-              <th className="token-list-last-column"  width="200px">Action</th> 
-          </tr> 
-    </thead>
-    <tbody>
-    {
-      loader_status 
-      ?
-      currentPageArray.length > 0 ?
-      currentPageArray
-      :
-       <tr key="1">
-          <td className="text-center" colSpan="6">
-              Sorry, No related data found.
-          </td>
-        </tr>
-      :
-      <TableContentLoader row="10" col="7" />
-      }
-    </tbody>
-  </table>
-  </div>
-</div> 
-</div>
         
-  {
-    filteredTokens.length > 10 ?
-    <div className="pager__list pagination_element"> 
-      <ReactPaginate
-        previousLabel={currentPage+1 !== 1 ? "← Previous" : ""} 
-        nextLabel={currentPage+1 !== pageCount ? "Next →" : ""} 
-        breakLabel={<span className="gap">...</span>}
-        pageCount={pageCount}
-        onPageChange={handlePageClick}
-        forcePage={currentPage}
-        containerClassName={"pagination"}
-        previousLinkClassName={"previous_page"}
-        nextLinkClassName={"next_page"}
-        disabledClassName={"disabled"}
-        activeClassName={"active"}
-      />
-  </div>
-    :
-    null 
-  } 
-        
-</div>
+          {
+            filteredTokens.length > 10 ?
+            <div className="pager__list pagination_element"> 
+              <ReactPaginate
+                previousLabel={currentPage+1 !== 1 ? "← Previous" : ""} 
+                nextLabel={currentPage+1 !== pageCount ? "Next →" : ""} 
+                breakLabel={<span className="gap">...</span>}
+                pageCount={pageCount}
+                onPageChange={handlePageClick}
+                forcePage={currentPage}
+                containerClassName={"pagination"}
+                previousLinkClassName={"previous_page"}
+                nextLinkClassName={"next_page"}
+                disabledClassName={"disabled"}
+                activeClassName={"active"}
+              />
+          </div>
+            :
+            null 
+          } 
+        </div>
 
-  <div className={"modal connect_wallet_error_block"+ (rejectreason ? " collapse show" : "")}> 
-    <div className="modal-dialog modal-sm">
-      <div className="modal-content">
-        <div className="modal-body">
-            <button type="button" className="close" data-dismiss="modal"  onClick={()=>setRejectReason("")}>&times;</button>
-            <h4>Rejected Reason</h4>
-            <p>{rejectreason}</p>
+        <div className={"modal connect_wallet_error_block"+ (rejectreason ? " collapse show" : "")}> 
+          <div className="modal-dialog modal-sm">
+            <div className="modal-content">
+              <div className="modal-body">
+                  <button type="button" className="close" data-dismiss="modal"  onClick={()=>setRejectReason("")}>&times;</button>
+                  <h4>Rejected Reason</h4>
+                  <p>{rejectreason}</p>
+                </div>
+              </div> 
           </div>
         </div> 
-    </div>
-  </div> 
-
-</div>
+      </div>
     )
 } 
 

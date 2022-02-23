@@ -118,7 +118,7 @@ export default function Footer (){
                         <ul id="menu-footer-menu" className="menu">
                            <li id="menu-item-58566" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-58566"><a href={coinpedia_url+"about-coinpedia/"}>About Us</a></li>
                            <li id="menu-item-83639" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-83639"><a href={coinpedia_url+"advertising/"}>Advertise</a></li>
-                           <li id="menu-item-83639" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-83639"><a href={website_url+"partners"}>Partners</a></li>
+                           <li id="menu-item-83639" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-83639"><a href={app_coinpedia_url+"partners"}>Partners</a></li>
                            <li id="menu-item-58568" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-58568"><a href={coinpedia_url+"authors/"}>Authors</a></li> 
                            <li id="menu-item-58570" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-58570"><a href={coinpedia_url+"privacy-policy/"} >Privacy Policy</a></li>
                            <li id="menu-item-58571" className="menu-item menu-item-type-post_type menu-item-object-page menu-item-58571"><a href={coinpedia_url+"terms-and-conditions/"}>Terms and Conditions</a></li>

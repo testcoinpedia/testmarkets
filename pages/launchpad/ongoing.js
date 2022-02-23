@@ -107,21 +107,39 @@ export default function OngoingLaunchPad({userAgent}) {
                 </div> 
 
                 <div className="completed_events">
+                  <div className="row">
+                    <div className="col-md-6 col-7">
+                      <ul className="category_list">
+                        <li className="active_tab">All</li>
+                        <li><img src="/assets/img/wishlist_star.svg" /> Watchlist</li>
+                      </ul>
+                    </div>
+                    <div className="col-md-6 col-5">
+                      <ul className="filter_rows">
+                        <li>
+                          Show rows 
+                          <select>
+                            <option>100</option>
+                            <option>50</option>
+                            <option>10</option>
+                          </select>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
                   <div className="table-responsive">
                     <table className="table table-borderless">
                       <thead>
                         <tr>
-                          <th style={{width: '40px'}} className="mobile_hide"></th>
-                          <th style={{width: '40px'}} className="mobile_hide">#</th>
-                          <th className="ongoing_token mobile_th_fixed">Project</th>
-                          <th className="">Price</th>
-                          <th className="">Network</th>
-                          {/* <th className="">Total Supply</th> */}
-                          <th className="">Type</th>
-                          {/* <th className="">Holders</th>
-                          <th className="">Trading On</th> */}
-                          <th className="table_date">Start Date</th>
-                          <th className="table_date">End Date</th>
+                          <th style={{minWidth:'40px'}}></th>
+                          <th>#</th>
+                          <th style={{minWidth:'150px'}}>Project</th>
+                          <th>Price</th>
+                          <th>Network</th>
+                          <th>Type</th>
+                          <th style={{minWidth:'100px'}}>Start Date</th>
+                          <th style={{minWidth:'100px'}}>End Date</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -131,11 +149,11 @@ export default function OngoingLaunchPad({userAgent}) {
                             ?
                               ongoing.map((e,i)=>
                         <tr key={i}>
-                          <td className="mobile_hide">
+                          <td>
                             <img src="/assets/img/wishlist_star.svg" className="wishlist_star" />
                           </td>
-                          <td className="mobile_hide">{i+1}</td>
-                          <td className="mobile_td_fixed">
+                          <td>{i+1}</td>
+                          <td>
                             <a href={"/"+e.token_id}>
                               <div class="media">
                                 <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" />
@@ -145,10 +163,10 @@ export default function OngoingLaunchPad({userAgent}) {
                               </div>
                               </a>
                           </td>
-                          <td className="market_list_price">
+                          <td>
                             <a href={"/"+e.token_id}><h5>{e.price ? "$"+parseFloat(e.price) : "-"}</h5></a>
                           </td>
-                          <td className="market_list_price">
+                          <td>
                                   <a href={"/"+e.token_id}><h5>
                                     {/* <img src="/assets/img/bnb.svg" />  */}
                                     {
@@ -172,12 +190,10 @@ export default function OngoingLaunchPad({userAgent}) {
                                     }
                                   </h5></a>
                                 </td>
-                          {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>{e.token_max_supply ? separator(parseFloat(e.token_max_supply)) : "-"}</h5></a></td> */}
-                         
-                          <td className="market_list_price">
+                          
+                          <td>
                             <a href={"/"+e.token_id}>
                               <h5>
-                                {/* <a> */}
                                   {
                                   e.launch_pad_type==1
                                   ?
@@ -193,27 +209,25 @@ export default function OngoingLaunchPad({userAgent}) {
                                   :
                                   null
                                   }
-                                {/* </a> */}
                               </h5>
                             </a>
                           </td>
-                          {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>88778899</h5></a></td>
-                          <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td> */}
-                          <td className="table_date"><p>{moment.utc(e.start_date).format("MMM D, YYYY")}</p></td>
-                          <td className="table_date"><p>{moment.utc(e.end_date).format("MMM D, YYYY")}</p></td>
+                          
+                          <td><p>{moment.utc(e.start_date).format("MMM D, YYYY")}</p></td>
+                          <td><p>{moment.utc(e.end_date).format("MMM D, YYYY")}</p></td>
                         </tr>
                          )
                          :
                          <>
                          {
-                           apistatus ?
-                           <tr key="1">
-                             <td className="text-center no_data_found" colSpan="7">
-                                 Sorry, No related data found.
-                             </td>
-                           </tr>
-                           :
-                          <TableContentLoader row="5" col="9" />
+                          apistatus ?
+                            <tr key="1">
+                              <td className="text-center no_data_found" colSpan="9">
+                                Sorry, No related data found.
+                              </td>
+                            </tr>
+                            :
+                            <TableContentLoader row="5" col="9" />
                                                
                          }
                          </>

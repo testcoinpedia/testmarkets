@@ -112,6 +112,27 @@ export default function UpcomingLaunchPad({userAgent}) {
               
 
               <div className="completed_events">
+                <div className="row">
+                  <div className="col-md-6">
+                    <ul className="category_list">
+                      <li className="active_tab">All</li>
+                      <li><img src="/assets/img/wishlist_star.svg" /> Watchlist</li>
+                    </ul>
+                  </div>
+                  <div className="col-md-6">
+                    <ul className="filter_rows">
+                      <li>
+                        Show rows 
+                        <select>
+                          <option>100</option>
+                          <option>50</option>
+                          <option>10</option>
+                        </select>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
                 <div className="table-responsive">
                   <table className="table table-borderless">
                     <thead>
@@ -202,13 +223,13 @@ export default function UpcomingLaunchPad({userAgent}) {
                             :
                             <>
                          {
-                           apistatus ?
-                           <tr key="1">
-                             <td className="text-center no_data_found" colSpan="6">
-                                 Sorry, No related data found.
-                             </td>
-                           </tr>
-                           :
+                          apistatus ?
+                            <tr key="1">
+                              <td className="text-center no_data_found" colSpan="8">
+                                Sorry, No related data found.
+                              </td>
+                            </tr>
+                            :
                           <TableContentLoader row="5" col="8" />
                                                
                          }

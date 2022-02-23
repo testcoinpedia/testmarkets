@@ -327,24 +327,24 @@ export default function WalletDetails({userAgent, config})
     if(!pastAddress)
     {
       formIsValid = false
-      seterrpastAddress("Wallet Address field is required")
+      seterrpastAddress("The Wallet Address field is required.")
     } 
     else if(pastAddress.length < 4)
     {
       formIsValid = false
-      seterrpastAddress("Wallet Address should have 4 length")
+      seterrpastAddress("The Wallet Address field must be atleast 4 characters length.")
     }
     
     if(!nickName)
     {
       formIsValid = false
-      seterrnickName("NickName field is required")
+      seterrnickName("The NickName field is required")
       
     } 
     else if(nickName.length < 4)
     {
       formIsValid = false
-      seterrnickName("The user name field must be at least 4 characters in length.")
+      seterrnickName("The User name field must be at least 4 characters in length.")
     }
 
     if(!formIsValid)

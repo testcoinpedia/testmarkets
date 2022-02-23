@@ -134,9 +134,9 @@ export const createValidURL = (link)=>
     return "https://"+link
   }
 }
+
 export const count_live_price=(live_price)=> 
 {
-
   if (Math.abs(live_price) < 1.0) {
     var e = parseInt(live_price.toString().split('e-')[1]);
     if (e) {
@@ -154,7 +154,7 @@ export const count_live_price=(live_price)=>
     }
     return parseFloat(live_price.toFixed(7))
   }
-  return live_price.toFixed(7)
+  return (parseFloat(live_price)).toFixed(7)
 }
 
 export const convertvalue=(labelValue)=> 

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect,useCallback, useRef } from 'react';  
 import Axios from 'axios'
+import Link from 'next/link' 
 import Web3 from 'web3' 
 import { useRouter } from 'next/router' 
 import Head from 'next/head'
@@ -164,17 +165,17 @@ const onLoad = useCallback((img) => {
  
     if(symbol === '')
     {
-      setErrSymbol('The symbol field is required.')
+      setErrSymbol('The Symbol field is required.')
       formValid = false
     }
     else if(symbol.length < 2)
     {
-      setErrSymbol('The symbol must be at least 2 characters.')
+      setErrSymbol('The Symbol must be atleast 2 characters.')
       formValid = false
     } 
     else if(symbol.length > 25)
     {
-      setErrSymbol('The symbol must be less than 25 characters in length.')
+      setErrSymbol('The Symbol must be less than 25 characters in length.')
       formValid = false
     }
  
@@ -182,16 +183,16 @@ const onLoad = useCallback((img) => {
       let list = err_contract_address
 
       if(contract_address[0].network_type === "0" || contract_address[0].network_type === 0){  
-        list = "Contract address network type field is required"
+        list = "The Contract address network type field is required."
         formValid = false
       }    
       
       if(contract_address[0].contract_address === ""){   
-        list = "Contract address field is required"
+        list = "The Contract address field is required."
         formValid = false
       }
       else if((contract_address[0].contract_address).length != 41){  
-        list = "Contract address field must be equal to 34 digits"
+        list = "The Contract address field must be equal to 34 digits"
         formValid = false
       }
       else{ 
@@ -199,7 +200,7 @@ const onLoad = useCallback((img) => {
       } 
       
       if(contract_address[1].network_type === "0" || contract_address[1].network_type === 0){  
-        list = "Contract address network type field is required" 
+        list = "The Contract address network type field is required." 
         formValid = false  
       }
       else{
@@ -207,11 +208,11 @@ const onLoad = useCallback((img) => {
       }
   
       if(contract_address[1].contract_address === ""){ 
-        list = "Contract address field is required"
+        list = "The Contract address field is required."
         formValid = false   
       }
       else if((contract_address[1].contract_address).length !== 41){
-        list = "Contract address field must be equal to 34 digits"
+        list = "The Contract address field must be equal to 34 digits."
         formValid = false
       }
       else{
@@ -219,12 +220,12 @@ const onLoad = useCallback((img) => {
       } 
        
       if(contract_address[0].contract_address === contract_address[1].contract_address){
-        list = "Both Contract addresses must not be same"
+        list = "Both Contract addresses must not be same."
         formValid = false
       } 
   
       if(contract_address[0].network_type === contract_address[1].network_type){
-        list = "Both Contract addresses network type must not be same"
+        list = "Both Contract addresses network type must not be same."
         formValid = false
       }  
       setErrContractAddress(list)
@@ -234,7 +235,7 @@ const onLoad = useCallback((img) => {
       let list = err_contract_address 
 
         if(contract_address[0].network_type === "0" || contract_address[0].network_type === 0){  
-          list = "Contract address network type field is required"
+          list = "The Contract address network type field is required."
           formValid = false
         } 
         else{  
@@ -242,11 +243,11 @@ const onLoad = useCallback((img) => {
         }  
         
         if(contract_address[0].contract_address === ""){   
-          list = "Contract address field is required"
+          list = "The Contract address field is required."
           formValid = false
         }
         else if((contract_address[0].contract_address).length != 42){  
-          list = "Contract address field must be equal to 34 digits"
+          list = "The Contract address field must be equal to 34 digits."
           formValid = false
         }
         else{ 
@@ -722,426 +723,446 @@ const getTokensDetails = (type, address) =>{
                 <p className="token_form_sub_text">Enter all these fields to Edit tokens details</p>
                   </div>
                   <div className="col-lg-3 col-md-3 col-4">
-                  <div className="panel_title_go_back"><div class="text-right" onClick={() => router.back()}><a class="btn btn-primary"><i className="la la-arrow-left"></i>Go Back</a></div></div>
+                  <div className="quick_block_links main_page_coin_filter create_token_btn">
+                      <Link href="/token"><a ><i className="la la-arrow-left"></i>Go Back</a></Link>
+                      {/* <div class="text-right" onClick={() => router.back()}><a class="btn btn-primary"><i className="la la-arrow-left"></i>Go Back</a></div> */}
+                    </div>
                   </div>
                 </div>
               </div>
               
-              <div className="main_create_form"> 
-                  <div className="token_form">
-                  
-                    <div className="row">
-                    { 
-                      contract_address.length > 0
-                      ?
-                      contract_address.map((e, i)=>
-                       <div className="col-md-6" key={i}>
-                        <div className="form-custom">
-                          <label htmlFor="email">
-                          Enter Contract address<span className="label_star">*</span></label>
-                          <div className="input_block_outline">
-                            <div className="input-group">
-                              <div className="input-group-prepend">
-                                <select name="network_type"  value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address)} >
-                                      <option value="0">Network Type</option> 
-                                      <option value="1">Ethereum</option>
-                                      <option value="2">BSC</option>
-                                </select>
+              <div className="row">
+                    <div className="col-md-3">
+                      <div className="token_steps_list">
+                        <ul>
+                          <li>Token Basic <img src={"/assets/img/"+(token_name ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/> </li>
+                          <li>Token Supply <img src={"/assets/img/"+(token_max_supply ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
+                          <li>Exchange <img src={"/assets/img/"+(exchange_link[0] ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
+                          <li>Explorer <img src={"/assets/img/"+(explorer[0] ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
+                          <li>Community <img src={"/assets/img/"+(community_address[0] ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
+                          <li>About Token <img src={"/assets/img/"+(token_description ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="col-md-9">
+                      <div className="row">
+                      { 
+                        contract_address.length > 0
+                        ?
+                        contract_address.map((e, i)=>
+                        <div className="col-md-8" key={i}>
+                          <div className="form-custom">
+                            <div className="row">
+                              <div className="col-md-4">
+                                <label htmlFor="email">Contract address<span className="label_star">*</span></label>
                               </div>
-                              
-                             {
-                                i === 0 && e.network_type !== "0"
-                                ?
-                                <input type="text" className="form-control" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, item.target.value)} />
-                                :
-                                <input type="text" className="form-control" value={e.contract_address} name="contract_address" onChange={(item)=>checkContractAddress(item, i)} />
-                              }
-                            </div>
-                            
-                            {
-                                i== 1 ?
-                                <>
-                                  <button className="addmore_ico create-token-res" style={{float: "right", marginBottom: "10px"}} onClick={()=> removeContractAddress(i)}><span>- Remove Contract address</span></button>
-                                  </>
-                                :
-                                null
-                              } 
-                          </div>   
-                          <>
-                              {
-                                contract_address.length !== 2 ?
-                                <>
-                                  <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.png" /> Add More Contract addresses</span></button>
-                                </>
-                                :
-                                null
-                              }
-                              
-                          </>
-                            <div className="error">{err_contract_address}</div>
-                        </div>
-                       </div>
-                      )
-                      :
-                      null
-                     }
-                    </div>
-                     
-                    {/* { 
-                      contract_address.length > 0
-                      ?
-                      contract_address.map((e, i)=>{
-                      return <div className="row" key={i}>
-                        <div className="col-md-6">
-                          <div className="form-custom">
-                            <label htmlFor="email">Token Network Type</label> 
-                            <div className="form-group input_block_outline">
-                              {
-                                i === 0 && (e.contract_address).length === 42
-                                ?
-                                <select value={e.network_type} name="network_type" onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address)}>
-                                    <option value="0">Select Network Type</option> 
-                                    <option value="1">Ethereum</option>
-                                    <option value="2">Binance Smart Chain</option>
-                                </select>
-                                :
-                                <select value={e.network_type} name="network_type" onChange={(item)=> checkContractAddress(item, i)}>
-                                    <option value="0">Select Network Type</option> 
-                                    <option value="1">Ethereum</option>
-                                    <option value="2">Binance Smart Chain</option>
-                                </select>
-                              }
-                            </div>  
-                            {
-                              contract_address.length - 1 === i
-                              ?
-                              <div className="error">{err_contract_address}</div>
-                              : 
-                              null
-                            } 
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="form-custom">
-                            <label htmlFor="email">Contract Address</label> 
-                            <div className="form-group input_block_outline">
-                              
-                              {
-                                i === 0 && e.network_type !== "0"
-                                ?
-                                <input type="text"  value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, item.target.value)} />
-                                :
-                                <input type="text"  value={e.contract_address} name="contract_address" onChange={(item)=>checkContractAddress(item, i)} />
-                              }
-                            </div>
-                            
-                              {
-                                contract_address.length !== 2 ?
-                                <>
-                                  <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.png" /> Add More Contract addresses</span></button>
-                                </>
-                                :
-                                null
-                              }
-                              {
-                                contract_address.length > 1 ?
-                                <>
-                                  <button className="addmore_ico create-token-res" style={{float: "right", marginBottom: "10px"}} onClick={()=> removeContractAddress(i)}><span>- Remove Contract address</span></button>
-                                  </>
-                                :
-                                null
-                              } 
-                            </div> 
-                          </div> 
-                        </div>
-                      })  
-                      :
-                      null
-                    }   */}
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="form-custom"> 
-                          <label htmlFor="email">Token Name<span className="label_star">*</span></label>
-                          <div className="form-group input_block_outline">
-                            <input type="text"  value={token_name} readOnly />
-                          </div>
-                          <div className="error">{err_token_name}</div>
-                        </div>
-                      </div>
-                      
-                      <div className="col-md-6">
-                        <div className="form-custom">
-                          <label htmlFor="email">Symbol<span className="label_star">*</span></label>
-                          <div className="form-group input_block_outline">
-                            <input type="text" value={symbol}  readOnly/>
-                          </div>
-                          <div className="error">{err_symbol}</div>
-                        </div>
-                      </div> 
-                    </div>  
-
-                    
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="form-custom">
-                          <label htmlFor="email">Source code Link</label>
-                          <div className="form-group input_block_outline">
-                            <input type="text" value={source_code_link} onChange={(e)=>seSourceCodeLink(e.target.value)}/>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="form-custom">
-                          <label htmlFor="email">Website Link</label>
-                          <div className="form-group input_block_outline">
-                            <input type="text" value={website_link} onChange={(e)=>setWebsiteLink(e.target.value)}/>
-                            <div className="error">{err_website_link}</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                              <div className="col-md-8">
+                                <div className="input_block_outline" style={{marginBottom: '0'}}>
+                                  <div className="input-group">
+                                    <div className="input-group-prepend">
+                                      <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address)} >
+                                            <option value="0">Type</option> 
+                                            <option value="1">ETH</option>
+                                            <option value="2">BSC</option>
+                                      </select>
+                                    </div>
+                                    
+                                    {
+                                      i === 0 && e.network_type !== "0"
+                                      ?
+                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, item.target.value)} />
+                                      :
+                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=>checkContractAddress(item, i)} />
+                                    }
+                                    </div>
             
-
-                    <div className="row">
-                       <div className="col-md-6">
-                          <form id="imageUploadForm">
-                           <div className="choose_file_input">
-                               <div className="form-group">
-                                  <label> 
-                                      <input className="choose_logo" type="file" accept="image/*" onChange={onSelectFile} />
-                                      <span>
-                                      {
-                                          token_image  ?
-                                          <img src={token_image} height="30" alt="token image" width="30"/>  
-                                          : 
-                                          " Choose Logo"
-                                        }
-                                        
-                                      </span> 
-                                    </label> 
-                                </div>
-                                <div className="error">{err_token_image}</div>
-                          </div>
-                          </form>
-                    </div>
-    
-                   <div className="col-md-6 mb-3">
-                    {
-                      disply_token_image  ?
-                      <img src={disply_token_image} height="50" alt="token image" width="50"/>  
-                      : 
-                      null
-                    }
-                   </div>
-                </div>
-                    
-                    
-                    <div className="row">
-                      <div className="col-md-4 mb-3">
-                        <div className="form-custom">
-                          <label htmlFor="email">Token Max Supply</label>
-                          <div className="input_block_outline">
-                            <div className="input-group">
-                              <input type="number" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
-                              <div className="input-group-prepend">
-                                <span className="input-group-text">{symbol}</span>
+                                    {
+                                      i== 1 ?
+                                      <>
+                                        <button className="addmore_ico create-token-res" style={{float: "right", marginBottom: "10px"}} onClick={()=> removeContractAddress(i)}><span>- Remove Contract address</span></button>
+                                      </>
+                                    :
+                                    null
+                                  } 
+                                </div>  
+                                <>
+                                  {
+                                    contract_address.length !== 2 ?
+                                    <>
+                                      <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.svg" /> Add More Contract addresses</span></button>
+                                    </>
+                                    :
+                                    null
+                                  }
+                                </>
+                                <div className="error">{err_contract_address}</div>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div className="error">{err_token_max_supply}</div>
-                      </div>
-
-                      <div className="col-md-4">
-                        <div className="form-custom">
-                          <label htmlFor="email">Market Cap</label>
-                          <div className="form-group input_block_outline">
-                            <input type="number" value={market_cap ? market_cap:""} onChange={(e)=>setmarket_cap(e.target.value)} readOnly/> 
-                          </div>
-                          <div className="error">{err_market_cap}</div>
-                        </div>
-                      </div>
-                      
-                      <div className="col-md-4">
-                        <div className="form-custom">
-                          <label htmlFor="email">Whitepaper</label>
-                          <div className="form-group input_block_outline">
-                            <input type="text" value={whitepaper} onChange={(e)=>setWhitepaper(e.target.value)}/>
-                          </div>
-                          <div className="error">{err_whitepaper}</div>
-                        </div>
-                      </div>
-                  
-                    </div> 
-
-                    <div className="row">
-                      <div className="col-md-12">
-                        <div className="form-custom">
-                          <label htmlFor="email">About coin/Token<span className="label_star">*</span></label>
-                          <div className="form-group input_block_outline">
-                            <Editor apiKey="s6mr8bfc8y6a2ok76intx4ifoxt3ald11z2o8f23c98lpxnk" 
-                            onEditorChange={(e)=>setTokenDescription(e)}
-                            value={token_description} 
-                                onInit={(evt, editor) => {editorRef.current = editor}}
-                                // initialValue={token_description}
-                                init={{
-                                  height: 300,
-                                  menubar: false,
-                                  plugins: [
-                                    'advlist autolink lists link image charmap print preview anchor',
-                                    'searchreplace visualblocks code fullscreen',
-                                    'insertdatetime media table paste code help wordcount'
-                                  ],
-                                  toolbar: 'undo redo | formatselect | ' +
-                                  'bold italic backcolor | alignleft aligncenter ' +
-                                  'alignright alignjustify | bullist numlist outdent indent | ' +
-                                  'removeformat | help'
-                                
-                                }}
-                              />
-                          </div>
-                          <div className="error">{err_token_description}</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-4 create_token_create_space"> 
-                      
-                          <div className="row" >
-                          {
-                           exchange_link.length > 0 ?
-                           exchange_link.map((item, i) => 
-                            i == 0 ?
-                              <div className="col-md-12" key={i}>
-                                <div className="form-custom create_token_no_space">
-                                  <label htmlFor="email">Exchange URL</label>
-                                  <div className="form-group input_block_outline">
-                                    <input type="text" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
-                                  </div>
-                                </div>
-                              </div>
-                          
-                          : 
-                          
-                            <div className="col-md-12" key={i}>
-                              <div className="form-custom create_token_top_space">
-                                <label htmlFor="email">Exchange URL {i}</label>
-                                <div className="form-group input_block_outline">
-                                  <input type="text" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
-                                </div>
-                                <p className="remove_block"><span onClick={() =>{clickOnDelete(i)}}>Remove</span></p>
-                              </div>
-                            </div> 
-                          
                         )
                         :
-                        <div className="col-md-12">
-                        <div className="form-custom create_token_no_space">
-                          <label htmlFor="email">Exchange URL</label>
-                          <div className="form-group input_block_outline">
-                            <input type="text" name="link" value="" onChange={e => handleExchangeChange(e, 0)} />
-                          </div>
-                        </div>
+                        null
+                        }
                       </div>
-                      }
-                    
-                      </div>
-                      <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.png" /> Add More Exchange</span></button>
-                      </div>
-                      <div className="col-md-4 create_token_create_space">
-                      {
-                        explorer.length > 0 ?
-                        explorer.map((item, i) => 
-                        i == 0 ?
-                          <div className="row" key={i}>
-                              <div className="col-md-12">
-                                <div className="form-custom create_token_no_space">
-                                  <label htmlFor="email">Explorer URL</label>
-                                  <div className="form-group input_block_outline">
-                                    <input type="text" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
-                                  </div>
-                                </div>
-                              </div>
-                          </div>
-                          : 
-                          <div className="row" key={i}>
-                            <div className="col-md-12">
-                              <div className="form-custom create_token_top_space">
-                                <label htmlFor="email">Explorer URL {i}</label>
-                                <div className="form-group input_block_outline">
-                                  
-                                  <input type="text" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
-                                </div>
-                                <p className="remove_block"><span onClick={() =>{clickOnExplorerDelete(i)}}>Remove</span></p>
-                              </div>
+
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Token Name<span className="label_star">*</span></label>
                             </div>
+                            <div className="col-md-8">
+                            <div className="form-custom"> 
                             
+                            <div className="form-group input_block_outline">
+                              <input type="text" placeholder="Token Name" className="form-control" value={token_name} readOnly />
+                            </div>
+                            <div className="error">{err_token_name}</div>
                           </div>
-                        )
-                        :
-                        <div className="row">
-                          <div className="col-md-12">
-                            <div className="form-custom create_token_no_space">
-                              <label htmlFor="email">Explorer URL</label>
-                              <div className="form-group input_block_outline">
-                                <input type="text" name="link" value="" onChange={e => handleExplorersChange(e, 0)} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Symbol<span className="label_star">*</span></label>
+                            </div>
+                            <div className="col-md-8">
+                              <div className="form-custom"> 
+                                <div className="form-group input_block_outline">
+                                  <input type="text" placeholder="Symbol" className="form-control" value={symbol}  readOnly/>
+                                </div>
+                                <div className="error">{err_symbol}</div>
                               </div>
                             </div>
                           </div>
+                        </div>
                       </div>
-                      }
-                        <button className="addmore_ico create-token-res" onClick={addMoreExplorers}><span><img src="/assets/img/add-more.png" /> Add More Explorer</span></button>
+
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Source code Link</label>
+                            </div>
+                            <div className="col-md-8">
+                              <div className="form-custom">
+                                <div className="form-group input_block_outline">
+                                  <input type="text" placeholder="Source code Link" className="form-control" value={source_code_link} onChange={(e)=>seSourceCodeLink(e.target.value)}/>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="col-md-4 create_token_create_space">
-                      {
-                        community_address.length > 0 ?
-                        community_address.map((item, i) => 
-                        i == 0 ?
-                          <div className="row" key={i}>
-                              <div className="col-md-12">
-                                <div className="form-custom create_token_no_space">
-                                  <label htmlFor="email">Community URL</label>
-                                  <div className="form-group input_block_outline">
-                                    <input type="text" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
+
+                  
+
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Website Link</label>
+                            </div>
+                            <div className="col-md-8">
+                              <div className="form-custom">
+                                <div className="form-group input_block_outline">
+                                  <input type="text" placeholder="Website Link" className="form-control" value={website_link} onChange={(e)=>setWebsiteLink(e.target.value)}/>
+                                  <div className="error">{err_website_link}</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Token Max Supply</label>
+                            </div>
+                            <div className="col-md-8">
+                              <div className="form-custom">
+                                <div className="form-group input_block_outline">
+                                  <div className="input-group">
+                                    <input type="number" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
+                                    <div className="input-group-prepend">
+                                      <span className="input-group-text">{symbol}</span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
+                            </div>
                           </div>
-                          : 
-                          <div className="row" key={i}>
-                            <div className="col-md-12">
-                              <div className="form-custom create_token_top_space">
-                                <label htmlFor="email">Community URL {i}</label>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4">
+                            <label htmlFor="email">Market Cap</label>
+                            </div>
+                            <div className="col-md-8">
+                              <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                  <input type="text" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
+                                  <input type="number" value={market_cap} className="form-control" onChange={(e)=>set_market_cap(e.target.value)} readOnly/> 
                                 </div>
-                                <p className="remove_block"><span onClick={() =>{clickOnCommunityDelete(i)}}>Remove</span></p>
-                              </div>
-                            </div> 
-                          </div>
-                        )
-                        :
-                        <div className="row">
-                          <div className="col-md-12">
-                            <div className="form-custom create_token_no_space">
-                              <label htmlFor="email">Community URL</label>
-                              <div className="form-group input_block_outline">
-                                <input type="text" name="link" value="" onChange={e => handleCommunityChange(e, 0)} />
+                                <div className="error">{err_market_cap}</div>
                               </div>
                             </div>
                           </div>
+                        </div>
                       </div>
-                      }
-                        <button className="addmore_ico create-token-res" onClick={addMoreCommunity}><span><img src="/assets/img/add-more.png" /> Add More Community</span></button>
+
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Whitepaper</label>
+                            </div>
+                            <div className="col-md-8">
+                              <div className="form-custom">
+                                <div className="form-group input_block_outline">
+                                  <input type="text" placeholder="Whitepaper" className="form-control" value={whitepaper} onChange={(e)=>setWhitepaper(e.target.value)}/>
+                                </div>
+                                <div className="error">{err_whitepaper}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-right review_upload_token mt-3">
-                      <button className="dsaf" onClick={() =>{createNewToken()}}>Review and Update</button> 
-                    </div>
-                
+
+                      <div className="row">
+                        <div className="col-md-8">
+                       
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Logo</label>
+                            </div>
+                            <div className="col-md-5">
+                              <form id="imageUploadForm" >
+                                <div className="choose_file_input">
+                                  <div className="form-group">
+                                    <label> 
+                                        <input className="choose_logo" type="file" accept="image/*" onChange={onSelectFile} />
+                                        <span >Choose Logo </span> 
+                                      </label> 
+                                  </div>
+                                  <div className="error">{err_token_image}</div>
+                                </div>
+                              </form>
+                            </div>
+                            <div className="col-md-3">
+                              {
+                                token_image  ?
+                                <img src={token_image} height="30" alt="token image" width="30"/>  
+                                : 
+                                disply_token_image  ?
+                                <img src={disply_token_image} height="50" alt="token image" width="50"/>  
+                                : 
+                                null
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">About coin/Token <span className="label_star">*</span></label>
+                            </div>
+                            <div className="col-md-8" style={{marginBottom: '25px'}}>
+                              <div className="form-group input_block_outline" style={{marginBottom: '0'}}>
+                                <Editor apiKey="s6mr8bfc8y6a2ok76intx4ifoxt3ald11z2o8f23c98lpxnk" 
+                                onEditorChange={(e)=>setTokenDescription(e)}
+                                value={token_description} 
+                                    onInit={(evt, editor) => {editorRef.current = editor}}
+                                    initialValue=""
+                                    init={{
+                                      height: 300,
+                                      menubar: false,
+                                      plugins: [
+                                        'advlist autolink lists link image charmap print preview anchor',
+                                        'searchreplace visualblocks code fullscreen',
+                                        'insertdatetime media table paste code help wordcount'
+                                      ],
+                                      toolbar: 'undo redo | formatselect | ' +
+                                      'bold italic backcolor | alignleft aligncenter ' +
+                                      'alignright alignjustify | bullist numlist outdent indent | ' +
+                                      'removeformat | help'
+                                    
+                                    }}
+                                  />
+                              </div>
+                              <div className="error">{err_token_description}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Exchange URL</label>
+                            </div>
+                            <div className="col-md-8">
+                            {
+                              exchange_link.length > 0 ?
+                              exchange_link.map((item, i) => 
+                              i == 0 ?
+                                <div key={i}>
+                                  <div className="form-custom create_token_no_space">
+                                    <div className="form-group input_block_outline">
+                                      <input autoComplete="off" type="text" className="form-control" placeholder="Exchange URL" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
+                                    </div>
+                                    <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.svg" /> Add More Exchange</span></button>
+                                  </div>
+                                </div>
+                            
+                                  : 
+                                  
+                                    <div >
+                                      <div className="form-custom create_token_top_space">
+                                        <div className="form-group input_block_outline">
+                                          <input autoComplete="off" type="text" className="form-control" placeholder="Exchange URL" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
+                                        </div>
+                                        <p className="remove_block"><span onClick={() =>{clickOnDelete(i)}}>Remove</span></p>
+                                      </div>
+                                    </div> 
+                                  
+                                )
+                                :
+                                  <div>
+                                  <div className="form-custom create_token_no_space">
+                                    <div className="form-group input_block_outline">
+                                      <input autoComplete="off" type="text" name="link" className="form-control" placeholder="Exchange URL" value={exchange_link} onChange={e => handleExchangeChange(e, 0)} />
+                                    </div>
+                                  </div>
+                                </div>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Explorer URL</label>
+                            </div>
+                            <div className="col-md-8">
+                            {
+                              explorer.length > 0 ?
+                              explorer.map((item, i) => 
+                              i == 0 ?
+                                <div  key={i}>
+                                    <div >
+                                      <div className="form-custom create_token_no_space">
+                                        <div className="form-group input_block_outline">
+                                          <input autoComplete="off" type="text" placeholder="Explorer URL" className="form-control" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
+                                        </div>
+                                      
+                                        <button className="addmore_ico create-token-res" onClick={addMoreExplorers}><span><img src="/assets/img/add-more.svg" /> Add More Explorer</span></button>
+                                      </div>
+                                    </div>
+                                </div>
+                                : 
+                                  <div >
+                                    <div className="form-custom create_token_top_space">
+                                      <div className="form-group input_block_outline">
+                                        <input autoComplete="off" type="text" placeholder="Explorer URL" className="form-control" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
+                                      </div>
+                                      <p className="remove_block"><span onClick={() =>{clickOnExplorerDelete(i)}}>Remove</span></p>
+                                    </div>
+                                  </div>
+                                  
+                              )
+                              :
+                              <div >
+                                      <div className="form-custom create_token_no_space">
+                                        <div className="form-group input_block_outline">
+                                          <input autoComplete="off" type="text" placeholder="Explorer URL" className="form-control" name="link" value={explorer} onChange={e => handleExplorersChange(e, 0)} />
+                                        </div>
+                                      </div>
+                                    </div>
+                            }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Community URL</label>
+                            </div>
+                            <div className="col-md-8">
+                            {
+                              community_address.length > 0 ?
+                              community_address.map((item, i) => 
+                              i == 0 ?
+                              <div key={i}>
+                                  <div >
+                                    <div className="form-custom create_token_no_space">
+                                      <div className="form-group input_block_outline">
+                                        <input autoComplete="off" type="text" className="form-control" placeholder="Community URL" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
+                                      </div>
+                                      <button className="addmore_ico create-token-res" onClick={addMoreCommunity}><span><img src="/assets/img/add-more.svg" /> Add More Community</span></button>
+                                    </div>
+                                  </div>
+                              </div>
+                                : 
+                                <div key={i}>
+                                  <div>
+                                    <div className="form-custom create_token_top_space">
+                                      <div className="form-group input_block_outline">
+                                        <input autoComplete="off" type="text" className="form-control" placeholder="Community URL" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
+                                      </div>
+                                      <p className="remove_block"><span onClick={() =>{clickOnCommunityDelete(i)}}>Remove</span></p>
+                                    </div>
+                                  </div> 
+                                </div>
+                              )
+                              :
+                              <div>
+                                <div className="form-custom create_token_no_space">
+                                  <div className="form-group input_block_outline">
+                                    <input autoComplete="off" type="text" className="form-control" placeholder="Community URL" name="link" value={community_address} onChange={e => handleCommunityChange(e, 0)} />
+                                  </div>
+                                </div>
+                              </div>
+                            }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-8">
+                          <div className="row">
+                            <div className="col-md-4"></div>
+                            <div className="col-md-8">
+                              <div className="text-left review_upload_token mt-3">
+                                 <button className="dsaf" onClick={() =>{createNewToken()}}>Review and Update</button> 
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
                   </div>
-                </div>
               </div>
             </div>
           </div>

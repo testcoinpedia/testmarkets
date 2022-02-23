@@ -29,16 +29,11 @@
   background-color: #17171a;
 }
 
-.dark_theme .categories__item {
-  -webkit-box-shadow: 0 0px 0px #d9d3ff;
-  background: #323232;
-  color: #fff;
-}
 .dark_theme .active_category {
   background: #18191c;
 }
 .dark_theme .new_markets_index table tbody tr {
-  border-bottom: 2px solid #323232 !important;
+  border-bottom: 1px solid #323232 !important;
 }
 
 .dark_theme .main_menu_header .dropdown .dropdown-menu {
@@ -60,8 +55,8 @@
 }
 
 .dark_theme .quick_block_links .widgets__select {
-  background: #18191c;
-  color: #fff;
+  background: #242437;
+  color: #585885;
 }
 .dark_theme .share_market_detail_page {
   color: #fff;
@@ -105,7 +100,7 @@
   background-color: #24262a;
 }
 .dark_theme .chart_tabs_ul {
-  background: #2e2e2e;
+  background: #252533;
   color: #fff;
 }
 /* .dark_theme .highcharts-background {
@@ -138,12 +133,13 @@
 }
 .dark_theme .market_page_data tr .media h4 {
   color: #fff;
+  font-weight: 400 !important;
 }
 .dark_theme .token_list_table .table td {
   color: #fff;
 }
 .dark_theme .token_list_table .table tr {
-  border-bottom: 2px solid #323232 !important;
+  border-bottom: 1px solid #323232 !important;
 }
 .dark_theme .token_steps h1 {
   color: #fff;
@@ -152,28 +148,62 @@
   color: #fff;
 }
 .dark_theme .main_create_form {
-  background: #24262a;
-  border: 1px solid #24262a;
+  background: #282830;
+  border: 1px solid #3f3f4e;
+}
+.dark_theme .token_list_table label {
+  color: #474757;
+}
+
+.dark_theme .launchpad_list_content {
+  background: #1f1f29;
+  padding: 20px 10px 22px;
+  border: 1px solid #1f1f29;
+}
+
+.dark_theme .launchpad_list_title {
+  background: #3a3a48;
+}
+
+.dark_theme .launchpad_list_title h4 {
+  color: #fff;
+}
+
+.dark_theme .main_create_form .create-token-res {
+  color: #fff;
+}
+
+.dark_theme .token_steps_list {
+  background: #282830;
+  border: 1px solid #353541;
+}
+.dark_theme .token_steps_list ul li {
+  color: #ffffff;
 }
 .dark_theme .form-custom label {
-  color: #fff;
+  color: #474757;
 }
 .dark_theme .addmore_ico span {
   color: #fff;
-}
-.dark_theme .review_upload_token button,
-.dark_theme .edit_launchpad {
-  box-shadow: 0 0 0px #bbb;
-  background: #18191c !important;
 }
 
 .dark_theme .panel_title_go_back a {
   color: #fff;
 }
-.dark_theme .token_list_table .form-control {
+.dark_theme .select_launchpad_type {
+  background: #242437 !important;
   color: #fff;
-  background: #17171a;
 }
+
+.dark_theme .token_list_table .input-group {
+  border: 1px solid #242437;
+  background: #242437;
+}
+
+.dark_theme .token_form label {
+  color: #474757;
+}
+
 .dark_theme .token_list_table .form-control::placeholder {
   color: #fff;
 }
@@ -188,6 +218,15 @@
 .dark_theme .ico_plans .panel-default {
   background: #323232;
   color: #fff;
+}
+
+.dark_theme .create_airdrop .main_create_form {
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.dark_theme .create_airdrop label {
+  color: #474757;
 }
 
 .dark_theme .ico_block_details {
@@ -305,11 +344,11 @@
   border-top: 1px solid #363636;
 }
 .dark_theme .create_token_btn a {
-  background: #18191c !important;
+  background: #252533 !important;
   color: #fff;
 }
 
-.dark_theme .completed_events tbody td h5, .market_list_price p {
+.dark_theme .completed_events tbody td h5,.dark_theme .market_list_price p {
   color: #fff;
   font-weight: 400 !important;
 }
@@ -323,7 +362,6 @@
   background: #2e2e2e;
 }
 .dark_theme .search_filter .input-group-prepend .input-group-text {
-  background: #323232;
   color: #fff;
 }
 
@@ -333,12 +371,11 @@
 }
 
 .dark_theme .search_filter {
-  background: #323232;
+  background: #242532;
   color: #fff;
 }
 
 .dark_theme .search_filter input {
-  background: #323232;
   color: #fff;
 }
 
@@ -359,9 +396,9 @@
 }
 
 .dark_theme .pagination_div .pagination_element ul li a {
-  background: #323232 !important;
+  background: transparent !important;
   color: #fff !important;
-  border: 1px solid #323232;
+  border: 1px solid #323546;
 }
 
 .dark_theme .pagination_div .pagination_element ul li.active a {
@@ -371,18 +408,19 @@
 }
 
 .dark_theme .markets_index select {
-  background: #323232;
+  background: transparent;
   color: #fff;
 }
-.dark_theme .new_markets_index thead th {
-  background: #323232;
-  color: #fff !important;
-  border-bottom: 2px solid #323232 !important;
-}
+
 .dark_theme .search_filter select {
-  background: #323232;
-  color: #fff;
+  color: #585885;
+  border-right: 1px solid #585885;
 }
+
+.dark_theme .search_filter input {
+  color: #585885;
+}
+
 .dark_theme .dropdown_wallet_header {
   background: #18191c;
 }
@@ -415,14 +453,18 @@
 }
 
 .dark_theme .input_block_outline {
-  background: #323232;
-  border: 1px solid #323232;
+  background: #242437;
+  border: 1px solid #242437;
 }
 
 .dark_theme .input_block_outline input,
 .dark_theme .input_block_outline select {
-  background: #323232;
+  background: transparent;
   color: #fff;
+}
+
+.dark_theme .main_create_form label {
+  color: #474757;
 }
 
 .dark_theme .input_block_outline input::placeholder,
@@ -432,8 +474,8 @@
 
 .dark_theme .choose_file_input label {
   color: #fff;
-  background: #323232;
-  border: 2px dashed #18191c;
+  background: #242437;
+  border: 2px dashed #363652;
 }
 
 .dark_theme .token_max_supply .input-group-prepend .input-group-text {
@@ -508,20 +550,40 @@
   color: #fff;
 }
 
-.dark_theme .pager__list.pagination_element ul li a {
-  background: #323232 !important;
+.dark_theme table thead th {
+  border-top: 1px solid #282828 !important;
+  border-bottom: 1px solid #282828 !important;
+}
+
+.dark_theme .filter_rows li select {
+  background: #323546;
   color: #fff;
 }
-.dark_theme .pager__list.pagination_element ul li.active a {
-  background: #18191c !important;
-  color: #fff !important;
+
+.dark_theme .filter_rows {
+  color: #58667e;
 }
+
+.dark_theme .category_list li.active_tab {
+  background: #323546;
+  color: #fff;
+}
+
+.dark_theme .pager__list.pagination_element ul li.active a {
+  background: #323546 !important;
+  color: #f1b50a !important;
+  border: 1px solid #323546;
+}
+
 .dark_theme .company_profile_tabs li:last-child {
   border-right: 0px;
 }
 
 .dark_theme .categories__item {
-  border: 1px solid #323232;
+  border: 1px solid transparent;
+  -webkit-box-shadow: 0 0px 0px #d9d3ff;
+  background: transparent;
+  color: #fff;
 }
 
 .dark_theme .market_list_price .vote_value {
@@ -534,23 +596,25 @@
 }
 .dark_theme .active_category {
   border: 0px;
+  background: #323546;
+  color: #f1b50a;
 }
 .dark_theme .companies_found {
   color: #fff;
 }
 
 .dark_theme .token-contract-details {
-  background: #323232;
-  color: #fff;
+  background: #2c2c3e;
+  color: #585885;
 }
 
 .dark_theme .market_page_data tr td:first-child {
-  background: #18191c;
+  background: #17171a;
   border-right: 0px;
 }
 
 .dark_theme .market_page_data thead th:first-child {
-  background: #18191c;
+  background: #17171a;
 }
 
 .dark_theme .page_range {
@@ -608,6 +672,165 @@
 .dark_theme .sun, .dark_theme .moon {
   background: #2c2c2f;
 }
+
+.dark_theme .coming_soon_modal .coming_soon_title {
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.dark_theme .coming_soon_subtext {
+  margin-top: 5px;
+}
+
+.dark_theme .vote_btn {
+  color: #fff;
+  background: #323546;
+}
+
+.dark_theme .new_markets_index table tbody tr td {
+  font-weight: 400;
+}
+
+.dark_theme .market_list_price .block_price {
+  font-weight: 400;
+}
+
+.dark_theme table thead th {
+  font-weight: 500;
+  color: #7d7e84;
+}
+
+.dark_theme .manage_tokens_edit {
+  background: #242733;
+  color: #7f8da7;
+}
+
+.dark_theme .manage_tokens_edit_disbale {
+  background: #1e1f24;
+  color: #383838;
+}
+
+.dark_theme .market_token_details .token_main_details .media-heading {
+  color: #fff;
+}
+
+.dark_theme .market_token_details .token_main_details .media h5 span {
+  background: #252533;
+  color: #7f8da7;
+}
+
+.dark_theme .market_token_details .token_share_vote li {
+  background: #252533;
+  color: #555589;
+}
+
+.dark_theme .market_token_details .token_share_vote li span {
+  background: #38384c;
+}
+
+.dark_theme .token_price_block h5 {
+  color: #fff;
+  font-weight: 500 !important;
+}
+
+.dark_theme .coin_details {
+  border-top: 1px solid #242428;
+}
+
+.dark_theme .coin_details .token_left_border {
+  border-left: 2px solid #242428;
+}
+
+.dark_theme .coin_details .token_list_values h5 {
+  color: #fff;
+  font-weight: 500 !important;
+}
+
+.dark_theme .market_token_tabs {
+  border-top: 1px solid #242428;
+}
+
+.dark_theme .market_token_tabs .nav-tabs li a.active {
+  background: #363654;
+  color: #fff;
+}
+
+.dark_theme .market_token_tabs .nav-tabs li a {
+  color: #555589;
+}
+
+.dark_theme .market_token_tabs .nav-tabs {
+  background: #242437;
+}
+
+.dark_theme .market_token_tabs h5 {
+  color: #fff;
+}
+
+.dark_theme .coin_ico_list h4 {
+  color: #fff;
+}
+
+.dark_theme .launchpad_list_content.active_launchpad {
+  background: #242437 !important;
+  border: 1px solid #3a3a72 !important;
+}
+
+.dark_theme .coin_ico_list p {
+  color: #4c4c77;
+}
+
+.dark_theme .token_launchpad_details h5 {
+  color: #fff;
+}
+
+.dark_theme .token_launchpad_details {
+  border-left: 2px solid #2c2c3e;
+}
+
+.dark_theme .token_launchpad_details ul li span {
+  background: #242437;
+  color: #585885;
+}
+
+.dark_theme .token_launchpad_list::-webkit-scrollbar-track,
+.dark_theme .token_launchpad_details::-webkit-scrollbar-track {
+  background: #17171a;
+}
+
+.dark_theme .token_launchpad_list::-webkit-scrollbar-thumb,
+.dark_theme .token_launchpad_details::-webkit-scrollbar-thumb {
+  background: #2c2c3e;
+  border-radius: 50px;
+}
+
+.dark_theme .token_launchpad_list::-webkit-scrollbar-thumb:hover,
+.dark_theme .token_launchpad_details::-webkit-scrollbar-thumb:hover {
+  background: #2c2c3e;
+}
+
+.dark_theme .token_launchpad_details ul li {
+  color: #585885;
+}
+
+.dark_theme .about_token_details h4 {
+  color: #fff;
+}
+
+.dark_theme .market_token_details tbody td  {
+  color: #fff;
+}
+
+.dark_theme .market_token_details .pager__list.pagination_element ul li a {
+    background: #242437 !important;
+    color: #919192 !important;
+}
+
+.market_token_details {
+  
+}
+
 
 @media (max-width: 768px) {
   .dark_theme .overview_ul li {

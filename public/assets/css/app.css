@@ -87,11 +87,6 @@ video {
   font-family: 'Readex Pro', sans-serif;
 }
 
-html,
-body {
-  background-color: #f5f4fb !important;
-}
-
 html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -5624,6 +5619,8 @@ body.dark .promotions__flex:not(.promotions__flex_head):hover {
   box-shadow: 0 8px 25px rgb(0 0 0 / 7%);
 }
 
+
+
 .promotion__preview img {
   width: 100%;
   border-radius: 16px;
@@ -7310,7 +7307,7 @@ body.dark .operations__text strong {
 }
 
 .categories__container {
-  margin: 0 -12px;
+  margin: 0 0px;
   padding: 0px 15px;
 }
 
@@ -7318,7 +7315,7 @@ body.dark .operations__text strong {
   display: block;
   height: 100%;
   margin: 0 12px;
-  padding: 10px 25px 8px;
+  padding: 8px 15px 6px;
   border-radius: 3px;
   background: #fff;
   border: 1px solid #fff;
@@ -9337,8 +9334,8 @@ a:hover {
 }
 
 .categories_list_display {
-  padding: 25px 0px;
-  border-radius: 15px;
+  padding: 0px;
+  border-radius: 0px;
   margin-bottom: 50px;
 }
 
@@ -9478,6 +9475,45 @@ a:hover {
 .launchpad .launchpad_value {
   color: #777;
   font-size: 12px;
+}
+
+.category_list {
+  margin-bottom: 15px;
+}
+
+.category_list li {
+  font-size: 14px;
+  display: inline-block;
+  padding: 3px 10px;
+  margin-bottom: 0px;
+  border-radius: 5px;
+  color: #58667e;
+  margin-right: 5px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.category_list li.active_tab {
+  background: #e5eaee;
+}
+
+.category_list li img {
+  position: relative;
+  top: -1px;
+}
+
+.filter_rows {
+  text-align: right;
+  margin-bottom: 15px;
+}
+
+.filter_rows li select {
+  border: 0;
+  background: #e5eaee;
+  padding: 5px 6px;
+  margin-left: 5px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .completed_events {
@@ -9806,8 +9842,8 @@ a:hover {
   padding: 5px 15px;
   background: #e5e4ec !important;
   color: #919192 !important;
-  border-radius: 0px !important;
-  border: 1px solid #bdbcbc;
+  border-radius: 3px !important;
+  border: 1px solid #e5e4ec;
 }
 
 .sidebar_wallet h5 {
@@ -9843,26 +9879,18 @@ a:hover {
   color: #7769c9;
 }
 
-/* .new_markets_index thead {
-  background: #dcdbe1;
-} */
-
-.new_markets_index thead th {
-  min-width: 100px;
-  /* text-transform: uppercase;
-  padding: 10px 15px !important;
-  color: #251c49 !important;
-  border-bottom: 2px solid #c7c6cb !important;
-  text-align: left; */
-}
 .new_markets_index table thead th:first-child {
   border-radius: 5px 0px 0px 0px;
-  min-width: 165px;
 }
 
 table thead th {
-  padding: 5px 10px !important;
-  background: #e5e4ec;
+  padding: 16px 10px !important;
+  background: transparent;
+  border-top: 1px solid #e6eaf2 !important;
+  border-bottom: 1px solid #e6eaf2 !important;
+  color: #7d7e84;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .new_markets_index thead th:last-child {
@@ -9872,16 +9900,16 @@ table thead th {
   border-bottom: unset !important;
 }
 .new_markets_index table tbody tr {
-  border-bottom: 2px solid #eeeaec !important;
+  border-bottom: 1px solid #eeeaec !important;
 }
 
 .new_markets_index table tbody tr td {
   vertical-align: middle;
   text-align: left;
-  padding: 12px 15px;
+  padding: 12px 8px;
   font-weight: 600;
-  font-size: 12px;
-  color: #3f375f;
+  font-size: 14px;
+  color: #111;
 }
 
 thead th:first-child {
@@ -9895,6 +9923,7 @@ thead th:last-child {
 tbody td {
   border-top: 0px solid #ddd !important;
   border-bottom: 0px solid #ddd !important;
+  font-weight: 500;
 }
 
 .sidebar_wallet .assets_balance h5 {
@@ -9980,9 +10009,10 @@ tbody td {
   display: flex;
   justify-content: space-evenly;
   background: #f1f1f1;
-  align-items: center;
   padding: 10px 0px;
   border-radius: 0px 0px 13px 13px;
+  float: right;
+  margin-top: 30px;
 }
 
 .chart_tabs .nav-tabs .nav-link {
@@ -10071,10 +10101,6 @@ tbody td {
   box-shadow: 0 8px 25px rgb(0 0 0 / 7%);
 }
 
-/* .exchange_transactions ul li {
-  margin-bottom: 15px;
-} */
-
 .exchange_transactions ul li a {
   padding: 2px 15px;
   border-radius: 3px;
@@ -10110,7 +10136,8 @@ tbody td {
 }
 
 .coin_main_links {
-  margin-bottom: 15px;
+  margin-bottom: 0;
+  margin-top: 15px;
 }
 .coin_main_links .select .option {
   padding-left: 0;
@@ -10136,16 +10163,17 @@ tbody td {
 
 .links_direct {
   margin-top: 0;
-  padding: 4px 11px 4px !important;
+  padding: 6px 10px 6px !important;
   font-weight: 600;
 }
 
 .coin_cat_img {
-  width: 15px;
-  margin-right: 7px;
+  width: 22px;
+  margin-right: 4px;
   position: relative;
   top: -1px;
 }
+
 .contract_block .contract_list {
   padding: 5px 8px;
   font-weight: 600;
@@ -10354,18 +10382,24 @@ tbody td {
 }
 
 .search_filter {
-  background: #fff;
-  border-radius: 3px;
-  margin-bottom: 10px;
-  margin-top: 6px;
-  box-shadow: 0 8px 25px rgb(0 0 0 / 7%);
+  background: #eaeff3;
+  border-radius: 8px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  box-shadow: none;
+  padding: 0 15px;
 }
 
 .search_filter .input-group-prepend select {
   box-shadow: none;
   border: 0;
-  height: 40px;
-  padding: 0;
+  height: 26px;
+  padding: 0px;
+  color: #7f8da7;
+  font-size: 14px;
+  border-right: 1px solid;
+  margin-top: 8px;
+  border-radius: 0;
 }
 
 .search_filter .input-group-text img {
@@ -10388,22 +10422,26 @@ tbody td {
   border-radius: 0 5px 5px 0 !important;
 }
 
+.search_filter .form-control {
+  background-color: transparent;
+}
+
 .market_top_header .navbar-toggler {
   float: right;
-  margin-top: 5px;
+  margin-top: 8px;
   margin-right: 0px;
   margin-bottom: 5px;
   outline: none;
 }
 
 .market_insights h1 {
-  font-size: 32px;
+  font-size: 22px;
   margin-bottom: 5px;
   margin-top: 0px;
 }
 
 .market_insights p {
-  color: #333;
+  color: #90949b;
   font-weight: 400;
   font-size: 15px;
   margin-top: 4px;
@@ -10455,13 +10493,15 @@ tbody td {
 }
 
 .quick_block_links .widgets__select {
-  background: #e9e9e9;
+  background: #d4dce3;
   border-radius: 7px;
   margin-right: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 7px;
   width: auto;
   text-transform: capitalize;
-  font-size: 12px;
+  font-size: 14px;
+  color: #4f6da5;
+  font-weight: 500 !important;
 }
 
 .coin_main_links ul .coin_individual_list {
@@ -10565,12 +10605,20 @@ tbody td {
 }
 
 .categories__container .markets_list_quick_links:first-child .categories__item {
-  margin-right: 15px;
+  margin-right: 5px;
   margin-left: 0px;
 }
 
 .markets_list_quick_links a {
   display: inline-block;
+}
+
+.markets_list_quick_links a .categories__text {
+  cursor: pointer;
+}
+
+.search_filter .input-group-text {
+  background: transparent;
 }
 
 .dropdown_filter img {
@@ -10674,8 +10722,8 @@ a:not([href]):not([class]):hover {
 
 .active_category {
   box-shadow: none;
-  background: #fff;
-  border: 1px solid #251c49;
+  background: #e5eaee;
+  border: 0;
 }
 
 .navbar-expand-lg .navbar-nav .nav-link {
@@ -10904,10 +10952,11 @@ a:not([href]):not([class]):hover {
 }
 
 .input_block_outline {
-  border: 1px solid #e5e4ec;
-  background: #fff;
-  padding: 7px 15px;
+  border: 1px solid #e5eaee;
+  background: #e5eaee;
+  padding: 4px;
   border-radius: 4px;
+  margin-bottom: 0px;
 }
 
 .input_block_outline .form-group {
@@ -10919,7 +10968,7 @@ a:not([href]):not([class]):hover {
 }
 
 .form-custom {
-  margin-bottom: 10px;
+  margin-bottom: 25px;
 }
 .error {
   color: red;
@@ -10944,8 +10993,13 @@ button {
 }
 
 .form-custom .form-group input {
-  width: 100%;
   color: #251c49;
+  background: transparent;
+  font-size: 14px;
+}
+
+.form-custom .form-control {
+  background-color: #e5eaee;
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -10958,15 +11012,38 @@ input[type="number"] {
 }
 
 .main_create_form {
-  background: #fff;
+  background: #f9f8fa;
   margin-top: 25px;
-  padding: 25px;
+  padding: 30px 40px;
   border-radius: 5px;
   margin-bottom: 30px;
+  border: 1px solid #e2e2e2;
+}
+
+.main_create_form label {
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+.main_create_form input {
+  background: transparent;
+}
+
+.main_create_form input::-webkit-input-placeholder { /* Edge */
+  color: #a2a7b0 !important;
+}
+
+.main_create_form input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #a2a7b0 !important;
+}
+
+.main_create_form input::placeholder {
+  color: #a2a7b0 !important;
 }
 
 .token_steps {
   margin-bottom: 20px;
+  margin-top: 55px;
 }
 
 .input_block_outline .form-group input {
@@ -10981,13 +11058,14 @@ input[type="number"] {
 .input_block_outline select {
   padding: 0;
   border: 0;
-  margin-top: 0;
+  margin-top: 6px;
   outline: none !important;
   box-shadow: none !important;
   font-size: 14px;
   height: 24px;
   font-weight: 400;
   width: 100%;
+  background: transparent;
 }
 
 .input_block_outline label {
@@ -11008,7 +11086,7 @@ input[type="number"] {
 }
 
 .input_block_outline .input-group-prepend .input-group-text {
-  background: #fff;
+  background: transparent;
   border: 0;
   padding: 0px 0 0 8px;
   font-size: 12px;
@@ -11020,7 +11098,6 @@ input[type="number"] {
   border: 0;
   font-size: 14px;
   padding: 0 0 0 15px;
-  height: 24px;
   font-weight: 400;
   box-shadow: none;
 }
@@ -11028,12 +11105,13 @@ input[type="number"] {
 .review_upload_token button {
   padding: 7px 20px;
   border-radius: 3px;
-  color: #fff;
-  background: #3a325b;
+  color: #272727;
+  background: #feae15;
   outline: 0 !important;
   min-width: 120px;
   transition: 0.5s;
-  box-shadow: 0 0 15px #bbb;
+  font-weight: 500;
+  margin-bottom: 25px;
 }
 .remove_modal .modal-body img {
   width: 43px;
@@ -11064,13 +11142,12 @@ input[type="number"] {
 }
 
 .edit_launchpad {
-  color: #fff;
-  background: #3a325b;
+  color: #272727;
+  background:#f1b50a;
   outline: 0 !important;
-  padding: 1px 9px;
+  padding: 6px 15px;
   transition: 0.5s;
   border-radius: 3px;
-  box-shadow: 0 0 15px #bbb;
   margin-right: 5px;
 }
 
@@ -11114,7 +11191,7 @@ input[type="number"] {
 }
 
 .token_steps h1 {
-  color: #251c49;
+  color: #000000;
   font-size: 20px;
   font-weight: 600 !important;
 }
@@ -11130,7 +11207,7 @@ input[type="number"] {
 
 .choose_file_input label {
   padding: 0;
-  background: #f5f4fb;
+  background: #e5eaee;
   width: 100%;
   color: #251c49;
   text-align: center;
@@ -11257,6 +11334,10 @@ input[type="number"] {
   position: relative;
   top: -2px;
 }
+.modal_show
+{
+  display: block;
+}
 
 .token_content h1 {
   font-size: 18px;
@@ -11364,14 +11445,32 @@ input[type="number"] {
 .addmore_ico span {
   cursor: pointer;
   font-size: 13px;
-  font-weight: 600;
-  color: #4a3b88;
+  font-weight: 300;
+  color: #a8adb5;
   line-height: 2;
 }
 
 .addmore_ico span img {
   position: relative;
-  top: -2px;
+  width: 14px;
+  vertical-align: middle;
+}
+
+.token_steps_list {
+  background: #f9f8fa;
+  padding: 20px 25px 5px;
+  border-radius: 10px;
+  border: 1px solid #e2e2e2;
+}
+
+.token_steps_list ul li img {
+  width: 16px;
+}
+
+.token_steps_list ul li {
+  margin-bottom: 20px;
+  color: #000;
+  font-weight: 400;
 }
 
 .prices__row:focus,
@@ -11509,7 +11608,13 @@ input[type="number"] {
 }
 
 .market_page_data tr .media h4 {
-  font-size: 16px;
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+.market_page_data tr .media h4 span {
+  color: #a7a7a7;
+  font-size: 12px;
 }
 
 .market_page_data tr .media p {
@@ -11845,14 +11950,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   box-shadow: none !important;
 }
 
-/* .btn-gradient-primary {
-  padding: 7px 10px;
-  border-radius: 5px;
-  color: #fff;
-  background: #1a253e;
-  outline: 0 !important;
-} */
-
 .btn-gradient-primary {
   background: #3861fb;
   box-shadow: 0px 6px 12px rgb(108 96 180 / 26%);
@@ -11937,6 +12034,81 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .chip {
   background: #3a325b !important;
+}
+
+.market_token_tabs {    
+  border-top: 1px solid #dde6ef;
+  padding-top: 20px;
+}
+
+.market_token_tabs .nav-tabs {
+  background: #e6ebef;
+  display: inline-block;
+  padding: 10px;
+  border-bottom: 0;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.market_token_tabs .nav-tabs li {
+  display: inline-block;
+}
+
+.market_token_tabs h5 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.market_token_tabs .nav-tabs li a {
+  padding: 2px 7px;
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  margin-right: 10px;
+  color: #4f6da5;
+}
+
+.market_token_tabs .nav-tabs li a.active {
+  background: #f8fafc;
+  color: #4f6da5;
+  border-radius: 5px;
+}
+
+.market_token_tabs .nav-tabs li:last-child a{
+  margin-right: 0 !important;
+}
+
+.token_main_details {
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.token_main_details .media .token_img {
+  width: 75px;
+  border-radius: 50px;
+  margin-right: 10px;
+}
+
+.token_main_details .media .media-body h4 span img{
+  width: 25px;
+  margin-left: 5px;
+}
+
+.token_main_details {
+  color: #000000;
+  font-size: 24px;
+}
+
+.token_main_details .media h5 {
+  margin-top: 25px;
+}
+
+.token_main_details .media h5 span {
+  background: #e8ecf0;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: 400 !important;
 }
 
 @keyframes blackhole {
@@ -12035,13 +12207,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 .token_form_sub_text {
   font-weight: 400;
-  font-size: 14px;
-  color: #251c49;
+  font-size: 15px;
+  color: #90949b;
+  margin-top: 0;
+  letter-spacing: 0.3px;
+  margin-bottom: 10px;
 }
 .form-custom label {
-  color: #251c49;
-  font-weight: 600;
+  color: #363636;
+  font-weight: 500;
   font-size: 14px;
+  margin-top: 7px;
 }
 .form-custom .form-group input::placeholder {
   color: #251c49;
@@ -12149,16 +12325,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .market_growth {
-  border-radius: 12px;
-  padding: 5px 12px;
-  margin-left: 15px;
-  font-size: 12px;
+  border-radius: 25px;
+  padding: 7px 5px;
+  margin-left: 5px;
+  font-size: 10px;
+  vertical-align: middle;
 }
 
 .market_growth img {
   position: relative;
   top: -1px;
-  margin-right: 4px;
+  margin-right: 1px;
 }
 .market_up {
   background: #58bd7d;
@@ -12259,9 +12436,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .token_dropdown_img {
-  width: 17px;
-  margin-right: 12px;
-  margin-top: -5px;
+  width: 18px;
+  margin-right: 5px;
+  margin-top: 0;
+  vertical-align: middle;
 }
 
 .progress_bar_status {
@@ -12331,8 +12509,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-top: 15px;
   width: 19.5%;
   border-right: 1px solid #352a61;
-  padding: 0px 5px;
+  padding: 0px;
   vertical-align: top;
+}
+
+.vote_btn {
+  background: #e5eaee;
+  padding: 3px 8px 1px;
+  border-radius: 5px;
+  font-size: 12px;
 }
 
 .market_live_price ul li:last-child {
@@ -12364,15 +12549,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .markets_list_quick_links ul {
   border-bottom: 0;
-  overflow: scroll;
-  overflow-x: auto;
-  overflow-y: hidden;
-  flex-wrap: nowrap;
   padding-bottom: 5px;
 }
 
 .markets_list_quick_links ul li {
   display: inline-block;
+}
+
+.select_launchpad_type {
+  background: #cbd8e2 !important;
+  height: 30px !important;
+  margin-top: 4px;
+  margin-left: 5px;
+  padding: 0 5px;
 }
 
 @media (min-width: 1300px) {
@@ -12411,8 +12600,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-top: 14px;
 }
 .new_page_title_block {
-  background: #eae9f2;
-  padding: 36px 0px;
+  background: #fff;
+  padding: 35px 0px 20px;
 }
 
 .badge_dropdown_block {
@@ -12481,9 +12670,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .table_index_token {
   min-width: 97px;
 }
-.table_circulating_supply {
-  min-width: 206px;
-}
+
 .for_padding {
   padding: 0px 15px;
 }
@@ -12551,7 +12738,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .token_list_table .table td {
-  padding: 10px;
+  padding: 15px 10px;
 }
 
 .token_list_table .table tr {
@@ -12725,7 +12912,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .top_menu_skin {
   padding: 3px;
   width: 45px;
-  height: 40px;
+  height: 39px;
   border-radius: 8px;
   position: relative;
   text-align: center;
@@ -12739,10 +12926,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   background: #18191c;
 }
 .top_menu_skin img {
-  width: 22px !important;
+  width: 20px !important;
   margin: 0px !important;
   position: relative;
-  top: 3px !important;
+  top: 2px !important;
 }
 
 /* top menu css code ends here */
@@ -12780,7 +12967,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .copy-contract-img {
-  margin-left: 20px;
+  margin-left: 10px;
   width: 12px;
   position: relative;
   top: -2px;
@@ -12788,11 +12975,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .token-contract-details {
   font-weight: 400 !important;
-  background: #e9e9e9;
+  background: #d4dce3;
   border-radius: 7px;
-  color: #8181a5;
-  font-size: 14px;
-  padding: 4px 10px;
+  color: #597099;
+  font-size: 13px;
+  padding: 13px 10px;
+  display: block;
+  margin-top: 27px;
 }
 
 .token-contract-details .dropdown_block {
@@ -13095,17 +13284,38 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .create_token_btn a {
-  background: #4a3b88;
-  color: #fff;
+  background: #eaeff3;
+  color: #585885;
   padding: 9px 20px;
-  border-radius: 4px;
+  border-radius: 7px;
   float: right;
 }
 
 .create_token_btn a img {
   margin-right: 5px;
   position: relative;
-  top: -1px;
+}
+
+.manage_token_filter_create_token {
+  text-align: right;
+}
+
+.manage_token_filter_create_token li {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 15px;
+}
+
+.manage_token_filter_create_token li:last-child {
+  margin-right: 0px;
+}
+
+.manage_token_name {
+  min-width: 200px;
+}
+
+.manage_token_action {
+  min-width: 200px;
 }
 
 .portfolio_header {
@@ -13137,15 +13347,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 0 10px;
 }
 
-#formID {
-  margin-top: 25px;
-}
-
 #formID .search_filter select {
   border: 0;
   outline: none;
   box-shadow: none;
   font-size: 14px;
+  height: 42px;
+  padding: 0;
+  min-width: 120px;
 }
 
 .token_overview_block {
@@ -13353,13 +13562,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .token_list_table .input-group {
   border: 1px solid #e5e4ec;
   border-radius: 8px;
-  height: 42px;
+  height: 40px;
+  background: #e5eaee;
 }
 
 .token_list_table .form-control {
   border: 0;
   background: transparent;
   font-size: 14px;
+  height: 39px;
 }
 
 #market .main_block {
@@ -13851,16 +14062,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .market_list_price .vote_value {
-  background: #ffeaaf;
   padding: 4px 15px;
-  font-weight: 700;
   border-radius: 3px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .market_list_price .block_price {
   font-weight: 600;
   font-size: 14px;
+}
+
+.market_list_price a {
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .market_list_price span button {
@@ -13936,6 +14150,404 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .completed_events .launchpad_token_title span {
   color: #a7a7a7;
   font-weight: 400;
+}
+
+.footer-widget-area .normal-side .aboutme-widget .about-author{
+  padding: 0px;
+}
+#footer .container-wrapper {
+  padding: 0;
+}
+.markets_list_quick_links .active_category:hover div {
+  color: #000;
+}
+.airdrop_single_page .token_content p{
+  word-break: break-word;
+}
+
+.token-pg-height{
+  min-height: 50vh;
+}
+.market-page .new_page_title_block .market_insights .search_filter .input-group-text img{
+  width: 15px;
+ }
+ .panel_title_go_back .btn-primary {
+  padding: 5px;
+  min-width: 86px;
+  height: 34px;
+  border-radius: 3px;
+ }
+.market-page .new_page_title_block .market_insights .search_filter .input-group-prepend {
+  margin-right: 0px;
+}
+.market_insights #formID .search_filter .input-group-text img {
+  width: 15px;
+}
+.form-control:focus{
+  box-shadow: none;
+}
+.market_insights #formID .search_filter .input-group-prepend {
+  margin-right: 0px;
+}
+.btn-primary:focus {
+  box-shadow: unset;
+}
+.btn-primary:not(:disabled):not(.disabled):active:focus{
+  box-shadow: unset;
+}
+.main_create_form .token_list_table .input-group {
+  border-radius: 4px;
+  padding: 2px 0px;
+}
+.coming_soon_modal .modal-header {
+  border-bottom: 0px;
+  padding: 0px 10px;
+}
+.coming_soon_modal .modal-body {
+  padding: 0px 13px;
+}
+.coming_soon_subtext {
+  color: #888;
+}
+.coming_soon_modal .modal-content {
+  padding: 5px;
+  border-radius: 3px;
+}
+.coming_soon_modal .modal-dialog {
+  margin-top: 20%;
+}
+.coming_soon_title {
+  color: #3a325b;
+  font-size: 20px;
+}
+.button:focus{
+  outline: 0;
+}
+
+.manage_tokens_edit {
+  background: #cbd5de;
+  padding: 7px 15px;
+  border-radius: 5px;
+  margin: 0 5px;
+  color: #7f8da7;
+  font-size: 13px;
+}
+
+.manage_tokens_edit_disbale {
+  background: #f5f7f9;
+  padding: 7px 15px;
+  border-radius: 5px;
+  margin: 0 5px;
+  color: #bbc0c9;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.launchpad_list_content .launchpad_completed {
+  background: #58bd7d;
+  color: #fff;
+  padding: 3px 7px;
+  border-radius: 30px;
+  font-size: 12px;
+}
+
+.launchpad_list_content .launchpad_upcoming {
+  background: #feae15;
+  color: #fff;
+  padding: 3px 7px;
+  border-radius: 30px;
+  font-size: 12px;
+}
+
+.launchpad_list_title {
+  background: #eaeff3;
+  padding: 15px 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.launchpad_list_title h4 {
+  font-size: 14px;
+  color: #333;
+}
+
+.launchpad_list_content {
+  background: #ebf1f7;
+  padding: 20px 10px 22px;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.launchpad_list_content.active_launchpad {
+  background: #d8ffe6 !important;
+  border: 1px solid #7abf93 !important;
+}
+
+.launchpad_list_content h5 {
+  color: #7d8da8;
+  font-size: 13px;
+  font-weight: 500 !important;
+  margin-top: 5px;
+}
+
+.launchpad_list_content h5 img {
+  width: 14px;
+  vertical-align: middle;
+}
+
+.main_create_form .create-token-res {
+  color: #000000;
+  font-size: 20px;
+}
+
+.active_launchpad_list_icon {
+  display: none;
+  float: right;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.launchpad_list_icon {
+  display: block;
+  float: right;
+  margin-right: 15px;
+  cursor: pointer;
+  margin-top: 7px;
+}
+
+.active_launchpad .active_launchpad_list_icon {
+  display: block;
+  float: right;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.active_launchpad .launchpad_list_icon {
+  display: none;
+  float: right;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.token_list_table .input_block_outline input {
+  width: 100%;
+  background: transparent;
+}
+
+.input_block_outline input {
+  border: 0;
+}
+
+.coin_ico_list {
+  padding-top: 25px;
+  border-top: 1px solid #eee;
+}
+
+.coin_ico_list h4 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+}
+
+.coin_ico_list p {
+  color: #666;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+.coin_ico_list .launchpad_list_content h5 {
+  font-size: 16px;
+}
+
+.token_launchpad_details {
+  border-left: 2px solid #dde6ef;
+  padding: 10px 30px;
+  max-height: 350px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.token_launchpad_details h5 {
+  margin-bottom: 5px;
+  font-size: 18px;
+  font-weight: 500 !important;
+} 
+
+.token_launchpad_list {
+  max-height: 350px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-right: 15px;
+}
+
+.token_launchpad_details h5 span {
+  float: right;
+  color: #7d8da8;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.token_launchpad_details h5 span img {
+  vertical-align: middle;
+}
+
+.token_launchpad_details ul {
+  margin-top: 15px;
+}
+
+.token_launchpad_details ul li {
+  color: #555;
+  line-height: 2.5;
+  margin-bottom: 15px;
+}
+
+.token_launchpad_details ul li span {
+  background: #dde4e9;
+  color: #597c99;
+  padding: 4px 10px;
+  border-radius: 5px;
+  margin-left: 15px;
+}
+
+.token_launchpad_list::-webkit-scrollbar,
+.token_launchpad_details::-webkit-scrollbar {
+  width: 10px;
+}
+
+.token_launchpad_list::-webkit-scrollbar-track,
+.token_launchpad_details::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+.token_launchpad_list::-webkit-scrollbar-thumb,
+.token_launchpad_details::-webkit-scrollbar-thumb {
+  background: #e7ebf1;
+  border-radius: 50px;
+}
+
+.token_launchpad_list::-webkit-scrollbar-thumb:hover,
+.token_launchpad_details::-webkit-scrollbar-thumb:hover {
+  background: #e7ebf1;
+}
+
+.about_token_details {
+  margin-top: 20px;
+  margin-bottom: 25px;
+}
+
+.about_token_details h4 {
+  font-size: 18px;
+}
+
+.about_token_details p {
+  font-size: 16px;
+  color: #5e636c;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.about_token_view_more span {
+  color: #3468d1;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.token_details_tabs h5 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.token_details_tabs .pager__list.pagination_element ul {
+  margin-bottom: 15px;
+}
+
+.coin_details {
+  margin-bottom: 15px;
+  margin-top: 0px;
+  border-top: 1px solid #dde6ef;
+  padding-top: 15px;
+}
+
+.coin_details .token_list_values {
+  padding: 15px 0;
+}
+
+.coin_details .token_list_values h4 {
+  font-size: 14px;
+  color: #9494bb;
+  font-weight: 400 !important;
+  margin-bottom: 2px;
+  padding-top: 0px;
+}
+
+.coin_details .token_list_values h5 {
+  font-size: 16px;
+  color: #000;
+  font-weight: 600 !important;
+  padding-bottom: 0px;
+  margin-top: 5px;
+}
+
+.coin_details .token_left_border {
+  border-left: 2px solid #dde6ef;
+  padding-left: 25px;
+  min-height: 135px;
+}
+
+.token_price_block h5 {
+  font-size: 26px;
+}
+
+.token_price_block p {
+  font-size: 14px;
+  color: #585885;
+  font-weight: 500;
+}
+
+.market_token_details .search_filter {
+  margin-top: 26px;
+}
+
+.market_token_details .search_filter input {
+  height: 46px;
+}
+
+.market_token_details .search_filter .input-group-prepend select {
+  margin-top: 10px;
+}
+
+.token_share_vote {
+  margin-top: 15px;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.token_share_vote li {
+  background: #dbe3eb;
+  border-radius: 5px;
+  padding: 3px 10px;
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 14px;
+}
+
+.token_share_vote li:last-child {
+  margin-right: 0px;
+}
+
+.token_share_vote li img {
+  width: 20px;
+  vertical-align: middle;
+}
+
+.token_share_vote li span {
+  background: #bdc9d4;
+  padding: 2px 5px;
+  border-radius: 5px;
+  margin-left: 5px;
 }
 
 @media (min-width: 992px) {
@@ -14043,11 +14655,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: 15px;
   }
 
-  .markets_list_quick_links ul {
-    width: 415px;
-    overflow: scroll;
-  }
-
   #site-info {
     padding: 23px 0 90px;
     text-align: center;
@@ -14089,7 +14696,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .new_markets_index table tbody tr td {
-    padding: 4px 10px 0;
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .pager__list.pagination_element {
+    text-align: center;
   }
 
   .ongoing_token {
@@ -14102,7 +14714,72 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .completed_events tbody td h5 {
-    font-size: 13px;
+    font-size: 12px;
+  }
+
+  .launchpad .tabs_for_navigation ul {
+    margin-left: 10px;
+  }
+
+  .launchpad .tabs_for_navigation li {
+    margin-right: 5px;
+  }
+
+  .filter_rows {
+    font-size: 11px;
+  }
+
+  .category_list li {
+    font-size: 12px;
+    padding: 3px 10px 1px;
+  }
+
+  table thead th {
+    padding: 12px 10px !important;
+    font-size: 12px;
+  }
+
+  .page_range {
+    text-align: center;
+  }
+
+  .markets_list_quick_links ul {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    width: auto;
+  }
+
+  .manage_token_filter_create_token .search_filter {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    height: 35px;
+  }
+
+  #formID .search_filter select {
+    height: 34px;
+    font-size: 12px;
+  }
+
+  .manage_token_filter_create_token {
+    text-align: center;
+  }
+
+  .create_airdrop .launchpad_list_icon, .create_airdrop .active_launchpad .active_launchpad_list_icon {
+    margin-top: 7px;
+  }
+
+  .token_list_table .input_block_outline {
+    margin-bottom: 0px !important;
+  }
+
+  .launchpad_list_content h5 {
+    margin-top: 0;
+    line-height: 1.5;
+  }
+
+  .token_list_table .mb-4 {
+    margin-bottom: 1rem !important;
   }
 }
 
@@ -15130,11 +15807,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 30px 20px;
   }
   .market_top_header .connect_wallet_header .connect_wallet {
-    height: 33px;
+    height: 32px;
     margin-right: 5px;
     margin-left: 5px;
     font-size: 12px;
-    margin-top: 9px;
+    margin-top: 12px;
     margin-bottom: 5px;
     padding: 3px 5px !important;
     border-radius: 5px;
@@ -15204,9 +15881,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   #footer .twitter_side .media p {
     line-height: 1.5;
   }
-  .connect_wallet_header .connect_wallet .login_img {
-    display: none;
-  }
+ 
 
   .token_contract_details {
     padding: 0 15px;
@@ -15372,7 +16047,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 12px;
   }
   .categories_list_display {
-    padding: 15px 0px 3px 0px;
+    padding: 0px 0px 3px 0px;
   }
   .categories__item {
     margin: 0 3px;
@@ -15389,7 +16064,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .create_token_btn a img {
     width: 20px;
     position: relative;
-    top: -2px;
   }
   .token_list_table {
     margin-top: 10px;
@@ -15402,7 +16076,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding-left: 0px;
   }
   .new_page_title_block {
-    padding: 13px 0px;
+    padding: 13px 0px 0;
   }
   .market_insights h1 {
     font-size: 16px;
@@ -15416,15 +16090,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: none;
   }
   .search_filter {
-    height: 32px;
+    height: 40px;
     margin-bottom: 15px;
     margin-top: 10px;
   }
   .search_filter input {
-    height: 31px;
+    height: 40px;
   }
   .search_filter .input-group-prepend select {
-    height: 32px;
     font-size: 13px;
   }
   .search_filter .input-group-text img {
@@ -15716,7 +16389,27 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .market_page_data tr .media h4 {
-    font-size: 13px;
+    font-size: 12px;
+  }
+
+  .manage_tokens_edit, .manage_tokens_edit_disbale {
+    padding: 2px 10px;
+    font-size: 10px;
+    display: inline-block;
+    margin-bottom: 5px;
+  }
+
+  .token_list_table .table td {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .market_list_price a {
+    font-size: 10px;
+  }
+
+  .market_list_price .block_price {
+    font-size: 12px;
   }
 
   .market_page_data tr .media p {
@@ -15724,7 +16417,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .market_page_data tr .media img {
-    margin-top: 1px;
+    margin-top: 5px;
   }
 
   .price_change,
@@ -15736,23 +16429,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width: 30px;
   }
 
-  .market_page_data tr td:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 100;
-    background: #f5f4fb;
-    border-right: 1px solid #e5e4ec;
-  }
-
-  .market_page_data thead th:first-child {
-    background: #e5e4ec;
-    position: sticky;
-    left: 0;
-    z-index: 100;
-  }
-
   .pager__list.pagination_element ul li {
     font-size: 11px;
+    padding: 3px 2px;
   }
 
   .market-details-custom-search-block {
@@ -15845,18 +16524,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     vertical-align: middle;
   }
 
-  .completed_events table tbody td:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 100;
-    background: #fff;
-  }
-
-  .completed_events table thead th:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 100;
-    background: #e5e4ec;
+  .completed_events tbody td {
+    font-size: 12px;
   }
 
   .ongoing_launchpad .main_launch_list .media {
@@ -16036,6 +16705,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   .main_menu_header .navbar-right {
     display: none;
+  }
+  .completed_events table thead th {
+    font-size: 12px;
   }
   .header_button {
     border-radius: 5px;
@@ -16959,77 +17631,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /*# sourceMappingURL=app.css.map */
 
 /* custom css */
-.footer-widget-area .normal-side .aboutme-widget .about-author{
-  padding: 0px;
-}
-#footer .container-wrapper {
-  padding: 0;
-}
-.markets_list_quick_links .active_category:hover div {
-  color: #000;
-}
-.airdrop_single_page .token_content p{
-  word-break: break-word;
-}
 
-.token-pg-height{
-  min-height: 50vh;
-}
-.market-page .new_page_title_block .market_insights .search_filter .input-group-text img{
-  width: 15px;
- }
- .panel_title_go_back .btn-primary {
-  padding: 5px;
-  min-width: 86px;
-  height: 34px;
-  border-radius: 3px;
- }
-.market-page .new_page_title_block .market_insights .search_filter .input-group-prepend {
-  margin-right: 0px;
-}
-.market_insights #formID .search_filter .input-group-text img {
-  width: 15px;
-}
-.form-control:focus{
-  box-shadow: none;
-}
-.market_insights #formID .search_filter .input-group-prepend {
-  margin-right: 0px;
-}
-.btn-primary:focus {
-  box-shadow: unset;
-}
-.btn-primary:not(:disabled):not(.disabled):active:focus{
-  box-shadow: unset;
-}
-.main_create_form .token_list_table .input-group {
-  border-radius: 4px;
-  padding: 2px 0px;
-}
-.coming_soon_modal .modal-header {
-  border-bottom: 0px;
-  padding: 0px 10px;
-}
-.coming_soon_modal .modal-body {
-  padding: 0px 13px;
-}
-.coming_soon_subtext {
-  color: #888;
-}
-.coming_soon_modal .modal-content {
-  padding: 5px;
-  border-radius: 3px;
-}
-.coming_soon_modal .modal-dialog {
-  margin-top: 20%;
-}
-.coming_soon_title {
-  color: #3a325b;
-  font-size: 20px;
-}
-.button:focus{
-  outline: 0;
-}
 @media (max-width: 1299px){
   .launchpad .launchpad_title{
     width: 110px;
@@ -17072,6 +17674,33 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 }
 /* menu alignment */
+#footer .social-icons li{
+  margin-bottom: 8px;
+}
+@media (min-width: 991px) and (max-width: 1199px){
+  .market_top_header .connect_wallet_header .connect_wallet{
+    padding: 3px 6px !important;
+    font-size: 12px !important;
+  }
+  .main_menu_header .nav > li > a{
+    font-size: 12px;
+  }
+  .res_menu_list{
+    line-height: 17px;
+  }
+  .top_menu_skin {
+    padding: 2px 10px !important;
+    width: 38px !important;
+    height: 36px !important;
+  }
+  .dark_theme_toggle .top_menu_skin img {
+    width: 17px !important;
+    margin: 0px !important;
+    position: relative;
+    top: 1px !important;
+  }
+}
+
 @media (max-width: 991px) {
   .main_menu_header .nav > li > a{
     border: 0 !important;
@@ -17083,7 +17712,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     text-align: center;
   }
   .transaction_table_block{
-    margin-bottom: 20px;
+    margin-bottom: 0px;
   }
   .pager__list.pagination_element ul li{
     margin-top: 10px;
@@ -17124,6 +17753,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 }
 
+@media (max-width: 460px){
+  .connect_wallet_header .connect_wallet .login_img {
+    display: none;
+  }
+  .connect_wallet .caret_down{
+    margin-top: 1px !important;
+  }
+}
 
 @media (max-width: 450px) {
   .transaction_table_block .pager__list.pagination_element ul li{

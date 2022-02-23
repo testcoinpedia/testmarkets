@@ -16,7 +16,7 @@ export default function Topmenu()
   const router = useRouter()
   const [login_dropdown, set_login_dropdown] = useState(0)
   const [live_prices_list, set_live_prices_list] = useState({});
-  const [dark_mode, set_dark_mode]=useState(JsCookie.get('dark_mode')) 
+  const [light_dark_mode, set_light_dark_mode]=useState("") 
   const check_in_array = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SCUSDT', 'XRPUSDT']
 
   useEffect(()=>
@@ -34,15 +34,17 @@ export default function Topmenu()
       set_login_dropdown(1)
     }
 
-    if(JsCookie.get('dark_mode') === "dark")
+    if(JsCookie.get('light_dark_mode') === "dark")
     { 
+      set_light_dark_mode(JsCookie.get('light_dark_mode'))
       $("body").addClass("dark_theme")
     }
     else
     {
+      set_light_dark_mode(JsCookie.get('light_dark_mode'))
       $("body").removeClass("dark_theme")
     }
-  },[login_dropdown, JsCookie.get('dark_mode')])
+  },[login_dropdown, JsCookie.get('light_dark_mode')])
 
   const customToggle=()=>{
     $(".main_menu_header").toggleClass("fixed_toggle_navbar");
@@ -92,16 +94,16 @@ export default function Topmenu()
   }
    
   const setDarkMode=()=>{
-    if(JsCookie.get('dark_mode') === "dark")
+    if(JsCookie.get('light_dark_mode') === "dark")
     {
-      JsCookie.set("dark_mode", "light", {domain:cookieDomainExtension})
-      set_dark_mode("light")
+      JsCookie.set("light_dark_mode", "light", {domain:cookieDomainExtension})
+      set_light_dark_mode("light")
       $("body").removeClass("dark_theme")
     }
     else
     {
-      JsCookie.set("dark_mode", "dark", {domain:cookieDomainExtension})
-      set_dark_mode("dark")
+      JsCookie.set("light_dark_mode", "dark", {domain:cookieDomainExtension})
+      set_light_dark_mode("dark")
       $("body").addClass("dark_theme")
     }
   }
@@ -162,7 +164,7 @@ export default function Topmenu()
 
                                       <h6>Company</h6>
                                       <Link href={app_coinpedia_url+"company/profile"} ><a className="dropdown-item"><img src="/assets/img/menu-company.png" /> Company Profile</a></Link>
-                                      <a href={market_coinpedia_url+"token"}  className="dropdown-item"><img src="/assets/img/menu-token.png" /> Manage Token</a>
+                                      <a href={market_coinpedia_url+"token"}  className="dropdown-item"><img src="/assets/img/menu-token.png" /> Manage Tokens</a>
                                       {/* <a href={market_coinpedia_url+"create-launchpad/maker"}  className="dropdown-item"><img src="/assets/img/menu-airdrop.png" /> Manage Launchpad/Airdrop</a> */}
                                       <a href={market_coinpedia_url+"token/create-new"}  className="dropdown-item"><img src="/assets/img/menu-list-token.png" /> List a Token</a>
 
@@ -250,9 +252,9 @@ export default function Topmenu()
                         <img className="" src="/assets/img/close_btn.png"></img>
                       </div>
                       <ul className="nav navbar-nav">
-                        <li className=""><a href={coinpedia_url}>Home</a></li>
+                        <li className="res_menu_list"><a href={coinpedia_url}>Home</a></li>
 
-                        <li className=""><a href={coinpedia_url + "news/"}>News</a></li>
+                        <li className="res_menu_list"><a href={coinpedia_url + "news/"}>News</a></li>
                         
                         <li className="nav-item dropdown primary_navbar" >
                           <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -326,7 +328,8 @@ export default function Topmenu()
                             <ul>
                             <li><Link href={app_coinpedia_url+"companies"}><a className="dropdown-item">Companies</a></Link></li>
                             <li><Link href={app_coinpedia_url+"partners"}><a className="dropdown-item">Partners</a></Link></li>
-                            {/* <li><Link href="#"><a className="dropdown-item">Person</a></Link></li> */}
+                            <li><Link href={app_coinpedia_url+"events"}><a className="dropdown-item">Events</a></Link></li>
+                            <li><Link href={app_coinpedia_url+"jobs"}><a className="dropdown-item">Jobs</a></Link></li>
                             </ul>
                           </div>
                         </li>
@@ -355,16 +358,18 @@ export default function Topmenu()
                         <li className="dark_theme_toggle" onClick={()=>setDarkMode()} id="theme_color">
                           {/* <img src="https://api.coinpedia.org/uploads/tokens/1636636942618d190eb91f9.png" /> */}
                           {
-                            JsCookie.get('dark_mode') ?
-                              JsCookie.get('dark_mode') === "dark" ?
-                              <div id="dark_mode_div" className="top_menu_skin moon" ><img id="dark_mode_image" src="/assets/img/top_menu_moon.png" /></div>
+                            light_dark_mode?
+                            light_dark_mode === "dark" ?
+                              <div id="light_dark_mode_div" className="top_menu_skin moon" ><img id="light_dark_mode_image" src="/assets/img/top_menu_sun.svg" /></div>
+                              // <div id="light_dark_mode_div" className="top_menu_skin moon" ><img id="light_dark_mode_image" src="/assets/img/top_menu_moon.png" /></div>
                               :
-                              JsCookie.get('dark_mode') === "light" ?
-                              <div id="dark_mode_div" className="top_menu_skin sun" ><img id="dark_mode_image" src="/assets/img/top_menu_sun.svg" /></div>
+                              light_dark_mode === "light" ?
+                              <div id="light_dark_mode_div" className="top_menu_skin sun" ><img id="light_dark_mode_image" src="/assets/img/top_menu_moon.png" /></div>
+                              // <div id="light_dark_mode_div" className="top_menu_skin sun" ><img id="light_dark_mode_image" src="/assets/img/top_menu_sun.svg" /></div>
                               :
                               null
                             :
-                            <div id="dark_mode_div" className="top_menu_skin sun" ><img id="dark_mode_image" src="/assets/img/top_menu_sun.svg" /></div>
+                            <div id="light_dark_mode_div" className="top_menu_skin sun" ><img id="light_dark_mode_image" src="/assets/img/top_menu_moon.png" /></div>
                           }
 
                         </li>
