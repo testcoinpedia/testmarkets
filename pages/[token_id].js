@@ -12,7 +12,6 @@ import cookie from "cookie"
 import Axios from 'axios'
 import Datetime from "react-datetime"
 import "react-datetime/css/react-datetime.css" 
-import Popupmodal from '../components/popupmodal'
   
 let inputProps = {
   className: 'market-details-date-search my_input', 
@@ -30,316 +29,71 @@ let inputProps2 = {
 export default function tokenDetailsFunction({errorCode, data, token_id, paymentTypes, userAgent, config}) 
 {   
    
-  console.log("data", data)
-  if(errorCode) {return <Error/> }
-  const communityRef = useRef(null);
-  const explorerRef = useRef(null);
-  const contractRef = useRef(null);  
-  const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")     
-  const [symbol] = useState(data.symbol)
-  const [watchlist, set_watchlist] = useState(data.watchlist_status)
-  const [share_modal_status, set_share_modal_status] = useState(false)
-  
-  const [user_token]= useState(userAgent.user_token)
-  const [perPage] = useState(10);
-  
-  const [current_url]= useState(website_url+token_id)
-  const [exchangelistnew, set_exchange_list_new]= useState([])
-  const [exchangelist, set_exchangelist]= useState([])
-  const [exchangesPageCount, setExchnagesPageCount] = useState(0)
-  const [exchangesCurrentPage , setExchangesCurrentPage] = useState(0)
-  const [token_max_supply , settoken_max_supply] = useState(0)
-  const [tokentransactions, set_tokentransactions]= useState([])
-  const [tokentransactionsData, set_tokentransactionsdata]= useState([])
-  const [tokentransactionsPageCount, settokentransactionsPageCount] = useState(0)
-  const [tokentransactionsCurrentPage , settokentransactionsCurrentPage] = useState(0)
-  const [today_date, set_today_date]= useState(data.today_date)
-
-  const [searchBy, setSearchBy] = useState("")  
-  const [err_searchBy, setErrsearchBy] = useState("") 
-  const [search_contract_address, set_search_contract_address] = useState("")    
-  const [validSearchContract, setvalidContractAddress] = useState("")
-
-  const [decimal,setdecimal]=useState(0)
-  
-  const [community_links, set_community_links] = useState(false)
-  const [explorer_links, set_explorer_links] = useState(false)
-  const [handleModalConnections, setHandleModalConnections] = useState(false)
-  const [handleModalVote, setHandleModalVote] = useState(false)
-
-  const [customstartdate, setCustomstartdate] = useState("")
-  const [customenddate, setCustomenddate] = useState("")
-
-  const [price_change_24h, set_priceChange24H] = useState("") 
-  const [live_price, setLivePrice] = useState("")
-  const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
-
-  const [otherContract, setOtherContract] = useState(false) 
-  const [customDate, setCustomDate] = useState(false)
-  const [graphDate , set_graphDate] = useState(1) 
-  const [contract_24h_volume,set_contract_24h_volume] = useState(0)  
-  const [market_cap, set_market_cap] = useState(0) 
-  const [liquidity, set_liquidity] = useState(0) 
-  const [contract_copy_status, set_contract_copy_status] = useState("")
-  const [desc_read_more, set_desc_read_more] = useState(false)
-  const [votes, set_votes] = useState(data.total_voting_count)
-  const [voting_status, set_voting_status] = useState(data.voting_status)
-
-  const [launchpad_row_id, set_launchpad_row_id] = useState(data.launch_pads_data.length > 0 ? parseInt(data.launch_pads_data[0]._id) : "")
-  const [launchpad_object, set_launchpad_object] = useState(data.launch_pads_data.length > 0 ? data.launch_pads_data[0] : "")
-  
-  
-const getTokenData =(type, address)=>
-{ 
-    setvalidContractAddress("")
-    setErrsearchBy("")
-    let formValid=true 
-    if(searchBy == "")
-    {
-      setErrsearchBy("Please Select Network Type")
-      formValid=false
-    }
-
-    if(searchBy == "0")
-    {
-      setErrsearchBy("Please Select Network Type")
-      formValid=false
-    }
-
-    if(search_contract_address == "")
-    {
-      setErrsearchBy("Please Enter Contract Address")
-      formValid=false
-    }
+   console.log("data", data)
+    if(errorCode) {return <Error/> }
+    const communityRef = useRef(null);
+    const explorerRef = useRef(null);
+    const contractRef = useRef(null);  
+    const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")     
+    const [symbol] = useState(data.symbol)
+    const [watchlist, set_watchlist] = useState(data.watchlist_status)
+    const [share_modal_status, set_share_modal_status] = useState(false)
     
-    if(!formValid){
-      return
-    }
-    let network_type = ""
+    const [user_token]= useState(userAgent.user_token)
+    const [perPage] = useState(10);
     
-    if(type === "1"){ 
-      network_type = "ethereum"
-    }
-    else if(type === "2"){ 
-      network_type = "bsc"
-    }
-    else
-    {
-      return null
-    }
-    
-    getTokenDetails(network_type, address)
+    const [current_url]= useState(website_url+token_id)
+    const [exchangelistnew, set_exchange_list_new]= useState([])
+    const [exchangelist, set_exchangelist]= useState([])
+    const [exchangesPageCount, setExchnagesPageCount] = useState(0)
+    const [exchangesCurrentPage , setExchangesCurrentPage] = useState(0)
+    const [token_max_supply , settoken_max_supply] = useState(0)
+    const [tokentransactions, set_tokentransactions]= useState([])
+    const [tokentransactionsData, set_tokentransactionsdata]= useState([])
+    const [tokentransactionsPageCount, settokentransactionsPageCount] = useState(0)
+    const [tokentransactionsCurrentPage , settokentransactionsCurrentPage] = useState(0)
+    const [decimal,setdecimal]=useState(0)
 
-}
+    const [launchpad_row_id, set_launchpad_row_id] =useState(0)
+    const [launchpad_object, set_launchpad_object] = useState('')
+    const [today_date, set_today_date]= useState(data.today_date)
+    const [launch_pad_type, set_launch_pad_type]= useState("")
+    const [start_date, set_start_date]= useState("")
+    const [end_date, set_end_date]= useState("")
+    const [startDate, setStartDate] = useState(new Date())
+    const [endDate, setEndDate] = useState(new Date())
+    const [tokens_sold, set_tokens_sold]= useState("")
+    const [price, set_price]= useState("")
+    const [soft_cap, set_soft_cap]= useState("")
+    const [where_to_buy_title, set_where_to_buy_title]= useState("")
+    const [where_to_buy_link, set_where_to_buy_link]= useState("")
+    const [percentage_total_supply, set_percentage_total_supply]= useState("")
+    const [access_type, set_access_type]= useState("")
+    const [how_to_participate, set_how_to_participate]= useState("")
+    const [accept_payment_type, set_accept_payment_type]= useState([])
+    const [accept_payment_type_ids, set_accept_payment_type_ids]= useState([])
 
-  
-const getTokenDetails = (network_type, address) =>{  
-
-  // let network_type = ""
-
-  // if(type === "1"){ 
-  //   network_type = "ethereum"
-  // }
-  // else if(type === "2"){ 
-  //   network_type = "bsc"
-  // }
-  // else{
-  //   return null
-  // }
-
-  const query = `
-              query
-              { 
-                ethereum(network: `+network_type+`) {
-                  address(address: {is: "`+address+`"}){
-
-                    annotation
-                    address
-
-                    smartContract {
-                      contractType
-                      currency{
-                        symbol
-                        name
-                        decimals
-                        tokenType
-                      }
-                    }
-                    balance
-                  }
-                } 
-            }
-        ` ;
-
-  const url = "https://graphql.bitquery.io/";
-  const opts = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY":graphqlApiKEY
-    },
-    body: JSON.stringify({
-      query
-    })
-  }; 
-  fetch(url, opts)
-    .then(res => res.json())
-    .then(result => {  
-      if(result.data.ethereum) 
-        if(result.data.ethereum.address[0].smartContract){
-        if (result.data.ethereum.address[0].smartContract.currency) { 
-          setvalidContractAddress("")
-          CheckContractAddress(address)
-        } 
-        else { 
-          setvalidContractAddress("Invalid contract address or network type.")
-        
-          
-        } 
-      }
-      else{
-        setvalidContractAddress("Invalid contract address or network type.")
-        
-      }
-      else{
-        setvalidContractAddress("Invalid contract address or network type.")
-        
-      }
-    })
-    .catch(console.error);
-
-}
-
-
-const CheckContractAddress =(address)=>{
-  // for(const i of listData)
-  //   {
-  //     list.push({value: i.country_id, label: i.country_name})  
-  //   }
-    
-  setvalidContractAddress("")
-  var status=true
-//   tokenslist.map((e)=>
-//   {
-//     e.contract_addresses.map((item)=>
-//     {
-//       if(address==item.contract_address)
-//       {
-//         status=false
-//         window.location.replace(website_url+e.token_id)
-//       }
-//    })
-//  })
-for(const i of tokenslist)
-{
-  if(i.contract_addresses.length>0  ){
-  if(address==i.contract_addresses[0].contract_address) {
-    status=false
-      window.location.replace(website_url+i.token_id)
-      break
-  }
-  }
-}
- if(!status){
-   return
- }
-  let query = "";
-
-  if(searchBy === "1"){
-    query = `
-    query
-    { 
-      ethereum(network: ethereum) {
-        address(address: {is: "`+address+`"}){
-
-          annotation
-          address
-
-          smartContract {
-            contractType
-            currency{
-              symbol
-              name
-              decimals
-              tokenType
-            }
-          }
-          balance
-        }
-      } 
-  }
-  ` ;
-  }
-  else{
-    query = `
-    query
-    { 
-      ethereum(network: bsc) {
-        address(address: {is: "`+address+`"}){
-
-          annotation
-          address
-
-          smartContract {
-            contractType
-            currency{
-              symbol
-              name
-              decimals
-              tokenType
-            }
-          }
-          balance
-        }
-      } 
-  }
-  ` ;
-  }
-
+    const [explorer_links, set_explorer_links] = useState(false)
+    const [handleModalConnections, setHandleModalConnections] = useState(false)
+    const [handleModalVote, setHandleModalVote] = useState(false)
  
-  const url = "https://graphql.bitquery.io/";
-  const opts = {
-  method: "POST",
-  headers: {
-  "Content-Type": "application/json",
-  "X-API-KEY": graphqlApiKEY
-  },
-  body: JSON.stringify({
-    query: query, 
-  })
-  };
- 
- return fetch(url, opts)
-  .then(res => res.json())
-  .then(result => {  
-    if(result.data.ethereum !== null)
-    {
-      if(result.data.ethereum.address[0].smartContract){
-        if(result.data.ethereum.address[0].smartContract.currency){
-        if(searchBy === "1"){
-          window.location.replace(website_url+'eth/'+address)
-          // router.push('/eth/'+address)
-        }
-        else{
-          window.location.replace(website_url+'bsc/'+address)
-          // router.push('/bsc/'+address)
-        } 
-          
-        }
-        else{
-          setvalidContractAddress("Contract address or network type is invalid.")
-        }
-      }
-      else{
-        setvalidContractAddress("Contract address or network type is invalid.")
-      }
-    } 
-    else{
-      setvalidContractAddress("Contract address or network type is invalid.")
-    } 
-  }) 
+    const [customstartdate, setCustomstartdate] = useState("")
+    const [customenddate, setCustomenddate] = useState("")
 
-}
+    const [price_change_24h, set_priceChange24H] = useState("") 
+    const [live_price, setLivePrice] = useState("")
+
+    const [otherContract, setOtherContract] = useState(false) 
+    const [customDate, setCustomDate] = useState(false)
+    const [graphDate , set_graphDate] = useState(1) 
+    const [contract_24h_volume,set_contract_24h_volume]=useState(0)  
+    const [market_cap, set_market_cap] = useState(0) 
+    const [liquidity, set_liquidity] = useState(0) 
+    const [contract_copy_status, set_contract_copy_status] = useState("")
+    const [desc_read_more, set_desc_read_more] = useState(false)
+    const [votes, set_votes] = useState(data.total_voting_count)
+    const [voting_status, set_voting_status] = useState(data.voting_status)
+
 
   const makeJobSchema=()=>{  
       return { 
@@ -352,25 +106,25 @@ for(const i of tokenslist)
         }  
   } 
  
-  var yesterday = moment()
-  function valid(current) 
-  {  
-    return current.isBefore(yesterday)
-  }
+var yesterday = moment()
+function valid(current) 
+{  
+  return current.isBefore(yesterday)
+}
 
-  const valid2=(current)=> 
-  {    
-    return current.isBefore(yesterday)
-  }
+const valid2=(current)=> 
+{    
+  return current.isBefore(yesterday)
+}
 
-  const removeTags=(str)=>
-  {
-    if ((str===null) || (str===''))
-        return false;
-    else
-        str = str.toString();
-    return str.replace( /(<([^>]+)>)/ig, '');
-  }
+const removeTags=(str)=>
+{
+  if ((str===null) || (str===''))
+      return false;
+  else
+      str = str.toString();
+  return str.replace( /(<([^>]+)>)/ig, '');
+}
 
 
 const getTokenTransactions=(id, networktype)=>
@@ -1788,7 +1542,6 @@ const myReferrlaLink=()=> {
     set_launchpad_object(object)
   
   }
- 
 
   const addToWatchlist = (param_token_id) =>
   {
@@ -1830,7 +1583,6 @@ const removeFromWatchlist = (param_token_id) =>
   const vote = (param) =>
   {
     ModalVote()
-    setModalData({icon: "", title: "", content:""})
     if(param == 1)
     {   
       Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+data.token_id, config)
@@ -1840,7 +1592,7 @@ const removeFromWatchlist = (param_token_id) =>
       {
         set_votes(votes+1)
         set_voting_status(true)
-        setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message})
+        set_voting_message(res.data.message)
       }
     })
     }
@@ -1853,7 +1605,7 @@ const removeFromWatchlist = (param_token_id) =>
       {
         set_votes(votes-1)
         set_voting_status(false)
-        setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message})
+        set_voting_message(res.data.message)
       }
     })
     }
@@ -1932,7 +1684,7 @@ const removeFromWatchlist = (param_token_id) =>
                               null
                             }
                           </h5>
-                          <p>{data.token_name ? data.token_name : "-"} Price({data.symbol ? (data.symbol).toUpperCase() : "-"})</p>
+                          <p>Cardano Price(ADA)</p>
                         </div>
                       </div>
                     </div>
@@ -2079,38 +1831,26 @@ const removeFromWatchlist = (param_token_id) =>
                       } 
                     </div>
                     <div className="col-md-6">
+                      <div className="input-group search_filter">
+                        <div className="input-group-prepend markets_index">
+                          <select className="form-control">
+                            <option value="0">Type</option>
+                            <option value="1">ETH</option>
+                            <option value="2">BSC</option>
+                          </select>
+                        </div>
+                        <input type="text" value="" placeholder="Contract address" className="form-control search-input-box" />
+                        <div className="input-group-prepend ">
+                          <span className="input-group-text">
+                            <img src="/assets/img/search-box.png" alt="search-box" width="100%" height="100%" />
+                          </span>
+                        </div>
+                      </div>
 
-                    <div className="input-group search_filter">
-                    <div className="input-group-prepend markets_index">
-                      {/* <select  className="form-control" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}>*/}
-                        <select  className="form-control" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}> 
-                      <option value="0">Type</option>
-                        <option value="1">ETH</option>
-                        <option value="2">BSC</option>
-                      </select>
-                    </div>
-                    <input value={search_contract_address} onChange={(e)=> set_search_contract_address(e.target.value)} type="text" placeholder="Search token here" className="form-control search-input-box" placeholder="Search by contract address" />
-                  <div className="input-group-prepend ">
-                    <span className="input-group-text" onClick={()=> getTokenData(searchBy, search_contract_address)}><img src="/assets/img/search-box.png" alt="search-box"  width="100%" height="100%"/></span>                 
-                    </div>
-                  </div> 
-                  <div className="error">  {err_searchBy}</div>
-                  {validSearchContract && <div className="error">{validSearchContract}</div>}
-                  
                       <ul className="token_share_vote">
-                      {
-                        user_token ?
-                          voting_status === false ?
-                          <li onClick={()=>ModalVote()} style={{cursor:"pointer"}}><img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span></li>
-                          :
-                          <li onClick={()=>ModalVote()} style={{cursor:"pointer"}}><img src="/assets/img/coin_vote.svg" /> Voted <span>{votes}</span></li>
-                          :
-                          <li onClick={()=>ModalVote()} style={{cursor:"pointer"}}>
-                            <Link href={app_coinpedia_url+"login?ref="+current_url}><img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span></Link>
-                          </li>
-                      }
-                        <li>Token</li>
-                        <li onClick={()=>set_share_modal_status(true)} style={{cursor:"pointer"}}><img src="/assets/img/coin_share.svg" /> Share</li>
+                        <li><img src="/assets/img/coin_vote.svg" /> Vote <span>56</span></li>
+                        <li>Coin</li>
+                        <li><img src="/assets/img/coin_share.svg" /> Share</li>
                       </ul>
                     </div>
                   </div>
@@ -2213,7 +1953,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   ?
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img" /> : null} </a></div>
+                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links); set_community_links(false) }}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img" /> : null} </a></div>
                                     </div> 
                                     { 
                                       explorer_links
@@ -2648,15 +2388,15 @@ const removeFromWatchlist = (param_token_id) =>
                               <ul>
                                 <li>ICO Price <span>{launchpad_object.price} USD</span></li>
                                 <li>Softcap <span>{launchpad_object.soft_cap}</span></li>
-                                <li>Tokens Sold <span>{launchpad_object.tokens_sold} {data.symbol ? (data.symbol).toUpperCase() : "-"}</span></li>
+                                <li>Tokens Sold <span>{launchpad_object.tokens_sold}ADA</span></li>
                                 <li>Access <span>{launchpad_object.access_type == 1 ? "Public" : "Private"}</span></li>
                                 <li>Where to buy <span>{launchpad_object.where_to_buy_link}</span></li>
-                                <li>% of Total Supply <span> 34% (547554 {data.symbol ? (data.symbol).toUpperCase() : "-"})</span></li>
+                                <li>% of Total Supply <span> 34% (547554 ADA)</span></li>
                                 <li>Accept <span>{launchpad_object.accept_payment_type}</span></li>
                               </ul>
 
                               <h5>How to participate</h5>
-                              <div dangerouslySetInnerHTML={{ __html: launchpad_object.how_to_participate }}/>
+                              <p>{launchpad_object.how_to_participate}</p>
                               </>
                               :
                               null
@@ -2885,9 +2625,7 @@ const removeFromWatchlist = (param_token_id) =>
             </div>
           </div> 
         </div>
-      </div>
-
-      {modal_data.title ? <Popupmodal name={modal_data} /> : null} 
+      </div> 
     </>
   )
 }
