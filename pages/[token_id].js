@@ -12,6 +12,8 @@ import cookie from "cookie"
 import Axios from 'axios'
 import Datetime from "react-datetime"
 import "react-datetime/css/react-datetime.css" 
+import Popupmodal from '../components/popupmodal'
+import Search_Contract_Address from '../components/searchContractAddress'
   
 let inputProps = {
   className: 'market-details-date-search my_input', 
@@ -29,71 +31,65 @@ let inputProps2 = {
 export default function tokenDetailsFunction({errorCode, data, token_id, paymentTypes, userAgent, config}) 
 {   
    
-   console.log("data", data)
-    if(errorCode) {return <Error/> }
-    const communityRef = useRef(null);
-    const explorerRef = useRef(null);
-    const contractRef = useRef(null);  
-    const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")     
-    const [symbol] = useState(data.symbol)
-    const [watchlist, set_watchlist] = useState(data.watchlist_status)
-    const [share_modal_status, set_share_modal_status] = useState(false)
-    
-    const [user_token]= useState(userAgent.user_token)
-    const [perPage] = useState(10);
-    
-    const [current_url]= useState(website_url+token_id)
-    const [exchangelistnew, set_exchange_list_new]= useState([])
-    const [exchangelist, set_exchangelist]= useState([])
-    const [exchangesPageCount, setExchnagesPageCount] = useState(0)
-    const [exchangesCurrentPage , setExchangesCurrentPage] = useState(0)
-    const [token_max_supply , settoken_max_supply] = useState(0)
-    const [tokentransactions, set_tokentransactions]= useState([])
-    const [tokentransactionsData, set_tokentransactionsdata]= useState([])
-    const [tokentransactionsPageCount, settokentransactionsPageCount] = useState(0)
-    const [tokentransactionsCurrentPage , settokentransactionsCurrentPage] = useState(0)
-    const [decimal,setdecimal]=useState(0)
+  console.log("data", data)
+  if(errorCode) {return <Error/> }
+  const communityRef = useRef(null);
+  const explorerRef = useRef(null);
+  const contractRef = useRef(null);  
+  const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")     
+  const [symbol] = useState(data.symbol)
+  const [watchlist, set_watchlist] = useState(data.watchlist_status)
+  const [share_modal_status, set_share_modal_status] = useState(false)
+  
+  const [user_token]= useState((userAgent.user_token) ? userAgent.user_token:"")
+  const [perPage] = useState(10);
+  
+  const [current_url]= useState(website_url+token_id)
+  const [exchangelistnew, set_exchange_list_new]= useState([])
+  const [exchangelist, set_exchangelist]= useState([])
+  const [exchangesPageCount, setExchnagesPageCount] = useState(0)
+  const [exchangesCurrentPage , setExchangesCurrentPage] = useState(0)
+  const [token_max_supply , settoken_max_supply] = useState(0)
+  const [tokentransactions, set_tokentransactions]= useState([])
+  const [tokentransactionsData, set_tokentransactionsdata]= useState([])
+  const [tokentransactionsPageCount, settokentransactionsPageCount] = useState(0)
+  const [tokentransactionsCurrentPage , settokentransactionsCurrentPage] = useState(0)
+  const [today_date, set_today_date]= useState(data.today_date)
 
-    const [launchpad_row_id, set_launchpad_row_id] =useState(0)
-    const [launchpad_object, set_launchpad_object] = useState('')
-    const [today_date, set_today_date]= useState(data.today_date)
-    const [launch_pad_type, set_launch_pad_type]= useState("")
-    const [start_date, set_start_date]= useState("")
-    const [end_date, set_end_date]= useState("")
-    const [startDate, setStartDate] = useState(new Date())
-    const [endDate, setEndDate] = useState(new Date())
-    const [tokens_sold, set_tokens_sold]= useState("")
-    const [price, set_price]= useState("")
-    const [soft_cap, set_soft_cap]= useState("")
-    const [where_to_buy_title, set_where_to_buy_title]= useState("")
-    const [where_to_buy_link, set_where_to_buy_link]= useState("")
-    const [percentage_total_supply, set_percentage_total_supply]= useState("")
-    const [access_type, set_access_type]= useState("")
-    const [how_to_participate, set_how_to_participate]= useState("")
-    const [accept_payment_type, set_accept_payment_type]= useState([])
-    const [accept_payment_type_ids, set_accept_payment_type_ids]= useState([])
+  const [searchBy, setSearchBy] = useState("")  
+  const [err_searchBy, setErrsearchBy] = useState("") 
+  const [search_contract_address, set_search_contract_address] = useState("")    
+  const [validSearchContract, setvalidContractAddress] = useState("")
 
-    const [explorer_links, set_explorer_links] = useState(false)
-    const [handleModalConnections, setHandleModalConnections] = useState(false)
-    const [handleModalVote, setHandleModalVote] = useState(false)
- 
-    const [customstartdate, setCustomstartdate] = useState("")
-    const [customenddate, setCustomenddate] = useState("")
+  const [decimal,setdecimal]=useState(0)
+  
+  const [community_links, set_community_links] = useState(false)
+  const [explorer_links, set_explorer_links] = useState(false)
+  const [handleModalConnections, setHandleModalConnections] = useState(false)
+  const [handleModalVote, setHandleModalVote] = useState(false)
 
-    const [price_change_24h, set_priceChange24H] = useState("") 
-    const [live_price, setLivePrice] = useState("")
+  const [customstartdate, setCustomstartdate] = useState("")
+  const [customenddate, setCustomenddate] = useState("")
 
-    const [otherContract, setOtherContract] = useState(false) 
-    const [customDate, setCustomDate] = useState(false)
-    const [graphDate , set_graphDate] = useState(1) 
-    const [contract_24h_volume,set_contract_24h_volume]=useState(0)  
-    const [market_cap, set_market_cap] = useState(0) 
-    const [liquidity, set_liquidity] = useState(0) 
-    const [contract_copy_status, set_contract_copy_status] = useState("")
-    const [desc_read_more, set_desc_read_more] = useState(false)
-    const [votes, set_votes] = useState(data.total_voting_count)
-    const [voting_status, set_voting_status] = useState(data.voting_status)
+  const [price_change_24h, set_priceChange24H] = useState("") 
+  const [live_price, setLivePrice] = useState("")
+  const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
 
+  const [otherContract, setOtherContract] = useState(false) 
+  const [customDate, setCustomDate] = useState(false)
+  const [graphDate , set_graphDate] = useState(1) 
+  const [contract_24h_volume,set_contract_24h_volume] = useState(0)  
+  const [market_cap, set_market_cap] = useState(0) 
+  const [liquidity, set_liquidity] = useState(0) 
+  const [contract_copy_status, set_contract_copy_status] = useState("")
+  const [desc_read_more, set_desc_read_more] = useState(false)
+  const [votes, set_votes] = useState(data.total_voting_count)
+  const [voting_status, set_voting_status] = useState(data.voting_status)
+
+  const [launchpad_row_id, set_launchpad_row_id] = useState(data.launch_pads_data.length > 0 ? parseInt(data.launch_pads_data[0]._id) : "")
+  const [launchpad_object, set_launchpad_object] = useState(data.launch_pads_data.length > 0 ? data.launch_pads_data[0] : "")
+  
+  
 
   const makeJobSchema=()=>{  
       return { 
@@ -106,25 +102,25 @@ export default function tokenDetailsFunction({errorCode, data, token_id, payment
         }  
   } 
  
-var yesterday = moment()
-function valid(current) 
-{  
-  return current.isBefore(yesterday)
-}
+  var yesterday = moment()
+  function valid(current) 
+  {  
+    return current.isBefore(yesterday)
+  }
 
-const valid2=(current)=> 
-{    
-  return current.isBefore(yesterday)
-}
+  const valid2=(current)=> 
+  {    
+    return current.isBefore(yesterday)
+  }
 
-const removeTags=(str)=>
-{
-  if ((str===null) || (str===''))
-      return false;
-  else
-      str = str.toString();
-  return str.replace( /(<([^>]+)>)/ig, '');
-}
+  const removeTags=(str)=>
+  {
+    if ((str===null) || (str===''))
+        return false;
+    else
+        str = str.toString();
+    return str.replace( /(<([^>]+)>)/ig, '');
+  }
 
 
 const getTokenTransactions=(id, networktype)=>
@@ -1542,6 +1538,7 @@ const myReferrlaLink=()=> {
     set_launchpad_object(object)
   
   }
+ 
 
   const addToWatchlist = (param_token_id) =>
   {
@@ -1583,6 +1580,7 @@ const removeFromWatchlist = (param_token_id) =>
   const vote = (param) =>
   {
     ModalVote()
+    setModalData({icon: "", title: "", content:""})
     if(param == 1)
     {   
       Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+data.token_id, config)
@@ -1592,7 +1590,7 @@ const removeFromWatchlist = (param_token_id) =>
       {
         set_votes(votes+1)
         set_voting_status(true)
-        set_voting_message(res.data.message)
+        setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message})
       }
     })
     }
@@ -1605,7 +1603,7 @@ const removeFromWatchlist = (param_token_id) =>
       {
         set_votes(votes-1)
         set_voting_status(false)
-        set_voting_message(res.data.message)
+        setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message})
       }
     })
     }
@@ -1614,10 +1612,10 @@ const removeFromWatchlist = (param_token_id) =>
   return(
     <>
       <Head>
-         <title>{data.token_name.toUpperCase()} ({data.symbol}) Live Price | Coinpedia Market</title>  
-         <meta name="description" content={data.meta_description} />
+        <title>{data.token_name.toUpperCase()} ({data.symbol}) Live Price | Coinpedia Market</title>  
+        <meta name="description" content={data.meta_description} />
         <meta name="keywords" content={data.meta_keywords} />
- 
+
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={data.token_name.toUpperCase()+ " ("+data.symbol+")  Live Price" + "  | Coinpedia Market" } />
@@ -1641,58 +1639,45 @@ const removeFromWatchlist = (param_token_id) =>
  
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
+      
     <div className="page">
       <div className="market_token_details">
           <div className="container">
             <div className="col-md-12">
               <div className="row">
-                <div className="col-md-6">
-                  <div className="token_main_details">
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="media">
-                          <img src={data.token_image ? image_base_url+data.token_image : image_base_url+"default.png"} className="token_img" alt="logo" width="100%" height="100%" />
-                          <div className="media-body">
-                            <h4 className="media-heading">{data.token_name ? data.token_name : "-"} 
-                              {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
-                              {
-                              watchlist == true ?
-                              <span onClick={()=>removeFromWatchlist(data._id)} ><img src="/assets/img/watchlist_token.svg" /></span>
-                              :
-                              <span onClick={()=>addToWatchlist(data._id)} ><img src="/assets/img/watchlist_normal.svg" /></span>
-                              }
-
-                            </h4>
-                            <h5><span>{data.symbol ? (data.symbol).toUpperCase() : "-"}</span></h5>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="col-md-6">
-                        <div className="token_price_block">
-                          <h5>
-                            {live_price?"$":null} {live_price > 0 ? separator(live_price.toFixed(10)) : "NA"} 
-                            {
-                              price_change_24h
-                              ?
-                              price_change_24h > 0
-                              ?
-                              <span className="market_growth market_up"><img src="/assets/img/caret-up.png" />{price_change_24h.toFixed(2)}%</span>
-                              :
-                              <span className="market_growth market_down"><img src="/assets/img/caret-angle-down.png" />{price_change_24h.toPrecision(3)}%</span>
-                              :
-                              null
-                            }
-                          </h5>
-                          <p>Cardano Price(ADA)</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6">
+                
+                <div className="col-md-6 order-md-2">
                   <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-6 order-md-2">
+                      {
+                        <Search_Contract_Address  /> 
+                      }
+                    
+                      <ul className="token_share_vote"> 
+                        {
+                          user_token ?
+                            <>
+                              {
+                                voting_status == false ?
+                                <li onClick={()=>ModalVote()} style={{cursor:"pointer"}}><img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span></li>
+                                :
+                                <li onClick={()=>ModalVote()} style={{cursor:"pointer"}}><img src="/assets/img/coin_vote.svg" /> Voted <span>{votes}</span></li>
+                              }
+                            </>
+                            :
+                            <li onClick={()=>ModalVote()} style={{cursor:"pointer"}} >
+                                <Link href={app_coinpedia_url+"login?ref="+current_url}><a>
+                                <img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span>
+                                </a></Link>
+                            </li>
+                        }
+                        <li>Token</li>
+                        <li onClick={()=>set_share_modal_status(true)} style={{cursor:"pointer"}}><img src="/assets/img/coin_share.svg" /> Share</li>
+                      </ul>
+
+
+                      </div>
+                    <div className="col-md-6 order-md-1">
                       { 
                         data.contract_addresses.length > 0
                         ?
@@ -1793,7 +1778,7 @@ const removeFromWatchlist = (param_token_id) =>
                                 :
                                 data.contract_addresses[0].network_type === "1"
                                 ? 
-                                <span  onClick={()=> setOtherContract(!otherContract)}>
+                                <span className="wallet_address_token" onClick={()=> setOtherContract(!otherContract)}>
                                   <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
                                   <img  className="token_dropdown_img" src="/assets/img/ETH.svg"></img> Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
                                   </a> 
@@ -1808,7 +1793,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   
                                 </span>
                                 : 
-                                <span  onClick={()=> setOtherContract(!otherContract)}>
+                                <span className="wallet_address_token" onClick={()=> setOtherContract(!otherContract)}>
                                   <a href={"https://bscscan.com/token/"+data.contract_addresses[0].contract_address} target="_blank"><img  className="token_dropdown_img" src="/assets/img/BSC.svg"></img> Binance Smart Chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
                                   </a> 
                                   {
@@ -1830,28 +1815,52 @@ const removeFromWatchlist = (param_token_id) =>
                         null
                       } 
                     </div>
-                    <div className="col-md-6">
-                      <div className="input-group search_filter">
-                        <div className="input-group-prepend markets_index">
-                          <select className="form-control">
-                            <option value="0">Type</option>
-                            <option value="1">ETH</option>
-                            <option value="2">BSC</option>
-                          </select>
-                        </div>
-                        <input type="text" value="" placeholder="Contract address" className="form-control search-input-box" />
-                        <div className="input-group-prepend ">
-                          <span className="input-group-text">
-                            <img src="/assets/img/search-box.png" alt="search-box" width="100%" height="100%" />
-                          </span>
+                  
+                  </div>
+                </div>
+
+
+                <div className="col-md-6  order-md-1">
+                  <div className="token_main_details">
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="media">
+                          <img src={data.token_image ? image_base_url+data.token_image : image_base_url+"default.png"} className="token_img" alt="logo" width="100%" height="100%" />
+                          <div className="media-body">
+                            <h4 className="media-heading">{data.token_name ? data.token_name : "-"} 
+                              {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
+                              {
+                              watchlist == true ?
+                              <span onClick={()=>removeFromWatchlist(data._id)} ><img src="/assets/img/watchlist_token.svg" /></span>
+                              :
+                              <span onClick={()=>addToWatchlist(data._id)} ><img src="/assets/img/watchlist_normal.svg" /></span>
+                              }
+
+                            </h4>
+                            <h5><span>{data.symbol ? (data.symbol).toUpperCase() : "-"}</span></h5>
+                          </div>
                         </div>
                       </div>
 
-                      <ul className="token_share_vote">
-                        <li><img src="/assets/img/coin_vote.svg" /> Vote <span>56</span></li>
-                        <li>Coin</li>
-                        <li><img src="/assets/img/coin_share.svg" /> Share</li>
-                      </ul>
+                      <div className="col-md-6">
+                        <div className="token_price_block">
+                          <h5>
+                            {live_price?"$":null} {live_price > 0 ? separator(live_price.toFixed(10)) : "NA"} 
+                            {
+                              price_change_24h
+                              ?
+                              price_change_24h > 0
+                              ?
+                              <span className="market_growth market_up"><img src="/assets/img/caret-up.png" />{price_change_24h.toFixed(2)}%</span>
+                              :
+                              <span className="market_growth market_down"><img src="/assets/img/caret-angle-down.png" />{price_change_24h.toPrecision(3)}%</span>
+                              :
+                              null
+                            }
+                          </h5>
+                          <p>{data.token_name ? data.token_name : "-"} Price({data.symbol ? (data.symbol).toUpperCase() : "-"})</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1953,7 +1962,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   ?
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links); set_community_links(false) }}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img" /> : null} </a></div>
+                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img" /> : null} </a></div>
                                     </div> 
                                     { 
                                       explorer_links
@@ -2388,15 +2397,15 @@ const removeFromWatchlist = (param_token_id) =>
                               <ul>
                                 <li>ICO Price <span>{launchpad_object.price} USD</span></li>
                                 <li>Softcap <span>{launchpad_object.soft_cap}</span></li>
-                                <li>Tokens Sold <span>{launchpad_object.tokens_sold}ADA</span></li>
+                                <li>Tokens Sold <span>{launchpad_object.tokens_sold} {data.symbol ? (data.symbol).toUpperCase() : "-"}</span></li>
                                 <li>Access <span>{launchpad_object.access_type == 1 ? "Public" : "Private"}</span></li>
                                 <li>Where to buy <span>{launchpad_object.where_to_buy_link}</span></li>
-                                <li>% of Total Supply <span> 34% (547554 ADA)</span></li>
+                                <li>% of Total Supply <span> 34% (547554 {data.symbol ? (data.symbol).toUpperCase() : "-"})</span></li>
                                 <li>Accept <span>{launchpad_object.accept_payment_type}</span></li>
                               </ul>
 
                               <h5>How to participate</h5>
-                              <p>{launchpad_object.how_to_participate}</p>
+                              <div dangerouslySetInnerHTML={{ __html: launchpad_object.how_to_participate }}/>
                               </>
                               :
                               null
@@ -2625,7 +2634,9 @@ const removeFromWatchlist = (param_token_id) =>
             </div>
           </div> 
         </div>
-      </div> 
+      </div>
+
+      {modal_data.title ? <Popupmodal name={modal_data} /> : null} 
     </>
   )
 }

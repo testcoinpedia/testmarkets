@@ -6,6 +6,8 @@ import cookie from "cookie"
 import Axios from 'axios'
 import moment from 'moment'
 import TableContentLoader from '../components/loaders/tableLoader'
+import Search_Contract_Address from '../components/searchContractAddress'
+import WatchList from '../components/watchlist'
 import { API_BASE_URL, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY,count_live_price} from '../components/constants'; 
 var $ = require( "jquery" );
 
@@ -16,6 +18,7 @@ export default function Home({resData, userAgent, config, user_token})
   const [current_page_token_list, set_current_page_token_list] = useState([]); 
   const [voting_ids, setvoting_ids] = useState(resData.voting_ids)
   const [watchlist, set_watchlist] = useState(resData.watchlist)
+  const [watch_list_status, set_watch_list_status] = useState(false)
   const [err_searchBy, setErrsearchBy] = useState("")
   const [per_page_count, set_per_page_count] = useState(15)
   const [pageCount, setPageCount] = useState(Math.ceil(resData.message.length / per_page_count))
@@ -40,10 +43,9 @@ export default function Home({resData, userAgent, config, user_token})
   const [item, set_item] = useState("")
   const [voting_message, set_voting_message] = useState("")
   const [tokens] = useState(resData.message)
-  
-//   firstcount
-// finalcount
-// pageCount
+  const [all_tab_status, set_all_tab_status] = useState(1)
+  const [watchlist_tab_status, set_watchlist_tab_status] = useState("")
+
   useEffect(()=>
   {  
     getTokensList(tokenslist , 0) 
@@ -64,7 +66,7 @@ const handlePageClick = (e) =>
   Pages_Counts(selectPage , tokenslist.length)
   getTokensList(tokenslist , selectPage * per_page_count)
 }
-//i_value, item
+
 
 const addToWatchlist = (param_token_id) =>
 {
@@ -78,8 +80,6 @@ const addToWatchlist = (param_token_id) =>
       set_watchlist([])
       sdawatchlist.push(param_token_id)
       set_watchlist(sdawatchlist)
-      //watchlist.push(param_token_id)
-      
       console.log("watchlist", watchlist)
     }
   })
@@ -102,10 +102,7 @@ const removeFromWatchlist = (param_token_id) =>
   })
 }
 
-
-
-
-  const ModalVote=(token_id,status,_id,item)=> 
+ const ModalVote=(token_id,status,_id,item)=> 
   { 
     console.log(item)   
     setHandleModalVote(!handleModalVote) 
@@ -166,59 +163,25 @@ const removeFromWatchlist = (param_token_id) =>
           voting_ids.splice(voting_ids.indexOf(vote_id), 1)
           set_voting_message(res.data.message)
           setHandleModalVote(!handleModalVote) 
-        
-          //getTokensList(tokenslist , selectedPage)
         }
       })
     }
   }
-  const getSearchData=(searchValue) =>
+  const set_all_tab_active=()=>
   {  
-    var curren=0
-    setsearchTokens(searchValue)
-    var filteredReferrals = null;
-    if(searchValue != '')
-    {  
-      var tokenslistData = tokenslist
-      var filteredTokens =  tokenslistData.filter((item) => {
-        return searchParam.some((newItem) => {
-          console.log(newItem)
-            return (
-                item[newItem]
-                    .toString()
-                    .toLowerCase()
-                    .indexOf(searchValue) > -1
-            )
-        })
-      })
-      setFilteredTokens(filteredTokens)
-      // console.log(filteredTokens)
-      setPageCount(Math.ceil(filteredTokens.length / per_page_count)) 
-      getTokensList(filteredTokens, 0) 
-      set_total_tokens_count(filteredTokens.length)
-      Pages_Counts(curren , filteredTokens.length)
-        
-    }
-    else
-    {
-      setFilteredTokens(tokenslist)
-      setPageCount(Math.ceil(tokenslist.length / per_page_count)) 
-      getTokensList(tokenslist, 0) 
-      set_total_tokens_count(tokenslist.length)
-      Pages_Counts(curren , tokenslist.length)
-    }
-  }
+    set_watch_list_status(false)
+    set_watchlist_tab_status("")
+    set_all_tab_status(1)
+  
+  }  
+  
+  const set_watch_list=()=>
+{  
+  set_watch_list_status(true)
+  set_watchlist_tab_status(2)
+  set_all_tab_status("")
 
-  const resetFilter=() =>
-   {
-    setsearchTokens("")
-    setFilteredTokens(tokenslist)
-    setPageCount(Math.ceil(tokenslist.length / per_page_count)) 
-    getTokensList(tokenslist,0) 
-    set_total_tokens_count(tokenslist.length)
-   // document.getElementById("formID").reset() 
-   }    
-
+} 
 const Pages_Counts = (page_selected, length_value) => 
 {
    const presentPage = page_selected+1
@@ -233,261 +196,14 @@ const Pages_Counts = (page_selected, length_value) =>
    setfirstcount(first_count)
    setfinalcount(final_count)
 }
-const getTokenData =(type, address)=>{ 
 
-  setvalidContractAddress("")
-  setErrsearchBy("")
-
-  let formValid=true 
-  if(searchBy == "")
-  {
-    setErrsearchBy("Please Select Network Type")
-    formValid=false
-  }
-  if(searchBy == "0")
-  {
-    setErrsearchBy("Please Select Network Type")
-    formValid=false
-  }
-
-  if(search_contract_address == "")
-  {
-    setErrsearchBy("Please Enter Contract Address")
-    formValid=false
-  }
-   
-  if(!formValid){
-    return
-  }
-  let network_type = ""
-  
-  if(type === "1"){ 
-    network_type = "ethereum"
-  }
-  else if(type === "2"){ 
-    network_type = "bsc"
-  }
-  else{
-    return null
-  }
-  
-  getTokenDetails(network_type, address)
-
-}
-const getTokenDetails = (network_type, address) =>{  
-
-  // let network_type = ""
-
-  // if(type === "1"){ 
-  //   network_type = "ethereum"
-  // }
-  // else if(type === "2"){ 
-  //   network_type = "bsc"
-  // }
-  // else{
-  //   return null
-  // }
-
-  const query = `
-              query
-              { 
-                ethereum(network: `+network_type+`) {
-                  address(address: {is: "`+address+`"}){
-
-                    annotation
-                    address
-
-                    smartContract {
-                      contractType
-                      currency{
-                        symbol
-                        name
-                        decimals
-                        tokenType
-                      }
-                    }
-                    balance
-                  }
-                } 
-            }
-        ` ;
-
-  const url = "https://graphql.bitquery.io/";
-  const opts = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY":graphqlApiKEY
-    },
-    body: JSON.stringify({
-      query
-    })
-  }; 
-  fetch(url, opts)
-    .then(res => res.json())
-    .then(result => {  
-      if(result.data.ethereum) 
-        if(result.data.ethereum.address[0].smartContract){
-        if (result.data.ethereum.address[0].smartContract.currency) { 
-          setvalidContractAddress("")
-          CheckContractAddress(address)
-        } 
-        else { 
-          setvalidContractAddress("Invalid contract address or network type.")
-        
-          
-        } 
-      }
-      else{
-        setvalidContractAddress("Invalid contract address or network type.")
-        
-      }
-      else{
-        setvalidContractAddress("Invalid contract address or network type.")
-        
-      }
-    })
-    .catch(console.error);
-
-}
-const CheckContractAddress =(address)=>{
-  // for(const i of listData)
-  //   {
-  //     list.push({value: i.country_id, label: i.country_name})  
-  //   }
-    
-  setvalidContractAddress("")
-  var status=true
-//   tokenslist.map((e)=>
-//   {
-//     e.contract_addresses.map((item)=>
-//     {
-//       if(address==item.contract_address)
-//       {
-//         status=false
-//         window.location.replace(website_url+e.token_id)
-//       }
-//    })
-//  })
-for(const i of tokenslist)
-{
-  if(i.contract_addresses.length>0  ){
-  if(address==i.contract_addresses[0].contract_address) {
-    status=false
-      window.location.replace(website_url+i.token_id)
-      break
-  }
-  }
-}
- if(!status){
-   return
- }
-  let query = "";
-
-  if(searchBy === "1"){
-    query = `
-    query
-    { 
-      ethereum(network: ethereum) {
-        address(address: {is: "`+address+`"}){
-
-          annotation
-          address
-
-          smartContract {
-            contractType
-            currency{
-              symbol
-              name
-              decimals
-              tokenType
-            }
-          }
-          balance
-        }
-      } 
-  }
-  ` ;
-  }
-  else{
-    query = `
-    query
-    { 
-      ethereum(network: bsc) {
-        address(address: {is: "`+address+`"}){
-
-          annotation
-          address
-
-          smartContract {
-            contractType
-            currency{
-              symbol
-              name
-              decimals
-              tokenType
-            }
-          }
-          balance
-        }
-      } 
-  }
-  ` ;
-  }
-
- 
-  const url = "https://graphql.bitquery.io/";
-  const opts = {
-  method: "POST",
-  headers: {
-  "Content-Type": "application/json",
-  "X-API-KEY": graphqlApiKEY
-  },
-  body: JSON.stringify({
-    query: query, 
-  })
-  };
- 
- return fetch(url, opts)
-  .then(res => res.json())
-  .then(result => {  
-    if(result.data.ethereum !== null)
-    {
-      if(result.data.ethereum.address[0].smartContract){
-        if(result.data.ethereum.address[0].smartContract.currency){
-        if(searchBy === "1"){
-          window.location.replace(website_url+'eth/'+address)
-          // router.push('/eth/'+address)
-        }
-        else{
-          window.location.replace(website_url+'bsc/'+address)
-          // router.push('/bsc/'+address)
-        } 
-          
-        }
-        else{
-          setvalidContractAddress("Contract address or network type is invalid.")
-        }
-      }
-      else{
-        setvalidContractAddress("Contract address or network type is invalid.")
-      }
-    } 
-    else{
-      setvalidContractAddress("Contract address or network type is invalid.")
-    } 
-  }) 
-
-}
-   
-
-  const getTokensList=(tokenslist, offset)=>
-  {  
-    let slice = tokenslist.slice(offset, offset + per_page_count) 
-    set_current_page_token_list(slice)
-    console.log(current_page_token_list)
-    set_sl_no(offset) 
-  }  
+const getTokensList=(tokenslist, offset)=>
+{  
+  let slice = tokenslist.slice(offset, offset + per_page_count) 
+  set_current_page_token_list(slice)
+  console.log(current_page_token_list)
+  set_sl_no(offset) 
+}  
  
   const makeJobSchema=()=>{  
     return { 
@@ -544,24 +260,9 @@ for(const i of tokenslist)
                 </div>
                 <div className="col-md-1 col-lg-2"></div>
                 <div className="col-md-5 col-lg-4">
-                  <div className="input-group search_filter">
-                    <div className="input-group-prepend markets_index">
-                      {/* <select  className="form-control" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}>*/}
-                        <select  className="form-control" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}> 
-                      <option value="0">Type</option>
-                        <option value="1">ETH</option>
-                        <option value="2">BSC</option>
-                      </select>
-                    </div>
-                    <input value={search_contract_address} onChange={(e)=> set_search_contract_address(e.target.value)} type="text" placeholder="Search token here" className="form-control search-input-box" placeholder="Search by contract address" />
-                   
-                    
-                    <div className="input-group-prepend ">
-                    <span className="input-group-text" onClick={()=> getTokenData(searchBy, search_contract_address)}><img src="/assets/img/search-box.png" alt="search-box"  width="100%" height="100%"/></span>                 
-                    </div>
-                  </div> 
-                  <div className="error">  {err_searchBy}</div>
-                    {validSearchContract && <div className="error">{validSearchContract}</div>}
+                    {
+                      <Search_Contract_Address /> 
+                    }
                 </div>
               </div>
             </div>
@@ -631,8 +332,13 @@ for(const i of tokenslist)
                 <div className="row">
                   <div class="col-md-6 col-7">
                     <ul class="category_list">
-                      <li class="active_tab">All</li>
-                      <li><Link href={'/watchlist'}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
+                      <li class={all_tab_status===1?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
+                    {
+                      user_token?
+                      <li class={watchlist_tab_status===2?"active_tab":null}><a onClick={()=>set_watch_list()}><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></li>
+                      :
+                      <Link href={app_coinpedia_url+"login"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link>
+                     }
                     </ul>
                   </div>
 
@@ -651,156 +357,162 @@ for(const i of tokenslist)
                   </div>
 
                 </div>
-                <div className="market_page_data">
-                  <div className="table-responsive">
-                    <table className="table table-borderless">
-                      <thead>
-                          <tr>
-                            <th className="" style={{minWidth: '34px'}}></th>
-                            <th className="">#</th>
-                            <th className="">Name</th>
-                            <th className="table_token">Live Price</th>
-                            <th className="table_token">Token Type</th>
-                            <th className="table_max_supply">Max Supply</th> 
-                            <th className="mobile_hide table_circulating_supply">Market Cap</th>  
-                            <th className="table_circulating_supply">Votes</th>  
-                            <th className="table_circulating_supply"></th>  
-                           
-                          </tr>
-                      </thead>
-                      
-
-                      <tbody>
-                        {
-                          current_page_token_list.length > 0
-                          ?
-                          current_page_token_list.map((e, i) => 
-                          <tr key={i}>
-                                  <td>
-                                  {
-                                    user_token ?
-                                    <>
-                                    {
-                                      watchlist.includes(e._id) ?
-                                      <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
-                                      :
-                                      <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" /></span>
-                                      }
-                                    </>
-                                    :
-                                    <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><img src="/assets/img/wishlist_star.svg" /></a></Link>
-                                  }
-                                  
-                                  </td>
-                                  
-                                  <td>
-                                    {sl_no+i+1}
-                                  </td>
-                                  <td>
-                                    <Link href={"/"+e.token_id}>
-                                      <a>
-                                      <div className="media">
-                                        <div className="media-left">
-                                          <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
-                                        </div>
-                                        <div className="media-body">
-                                          <h4 className="media-heading">{e.token_name} <span>{e.symbol.toUpperCase()}</span></h4>
-                                        </div>
-                                      </div> 
-                                      </a>
-                                    </Link>
-                                  </td> 
-                                  {/* <td>{e.price === null? "-":"$"+ Number(e.price).toFixed(2)}</td> */}
-                                  {/* <td>
-                                    <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span>
-                                  </td> */}
-            
-                                  <td className="market_list_price"> 
-                                    <Link href={"/"+e.token_id}>
-                                      <a>
-                                      <span className="block_price">{e.price?"$":null}{e.price?count_live_price(e.price):"-"}</span>
-                                        {/* <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(9)):"-"}</span> */}
-                                        <br/>
-                                        {e.price_updated_on ? moment(e.price_updated_on).fromNow():null} 
-                                      </a>
-                                      </Link>
-                                  </td>
-                                  <td> 
-                                    <Link href={"/"+e.token_id}>
-                                      <a>
-                                      {
-                                          e.contract_addresses.length > 0
-                                          ?
-                                            e.contract_addresses[0].network_type === "1" ? "ERC20" : "BEP20" 
-                                          // e.contract_addresses.map((ca)=>
-                                          //   parseInt(ca.network_type) === 1 ? "ERC20" : "BEP20" 
-                                          //)
-                                          :
-                                          null
-                                        } 
-                                      </a>
-            
-                                      </Link>
-                                  </td>
-                                  <td>
-                                    <Link href={"/"+e.token_id}>
-                                      <a>
-                                        {e.total_max_supply ? separator(e.total_max_supply) : "-"} 
-                                      </a>
-                                    </Link>
-                                  </td>
-            
-                                  <td className="mobile_hide">
-                                    <Link href={"/"+e.token_id}><a>
-                                      {e.market_cap ?separator(e.market_cap.toFixed(2)) : "-"}
-                                    </a></Link>
-                                  </td>  
-                                  
-                                    <td>
-                                    {
-                                    e.total_votes == 0 ?
-                                    voting_ids.includes(e._id) ? <span className="vote_value">1</span> : "--"
-                                    :
-                                    <Link href={"/"+e.token_id}>
-                                      <a>
-                                        <span className="vote_value">{e.total_votes}</span>
-                                      </a>
-                                    </Link>
-                                    }
-                                  </td>
-                                  
-                                  
-                                  <td>
-                                    {
-                                      user_token ?
-                                      <>
-                                      {
-                                        voting_ids.includes(e._id) ?
-                                        <span className="market_list_price markets_voted"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,true,e._id,i)} >Voted</button></span>
-                                        :
-                                        <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,false,e._id,i)} className="vote_btn">Vote</button></span>
-                                        }
-                                      </>
-                                      :
-                                      <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><span className="market_list_price"><button data-toggle="tooltip" className="vote_btn">Vote</button></span></a></Link>
-                                    }
-                                    </td> 
-                            </tr> 
-                          ) 
-                          :
-                          <tr >
-                            <td className="text-center" colSpan="4">
-                                Sorry, No related data found.
-                            </td>
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
-                  </div>
-                </div> 
+                {
+                     watch_list_status?
+                    <WatchList config={config} /> 
+                    :
+                     <div className="market_page_data">
+                     <div className="table-responsive">
+                       <table className="table table-borderless">
+                         <thead>
+                             <tr>
+                               <th className="" style={{minWidth: '34px'}}></th>
+                               <th className="mobile_hide_table_col">#</th>
+                               <th className="">Name</th>
+                               <th className="table_token">Live Price</th>
+                               <th className="table_token mobile_hide_table_col">Token Type</th>
+                               <th className="table_max_supply mobile_hide_table_col">Max Supply</th> 
+                               <th className="mobile_hide_table_col table_circulating_supply">Market Cap</th>  
+                               <th className="table_circulating_supply mobile_hide_table_col">Votes</th>  
+                               <th className="table_circulating_supply mobile_hide_table_col"></th>  
+                              
+                             </tr>
+                         </thead>
+                         
+   
+                         <tbody>
+                           {
+                             current_page_token_list.length > 0
+                             ?
+                             current_page_token_list.map((e, i) => 
+                             <tr key={i}>
+                                     <td>
+                                     {
+                                       user_token ?
+                                       <>
+                                       {
+                                         watchlist.includes(e._id) ?
+                                         <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
+                                         :
+                                         <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" /></span>
+                                         }
+                                       </>
+                                       :
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><img src="/assets/img/wishlist_star.svg" /></a></Link>
+                                     }
+                                     
+                                     </td>
+                                     
+                                     <td className="mobile_hide_table_col">
+                                       {sl_no+i+1}
+                                     </td>
+                                     <td>
+                                       <Link href={"/"+e.token_id}>
+                                         <a>
+                                         <div className="media">
+                                           <div className="media-left">
+                                             <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                           </div>
+                                           <div className="media-body">
+                                             <h4 className="media-heading">{e.token_name} <span>{e.symbol.toUpperCase()}</span></h4>
+                                           </div>
+                                         </div> 
+                                         </a>
+                                       </Link>
+                                     </td> 
+                                     {/* <td>{e.price === null? "-":"$"+ Number(e.price).toFixed(2)}</td> */}
+                                     {/* <td>
+                                       <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span>
+                                     </td> */}
+               
+                                     <td className="market_list_price"> 
+                                       <Link href={"/"+e.token_id}>
+                                         <a>
+                                         <span className="block_price">{e.price?"$":null}{e.price?count_live_price(e.price):"-"}</span>
+                                           {/* <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(9)):"-"}</span> */}
+                                           <br/>
+                                           {e.price_updated_on ? moment(e.price_updated_on).fromNow():null} 
+                                         </a>
+                                         </Link>
+                                     </td>
+                                     <td className="mobile_hide_table_col"> 
+                                       <Link href={"/"+e.token_id}>
+                                         <a>
+                                         {
+                                             e.contract_addresses.length > 0
+                                             ?
+                                               e.contract_addresses[0].network_type === "1" ? "ERC20" : "BEP20" 
+                                             // e.contract_addresses.map((ca)=>
+                                             //   parseInt(ca.network_type) === 1 ? "ERC20" : "BEP20" 
+                                             //)
+                                             :
+                                             null
+                                           } 
+                                         </a>
+               
+                                         </Link>
+                                     </td>
+                                     <td className="mobile_hide_table_col">
+                                       <Link href={"/"+e.token_id}>
+                                         <a>
+                                           {e.total_max_supply ? separator(e.total_max_supply) : "-"} 
+                                         </a>
+                                       </Link>
+                                     </td>
+               
+                                     <td className="mobile_hide_table_col">
+                                       <Link href={"/"+e.token_id}><a>
+                                         {e.market_cap ?separator(e.market_cap.toFixed(2)) : "-"}
+                                       </a></Link>
+                                     </td>  
+                                     
+                                       <td  className="mobile_hide_table_col">
+                                       {
+                                       e.total_votes == 0 ?
+                                       voting_ids.includes(e._id) ? <span className="vote_value">1</span> : "--"
+                                       :
+                                       <Link href={"/"+e.token_id}>
+                                         <a>
+                                           <span className="vote_value">{e.total_votes}</span>
+                                         </a>
+                                       </Link>
+                                       }
+                                     </td>
+                                     
+                                     
+                                     <td  className="mobile_hide_table_col">
+                                       {
+                                         user_token ?
+                                         <>
+                                         {
+                                           voting_ids.includes(e._id) ?
+                                           <span className="market_list_price markets_voted"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,true,e._id,i)} >Voted</button></span>
+                                           :
+                                           <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,false,e._id,i)} className="vote_btn">Vote</button></span>
+                                           }
+                                         </>
+                                         :
+                                         <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><span className="market_list_price"><button data-toggle="tooltip" className="vote_btn">Vote</button></span></a></Link>
+                                       }
+                                       </td> 
+                               </tr> 
+                             ) 
+                             :
+                             <tr >
+                               <td className="text-center" colSpan="4">
+                                   Sorry, No related data found.
+                               </td>
+                             </tr>
+                           }
+                         </tbody>
+                       </table>
+                     </div>
+                   </div> 
+                }
+                
 
                   {
-                   
+                    !watch_list_status?
                     total_tokens_count > per_page_count
                     ? 
                     <div className="col-md-12">
@@ -832,6 +544,8 @@ for(const i of tokenslist)
                         </div>
                       </div>
                     </div>
+                  :
+                  null
                   :
                   null
                 } 

@@ -1,6 +1,6 @@
 import React , {useEffect, useState} from 'react' 
 import Highcharts from 'highcharts';    
-import {website_url,graphqlApiKEY,API_BASE_URL,separator} from '../../components/constants'
+import {website_url,graphqlApiKEY,API_BASE_URL,separator,config} from '../../components/constants'
 import { ethers } from 'ethers';
 import Web3 from 'web3'
 import Switch from "react-switch";   
@@ -11,6 +11,7 @@ import Link from 'next/link'
 import Datetime from "react-datetime"
 import "react-datetime/css/react-datetime.css" 
 import SideBarExchangeDetails from "../../components/sideBarExchangeBlock"
+import Search_Contract_Address from '../../components/searchContractAddress'
 import ReactPaginate from 'react-paginate';  
  
 let inputProps = {
@@ -1594,102 +1595,102 @@ const connectToEthWallet=()=>
  } 
 
  
-const CheckContractAddress =(address)=>{
+// const CheckContractAddress =(address)=>{
 
-  setvalidContractAddress("")
-  let query = "";
+//   setvalidContractAddress("")
+//   let query = "";
 
-  if(searchBy === "0"){
-    query = `
-    query
-    { 
-      ethereum(network: ethereum) {
-        address(address: {is: "`+address+`"}){
+//   if(searchBy === "0"){
+//     query = `
+//     query
+//     { 
+//       ethereum(network: ethereum) {
+//         address(address: {is: "`+address+`"}){
 
-          annotation
-          address
+//           annotation
+//           address
 
-          smartContract {
-            contractType
-            currency{
-              symbol
-              name
-              decimals
-              tokenType
-            }
-          }
-          balance
-        }
-      } 
-  }
-  ` ;
-  }
-  else{
-    query = `
-    query
-    { 
-      ethereum(network: bsc) {
-        address(address: {is: "`+address+`"}){
+//           smartContract {
+//             contractType
+//             currency{
+//               symbol
+//               name
+//               decimals
+//               tokenType
+//             }
+//           }
+//           balance
+//         }
+//       } 
+//   }
+//   ` ;
+//   }
+//   else{
+//     query = `
+//     query
+//     { 
+//       ethereum(network: bsc) {
+//         address(address: {is: "`+address+`"}){
 
-          annotation
-          address
+//           annotation
+//           address
 
-          smartContract {
-            contractType
-            currency{
-              symbol
-              name
-              decimals
-              tokenType
-            }
-          }
-          balance
-        }
-      } 
-  }
-  ` ;
-  }
+//           smartContract {
+//             contractType
+//             currency{
+//               symbol
+//               name
+//               decimals
+//               tokenType
+//             }
+//           }
+//           balance
+//         }
+//       } 
+//   }
+//   ` ;
+//   }
 
  
-  const url = "https://graphql.bitquery.io/";
-  const opts = {
-  method: "POST",
-  headers: {
-  "Content-Type": "application/json",
-  "X-API-KEY": graphqlApiKEY
-  },
-  body: JSON.stringify({
-    query: query, 
-  })
-  };
+//   const url = "https://graphql.bitquery.io/";
+//   const opts = {
+//   method: "POST",
+//   headers: {
+//   "Content-Type": "application/json",
+//   "X-API-KEY": graphqlApiKEY
+//   },
+//   body: JSON.stringify({
+//     query: query, 
+//   })
+//   };
 
- return fetch(url, opts)
-  .then(res => res.json())
-  .then(result => {  
-    if(result.data.ethereum !== null){
-      if(result.data.ethereum.address[0].smartContract){
-        if(result.data.ethereum.address[0].smartContract.currency){ 
-          if(searchBy === "0"){
-            window.location.replace(website_url+'eth/'+address) 
-          }
-          else{
-            window.location.replace(website_url+'bsc/'+address) 
-          } 
-        }
-        else{
-          setvalidContractAddress("Contract address or network type is invalid.")
-        }
-      }
-      else{
-        setvalidContractAddress("Contract address or network type is invalid.")
-      }
-    } 
-    else{
-      setvalidContractAddress("Contract address or network type is invalid.")
-    } 
-  }) 
+//  return fetch(url, opts)
+//   .then(res => res.json())
+//   .then(result => {  
+//     if(result.data.ethereum !== null){
+//       if(result.data.ethereum.address[0].smartContract){
+//         if(result.data.ethereum.address[0].smartContract.currency){ 
+//           if(searchBy === "0"){
+//             window.location.replace(website_url+'eth/'+address) 
+//           }
+//           else{
+//             window.location.replace(website_url+'bsc/'+address) 
+//           } 
+//         }
+//         else{
+//           setvalidContractAddress("Contract address or network type is invalid.")
+//         }
+//       }
+//       else{
+//         setvalidContractAddress("Contract address or network type is invalid.")
+//       }
+//     } 
+//     else{
+//       setvalidContractAddress("Contract address or network type is invalid.")
+//     } 
+//   }) 
 
-}
+// }
 
 
   return (
@@ -1734,27 +1735,9 @@ const CheckContractAddress =(address)=>{
                       </ul>
                     </div>
                     <div className="col-md-5">
-                    <div className="input-group search_filter">
-                    <input className="form-control" value={search_contract_address} onChange={(e)=> set_search_contract_address(e.target.value)} type="text" placeholder="Search token here" />
-                    <div className="input-group-prepend" value={searchBy} onChange={(e)=> setSearchBy(e.target.value)}>
-                      <select className="form-control">
-                        <option value="0">ETH</option>
-                        <option value="1">BSC</option>
-                      </select>
-                    </div>
-                    <div className="input-group-prepend">
-                      {
-                        search_contract_address
-                        ?
-                        <span className="input-group-text" onClick={()=> CheckContractAddress(search_contract_address)}><img src="/assets/img/search-box.png" width="100%" height="100%" /></span>
-                        :
-                        <span className="input-group-text"><img src="/assets/img/search-box.png" width="100%" height="100%" /></span>
-                      }
-                    </div>
-                  </div>
-                  {/* {!contract_address ? <label>Contract address field is required!</label>: null} */}
-                  
-                  {validSearchContract && <div className="error">{validSearchContract}</div>}
+                    {
+                      <Search_Contract_Address /> 
+                    }
                     </div>
               </div>
             </div>

@@ -873,7 +873,7 @@ exchange_link
                                 <div className="input_block_outline" style={{marginBottom: '0'}}>
                                   <div className="input-group">
                                     <div className="input-group-prepend">
-                                      <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address)} >
+                                      <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address).toLowerCase()} >
                                             <option value="0">Network Type</option> 
                                             <option value="1">Ethereum</option>
                                             <option value="2">BSC</option>
@@ -883,7 +883,7 @@ exchange_link
                                     {
                                       i === 0 && e.network_type !== "0"
                                       ?
-                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, item.target.value)} />
+                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, item.target.value)}   />
                                       :
                                       <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=>checkContractAddress(item, i)} />
                                     }

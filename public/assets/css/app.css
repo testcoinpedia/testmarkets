@@ -11609,7 +11609,7 @@ input[type="number"] {
 
 .market_page_data tr .media h4 {
   font-size: 14px;
-  margin-top: 12px;
+  margin-top: 5px;
 }
 
 .market_page_data tr .media h4 span {
@@ -14493,7 +14493,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .coin_details .token_left_border {
   border-left: 2px solid #dde6ef;
-  padding-left: 25px;
+  padding-left: 15px;
   min-height: 135px;
 }
 
@@ -14604,6 +14604,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media (max-width: 768px) {
+
+  .mobile_hide_table_col {
+    display: none;
+  }
 
   #footer .social-icons {
     text-align: center;

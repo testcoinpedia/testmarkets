@@ -6,7 +6,7 @@ import cookie from "cookie"
 import Axios from 'axios'
 import moment from 'moment'
 import TableContentLoader from '../components/loaders/tableLoader'
-import { API_BASE_URL, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY,count_live_price} from '../components/constants'; 
+import { API_BASE_URL, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY, count_live_price} from '../components/constants'; 
 var $ = require( "jquery" );
 
 export default function Home({config, user_token}) 
@@ -34,8 +34,7 @@ export default function Home({config, user_token})
 
   const removeFromWatchlist = (param_token_id) =>
   {
-    Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config)
-    .then(res=>
+    Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config).then(res=>
     {
       if(res.data.status)
       {
@@ -46,14 +45,14 @@ export default function Home({config, user_token})
 
   const makeJobSchema=()=>
   {  
-      return { 
-          "@context":"http://schema.org/",
-          "@type":"Table",
-          "name":"Coinpedia",
-          "url":website_url,
-          "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
-          "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
-        }  
+    return { 
+        "@context":"http://schema.org/",
+        "@type":"Table",
+        "name":"Coinpedia",
+        "url":website_url,
+        "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
+        "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
+    }  
   } 
 
   return(
