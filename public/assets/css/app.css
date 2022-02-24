@@ -14519,6 +14519,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-top: 10px;
 }
 
+
+
 .token_share_vote {
   margin-top: 15px;
   text-align: right;
@@ -14784,6 +14786,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .token_list_table .mb-4 {
     margin-bottom: 1rem !important;
+  }
+
+  .market_token_details .container {
+    padding: 0;
+  }
+
+  .market_token_details .search_filter input {
+    height: 40px;
   }
 }
 
@@ -15902,8 +15912,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: 5px;
   }
 
+  .token-contract-details {
+    margin-top: 0;
+  }
+
   .token-contract-details a {
     font-size: 12px;
+  }
+
+  .wallets__inner {
+    margin-top: 5px;
   }
 
   .widgets__logo {
@@ -17576,10 +17594,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .copy-contract-img {
     width: 12px;
     margin-left: 10px;
-  }
-  .token-contract-details {
-    font-size: 10px;
-    padding: 4px;
   }
 }
 
