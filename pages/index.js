@@ -337,7 +337,7 @@ const getTokensList=(tokenslist, offset)=>
                       user_token?
                       <li class={watchlist_tab_status===2?"active_tab":null}><a onClick={()=>set_watch_list()}><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></li>
                       :
-                      <Link href={app_coinpedia_url+"login"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link>
+                      <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link>
                      }
                     </ul>
                   </div>
