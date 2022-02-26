@@ -20,8 +20,6 @@ export const logo =  '/assets/img/logo.png'
 export const favicon =  '/assets/img/favicon.png'
 
 
-
-
 // Local Links
 // export const website_url = 'http://192.168.1.100:4500/'; 
 // export const app_coinpedia_url="http://192.168.1.100:4400/"
@@ -59,6 +57,7 @@ export const config=(user_token)=>
   }
 }
 export const graphqlApiKEY = "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
+
 export const strLenTrim=(title, length)=>
 {
     return title.length > length ? (title).slice(0, length)+"..." : title

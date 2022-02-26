@@ -10963,6 +10963,18 @@ a:not([href]):not([class]):hover {
   margin-bottom: 0;
 }
 
+.input_block_outline input::-webkit-input-placeholder { /* Edge */
+  color: #a2a7b0 !important;
+}
+
+.input_block_outline input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #a2a7b0 !important;
+}
+
+.input_block_outline input::placeholder {
+  color: #a2a7b0 !important;
+}
+
 .form-custom .form-group {
   margin-bottom: 0;
 }
@@ -11609,7 +11621,7 @@ input[type="number"] {
 
 .market_page_data tr .media h4 {
   font-size: 14px;
-  margin-top: 5px;
+  margin-top: 12px;
 }
 
 .market_page_data tr .media h4 span {
@@ -14091,7 +14103,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .votes_market {
   color: green;
-  padding-left: 7px;
+  padding-left: 58px;
+ 
 }
 
 .votes_market .total_votes {
@@ -14552,6 +14565,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-left: 5px;
 }
 
+.wallet_address_token {
+  display: block;
+}
+
+.wallet_address_token #copyTooltip {
+  float: right;
+}
+
 @media (min-width: 992px) {
   .mobile_view_crypto {
     display: none;
@@ -14794,6 +14815,47 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .market_token_details .search_filter input {
     height: 40px;
+  }
+
+  .launchpad_list_content .launchpad_completed {
+    font-size: 8px;
+  }
+
+  .coin_ico_list .launchpad_list_content h5 {
+    font-size: 12px;
+  }
+
+  .token_launchpad_details {
+    padding: 10px;
+    border-left: 0;
+  }
+
+  .token_launchpad_details h5 {
+    font-size: 16px;
+  }
+
+  .token_launchpad_details h5 span {
+    display: block;
+    float: none;
+    margin-top: 10px;
+    font-size: 12px;
+  }
+
+  .token_launchpad_details h5 span img {
+    width: 15px;
+    margin-right: 5px;
+  }
+
+  .token_launchpad_details ul li {
+    margin-bottom: 5px;
+  }
+
+  .token_launchpad_list {
+    padding-right: 0;
+  }
+
+  .coin_ico_list p {
+    font-size: 14px;
   }
 }
 
@@ -15880,6 +15942,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .dark_theme .error_page h3 {
     font-size: 18px;
   }
+  .coin_details {
+    margin-bottom: 0;
+    margin-top: 0px;
+    padding-top: 0;
+  }
   .connect_wallet_error_block .modal-body h4 {
     font-size: 16px;
   }
@@ -15906,7 +15973,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .market_growth {
-    padding: 4px 8px 2px;
+    padding: 4px 8px;
     margin-left: 10px;
     font-size: 10px;
     margin-top: 5px;
@@ -15914,10 +15981,29 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .token-contract-details {
     margin-top: 0;
+    padding: 9px 10px 8px;
   }
 
   .token-contract-details a {
+    font-size: 14px;
+  }
+
+  .token_main_details .media-heading {
+    font-size: 18px;
+    margin-top: 5px;
+  }
+
+  .token_main_details .media h5 span {
+    padding: 2px 10px;
+  }
+
+  .token_price_block p {
     font-size: 12px;
+  }
+
+
+  .token_dropdown_img {
+    width: 22px;
   }
 
   .wallets__inner {
@@ -16113,7 +16199,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   .search_filter {
     height: 40px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     margin-top: 10px;
   }
   .search_filter input {
@@ -16188,9 +16274,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .coin_main_links .links_direct {
-    padding: 4px 6px 4px !important;
+    padding: 4px 6px 2px !important;
     font-size: 10px;
     text-align: center;
+  }
+
+  .coin_details .token_list_values h4 {
+    font-size: 12px;
   }
 
   .best_and_worst .nav-tabs li a {
@@ -16208,6 +16298,31 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .pager__list.pagination_element ul li a {
     padding: 4px 7px;
+  }
+
+  .market_token_tabs .nav-tabs li a {
+    font-size: 9px;
+    margin-right: 2px;
+  }
+
+  .market_token_tabs .nav-tabs {
+    padding: 1px 5px 4px;
+  }
+
+  .about_token_details p {
+    font-size: 14px;
+  }
+
+  .about_token_details h4 {
+    font-size: 16px;
+  }
+
+  .coin_details .token_list_values {
+    padding: 8px 0;
+  }
+
+  .market_token_details .search_filter {
+    margin-top: 15px;
   }
 
   /* .main_page_coin_filter {
@@ -17246,7 +17361,37 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width: 100%;
   }
   .wallets__inner {
-    margin-top: 32px;
+    margin-top: 5px;
+  }
+  .token_main_details .media h5 {
+    margin-top: 10px;
+  }
+  .coin_details .token_left_border {
+    border-left: 0;
+    padding-left: 0;
+    min-height: auto;
+  }
+  .coin_details .token_list_values h5 {
+    font-size: 14px;
+  }
+  .market_token_details .search_filter .input-group-prepend select {
+    margin-top: 6px;
+  }
+  .token_share_vote li {
+    font-size: 11px;
+  }
+  .token_share_vote li img {
+    width: 16px;
+  }
+  .token_main_details {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .token_price_block {
+    margin-top: 15px;
+  }
+  .coin_ico_list h4 {
+    font-size: 16px;
   }
   .wallets__list {
     display: block;

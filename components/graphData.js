@@ -1,9 +1,11 @@
 /* eslint-disable */
 import React , {useState, useEffect} from 'react'
 import Axios from 'axios'
-import Highcharts from 'highcharts';  
+import Highcharts from 'highcharts';
+import Datetime from "react-datetime"
+import "react-datetime/css/react-datetime.css"   
 import moment from 'moment'
-import {API_BASE_URL,graphqlApiKEY, headers,createValidURL, IMAGE_BASE_URL} from '../components/constants'
+import {count_live_price,graphqlApiKEY, headers,createValidURL, IMAGE_BASE_URL} from '../components/constants'
 import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
 import Popupmodal from '../components/popupmodal'
 
@@ -15,7 +17,6 @@ export default function Details({reqData})
     const [api_from_type, set_api_from_type] = useState(reqData.api_from_type)
     const [customDate, setCustomDate] = useState(false)
     const [graphDate , set_graphDate] = useState(1) 
-    const [api_from_id, set_api_from_id] = useState()
     const [config] = useState(reqData.config)
     const [Err_api_from_id, setErr_api_from_id] = useState()
     const [token_row_id, set_token_row_id] = useState(reqData.token_row_id)
@@ -31,9 +32,7 @@ useEffect(()=>
     {
         coingeckoGraph(4,reqData.token_id)
     }
-} 
-
-)
+},[])
     const getGraphData=(datetime, id, networks)=> 
     {   
       
@@ -396,26 +395,26 @@ useEffect(()=>
                             >  
                             </div>
                           </figure>
-                          {/* <div className="chart_tabs"> 
+                          <div className="chart_tabs"> 
                          < ul className=" chart_tabs_ul nav nav-tabs">
                               <li className="nav-item">
-                                <a className="nav-link " data-toggle="tab" href="#one_day" onClick={()=> getGraphData(1 , data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 D</a>
+                                <a className="nav-link " data-toggle="tab" href="#one_day" onClick={()=> getGraphData(1 , reqData.contract_addresses[0].contract_address ,reqData.contract_addresses[0].network_type)}>1 D</a>
                               </li>
                               <li className="nav-item">
-                                <a className="nav-link" data-toggle="tab"  href="#one_week" onClick={()=> getGraphData(2, data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 W</a>
+                                <a className="nav-link" data-toggle="tab"  href="#one_week" onClick={()=> getGraphData(2, reqData.contract_addresses[0].contract_address ,reqData.contract_addresses[0].network_type)}>1 W</a>
                               </li>
                               <li className="nav-item">
-                                <a className="nav-link" data-toggle="tab"  href="#one_month" onClick={()=> getGraphData(3, data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 M</a>
+                                <a className="nav-link" data-toggle="tab"  href="#one_month" onClick={()=> getGraphData(3, reqData.contract_addresses[0].contract_address ,reqData.contract_addresses[0].network_type)}>1 M</a>
                               </li>
                               <li className="nav-item">
-                                <a  className="nav-link active" data-toggle="tab"  href="#one_year" onClick={()=> getGraphData(4, data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 Y</a>
+                                <a  className="nav-link active" data-toggle="tab"  href="#one_year" onClick={()=> getGraphData(4, reqData.contract_addresses[0].contract_address ,reqData.contract_addresses[0].network_type)}>1 Y</a>
                               </li>
                               <li className="nav-item">
                                 <a className="nav-link" data-toggle="tab" href="#more_dates"  onClick={()=> setCustomDate(!customDate)}><img src="/assets/img/table_dropdown_dots.png" className="more_dates" /></a>
                               </li> 
                             </ul>
-                            </div> */}
-                            {/* {
+                            </div> 
+                             {
                               customDate
                               ?
                               <div className="market-details-custom-search-block"> 
@@ -424,11 +423,11 @@ useEffect(()=>
                                   <div className="row">
                                     <div className="col-md-5 col-5">
                                       <div className="graph_date_table"><Datetime inputProps={ inputProps } onClick={()=> setCustomDate(true)} isValidDate={valid}  dateFormat="YYYY-MM-DD" timeFormat={false}  name="start_date" value={customstartdate}   onChange={(e)=> setCustomstartdate(e)} /></div>
-                                      {/* <input className="market-details-date-search" max={moment().format('YYYY-MM-DD')} value={customstartdate} onChange={(e)=> setCustomstartdate(e.target.value)} placeholder="Start date" type="date" /> 
+                                       {/* <input className="market-details-date-search" max={moment().format('YYYY-MM-DD')} value={customstartdate} onChange={(e)=> setCustomstartdate(e.target.value)} placeholder="Start date" type="date" />  */}
                                     </div>
                                     <div className="col-md-5 col-5">
                                       <div className="graph_date_table"><Datetime inputProps={ inputProps2 } onClick={()=> setCustomDate(true)} isValidDate={valid2}  dateFormat="YYYY-MM-DD" timeFormat={false}  name="end_date" value={customenddate}  onChange={(e)=> setCustomenddate(e)} /></div>
-                                      {/* <input className="market-details-date-search" max={moment().format('YYYY-MM-DD')} value={customenddate} onChange={(e)=> setCustomenddate(e.target.value)} placeholder="End date" type="date" /> 
+                                       {/* <input className="market-details-date-search" max={moment().format('YYYY-MM-DD')} value={customenddate} onChange={(e)=> setCustomenddate(e.target.value)} placeholder="End date" type="date" />  */}
                                     </div>
                                     <div className="col-md-2 col-2">
                                       {
@@ -445,7 +444,7 @@ useEffect(()=>
                               
                               :
                               null
-                            } */}
+                            }
         </div>
     )
 }         

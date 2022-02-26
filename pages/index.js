@@ -16,8 +16,8 @@ export default function Home({resData, userAgent, config, user_token})
   const [tokenslist,set_tokenslist] = useState(resData.message)
   const [total_tokens_count, set_total_tokens_count] = useState(resData.message.length)  
   const [current_page_token_list, set_current_page_token_list] = useState([]); 
-  const [voting_ids, setvoting_ids] = useState(resData.voting_ids)
-  const [watchlist, set_watchlist] = useState(resData.watchlist)
+ const [voting_ids, setvoting_ids] = useState([])  // commented
+  const [watchlist, set_watchlist] = useState([])
   const [watch_list_status, set_watch_list_status] = useState(false)
   const [err_searchBy, setErrsearchBy] = useState("")
   const [per_page_count, set_per_page_count] = useState(15)
@@ -43,7 +43,7 @@ export default function Home({resData, userAgent, config, user_token})
   const [item, set_item] = useState("")
   const [voting_message, set_voting_message] = useState("")
   const [tokens] = useState(resData.message)
-  const [all_tab_status, set_all_tab_status] = useState(1)
+  const [all_tab_status, set_all_tab_status] = useState(true)
   const [watchlist_tab_status, set_watchlist_tab_status] = useState("")
 
   useEffect(()=>
@@ -52,11 +52,13 @@ export default function Home({resData, userAgent, config, user_token})
     Pages_Counts(0 , per_page_count)
     setPageCount(Math.ceil(tokenslist.length / per_page_count))
     setSelectedPage(0) 
+    voteIds()
+    watchListIds()
     var $j = jQuery.noConflict()
     $j(document).ready(function() {
       $j('[data-toggle="tooltip"]').tooltip()
     })
-  },[per_page_count])
+  },[per_page_count,watch_list_status,tokenslist])
  
 const handlePageClick = (e) => 
 {  
@@ -160,50 +162,74 @@ const removeFromWatchlist = (param_token_id) =>
           testList[item] = testObj
           console.log(testObj)
           set_tokenslist(testList)
-          voting_ids.splice(voting_ids.indexOf(vote_id), 1)
+          voting_ids.splice(voting_ids.indexOf(vote_id), 1) 
           set_voting_message(res.data.message)
           setHandleModalVote(!handleModalVote) 
         }
       })
     }
   }
+  const voteIds = () =>
+    {
+        Axios.get(API_BASE_URL+"markets/tokens/voting_ids", config).then(res=>
+        { 
+       
+        if(res.data.status)
+        {
+          setvoting_ids(res.data.voting_ids)
+            console.log(res.data.voting_ids)
+        }
+        })
+    }
+    const watchListIds = () =>
+    {
+        Axios.get(API_BASE_URL+"markets/tokens/watchlist_ids", config).then(res=>
+        { 
+       
+        if(res.data.status)
+        {
+          set_watchlist(res.data.message)
+           
+        }
+        })
+    }
+    
   const set_all_tab_active=()=>
   {  
     set_watch_list_status(false)
     set_watchlist_tab_status("")
-    set_all_tab_status(1)
-  
+    set_all_tab_status(true)
   }  
   
   const set_watch_list=()=>
-{  
-  set_watch_list_status(true)
-  set_watchlist_tab_status(2)
-  set_all_tab_status("")
+  {  
+    set_watch_list_status(true)
+    set_watchlist_tab_status(2)
+    set_all_tab_status(false)
+  } 
 
-} 
-const Pages_Counts = (page_selected, length_value) => 
-{
-   const presentPage = page_selected+1
-   const first_count=(presentPage-1)*per_page_count+1
-   const totalcompany = length_value
-   var sadf = presentPage*per_page_count
-   if((presentPage*per_page_count) > totalcompany)
-   {
-    sadf = totalcompany
-   }
-   const final_count=sadf
-   setfirstcount(first_count)
-   setfinalcount(final_count)
-}
+  const Pages_Counts = (page_selected, length_value) => 
+  {
+    const presentPage = page_selected+1
+    const first_count=(presentPage-1)*per_page_count+1
+    const totalcompany = length_value
+    var sadf = presentPage*per_page_count
+    if((presentPage*per_page_count) > totalcompany)
+    {
+      sadf = totalcompany
+    }
+    const final_count=sadf
+    setfirstcount(first_count)
+    setfinalcount(final_count)
+  }
 
-const getTokensList=(tokenslist, offset)=>
-{  
-  let slice = tokenslist.slice(offset, offset + per_page_count) 
-  set_current_page_token_list(slice)
-  console.log(current_page_token_list)
-  set_sl_no(offset) 
-}  
+  const getTokensList=(tokenslist, offset)=>
+  {  
+    let slice = tokenslist.slice(offset, offset + per_page_count) 
+    set_current_page_token_list(slice)
+    console.log(current_page_token_list)
+    set_sl_no(offset) 
+  }  
  
   const makeJobSchema=()=>{  
     return { 
@@ -332,13 +358,15 @@ const getTokensList=(tokenslist, offset)=>
                 <div className="row">
                   <div class="col-md-6 col-7">
                     <ul class="category_list">
-                      <li class={all_tab_status===1?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
-                    {
+                      <li class={all_tab_status?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
+                      {
                       user_token?
                       <li class={watchlist_tab_status===2?"active_tab":null}><a onClick={()=>set_watch_list()}><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></li>
                       :
+                      <li>
                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link>
-                     }
+                      </li>
+                      }
                     </ul>
                   </div>
 
@@ -359,7 +387,7 @@ const getTokensList=(tokenslist, offset)=>
                 </div>
                 {
                      watch_list_status?
-                    <WatchList config={config} /> 
+                    <WatchList config={config} user_token={user_token}/> 
                     :
                      <div className="market_page_data">
                      <div className="table-responsive">

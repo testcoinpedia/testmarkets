@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import Link from 'next/link' 
 import Head from 'next/head';
 import Error from './404'
-import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, graphqlApiKEY,count_live_price} from '../components/constants'
+import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, graphqlApiKEY,count_live_price} from '../components/constants'
 import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
 import moment from 'moment'
 import Highcharts from 'highcharts';    
@@ -14,6 +14,7 @@ import Datetime from "react-datetime"
 import "react-datetime/css/react-datetime.css" 
 import Popupmodal from '../components/popupmodal'
 import Search_Contract_Address from '../components/searchContractAddress'
+import Graph_Data from '../components/graphData'
   
 let inputProps = {
   className: 'market-details-date-search my_input', 
@@ -1665,8 +1666,8 @@ const removeFromWatchlist = (param_token_id) =>
                               }
                             </>
                             :
-                            <li onClick={()=>ModalVote()} style={{cursor:"pointer"}} >
-                                <Link href={app_coinpedia_url+"login?ref="+current_url}><a>
+                            <li  style={{cursor:"pointer"}} >
+                                <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a>
                                 <img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span>
                                 </a></Link>
                             </li>
@@ -1702,7 +1703,9 @@ const removeFromWatchlist = (param_token_id) =>
                                     contract_copy_status === 'ETH' ? 
                                     <span>Copied</span>
                                     :
+                                   
                                     <img  onClick={()=> {copyContract(data.contract_addresses[0].contract_address, 'ETH')}} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                   
                                   }
                                   
                                   <img src="/assets/img/down-arrow.png" ref={contractRef}  onClick={()=> setOtherContract(!otherContract)} className="dropdown_arrow_img" />
@@ -1722,6 +1725,7 @@ const removeFromWatchlist = (param_token_id) =>
                                             <span>Copied</span>
                                             :
                                             <img onClick={()=> copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                           
                                           }
                                           </p>
                                         </div>
@@ -1743,9 +1747,8 @@ const removeFromWatchlist = (param_token_id) =>
                                       contract_copy_status === 'BNB'?
                                       <span  className="votes_market">Copied</span>
                                       :
-                                      <span id="copyTooltip">
                                       <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" /> 
-                                      </span>
+                                 
                                   }
                                   
                                   
@@ -1762,9 +1765,8 @@ const removeFromWatchlist = (param_token_id) =>
                                     contract_copy_status === 'ETH' ? 
                                     <span className="votes_market" >Copied</span>
                                     :
-                                    <span id="copyTooltip">
                                         <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address,"ETH")} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
-                                        </span>
+                                     
                                         } 
                                         
                                       </p>
@@ -1786,9 +1788,9 @@ const removeFromWatchlist = (param_token_id) =>
                                       contract_copy_status === 'ETH' ? 
                                       <span className="votes_market" >Copied</span>
                                       :
-                                    <span id="copyTooltip">
+                                   
                                     <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,"ETH")} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
-                                    </span>
+                                   
                                   }
                                   
                                 </span>
@@ -1800,9 +1802,9 @@ const removeFromWatchlist = (param_token_id) =>
                                       contract_copy_status === 'BNB'?
                                       <span  className="votes_market">Copied</span>
                                       :
-                                    <span id="copyTooltip">
+                                  
                                   <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,'BNB')} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
-                                  </span>
+                                
                                   }
                                   
                                 </span>
@@ -1830,12 +1832,20 @@ const removeFromWatchlist = (param_token_id) =>
                             <h4 className="media-heading">{data.token_name ? data.token_name : "-"} 
                               {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
                               {
+                            user_token ?
+                            <>
+                              {
                               watchlist == true ?
                               <span onClick={()=>removeFromWatchlist(data._id)} ><img src="/assets/img/watchlist_token.svg" /></span>
                               :
                               <span onClick={()=>addToWatchlist(data._id)} ><img src="/assets/img/watchlist_normal.svg" /></span>
                               }
-
+                             </>
+                             :
+                             <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a>
+                             <img src="/assets/img/watchlist_normal.svg" />
+                             </a></Link>
+                           }
                             </h4>
                             <h5><span>{data.symbol ? (data.symbol).toUpperCase() : "-"}</span></h5>
                           </div>
@@ -2021,7 +2031,7 @@ const removeFromWatchlist = (param_token_id) =>
                           </div>
                           <div className="col-md-7">
                             <div className="row">
-                              <div className="col-md-4">
+                              <div className="col-md-4 col-6">
                                 <div className="token_left_border">
                                   <div className="token_list_values">
                                     <h4>Market Cap</h4>
@@ -2033,7 +2043,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   </div>
                                 </div>
                               </div>
-                              <div className="col-md-4">
+                              <div className="col-md-4 col-6">
                                 <div className="token_left_border">
                                   <div className="token_list_values">
                                     <h4>Circulating Supply</h4>
@@ -2045,7 +2055,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   </div>
                                 </div>
                               </div>
-                              <div className="col-md-4">
+                              <div className="col-md-4 col-6">
                                 <div className="token_left_border">
                                   <div className="token_list_values">
                                     <h4>Volume 24H</h4>
@@ -2055,13 +2065,12 @@ const removeFromWatchlist = (param_token_id) =>
                               </div>
                             </div>
                           </div>
-                          
                         </div>
                     </div>
 
                     <div className="market_token_tabs">
                       <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-md-6 col-7">
                           <h5>{(data.symbol).toUpperCase()} Price Chart</h5>
                           <ul className="nav nav-tabs">
                             <li className="nav-item">
@@ -2076,7 +2085,7 @@ const removeFromWatchlist = (param_token_id) =>
                           </ul>
                         </div>
                         
-                        <div className="col-md-6">
+                        <div className="col-md-6 col-5">
                           <ul className=" chart_tabs_ul nav nav-tabs">
                             <li className="nav-item">
                               <a className="nav-link " data-toggle="tab" href="#one_day" onClick={()=> getGraphData(1 , data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 D</a>
@@ -2308,17 +2317,15 @@ const removeFromWatchlist = (param_token_id) =>
                     </div>
 
                 
-
+                    {
+                       data.launch_pads_data.length > 0 ?
                     <div className="coin_ico_list">
                       <h4>List of ongoing, upcoming and completed launchpads</h4>
                       <p>This feature is in beta testing. Place your estimates for next 6 months and see what other’s are thinking about it. Data displayed are based on user CoinMarketCap. The cut-off for estimates for each month-end is on the 21st of each month.</p>
                       <div className="row">
                         <div className="col-md-6">
                           <div className="token_launchpad_list">
-
-                            {
-                              data.launch_pads_data.length > 0 ?
-                              data.launch_pads_data.map((e, i)=> 
+                             {data.launch_pads_data.map((e, i)=> 
                               // <div className="col-md-12 launchpad_list_content  active_launchpad">
                               <div className={"col-md-12 launchpad_list_content "+(launchpad_row_id == e._id ? " active_launchpad":"")}>
                                 <div className="row">
@@ -2348,7 +2355,7 @@ const removeFromWatchlist = (param_token_id) =>
                                       {moment.utc(e.start_date).format("MMM DD")} - {moment.utc(e.end_date).format("MMM DD, YYYY")}
                                     </h5>
                                   </div>
-                                  <div className="col-md-2 col-3">
+                                  <div className="col-md-2 col-2">
                                     {
                                       launchpad_row_id == e._id ? 
                                       <img src="/assets/img/launchpad-active.svg" className="active_launchpad_list_icon" />
@@ -2358,10 +2365,8 @@ const removeFromWatchlist = (param_token_id) =>
                                   </div>
                                 </div>
                               </div> 
-                              )
-                              :
-                              null
-                            }
+                              )}
+                              
                             
 
                           </div>
@@ -2415,6 +2420,9 @@ const removeFromWatchlist = (param_token_id) =>
                         </div>
                       </div>
                     </div>
+                    :
+                    null
+                  }
 
                     <div className="about_token_details">
                     {
@@ -2439,7 +2447,7 @@ const removeFromWatchlist = (param_token_id) =>
                         <>
                         <div className="promotion__text" style={{wordBreak: "break-all"}} dangerouslySetInnerHTML={{ __html: strLenTrim(data.token_description, 900)}}></div>
                         <p className="about_token_view_more">
-                        <a onClick={() =>set_desc_read_more(true)} className="about_token_view_more"><span>View More &gt;&gt; </span></a>
+                        <a onClick={() =>set_desc_read_more(true)}><span>View More &gt;&gt; </span></a>
                         </p>
                         </>
                       }

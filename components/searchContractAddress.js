@@ -138,7 +138,7 @@ return (
                         <option value="2">BSC</option>
                       </select>
                     </div>
-                    <input value={search_contract_address} onChange={(e)=> set_search_contract_address(e.target.value)} type="text" placeholder="Search token here" className="form-control search-input-box" placeholder="Search by contract address" />
+                    <input value={search_contract_address} onChange={(e)=> set_search_contract_address(e.target.value)} type="text" className="form-control search-input-box" placeholder="Contract address" />
                    <div className="input-group-prepend ">
                     <span className="input-group-text" onClick={()=> getTokenData()}><img src="/assets/img/search-box.png" alt="search-box"  width="100%" height="100%"/></span>                 
                     </div>

@@ -595,7 +595,7 @@ const onLoad = useCallback((img) => {
   const checkContractAddress=(data, index)=>{ 
     const { name, value } = data.target
     const list = [...contract_address]
-    list[index][name] = value  
+    list[index][name] = value.toLowerCase()
     setContractAddress(list)
 }  
 
@@ -770,7 +770,7 @@ const getTokensDetails = (type, address) =>{
                                     {
                                       i === 0 && e.network_type !== "0"
                                       ?
-                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, item.target.value)} />
+                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, (item.target.value).toLowerCase())} />
                                       :
                                       <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=>checkContractAddress(item, i)} />
                                     }

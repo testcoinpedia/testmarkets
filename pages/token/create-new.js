@@ -701,7 +701,7 @@ const createNewToken = () =>
   const checkContractAddress=(data, index)=>{ 
           const { name, value } = data.target
           const list = [...contract_address]
-          list[index][name] = value  
+          list[index][name] = value.toLowerCase()  
           setContractAddress(list)
   }  
 
@@ -873,7 +873,7 @@ exchange_link
                                 <div className="input_block_outline" style={{marginBottom: '0'}}>
                                   <div className="input-group">
                                     <div className="input-group-prepend">
-                                      <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address).toLowerCase()} >
+                                      <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address)} >
                                             <option value="0">Network Type</option> 
                                             <option value="1">Ethereum</option>
                                             <option value="2">BSC</option>
@@ -883,7 +883,7 @@ exchange_link
                                     {
                                       i === 0 && e.network_type !== "0"
                                       ?
-                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, item.target.value)}   />
+                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, (item.target.value).toLowerCase())}   />
                                       :
                                       <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=>checkContractAddress(item, i)} />
                                     }
@@ -929,7 +929,7 @@ exchange_link
                             <div className="form-custom"> 
                             
                             <div className="form-group input_block_outline">
-                              <input type="text" placeholder="Token Name" value={token_name} readOnly />
+                              <input type="text" className="form-control" placeholder="Token Name" value={token_name} readOnly />
                             </div>
                             <div className="error">{err_token_name}</div>
                           </div>
@@ -947,7 +947,7 @@ exchange_link
                             <div className="col-md-8">
                               <div className="form-custom"> 
                                 <div className="form-group input_block_outline">
-                                  <input type="text" placeholder="Symbol" value={symbol}  readOnly/>
+                                  <input type="text" className="form-control" placeholder="Symbol" value={symbol}  readOnly/>
                                 </div>
                                 <div className="error">{err_symbol}</div>
                               </div>
@@ -965,7 +965,7 @@ exchange_link
                             <div className="col-md-8">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                  <input type="text" placeholder="Source code Link" value={source_code_link} onChange={(e)=>seSourceCodeLink(e.target.value)}/>
+                                  <input type="text" className="form-control" placeholder="Source code Link" value={source_code_link} onChange={(e)=>seSourceCodeLink(e.target.value)}/>
                                 </div>
                               </div>
                             </div>
@@ -984,7 +984,7 @@ exchange_link
                             <div className="col-md-8">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                  <input type="text" placeholder="Website Link" value={website_link} onChange={(e)=>setWebsiteLink(e.target.value)}/>
+                                  <input type="text" className="form-control" placeholder="Website Link" value={website_link} onChange={(e)=>setWebsiteLink(e.target.value)}/>
                                   <div className="error">{err_website_link}</div>
                                 </div>
                               </div>
@@ -1003,7 +1003,7 @@ exchange_link
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
                                   <div className="input-group">
-                                    <input type="number" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
+                                    <input type="number" className="form-control" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
                                     <div className="input-group-prepend">
                                       <span className="input-group-text">{symbol}</span>
                                     </div>
@@ -1024,7 +1024,7 @@ exchange_link
                             <div className="col-md-8">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                  <input type="number" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)} readOnly/> 
+                                  <input type="number" className="form-control" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)} readOnly/> 
                                 </div>
                                 <div className="error">{err_market_cap}</div>
                               </div>
@@ -1042,7 +1042,7 @@ exchange_link
                             <div className="col-md-8">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                  <input type="text" placeholder="Whitepaper" value={whitepaper} onChange={(e)=>setWhitepaper(e.target.value)}/>
+                                  <input type="text" className="form-control" placeholder="Whitepaper" value={whitepaper} onChange={(e)=>setWhitepaper(e.target.value)}/>
                                 </div>
                                 <div className="error">{err_whitepaper}</div>
                               </div>
@@ -1131,7 +1131,7 @@ exchange_link
                                 <div key={i}>
                                   <div className="form-custom create_token_no_space">
                                     <div className="form-group input_block_outline">
-                                      <input autoComplete="off" type="text" placeholder="Exchange URL" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
+                                      <input autoComplete="off" type="text" className="form-control" placeholder="Exchange URL" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
                                     </div>
                                     <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.png" /> Add More Exchange</span></button>
                                   </div>
@@ -1142,7 +1142,7 @@ exchange_link
                                     <div >
                                       <div className="form-custom create_token_top_space">
                                         <div className="form-group input_block_outline">
-                                          <input autoComplete="off" type="text" placeholder="Exchange URL" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
+                                          <input autoComplete="off" type="text" className="form-control" placeholder="Exchange URL" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
                                         </div>
                                         <p className="remove_block"><span onClick={() =>{clickOnDelete(i)}}>Remove</span></p>
                                       </div>
@@ -1153,7 +1153,7 @@ exchange_link
                                   <div>
                                   <div className="form-custom create_token_no_space">
                                     <div className="form-group input_block_outline">
-                                      <input autoComplete="off" type="text" name="link" placeholder="Exchange URL" value={exchange_link} onChange={e => handleExchangeChange(e, 0)} />
+                                      <input autoComplete="off" type="text" className="form-control" name="link" placeholder="Exchange URL" value={exchange_link} onChange={e => handleExchangeChange(e, 0)} />
                                     </div>
                                   </div>
                                 </div>
@@ -1178,7 +1178,7 @@ exchange_link
                                     <div >
                                       <div className="form-custom create_token_no_space">
                                         <div className="form-group input_block_outline">
-                                          <input autoComplete="off" type="text" placeholder="Explorer URL" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
+                                          <input autoComplete="off" className="form-control" type="text" placeholder="Explorer URL" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
                                         </div>
                                       
                                         <button className="addmore_ico create-token-res" onClick={addMoreExplorers}><span><img src="/assets/img/add-more.png" /> Add More Explorer</span></button>
@@ -1189,7 +1189,7 @@ exchange_link
                                   <div >
                                     <div className="form-custom create_token_top_space">
                                       <div className="form-group input_block_outline">
-                                        <input autoComplete="off" type="text" placeholder="Explorer URL" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
+                                        <input autoComplete="off" type="text" className="form-control" placeholder="Explorer URL" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
                                       </div>
                                       <p className="remove_block"><span onClick={() =>{clickOnExplorerDelete(i)}}>Remove</span></p>
                                     </div>
@@ -1200,7 +1200,7 @@ exchange_link
                               <div >
                                       <div className="form-custom create_token_no_space">
                                         <div className="form-group input_block_outline">
-                                          <input autoComplete="off" type="text" placeholder="Explorer URL" name="link" value={explorer} onChange={e => handleExplorersChange(e, 0)} />
+                                          <input autoComplete="off" type="text" className="form-control" placeholder="Explorer URL" name="link" value={explorer} onChange={e => handleExplorersChange(e, 0)} />
                                         </div>
                                       </div>
                                     </div>
@@ -1226,7 +1226,7 @@ exchange_link
                                   <div >
                                     <div className="form-custom create_token_no_space">
                                       <div className="form-group input_block_outline">
-                                        <input autoComplete="off" type="text" placeholder="Community URL" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
+                                        <input autoComplete="off" type="text" className="form-control" placeholder="Community URL" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
                                       </div>
                                       <button className="addmore_ico create-token-res" onClick={addMoreCommunity}><span><img src="/assets/img/add-more.png" /> Add More Community</span></button>
                                     </div>
@@ -1237,7 +1237,7 @@ exchange_link
                                   <div>
                                     <div className="form-custom create_token_top_space">
                                       <div className="form-group input_block_outline">
-                                        <input autoComplete="off" type="text" placeholder="Community URL" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
+                                        <input autoComplete="off" type="text" className="form-control" placeholder="Community URL" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
                                       </div>
                                       <p className="remove_block"><span onClick={() =>{clickOnCommunityDelete(i)}}>Remove</span></p>
                                     </div>
@@ -1248,7 +1248,7 @@ exchange_link
                               <div>
                                 <div className="form-custom create_token_no_space">
                                   <div className="form-group input_block_outline">
-                                    <input autoComplete="off" type="text" placeholder="Community URL" name="link" value={community_address} onChange={e => handleCommunityChange(e, 0)} />
+                                    <input autoComplete="off" type="text" className="form-control" placeholder="Community URL" name="link" value={community_address} onChange={e => handleCommunityChange(e, 0)} />
                                   </div>
                                 </div>
                               </div>
