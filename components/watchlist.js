@@ -165,7 +165,7 @@ return (
                           <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
                         </div>
                         <div className="media-body">
-                          <h4 className="media-heading">{e.token_name} <span>{e.symbol.toUpperCase()}</span></h4>
+                          <h4 className="media-heading">{e.token_name} <span>{e.symbol?(e.symbol).toUpperCase():null}</span></h4>
                         </div>
                       </div> 
                       </a>
@@ -190,12 +190,15 @@ return (
                     <Link href={"/"+e.token_id}>
                       <a>
                       {
+                        e.contract_addresses?
                           e.contract_addresses.length > 0
                           ?
                             e.contract_addresses[0].network_type === "1" ? "ERC20" : "BEP20" 
                           // e.contract_addresses.map((ca)=>
                           //   parseInt(ca.network_type) === 1 ? "ERC20" : "BEP20" 
                           //)
+                          :
+                          null
                           :
                           null
                         } 

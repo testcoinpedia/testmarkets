@@ -44,7 +44,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, payment
   
   const [user_token]= useState((userAgent.user_token) ? userAgent.user_token:"")
   const [perPage] = useState(10);
-  
+  const [tokenStatus] = useState(data.tokenStatus)
   const [current_url]= useState(website_url+token_id)
   const [exchangelistnew, set_exchange_list_new]= useState([])
   const [exchangelist, set_exchangelist]= useState([])
@@ -1656,7 +1656,7 @@ const removeFromWatchlist = (param_token_id) =>
                     
                       <ul className="token_share_vote"> 
                         {
-                          user_token ?
+                          tokenStatus ?
                             <>
                               {
                                 voting_status == false ?
@@ -1699,15 +1699,13 @@ const removeFromWatchlist = (param_token_id) =>
                                       Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
                                     </span>
                                   </a>&nbsp;
-                                  {
+                                  {/* {
                                     contract_copy_status === 'ETH' ? 
                                     <span>Copied</span>
-                                    :
-                                   
+                                    : */}
                                     <img  onClick={()=> {copyContract(data.contract_addresses[0].contract_address, 'ETH')}} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
                                    
-                                  }
-                                  
+                                  {/* } */}
                                   <img src="/assets/img/down-arrow.png" ref={contractRef}  onClick={()=> setOtherContract(!otherContract)} className="dropdown_arrow_img" />
                                   {
                                     otherContract
@@ -1760,15 +1758,16 @@ const removeFromWatchlist = (param_token_id) =>
                                       <p>Ethereum</p> 
                                       <p>
                                         <a  href={"https://etherscan.io/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}</a>
-                                        {
+                                        <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address,"ETH")} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                        {/* {
                                           
                                     contract_copy_status === 'ETH' ? 
                                     <span className="votes_market" >Copied</span>
                                     :
-                                        <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address,"ETH")} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                    <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address,"ETH")} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
                                      
                                         } 
-                                        
+                                         */}
                                       </p>
                                     </div>
                                     :
@@ -1784,29 +1783,15 @@ const removeFromWatchlist = (param_token_id) =>
                                   <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
                                   <img  className="token_dropdown_img" src="/assets/img/ETH.svg"></img> Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
                                   </a> 
-                                  {
-                                      contract_copy_status === 'ETH' ? 
-                                      <span className="votes_market" >Copied</span>
-                                      :
-                                   
-                                    <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,"ETH")} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
-                                   
-                                  }
+                                  <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,"ETH")} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
+                                  
                                   
                                 </span>
                                 : 
                                 <span className="wallet_address_token" onClick={()=> setOtherContract(!otherContract)}>
                                   <a href={"https://bscscan.com/token/"+data.contract_addresses[0].contract_address} target="_blank"><img  className="token_dropdown_img" src="/assets/img/BSC.svg"></img> Binance Smart Chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
                                   </a> 
-                                  {
-                                      contract_copy_status === 'BNB'?
-                                      <span  className="votes_market">Copied</span>
-                                      :
-                                  
                                   <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,'BNB')} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
-                                
-                                  }
-                                  
                                 </span>
                               } 
                             </span> 
@@ -1816,8 +1801,22 @@ const removeFromWatchlist = (param_token_id) =>
                         :
                         null
                       } 
+                       {
+                                      contract_copy_status === 'ETH' ? 
+                                      <span className="votes_market" >Copied</span>
+                                      :
+                                      null
+                                   
+                        }
+                          {
+                                      contract_copy_status === 'BNB'?
+                                      <span  className="votes_market">Copied</span>
+                                      :
+                                    null
+                                
+                           }
                     </div>
-                  
+                   
                   </div>
                 </div>
 
@@ -1832,7 +1831,7 @@ const removeFromWatchlist = (param_token_id) =>
                             <h4 className="media-heading">{data.token_name ? data.token_name : "-"} 
                               {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
                               {
-                            user_token ?
+                            tokenStatus ?
                             <>
                               {
                               watchlist == true ?
@@ -1857,6 +1856,7 @@ const removeFromWatchlist = (param_token_id) =>
                           <h5>
                             {live_price?"$":null} {live_price > 0 ? separator(live_price.toFixed(10)) : "NA"} 
                             {
+                              live_price?
                               price_change_24h
                               ?
                               price_change_24h > 0
@@ -1864,6 +1864,8 @@ const removeFromWatchlist = (param_token_id) =>
                               <span className="market_growth market_up"><img src="/assets/img/caret-up.png" />{price_change_24h.toFixed(2)}%</span>
                               :
                               <span className="market_growth market_down"><img src="/assets/img/caret-angle-down.png" />{price_change_24h.toPrecision(3)}%</span>
+                              :
+                              null
                               :
                               null
                             }
@@ -2405,8 +2407,17 @@ const removeFromWatchlist = (param_token_id) =>
                                 <li>Tokens Sold <span>{launchpad_object.tokens_sold} {data.symbol ? (data.symbol).toUpperCase() : "-"}</span></li>
                                 <li>Access <span>{launchpad_object.access_type == 1 ? "Public" : "Private"}</span></li>
                                 <li>Where to buy <span>{launchpad_object.where_to_buy_link}</span></li>
-                                <li>% of Total Supply <span> 34% (547554 {data.symbol ? (data.symbol).toUpperCase() : "-"})</span></li>
-                                <li>Accept <span>{launchpad_object.accept_payment_type}</span></li>
+                                <li>% of Total Supply <span> {launchpad_object.percentage_total_supply}(547554 {data.symbol ? (data.symbol).toUpperCase() : "-"})</span></li>
+                                <li>Accept <span>{
+                                                   paymentTypes.map((inner)=>
+                                                   <>{launchpad_object.accept_payment_type.includes(inner._id) ?
+                                                    <>{inner.payment_name } <span>/</span></>
+                                                    
+                                                  :
+                                                  null
+                                                   }</> 
+                                                 )
+                                                 }</span></li>
                               </ul>
 
                               <h5>How to participate</h5>

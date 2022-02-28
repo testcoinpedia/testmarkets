@@ -11749,6 +11749,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .copy_link.copy-contract-img {
   cursor: pointer;
+  float: right;
 }
 
 .airdrop_single_page .promotion__text h1,
@@ -12750,7 +12751,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .token_list_table .table td {
-  padding: 15px 10px;
+  padding: 18px 10px;
 }
 
 .token_list_table .table tr {
@@ -12980,9 +12981,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .copy-contract-img {
   margin-left: 10px;
-  width: 12px;
+  width: 14px;
   position: relative;
-  top: -2px;
+  top: 0px;
 }
 
 .token-contract-details {
@@ -12993,7 +12994,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 13px;
   padding: 13px 10px;
   display: block;
-  margin-top: 27px;
+  margin-bottom: 0px;
 }
 
 .token-contract-details .dropdown_block {
@@ -14103,7 +14104,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .votes_market {
   color: green;
-  padding-left: 58px;
+  padding-left: 0px;
  
 }
 
@@ -14569,8 +14570,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: block;
 }
 
+.wallet_address_token a {
+  display: inline-block;
+  font-size: 14px;
+}
+
 .wallet_address_token #copyTooltip {
   float: right;
+}
+
+.token_main_details .media-heading img {
+  margin-left: 5px;
 }
 
 @media (min-width: 992px) {
@@ -17737,7 +17747,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 @media (max-width: 410px) {
   .copy-contract-img {
-    width: 12px;
+    width: 14px;
+    margin-top: 3px;
     margin-left: 10px;
   }
 }

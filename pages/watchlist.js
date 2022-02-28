@@ -148,20 +148,18 @@ export default function Home({config, user_token})
                                 }
                                 </td>
                                 
-                                <td>
-                                  {i+1}
-                                </td>
+                                <td> {i+1} </td>
                                 <td>
                                   <Link href={"/"+e.token_id}>
                                     <a>
-                                    <div className="media">
-                                      <div className="media-left">
-                                        <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
-                                      </div>
-                                      <div className="media-body">
-                                        <h4 className="media-heading">{e.token_name} <span>{e.symbol.toUpperCase()}</span></h4>
-                                      </div>
-                                    </div> 
+                                      <div className="media">
+                                        <div className="media-left">
+                                          <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                        </div>
+                                        <div className="media-body">
+                                          <h4 className="media-heading">{e.token_name} <span>{(e.symbol).toUpperCase()}</span></h4>
+                                        </div>
+                                      </div> 
                                     </a>
                                   </Link>
                                 </td> 

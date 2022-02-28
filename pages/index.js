@@ -13,10 +13,12 @@ var $ = require( "jquery" );
 
 export default function Home({resData, userAgent, config, user_token}) 
 { 
+
+  const [tokenStatus] = useState(resData.tokenStatus)
   const [tokenslist,set_tokenslist] = useState(resData.message)
   const [total_tokens_count, set_total_tokens_count] = useState(resData.message.length)  
   const [current_page_token_list, set_current_page_token_list] = useState([]); 
- const [voting_ids, setvoting_ids] = useState([])  // commented
+  const [voting_ids, setvoting_ids] = useState([])  // commented
   const [watchlist, set_watchlist] = useState([])
   const [watch_list_status, set_watch_list_status] = useState(false)
   const [err_searchBy, setErrsearchBy] = useState("")
@@ -360,7 +362,7 @@ const removeFromWatchlist = (param_token_id) =>
                     <ul class="category_list">
                       <li class={all_tab_status?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
                       {
-                      user_token?
+                      tokenStatus?
                       <li class={watchlist_tab_status===2?"active_tab":null}><a onClick={()=>set_watch_list()}><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></li>
                       :
                       <li>
@@ -416,7 +418,7 @@ const removeFromWatchlist = (param_token_id) =>
                              <tr key={i}>
                                      <td>
                                      {
-                                       user_token ?
+                                       tokenStatus ?
                                        <>
                                        {
                                          watchlist.includes(e._id) ?
@@ -437,14 +439,14 @@ const removeFromWatchlist = (param_token_id) =>
                                      <td>
                                        <Link href={"/"+e.token_id}>
                                          <a>
-                                         <div className="media">
-                                           <div className="media-left">
-                                             <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
-                                           </div>
-                                           <div className="media-body">
-                                             <h4 className="media-heading">{e.token_name} <span>{e.symbol.toUpperCase()}</span></h4>
-                                           </div>
-                                         </div> 
+                                          <div className="media">
+                                            <div className="media-left">
+                                              <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                            </div>
+                                            <div className="media-body">
+                                              <h4 className="media-heading">{e.token_name} <span>{(e.symbol).toUpperCase()}</span></h4>
+                                            </div>
+                                          </div> 
                                          </a>
                                        </Link>
                                      </td> 
@@ -510,7 +512,7 @@ const removeFromWatchlist = (param_token_id) =>
                                      
                                      <td  className="mobile_hide_table_col">
                                        {
-                                         user_token ?
+                                         tokenStatus ?
                                          <>
                                          {
                                            voting_ids.includes(e._id) ?
