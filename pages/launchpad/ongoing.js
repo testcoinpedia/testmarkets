@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Axios from 'axios'; 
 import Head from 'next/head';
 import cookie from 'cookie'
-import {API_BASE_URL,config,website_url, app_coinpedia_url, separator,IMAGE_BASE_URL} from '../../components/constants' 
+import {API_BASE_URL,config,website_url, app_coinpedia_url, separator,IMAGE_BASE_URL,market_coinpedia_url} from '../../components/constants' 
 import TableContentLoader from '../../components/loaders/tableLoader'
 import moment from 'moment'
  
@@ -13,25 +13,62 @@ export default function OngoingLaunchPad({userAgent}) {
 
   const [user_token] = useState(userAgent.user_token)
   const [ongoing, setOngoing] = useState([])
+  const [watchlist, set_watchlist] = useState([])
   const [apistatus, setapistatus] = useState(false)
   const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")
- 
-
+  const [watch_list_status, set_watch_list_status] = useState(false)
+  const [watchlist_tab_status, set_watchlist_tab_status] = useState("")
+  const [all_tab_status, set_all_tab_status] = useState(true)
+  const [tokenStatus,set_tokenStatus] = useState("")
   useEffect(()=>{ 
     GetAllOngoing()
   },[])
 
   const GetAllOngoing = ()=>{ 
-    Axios.get(API_BASE_URL+"markets/launchpads/ongoing", config(""))
+    Axios.get(API_BASE_URL+"markets/launchpads/ongoing", config(user_token))
     .then(response=>{
           if(response.data.status){  
             console.log(response)
             setapistatus(true)
             setOngoing(response.data.message) 
+            set_watchlist(response.data.watchlist)
+            set_tokenStatus(response.data.tokenStatus)
           }
     })
   } 
- 
+  const addToWatchlist = (param_token_id) =>
+  {
+    Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config(user_token))
+    .then(res=>
+    { 
+      console.log("add", res.data)
+      if(res.data.status)
+      {
+        var sdawatchlist = watchlist
+        set_watchlist([])
+        sdawatchlist.push(param_token_id)
+        set_watchlist(sdawatchlist)
+        console.log("watchlist", watchlist)
+      }
+    })
+  }
+  
+  const removeFromWatchlist = (param_token_id) =>
+  {
+    Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config(user_token))
+    .then(res=>
+    {
+      console.log("remove", res.data)
+      if(res.data.status)
+      {
+        var sdawatchlist = watchlist
+        set_watchlist([])
+        sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
+        set_watchlist(sdawatchlist)
+        console.log("watchlist", watchlist)
+      }
+    })
+  }
   const makeJobSchema=()=>{  
     return { 
         "@context":"http://schema.org/",
@@ -108,13 +145,21 @@ export default function OngoingLaunchPad({userAgent}) {
 
                 <div className="completed_events">
                   <div className="row">
-                    <div className="col-md-6 col-7">
+                    <div className="col-md-9 col-6">
                       <ul className="category_list">
                         <li className="active_tab">All</li>
-                        <li><img src="/assets/img/wishlist_star.svg" /> Watchlist</li>
+                        <li><img src="/assets/img/wishlist_star.svg"/> Watchlist</li>
+                        {/* <li><Link href={app_coinpedia_url+"watchlist?tokens=true"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li> */}
+                        <li className="inactive"  data-toggle="modal" data-target="#comingSoon">DeFi</li>
+                        <li className="inactive" data-toggle="modal" data-target="#comingSoon">NFT</li>
+                        <li className="inactive" data-toggle="modal" data-target="#comingSoon">Metaverse</li>
+                        <li className="inactive" data-toggle="modal" data-target="#comingSoon">Polkadot</li>
+                        <li className="inactive" data-toggle="modal" data-target="#comingSoon">BSC</li>
+                        <li className="inactive" data-toggle="modal" data-target="#comingSoon">Solana</li>
+                        <li className="inactive" data-toggle="modal" data-target="#comingSoon">Avalanche</li>
                       </ul>
                     </div>
-                    <div className="col-md-6 col-5">
+                    <div className="col-md-3 col-6">
                       <ul className="filter_rows">
                         <li>
                           Show rows 
@@ -150,7 +195,19 @@ export default function OngoingLaunchPad({userAgent}) {
                               ongoing.map((e,i)=>
                         <tr key={i}>
                           <td>
-                            <img src="/assets/img/wishlist_star.svg" className="wishlist_star" />
+                          {
+                                       tokenStatus ?
+                                       <>
+                                       {
+                                         watchlist.includes(e.token_row_id) ?
+                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
+                                         :
+                                         <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star.svg" /></span>
+                                         }
+                                       </>
+                                       :
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" /></a></Link>
+                                     }
                           </td>
                           <td>{i+1}</td>
                           <td>
@@ -246,6 +303,21 @@ export default function OngoingLaunchPad({userAgent}) {
 
                 
 
+              </div>
+            </div>
+          </div>
+          <div className="coming_soon_modal">
+            <div className="modal" id="comingSoon">
+              <div className="modal-dialog modal-sm">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h4 className="modal-title coming_soon_title">Coming Soon !!</h4>
+                    <button type="button" className="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <div className="modal-body">
+                    <p className="coming_soon_subtext">This feature will be available soon</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

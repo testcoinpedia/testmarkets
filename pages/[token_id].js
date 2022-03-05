@@ -3,12 +3,13 @@ import { ethers } from 'ethers';
 import Link from 'next/link' 
 import Head from 'next/head';
 import Error from './404'
-import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, graphqlApiKEY,count_live_price} from '../components/constants'
+import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, graphqlApiKEY, count_live_price, Logout,DomainName} from '../components/constants'
 import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
 import moment from 'moment'
 import Highcharts from 'highcharts';    
 import ReactPaginate from 'react-paginate';
 import cookie from "cookie"
+import JsCookie from "js-cookie" 
 import Axios from 'axios'
 import Datetime from "react-datetime"
 import "react-datetime/css/react-datetime.css" 
@@ -29,10 +30,10 @@ let inputProps2 = {
 } 
 
 
-export default function tokenDetailsFunction({errorCode, data, token_id, paymentTypes, userAgent, config}) 
+export default function tokenDetailsFunction({errorCode, data, token_id, userAgent, config}) 
 {   
    
-  console.log("data", data)
+  // console.log("data", data)
   if(errorCode) {return <Error/> }
   const communityRef = useRef(null);
   const explorerRef = useRef(null);
@@ -41,7 +42,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, payment
   const [symbol] = useState(data.symbol)
   const [watchlist, set_watchlist] = useState(data.watchlist_status)
   const [share_modal_status, set_share_modal_status] = useState(false)
-  
+  const [light_dark_mode, set_light_dark_mode]=useState(JsCookie.get('light_dark_mode'))
   const [user_token]= useState((userAgent.user_token) ? userAgent.user_token:"")
   const [perPage] = useState(10);
   const [tokenStatus] = useState(data.tokenStatus)
@@ -56,7 +57,8 @@ export default function tokenDetailsFunction({errorCode, data, token_id, payment
   const [tokentransactionsPageCount, settokentransactionsPageCount] = useState(0)
   const [tokentransactionsCurrentPage , settokentransactionsCurrentPage] = useState(0)
   const [today_date, set_today_date]= useState(data.today_date)
-
+  const [no_data_link, set_no_data_link]= useState("")
+  
   const [searchBy, setSearchBy] = useState("")  
   const [err_searchBy, setErrsearchBy] = useState("") 
   const [search_contract_address, set_search_contract_address] = useState("")    
@@ -73,6 +75,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, payment
   const [customenddate, setCustomenddate] = useState("")
 
   const [price_change_24h, set_priceChange24H] = useState("") 
+  const [circulating_supply, setcirculating_supply] = useState("") 
   const [live_price, setLivePrice] = useState("")
   const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
 
@@ -349,7 +352,7 @@ const getWalletDetails=(id, networktype, wallettype)=>{
   fetch(graphQlURL, opts)
     .then(res => res.json())
     .then(result => { 
-      console.log("wallet_details",result)
+     // console.log("wallet_details",result)
       let get_inbond_list = []
       let get_outbond_list = []
 
@@ -500,17 +503,17 @@ useEffect(()=>
  
   if(data.contract_addresses.length > 0)
   { 
+    getGraphData(4, data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
     getexchangedata(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
     get24hVolume(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
     getTokenTransactions(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
     //getTokenexchange(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
-    getGraphData(4, data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)     
-    getTokenUsdPrice(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
+     getTokenUsdPrice(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
     // console.log(data.contract_addresses[0].contract_address)
     
   } 
 
-  
+  set_light_dark_mode(JsCookie.get('light_dark_mode'))
   document.addEventListener("click", handleClickOutside, false);
   return () => {
     document.removeEventListener("click", handleClickOutside, false);
@@ -633,7 +636,7 @@ const getexchangedata= async (id,networks)=> {
                      if(item.pair.address==e.currency.address){
                       createObj['pair_one_value']=e.value
                       var res =await livePrice(item.pair.address,networks)
-                        console.log(item.pair.name, res)
+                        //console.log(item.pair.name, res)
                         createObj['pair_one_live_price']=res
                         pair_one_value_in_usd = e.value*res
                         
@@ -654,10 +657,10 @@ const getexchangedata= async (id,networks)=> {
                 network_type:"ethereum",
                 exchanges: [createObj]
               }
-              console.log('req Obj',reqObj)
+             // console.log('req Obj',reqObj)
               const config = { headers: { "Content-Type": "application/json" } }
               const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
-              console.log("Api Response", sadfdsf)
+              //console.log("Api Response", sadfdsf)
             
            }
            else
@@ -667,10 +670,10 @@ const getexchangedata= async (id,networks)=> {
               network_type:"bsc",
               exchanges: [createObj]
             }
-            console.log('req Obj',reqObj)
+            //console.log('req Obj',reqObj)
             const config = { headers: { "Content-Type": "application/json" } }
             const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
-            console.log("Api Response", sadfdsf)
+            //console.log("Api Response", sadfdsf)
            }
             
           })
@@ -762,7 +765,7 @@ const livePrice =async(id,networks)=>
      
       if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
       { 
-        console.log(result.data.ethereum.dexTrades)
+        //console.log(result.data.ethereum.dexTrades)
         
         if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c")
         {
@@ -931,7 +934,7 @@ const getTokenUsdPrice=async(id, networks)=>
   {
       if(liveQueryRun.data.ethereum != null && liveQueryRun.data.ethereum.dexTrades != null) 
       { 
-        console.log("Live Price",liveQueryRun.data)   
+        //console.log("Live Price",liveQueryRun.data)   
         var cal_live_price = 0
         if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c")
         {
@@ -1025,7 +1028,7 @@ const getTokendetails=async (id, usd_price, network_type)=>
   const liveDecimalRun = await liveDecimalQuery.json()
   if(liveDecimalRun.data.ethereum !== null) 
   { 
-    console.log("usd price",usd_price)
+    //console.log("usd price",usd_price)
     setdecimal(liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals)
     var get_total_supply_value = await getTotalMaxSupply(id, network_type)
     var cal_total_supply_value = get_total_supply_value/10**liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals
@@ -1033,7 +1036,7 @@ const getTokendetails=async (id, usd_price, network_type)=>
     var cal_market_cap = cal_total_supply_value * usd_price
     set_market_cap(cal_market_cap)
     getMarketCap(id, liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals, usd_price, network_type) 
-    //getCirculatingSupply(id,liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals, network_type)
+    getCirculatingSupply(id,liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals, network_type)
     const reqObj = {
       network_type : network_type,
       contract_address: id,
@@ -1081,9 +1084,9 @@ const getMarketCap =async(id, decval, usd_price, network_type)=> {
     const tokenAbi = ["function totalSupply() view returns (uint256)"];
     const tokenContract = new ethers.Contract(id, tokenAbi, provider);
     const supply = await tokenContract.totalSupply() / (10 ** decval);  
-    console.log("supply", supply)
+    //console.log("supply", supply)
     // set_market_cap(supply * usd_price) 
-    console.log(market_cap) 
+   // console.log(market_cap) 
 
   if(network_type === "1")
   {
@@ -1117,7 +1120,7 @@ const getMarketCap =async(id, decval, usd_price, network_type)=> {
       const token0 = await liqContract.token0();
       const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
       set_liquidity(liquidity)
-      console.log(liquidity)
+     // console.log(liquidity)
       }
       else
       {
@@ -1240,7 +1243,7 @@ const get24hChange=(fun_live_price, id, networks)=>
 
             change24h = ((contract_usdt_price - (quote_zero*quote_one)) / (contract_usdt_price) * 100) 
             set_priceChange24H(change24h)
-            console.log(change24h)
+            //console.log(change24h)
           } 
           else
           {
@@ -1403,7 +1406,7 @@ const getGraphData=(datetime, id, networks)=>
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": graphqlApiKEY
+        "X-API-KEY": "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
       },
       body: JSON.stringify({
         query
@@ -1431,71 +1434,167 @@ const getGraphData=(datetime, id, networks)=>
             prices.push(val)
             // console.log(prices)
           }
-        }  
-
-        Highcharts.chart('container', {
-          chart: {
-              zoomType: 'x'
-          },
-          title: {
-              text: ''
-          },
-          xAxis: {
-              type: 'datetime',
-              lineColor: '#f7931a',
-              dashStyle: 'Dash',
-          },
-          yAxis: {
-              title: {
-                  text: ('USD Prices')
+        } 
+        
+        if(JsCookie.get('light_dark_mode')=="dark"){
+            Highcharts.chart('container',{
+            chart: {
+              backgroundColor: {
+                linearGradient: [0, 0, 0, 1],
+                stops: [
+                  [0, 'rgb(23, 23, 26,1)'],
+                  [1, 'rgb(23, 23, 26,1)']
+                ]
               },
-              dashStyle: 'Dash',
+              borderWidth: 0,
+              borderRadius: 15,
+              plotBackgroundColor: null,
+              plotShadow: false,
+              plotBorderWidth: 0
+            },
+            title: {
+              text: ''
+            },
+            xAxis: {
+              type: 'datetime',
+                lineColor: '#f7931a',
+                dashStyle: 'Dash',
+            },
+            yAxis: {
+              title: {
+                text: ('USD Prices')
+            },
+            dashStyle: 'Dash',
+        },
+        colors: ['#f7931a'],
+        legend: {
+            enabled: false
+            },
+            tooltip: {
+              backgroundColor: {
+                linearGradient: [0, 0, 0, 1],
+                stops: [
+                  [0, 'rgb(23, 23, 26,1)'],
+                  [1, 'rgb(23, 23, 26,1)']
+                ]
+              },
+              borderWidth: 0,
+              style: {
+                color: '#FFF'
+              },
+              formatter: function () {
+                  var point = this.points[0];
+                  return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
+                  '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
+              },
+            shared: true
+   },
+            
+   plotOptions: {
+    area: {
+          fillColor: {
+              linearGradient: {
+                  x1: 0,
+                  y1: 0,
+                  x2: 0,
+                  y2: 1
+              },
+              stops: [
+                [0, 'rgb(255 248 241 / 1%)'],
+                            [1, 'rgb(255 255 255 / 1%)']
+              ]
           },
-          colors: ['#f7931a'],
-          legend: {
-              enabled: false
+          marker: {
+              radius: 1
           },
-          tooltip: {
-                    formatter: function () {
-                        var point = this.points[0];
-                        return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
-                        '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
-                    },
-      shared: true
-         },
-          plotOptions: {
-              area: {
-                  fillColor: {
-                      linearGradient: {
-                          x1: 0,
-                          y1: 0,
-                          x2: 0,
-                          y2: 1
-                      },
-                      stops: [
-                          [0, 'rgb(255 248 241 / 59%)'],
-                          [1, 'rgb(255 255 255 / 59%)']
-                      ]
-                  },
-                  marker: {
-                      radius: 1
-                  },
-                  lineWidth: 3,
-                  states: {
-                      hover: {
-                          lineWidth: 3
-                      }
-                  },
-                  threshold: null
+          lineWidth: 3,
+          states: {
+              hover: {
+                  lineWidth: 3
               }
           },
-    
-          series: [{
-              type: 'area',
-              name: '',
-              data: prices
-          }]
-      }); 
+          threshold: null
+      }
+  },
+
+  series: [{
+      type: 'area',
+      name: '',
+      data: prices
+  }]
+          });
+
+         
+        }
+        else
+        {
+          Highcharts.chart('container', {
+            chart: {
+                zoomType: 'x'
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                type: 'datetime',
+                lineColor: '#f7931a',
+                dashStyle: 'Dash',
+            },
+            yAxis: {
+                title: {
+                    text: ('USD Prices')
+                },
+                dashStyle: 'Dash',
+            },
+            colors: ['#f7931a'],
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                      formatter: function () {
+                          var point = this.points[0];
+                          return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
+                          '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
+                      },
+        shared: true
+           },
+            plotOptions: {
+              area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, 'rgb(255 248 241 / 59%)'],
+                            [1, 'rgb(255 255 255 / 59%)']
+                        ]
+                    },
+                    marker: {
+                        radius: 1
+                    },
+                    lineWidth: 3,
+                    states: {
+                        hover: {
+                            lineWidth: 3
+                        }
+                    },
+                    threshold: null
+                }
+            },
+      
+            series: [{
+                type: 'area',
+                name: '',
+                data: prices
+            }]
+        }); 
+
+
+        }
+        
     }
 
       })
@@ -1519,7 +1618,7 @@ const myReferrlaLink=()=> {
     // document.execCommand("Copy"); 
     // copytext.remove()
     set_contract_copy_status(type)
-     console.log(type)
+     //console.log(type)
    
 
     var copyText = document.createElement("input")
@@ -1586,7 +1685,7 @@ const removeFromWatchlist = (param_token_id) =>
     {   
       Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+data.token_id, config)
       .then(res=>{ 
-      console.log(res)
+      //console.log(res)
       if(res.data.status === true) 
       {
         set_votes(votes+1)
@@ -1599,7 +1698,7 @@ const removeFromWatchlist = (param_token_id) =>
     {
       Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+data.token_id, config)
       .then(res=>{ 
-      console.log(res)
+     // console.log(res)
       if(res.data.status === true) 
       {
         set_votes(votes-1)
@@ -1667,7 +1766,7 @@ const removeFromWatchlist = (param_token_id) =>
                             </>
                             :
                             <li  style={{cursor:"pointer"}} >
-                                <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a>
+                                <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a onClick={()=> Logout()}>
                                 <img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span>
                                 </a></Link>
                             </li>
@@ -1831,20 +1930,20 @@ const removeFromWatchlist = (param_token_id) =>
                             <h4 className="media-heading">{data.token_name ? data.token_name : "-"} 
                               {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
                               {
-                            tokenStatus ?
-                            <>
-                              {
-                              watchlist == true ?
-                              <span onClick={()=>removeFromWatchlist(data._id)} ><img src="/assets/img/watchlist_token.svg" /></span>
-                              :
-                              <span onClick={()=>addToWatchlist(data._id)} ><img src="/assets/img/watchlist_normal.svg" /></span>
+                                tokenStatus ?
+                                <>
+                                  {
+                                  watchlist == true ?
+                                  <span onClick={()=>removeFromWatchlist(data._id)} ><img src="/assets/img/watchlist_token.svg" /></span>
+                                  :
+                                  <span onClick={()=>addToWatchlist(data._id)} ><img src="/assets/img/watchlist_normal.svg" /></span>
+                                  }
+                                </>
+                                :
+                                <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a onClick={()=> Logout()}>
+                                <img src="/assets/img/watchlist_normal.svg" />
+                                </a></Link>
                               }
-                             </>
-                             :
-                             <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a>
-                             <img src="/assets/img/watchlist_normal.svg" />
-                             </a></Link>
-                           }
                             </h4>
                             <h5><span>{data.symbol ? (data.symbol).toUpperCase() : "-"}</span></h5>
                           </div>
@@ -1958,23 +2057,14 @@ const removeFromWatchlist = (param_token_id) =>
                           <div className="col-md-5">
                             <div className="coin_main_links">
                               <ul className="coin_quick_details">
-                                {
-                                  data.website_link==""?
-                                  null
-                                  :
-                                  <li className="coin_individual_list">
-                                  <div className="quick_block_links">
-                                    <div className="widgets__select links_direct"><a href={createValidURL(data.website_link)} target="_blank"> <img src="/assets/img/website.svg" className="coin_cat_img" />Website </a></div>
-                                  </div>
-                                </li>
-                                }
+                                
 
                                 {
                                   data.explorer.length > 0
                                   ?
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img" /> : null} </a></div>
+                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> : null} </a></div>
                                     </div> 
                                     { 
                                       explorer_links
@@ -1998,23 +2088,15 @@ const removeFromWatchlist = (param_token_id) =>
                                           </ul>
                                       </div>
                                       :
-                                      null
+                                     null
                                     }
                                   </li> 
                                   :
-                                  null
-                                }
-
-                                {
-                                  data.source_code_link
-                                  ?
                                   <li className="coin_individual_list">
-                                    <div className="quick_block_links">
-                                      <div className="widgets__select links_direct"><a href={createValidURL(data.source_code_link)} target="_blank"><img src="/assets/img/source_code.svg" className="coin_cat_img" /> Source Code </a></div>
-                                    </div>
-                                  </li>
-                                  :
-                                  null
+                                      <div className="quick_block_links">
+                                        <div className="widgets__select links_direct" > <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Explorer Not Avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> : null} </a></div>
+                                      </div>
+                                      </li>
                                 }
 
                                 {
@@ -2026,7 +2108,89 @@ const removeFromWatchlist = (param_token_id) =>
                                     </div>
                                   </li>
                                   :
-                                  null 
+                                  <li className="coin_individual_list">
+                                  <div className="quick_block_links">
+                                    <div className="widgets__select links_direct"><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("White paper is not avaliable")}} ><img src="/assets/img/whitepaper.svg" className="coin_cat_img" /> White paper </a></div>
+                                  </div>
+                                </li>
+                                }
+                                {
+                                  data.community_address.length > 0
+                                  ?
+                                  <li className="coin_individual_list">
+                                    <div className="quick_block_links">
+                                      <div className="widgets__select links_direct" ref={communityRef} onClick={()=> {set_community_links(!community_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Community {data.community_address.length > 0 ? <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> : null} </a></div>
+                                    </div> 
+                                    { 
+                                      community_links
+                                      ? 
+                                      <div className="dropdown_block badge_dropdown_block">
+                                          <ul>
+                                              {
+                                                  data.community_address.map((e, i)=>{
+                                                    var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+                                                    let url = ""
+                                                    if(regexp.test(e)){
+                                                        url = new URL(e);
+                                                    }
+                                                    else{
+                                                        e = "http://"+e
+                                                        url = new URL(e);
+                                                    }  
+                                                      return <li key={i}><a href={e ? e : ""} target="_blank">{(url.hostname).includes("t.me") ?url.hostname : null}{(url.hostname).indexOf(".") !== -1 ?(url.hostname).slice(0, (url.hostname).indexOf(".")) : url.hostname}</a></li>
+                                                  }) 
+                                              }
+                                          </ul>
+                                      </div>
+                                      :
+                                     null
+                                    }
+                                  </li> 
+                                  :
+                                  <li className="coin_individual_list">
+                                      <div className="quick_block_links">
+                                        <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Community address is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Community  </a></div>
+                                      </div>
+                                      </li>
+                                }
+
+                                </ul>
+
+                                <ul className="coin_quick_details">
+                                {
+                                  data.website_link==""?
+                                  <>
+                                  <li className="coin_individual_list">
+                                  <div className="quick_block_links">
+                                  <div className="widgets__select links_direct"> <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Website link is not avaliable")}} ><img src="/assets/img/website.svg" className="coin_cat_img" />Website</a></div>
+                                  </div>
+                                  </li>
+                                 </>
+                                  
+                                  :
+                                  <li className="coin_individual_list">
+                                  <div className="quick_block_links">
+                                    <div className="widgets__select links_direct"><a href={createValidURL(data.website_link)} target="_blank"> <img src="/assets/img/website.svg" className="coin_cat_img" />{DomainName(data.website_link)} </a></div>
+                                  </div>
+                                </li>
+                                }
+                              </ul>
+
+                              <ul className="coin_quick_details">
+                              {
+                                  data.source_code_link
+                                  ?
+                                  <li className="coin_individual_list">
+                                    <div className="quick_block_links">
+                                      <div className="widgets__select links_direct"><a href={createValidURL(data.source_code_link)} target="_blank"><img src="/assets/img/source_code.svg" className="coin_cat_img" /> Source Code </a></div>
+                                    </div>
+                                  </li>
+                                  :
+                                  <li className="coin_individual_list">
+                                    <div className="quick_block_links">
+                                      <div className="widgets__select links_direct"> <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Source code is not avaliable")}} ><img src="/assets/img/source_code.svg" className="coin_cat_img" /> Source Code </a></div>
+                                    </div>
+                                  </li>
                                 }
                               </ul>
                             </div>
@@ -2038,10 +2202,12 @@ const removeFromWatchlist = (param_token_id) =>
                                   <div className="token_list_values">
                                     <h4>Market Cap</h4>
                                     <h5>{market_cap?"$":null}{market_cap ? separator(market_cap.toFixed(4)) : data.market_cap ? separator(data.market_cap.toFixed(4)) : "NA"}</h5>
+                                    {/* <h6 className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />0.58%</span></h6> */}
+                                    <h6 className="values_growth"></h6> 
                                   </div>
                                   <div className="token_list_values">
-                                    <h4>Max Supply</h4>
-                                    <h5>{token_max_supply ? separator(token_max_supply) : data.total_max_supply ? separator(data.total_max_supply.toFixed(4)) : "NA"}</h5>
+                                    <h4>Volume / Market Cap</h4>
+                                    <h5>NA</h5>
                                   </div>
                                 </div>
                               </div>
@@ -2049,12 +2215,14 @@ const removeFromWatchlist = (param_token_id) =>
                                 <div className="token_left_border">
                                   <div className="token_list_values">
                                     <h4>Circulating Supply</h4>
-                                    <h5>NA</h5>
+                                    <h5>{circulating_supply?circulating_supply:"NA"}</h5>
+                                    <h6 className="values_growth"><span className="normal">{circulating_supply?((circulating_supply/token_max_supply)*100).toFixed(2)+"%":null}</span></h6>
                                   </div>
                                   <div className="token_list_values">
-                                    <h4>Liquidity</h4>
-                                    <h5>{liquidity?"$":null}{liquidity ? separator(liquidity.toFixed(4)) : "NA"}</h5>
+                                    <h4>Max Supply</h4>
+                                    <h5>{token_max_supply ? separator(token_max_supply) : data.total_max_supply ? separator(data.total_max_supply.toFixed(4)) : "NA"}</h5>
                                   </div>
+                                  
                                 </div>
                               </div>
                               <div className="col-md-4 col-6">
@@ -2062,6 +2230,12 @@ const removeFromWatchlist = (param_token_id) =>
                                   <div className="token_list_values">
                                     <h4>Volume 24H</h4>
                                     <h5>{contract_24h_volume?"$":null}{contract_24h_volume?separator(contract_24h_volume.toFixed(2)): "NA"}</h5>
+                                    {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />0.58%</span></h6> */}
+                                    <h6 className="values_growth"></h6>
+                                  </div>
+                                  <div className="token_list_values">
+                                    <h4>Liquidity</h4>
+                                    <h5>{liquidity?"$":null}{liquidity ? separator(liquidity.toFixed(4)) : "NA"}</h5>
                                   </div>
                                 </div>
                               </div>
@@ -2319,11 +2493,24 @@ const removeFromWatchlist = (param_token_id) =>
                     </div>
 
                 
+                    <div className="how_do_you_feel">
+                      <div className="row">
+                        <div className="col-md-6">
+                          <h4>How do you feel about {data.token_name} today?</h4>
+                          <p>Market sentiments, at your quick watch! we're working hard on this new feature, Follow us on <a href={"https://twitter.com/Coinpedianews"} target="_blank">Twitter</a>,to be the first to know when it's ready!</p>
+                        </div>
+                        <div className="col-md-6">
+                          <button className="" data-toggle="modal" data-target="#comingSoon">😪 Bad</button>
+                          <button className="" data-toggle="modal" data-target="#comingSoon">🙂 Good</button>
+                        </div>
+                      </div>
+                    </div>
+
                     {
                        data.launch_pads_data.length > 0 ?
                     <div className="coin_ico_list">
                       <h4>List of ongoing, upcoming and completed launchpads</h4>
-                      <p>This feature is in beta testing. Place your estimates for next 6 months and see what other’s are thinking about it. Data displayed are based on user CoinMarketCap. The cut-off for estimates for each month-end is on the 21st of each month.</p>
+                      <p>Walk through the early and whitelisted launches of new cryptos and NFT's offerings.</p>
                       <div className="row">
                         <div className="col-md-6">
                           <div className="token_launchpad_list">
@@ -2399,7 +2586,7 @@ const removeFromWatchlist = (param_token_id) =>
                                 <span><img src="/assets/img/launchpad_calender.svg" /> 
                                 {moment.utc(launchpad_object.start_date).format("MMM DD")} - {moment.utc(launchpad_object.end_date).format("MMM DD, YYYY")}
                                 </span></h5>
-                              <p>Your vote is for 24Hrs. Inorder to update how you feel about bitcoin, come back tomorrow</p>
+                              <p>Find a quick review of this event below, helping you get started.</p>
 
                               <ul>
                                 <li>ICO Price <span>{launchpad_object.price} USD</span></li>
@@ -2407,21 +2594,41 @@ const removeFromWatchlist = (param_token_id) =>
                                 <li>Tokens Sold <span>{launchpad_object.tokens_sold} {data.symbol ? (data.symbol).toUpperCase() : "-"}</span></li>
                                 <li>Access <span>{launchpad_object.access_type == 1 ? "Public" : "Private"}</span></li>
                                 <li>Where to buy <span>{launchpad_object.where_to_buy_link}</span></li>
-                                <li>% of Total Supply <span> {launchpad_object.percentage_total_supply}(547554 {data.symbol ? (data.symbol).toUpperCase() : "-"})</span></li>
-                                <li>Accept <span>{
+                                <li>% of Total Supply <span> {launchpad_object.percentage_total_supply}({(token_max_supply*(launchpad_object.percentage_total_supply/100))} {data.symbol ? (data.symbol).toUpperCase() : "-"})</span></li>
+                                <li>Accept 
+                                  {/* <span>{
                                                    paymentTypes.map((inner)=>
                                                    <>{launchpad_object.accept_payment_type.includes(inner._id) ?
-                                                    <>{inner.payment_name } <span>/</span></>
+                                                    <>{inner.payment_name } <span>{launchpad_object.accept_payment_type.length>1?"/":null}</span></>
                                                     
                                                   :
                                                   null
                                                    }</> 
                                                  )
-                                                 }</span></li>
+                                                 }</span> */}
+                                                  <span >{
+                                                      launchpad_object.accept_payment_type.map((e, i) => 
+                                                         i < launchpad_object.accept_payment_type.length-1?
+                                                           <>{e.payment_name + "/"}</>
+                                                           :
+                                                           ""
+                                                        )}
+                                                        
+                                               {
+                                                      launchpad_object.accept_payment_type.map((e, i) => 
+                                                         i == launchpad_object.accept_payment_type.length-1?
+                                                         <>{e.payment_name}</>
+                                                         :
+                                                         ""
+                                                      )
+                                                }</span>
+                                                 </li>
                               </ul>
-
-                              <h5>How to participate</h5>
-                              <div dangerouslySetInnerHTML={{ __html: launchpad_object.how_to_participate }}/>
+                              
+                              <div className="how_to_participate">
+                                <h5>How to participate</h5>
+                                <div dangerouslySetInnerHTML={{ __html: launchpad_object.how_to_participate }}/>
+                              </div>
                               </>
                               :
                               null
@@ -2442,7 +2649,10 @@ const removeFromWatchlist = (param_token_id) =>
                       :
                       null
                     }
-                    
+                   
+                   <div dangerouslySetInnerHTML={{ __html:data.token_description}}></div> 
+
+{/*                     
                     {
                       ((data.token_description != null) && ((data.token_description).length > 900)) ?
                       <>
@@ -2456,17 +2666,17 @@ const removeFromWatchlist = (param_token_id) =>
                         </>
                         :
                         <>
-                        <div className="promotion__text" style={{wordBreak: "break-all"}} dangerouslySetInnerHTML={{ __html: strLenTrim(data.token_description, 900)}}></div>
-                        <p className="about_token_view_more">
-                        <a onClick={() =>set_desc_read_more(true)}><span>View More &gt;&gt; </span></a>
-                        </p>
+                          <div className="promotion__text" style={{wordBreak: "break-all"}} dangerouslySetInnerHTML={{ __html: strLenTrim(data.token_description, 900)}}></div>
+                          <p className="about_token_view_more">
+                          <a onClick={() =>set_desc_read_more(true)}><span>View More &gt;&gt; </span></a>
+                          </p>
                         </>
                       }
                         
                       </>
                       :
                       <div dangerouslySetInnerHTML={{ __html:data.token_description}}></div> 
-                    }
+                    } */}
                       
                     </div>
 
@@ -2590,70 +2800,102 @@ const removeFromWatchlist = (param_token_id) =>
           </div>
         </div>
         
-      <div className={"modal "+(share_modal_status ? " modal_show":" ")} id="market_share_page">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h4 className="modal-title">Share</h4>
-              <button type="button" className="close" data-dismiss="modal" onClick={()=>set_share_modal_status(false)}>×</button>
-            </div>
-            <div className="modal-body">
-              <div className="row">
-                <div className="col-md-1" />
-                <div className="col-md-10">
-                  <div className="input-group">
-                    <input type="text" id="referral-link" className="form-control" defaultValue={website_url+data.token_id} readOnly />
-                    <div className="input-group-prepend">
-                      <span className="input-group-text" id="myTooltip" onClick={()=>myReferrlaLink()}>
-                        <img src="/assets/img/copy-file.png" className="copy_link" width="100%" height="100%" />
-                      </span>
-                    </div>
-                  </div>
-                  <h6>Share with </h6>
-                  <p className="share_social">
-                    <a href={"https://www.facebook.com/sharer/sharer.php?u="+website_url+data.token_id} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
-                    <a href={"https://www.linkedin.com/shareArticle?mini=true&url="+website_url+data.token_id} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
-                    <a href={"http://twitter.com/share?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
-                    <a href={"https://wa.me/?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
-                  </p>
+        <div className="coming_soon_modal">
+          <div className="modal" id="comingSoon">
+            <div className="modal-dialog modal-sm">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h4 className="modal-title coming_soon_title">Coming Soon !!</h4>
+                  <button type="button" className="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div className="modal-body">
+                  <p className="coming_soon_subtext">This feature will be available soon</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-                          
-      <div className={"modal connect_wallet_error_block"+ (handleModalVote ? " collapse show" : "")}>
-        <div className="modal-dialog modal-sm">
-          <div className="modal-content">
-            <div className="modal-body">
-              <button type="button" className="close" data-dismiss="modal" onClick={()=>ModalVote()}>&times;</button>
-              {
-                voting_status == false ?
-                <h4> Do you want to support this token ? </h4>
-                :
-                <h4> Do not support this token ? </h4>
-              }
-              
-              <div className="vote_yes_no">
-                {/* className={voting_status == 1 ? "vote_yes" : "vote_no"} */}
-                {
-                  voting_status == false ?
-                  <>
-                  <button onClick={()=>vote(1)}>Confirm</button>  
-                  <button onClick={()=>ModalVote()}>Cancel</button>
-                  </>
-                  :
-                  <>
-                  <button onClick={()=>vote(0)}>Confirm</button>  
-                  <button onClick={()=>ModalVote()}>Cancel</button>
-                  </>
-                }
+
+        <div className="coming_soon_modal">
+          <div className="modal" id="linksData">
+            <div className="modal-dialog modal-sm">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h4 className="modal-title coming_soon_title">Oops!</h4>
+                  <button type="button" className="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div className="modal-body">
+                  <p className="coming_soon_subtext">{no_data_link}</p>
+                </div>
               </div>
             </div>
-          </div> 
+          </div>
         </div>
-      </div>
+
+        <div className={"modal "+(share_modal_status ? " modal_show":" ")} id="market_share_page">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h4 className="modal-title">Share</h4>
+                <button type="button" className="close" data-dismiss="modal" onClick={()=>set_share_modal_status(false)}>×</button>
+              </div>
+              <div className="modal-body">
+                <div className="row">
+                  <div className="col-md-1" />
+                  <div className="col-md-10">
+                    <div className="input-group">
+                      <input type="text" id="referral-link" className="form-control" defaultValue={website_url+data.token_id} readOnly />
+                      <div className="input-group-prepend">
+                        <span className="input-group-text" id="myTooltip" onClick={()=>myReferrlaLink()}>
+                          <img src="/assets/img/copy-file.png" className="copy_link" width="100%" height="100%" />
+                        </span>
+                      </div>
+                    </div>
+                    <h6>Share with </h6>
+                    <p className="share_social">
+                      <a href={"https://www.facebook.com/sharer/sharer.php?u="+website_url+data.token_id} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
+                      <a href={"https://www.linkedin.com/shareArticle?mini=true&url="+website_url+data.token_id} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
+                      <a href={"http://twitter.com/share?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
+                      <a href={"https://wa.me/?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+                          
+        <div className={"modal connect_wallet_error_block"+ (handleModalVote ? " collapse show" : "")}>
+          <div className="modal-dialog modal-sm">
+            <div className="modal-content">
+              <div className="modal-body">
+                <button type="button" className="close" data-dismiss="modal" onClick={()=>ModalVote()}>&times;</button>
+                {
+                  voting_status == false ?
+                  <h4> Do you want to support this token ? </h4>
+                  :
+                  <h4> Do not support this token ? </h4>
+                }
+                
+                <div className="vote_yes_no">
+                  {/* className={voting_status == 1 ? "vote_yes" : "vote_no"} */}
+                  {
+                    voting_status == false ?
+                    <>
+                    <button onClick={()=>vote(1)}>Confirm</button>  
+                    <button onClick={()=>ModalVote()}>Cancel</button>
+                    </>
+                    :
+                    <>
+                    <button onClick={()=>vote(0)}>Confirm</button>  
+                    <button onClick={()=>ModalVote()}>Cancel</button>
+                    </>
+                  }
+                </div>
+              </div>
+            </div> 
+          </div>
+        </div>
 
       {modal_data.title ? <Popupmodal name={modal_data} /> : null} 
     </>
@@ -2670,7 +2912,7 @@ export async function getServerSideProps({ query, req})
   const tokenQueryRun = await tokenQuery.json() 
   if(tokenQueryRun.status)
   {
-    return { props: {data:tokenQueryRun.message, paymentTypes:tokenQueryRun.payment_types, errorCode:false, token_id:token_id, userAgent:userAgent, config:config(userAgent.user_token)}}
+    return { props: {data:tokenQueryRun.message, errorCode:false, token_id:token_id, userAgent:userAgent, config:config(userAgent.user_token)}}
   }
   else
   {

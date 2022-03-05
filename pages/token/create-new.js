@@ -59,12 +59,12 @@ export default function Create_token({config})
    const [imgmodal, setImgmodal] = useState(false) 
    const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
    const [showNav, setShowNav] = useState(false) 
-  const [upImg, setUpImg] = useState();
-  const imgRef = useRef(null);
-  const previewCanvasRef = useRef(null);
-  const [crop, setCrop] = useState({ unit: 'px', width: 50, height: 50, aspect: 1 / 1});
-  const [completedCrop, setCompletedCrop] = useState(null)
-  const [blobFile, set_blobFile] = useState()
+   const [upImg, setUpImg] = useState();
+   const imgRef = useRef(null);
+   const previewCanvasRef = useRef(null);
+   const [crop, setCrop] = useState({ unit: 'px', width: 50, height: 50, aspect: 1 / 1});
+   const [completedCrop, setCompletedCrop] = useState(null)
+   const [blobFile, set_blobFile] = useState()
   
   const oncCropComplete=()=>
   {  
@@ -183,7 +183,8 @@ const createNewToken = () =>
       list = ""
       setErrContractAddress(list)    
     } 
-
+  
+    setModalData({icon: "", title: "", content:""})
     setErrSymbol('') 
     setErrTokenName('')
     setErrWebsiteLink('')
@@ -874,8 +875,8 @@ exchange_link
                                   <div className="input-group">
                                     <div className="input-group-prepend">
                                       <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address)} >
-                                            <option value="0">Network Type</option> 
-                                            <option value="1">Ethereum</option>
+                                            <option value="0">Type</option> 
+                                            <option value="1">ETH</option>
                                             <option value="2">BSC</option>
                                       </select>
                                     </div>
@@ -1003,7 +1004,7 @@ exchange_link
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
                                   <div className="input-group">
-                                    <input type="number" className="form-control" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
+                                    <input type="number" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
                                     <div className="input-group-prepend">
                                       <span className="input-group-text">{symbol}</span>
                                     </div>

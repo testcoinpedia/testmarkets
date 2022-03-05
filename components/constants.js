@@ -60,7 +60,7 @@ export const graphqlApiKEY = "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
 
 export const strLenTrim=(title, length)=>
 {
-    return title.length > length ? (title).slice(0, length)+"..." : title
+  return title.length > length ? (title).slice(0, length)+"..." : title
 }
 
 export const strTrim=(string)=>
@@ -134,6 +134,53 @@ export const createValidURL = (link)=>
   }
 }
 
+export const DomainName = (link)=>
+{
+  // if(link != '')
+  // {
+  //   var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+  //   let url = ""
+  //   {
+  //     regexp.test(link) 
+  //     ? 
+  //     url = new URL(link) 
+  //     : 
+  //     link = "http://"+link
+  //     url = new URL(link);
+     
+  //   }
+    
+  //   if(url.href)
+  //   {
+  //     return url.href
+  //   }
+  //   else
+  //   {
+  //     link
+  //   }
+  // }
+  // else
+  // {
+  //   return "#"
+  // }
+  if(link.includes("https://")  ){
+    link = link.split("https://")
+    return link
+  }
+  else if(link.includes("http://"))
+  {
+    link = link.split("http://")
+    return link
+   
+  }
+  else if(link.includes("www")){
+    link = link.split("www.")
+    return link
+  }
+  else{
+    return link
+  }
+}
 export const count_live_price=(live_price)=> 
 {
   if (Math.abs(live_price) < 1.0) {

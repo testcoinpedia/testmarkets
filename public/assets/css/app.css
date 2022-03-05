@@ -9478,11 +9478,14 @@ a:hover {
 }
 
 .category_list {
-  margin-bottom: 15px;
+  margin-bottom: 0px;
+  overflow-y: hidden;
+  white-space: nowrap;
+  width: auto;
 }
 
 .category_list li {
-  font-size: 14px;
+  font-size: 15px;
   display: inline-block;
   padding: 3px 10px;
   margin-bottom: 0px;
@@ -9500,6 +9503,11 @@ a:hover {
 .category_list li img {
   position: relative;
   top: -1px;
+}
+
+.category_list li.inactive {
+  color: #ddd;
+  font-weight: 400;
 }
 
 .filter_rows {
@@ -10139,6 +10147,7 @@ tbody td {
   margin-bottom: 0;
   margin-top: 15px;
 }
+
 .coin_main_links .select .option {
   padding-left: 0;
 }
@@ -10446,6 +10455,7 @@ tbody td {
   font-size: 15px;
   margin-top: 4px;
   line-height: 1.5;
+  margin-bottom: 20px;
 }
 
 .market_insights .search_filter_box {
@@ -10498,7 +10508,7 @@ tbody td {
   margin-right: 10px;
   margin-bottom: 7px;
   width: auto;
-  text-transform: capitalize;
+  /* text-transform: capitalize; */
   font-size: 14px;
   color: #4f6da5;
   font-weight: 500 !important;
@@ -10678,10 +10688,10 @@ a:not([href]):not([class]):hover {
 }
 
 .dropdown_arrow_img {
-  width: 9px;
+  width: 12px;
   margin-left: 3px;
   position: relative;
-  top: -1px;
+  top: 0px;
 }
 
 .transaction_table_block .quick_block_links .widgets__select {
@@ -11477,12 +11487,14 @@ input[type="number"] {
 
 .token_steps_list ul li img {
   width: 16px;
+  margin-left: 5px;
 }
 
 .token_steps_list ul li {
   margin-bottom: 20px;
   color: #000;
   font-weight: 400;
+  font-size: 15px;
 }
 
 .prices__row:focus,
@@ -11647,6 +11659,7 @@ input[type="number"] {
 
 .prices__title h1 {
   font-size: 20px;
+  margin-bottom: 5px;
 }
 
 .promotion__category h1 {
@@ -12096,6 +12109,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-bottom: 25px;
 }
 
+.token_main_details .media {
+  position: relative;
+  background: #fff;
+  z-index: 9;
+}
+
+.token_main_details .media h4 {
+  font-size: 22px;
+}
+
 .token_main_details .media .token_img {
   width: 75px;
   border-radius: 50px;
@@ -12339,7 +12362,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .market_growth {
   border-radius: 25px;
-  padding: 7px 5px;
+  padding: 7px 10px;
   margin-left: 5px;
   font-size: 10px;
   vertical-align: middle;
@@ -12449,7 +12472,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .token_dropdown_img {
-  width: 18px;
+  width: 24px;
   margin-right: 5px;
   margin-top: 0;
   vertical-align: middle;
@@ -12533,6 +12556,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 12px;
 }
 
+.markets_voted button {
+  background: #e5eaee;
+  color: #aaa;
+  padding: 3px 8px 1px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
 .market_live_price ul li:last-child {
   border-right: 0px;
 }
@@ -12575,6 +12606,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-top: 4px;
   margin-left: 5px;
   padding: 0 5px;
+}
+
+.how_to_participate p {
+  color: #4c4c77 !important;
 }
 
 @media (min-width: 1300px) {
@@ -12980,10 +13015,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .copy-contract-img {
-  margin-left: 10px;
+  margin-left: 3px;
   width: 14px;
   position: relative;
-  top: 0px;
+  top: 3px;
 }
 
 .token-contract-details {
@@ -12992,7 +13027,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border-radius: 7px;
   color: #597099;
   font-size: 13px;
-  padding: 13px 10px;
+  padding: 10px;
   display: block;
   margin-bottom: 0px;
 }
@@ -14083,6 +14118,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .market_list_price .block_price {
   font-weight: 600;
   font-size: 14px;
+  display: block;
 }
 
 .market_list_price a {
@@ -14288,7 +14324,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .launchpad_list_content {
   background: #ebf1f7;
   padding: 20px 10px 22px;
-  border: 1px solid #fff;
+  border: 1px solid #ebf1f7;
   border-radius: 8px;
   margin-bottom: 15px;
   margin-top: 15px;
@@ -14405,6 +14441,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .token_launchpad_details h5 span img {
   vertical-align: middle;
+  margin-right: 5px;
 }
 
 .token_launchpad_details ul {
@@ -14423,6 +14460,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 4px 10px;
   border-radius: 5px;
   margin-left: 15px;
+}
+
+.token_launchpad_details ul li span span {
+  padding: 0;
+  margin-left: 0;
 }
 
 .token_launchpad_list::-webkit-scrollbar,
@@ -14458,7 +14500,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .about_token_details p {
   font-size: 16px;
   color: #5e636c;
-  line-height: 1.5;
+  line-height: 1.8;
   margin-bottom: 10px;
   margin-top: 10px;
 }
@@ -14479,21 +14521,22 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .coin_details {
-  margin-bottom: 15px;
+  margin-bottom: 25px;
   margin-top: 0px;
   border-top: 1px solid #dde6ef;
-  padding-top: 15px;
+  padding-top: 30px;
+  margin-top: -37px;
 }
 
 .coin_details .token_list_values {
-  padding: 15px 0;
+  padding: 10px 0;
 }
 
 .coin_details .token_list_values h4 {
   font-size: 14px;
-  color: #9494bb;
+  color: #555589;
   font-weight: 400 !important;
-  margin-bottom: 2px;
+  margin-bottom: 8px;
   padding-top: 0px;
 }
 
@@ -14501,14 +14544,35 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 16px;
   color: #000;
   font-weight: 600 !important;
-  padding-bottom: 0px;
+  padding-bottom: 3px;
   margin-top: 5px;
 }
 
 .coin_details .token_left_border {
-  border-left: 2px solid #dde6ef;
+  border-left: 1px solid #dde6ef;
   padding-left: 15px;
   min-height: 135px;
+}
+
+.values_growth {
+  margin-top: 5px;
+  font-size: 13px;
+}
+
+.values_growth span img {
+  margin-right: 3px;
+}
+
+.values_growth .green {
+  color: #16c784 !important;
+}
+
+.values_growth .red {
+  color: #fc2d00 !important;
+}
+
+.values_growth .normal {
+  color: #62628d;
 }
 
 .token_price_block h5 {
@@ -14522,7 +14586,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .market_token_details .search_filter {
-  margin-top: 26px;
+  margin-top: 19px;
 }
 
 .market_token_details .search_filter input {
@@ -14533,12 +14597,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-top: 10px;
 }
 
-
-
 .token_share_vote {
   margin-top: 15px;
   text-align: right;
   margin-bottom: 10px;
+  background: #fff;
+  position: relative;
+  z-index: 9;
 }
 
 .token_share_vote li {
@@ -14581,6 +14646,33 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .token_main_details .media-heading img {
   margin-left: 5px;
+  width: 28px;
+}
+
+.how_do_you_feel {
+  margin-bottom: 25px;
+  padding-top: 25px;
+}
+
+.how_do_you_feel h4 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+}
+
+.how_do_you_feel p {
+  color: #666;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+.how_do_you_feel button {
+  border: 1px solid #ddd;
+  padding: 7px 20px 5px;
+  margin: 30px 5px 0;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #7f8da7;
 }
 
 @media (min-width: 992px) {
@@ -14828,7 +14920,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .launchpad_list_content .launchpad_completed {
-    font-size: 8px;
+    font-size: 10px;
+  }
+
+  .launchpad_list_content .launchpad_upcoming {
+    font-size: 10px;
   }
 
   .coin_ico_list .launchpad_list_content h5 {

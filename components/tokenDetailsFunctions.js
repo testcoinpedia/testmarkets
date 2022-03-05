@@ -52,8 +52,5 @@ const fromNToDate = (datetime)=>
     const toDate = dateTill.toISOString();
     return {fromDate:fromDate, toDate:toDate}
 }
-const graphDataQuery = () => {
-    
-}
 
 module.exports = { graphQlURL, fromNToDate }

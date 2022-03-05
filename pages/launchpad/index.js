@@ -6,7 +6,7 @@ import Axios from 'axios';
 import Head from 'next/head';
 import cookie from 'cookie'
 import moment from 'moment'
-import {API_BASE_URL,config,separator,website_url, app_coinpedia_url,IMAGE_BASE_URL} from '../../components/constants' 
+import {API_BASE_URL,config,separator,website_url, app_coinpedia_url,IMAGE_BASE_URL,market_coinpedia_url} from '../../components/constants' 
 
  
 export default function LaunchPad({userAgent}) 
@@ -18,7 +18,8 @@ export default function LaunchPad({userAgent})
   const [upcoming , set_upcoming] = useState([])
   const [ended , set_ended] = useState([])
   const [apistatus, setapistatus] = useState(false)
-
+  const [tokenStatus,set_tokenStatus] = useState("")
+  const [watchlist, set_watchlist] = useState([])
   useEffect(()=>{ 
    // GetAllPromotions() 
     launchpadList()
@@ -27,7 +28,7 @@ export default function LaunchPad({userAgent})
   const launchpadList=()=> 
   {
     
-    Axios.get(API_BASE_URL+"markets/launchpads/list", config(""))
+    Axios.get(API_BASE_URL+"markets/launchpads/list", config(user_token))
     .then(res=>
     {   
       console.log(res)
@@ -37,10 +38,44 @@ export default function LaunchPad({userAgent})
           set_ongoing(res.data.message.ongoing)
           set_upcoming(res.data.message.upcoming)
           set_ended(res.data.message.ended)
+          set_tokenStatus(res.data.tokenStatus)
+          set_watchlist(res.data.watchlist)
         }
     })
   } 
+  const addToWatchlist = (param_token_id) =>
+  {
+    Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config(user_token))
+    .then(res=>
+    { 
+      console.log("add", res.data)
+      if(res.data.status)
+      {
+        var sdawatchlist = watchlist
+        set_watchlist([])
+        sdawatchlist.push(param_token_id)
+        set_watchlist(sdawatchlist)
+        console.log("watchlist", watchlist)
+      }
+    })
+  }
   
+  const removeFromWatchlist = (param_token_id) =>
+  {
+    Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config(user_token))
+    .then(res=>
+    {
+      console.log("remove", res.data)
+      if(res.data.status)
+      {
+        var sdawatchlist = watchlist
+        set_watchlist([])
+        sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
+        set_watchlist(sdawatchlist)
+        console.log("watchlist", watchlist)
+      }
+    })
+  }
  
   const makeJobSchema=()=>{  
     return { 
@@ -307,7 +342,19 @@ export default function LaunchPad({userAgent})
                         ended.map((e,i)=>
                         <tr key={i}>
                           <td className="mobile_hide" >
-                            <img src="/assets/img/wishlist_star.svg" className="wishlist_star" />
+                          {
+                                       tokenStatus ?
+                                       <>
+                                       {
+                                         watchlist.includes(e.token_row_id) ?
+                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
+                                         :
+                                         <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star.svg" /></span>
+                                         }
+                                       </>
+                                       :
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><img src="/assets/img/wishlist_star.svg" /></a></Link>
+                                     }
                           </td>
                           <td className="mobile_hide">{i+1}</td>
                           <td className="mobile_td_fixed">

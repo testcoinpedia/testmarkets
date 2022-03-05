@@ -6,7 +6,7 @@ import Axios from 'axios'
 import cookie from 'cookie'
 import JsCookie from "js-cookie" 
 import $ from 'jquery';
-import {website_url,app_coinpedia_url,market_coinpedia_url,coinpedia_url, Logout, separator,logo, config, api_url, cookieDomainExtension} from '../components/constants'    
+import {website_url, app_coinpedia_url, market_coinpedia_url, coinpedia_url, Logout, separator,logo, config, api_url, cookieDomainExtension} from '../components/constants'    
 import Popupmodal from './popupmodal'  
 
 
@@ -99,12 +99,14 @@ export default function Topmenu()
       JsCookie.set("light_dark_mode", "light", {domain:cookieDomainExtension})
       set_light_dark_mode("light")
       $("body").removeClass("dark_theme")
+      location.reload()
     }
     else
     {
       JsCookie.set("light_dark_mode", "dark", {domain:cookieDomainExtension})
       set_light_dark_mode("dark")
       $("body").addClass("dark_theme")
+      location.reload()
     }
   }
   

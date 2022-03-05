@@ -30,12 +30,13 @@ export default function WalletTokensList({userAgent, config})
   const [searchApprovalStatus, setSearchApprovalStatus] = useState("")
   const [searchParam] = useState(["token_name", "symbol","token_id"])
   const [searchApprovalStatusParam] = useState(["approval_status"])
-  
+  const [watchlist, set_watchlist] = useState([])
+  const [tokenStatus,set_tokenStatus] = useState("")
  
     useEffect(()=>
     {  
       getTokens() 
-    },[])
+    },[token_list])
          
     
     const getTokens=()=>
@@ -45,12 +46,15 @@ export default function WalletTokensList({userAgent, config})
       {   
         if(res.data.status===true)
         { 
+          console.log(res.data)
           set_loader_status(true)
           setfilteredTokens(res.data.message)
           set_token_list(res.data.message)
           set_token_counts(res.data.message.length)
           setPageCount(Math.ceil(res.data.message.length / perPage))
           getTokensCurrentList(res.data.message, 0)
+          set_watchlist(res.data.watchlist)
+          set_tokenStatus(res.data.tokenStatus)
         }
         else
         { 
@@ -59,7 +63,43 @@ export default function WalletTokensList({userAgent, config})
         }
       }) 
     }
-
+    
+  
+    const addToWatchlist = (param_token_id) =>
+  {
+    Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config)
+    .then(res=>
+    { 
+      console.log("add", res.data)
+      if(res.data.status)
+      {
+        var sdawatchlist = watchlist
+        set_watchlist([])
+        sdawatchlist.push(param_token_id)
+        set_watchlist(sdawatchlist)
+        console.log("watchlist", watchlist)
+        getTokens()
+      }
+    })
+  }
+  
+  const removeFromWatchlist = (param_token_id) =>
+  {
+    Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config)
+    .then(res=>
+    {
+      console.log("remove", res.data)
+      if(res.data.status)
+      {
+        var sdawatchlist = watchlist
+        set_watchlist([])
+        sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
+        set_watchlist(sdawatchlist)
+        console.log("watchlist", watchlist)
+        getTokens()
+      }
+    })
+  }
 
     const handlePageClick = (page) => 
    { 
@@ -112,10 +152,26 @@ const getTokensCurrentList=(items, offset)=>
   console.log(token_list)
   const postData = token_list.map((e, i)=>
     <tr key={i}>
+        <td>
+        {
+           
+            <>
+            {
+              e.approval_status == 1 && e.active_status == 1 && watchlist.includes(e._id) ?
+              <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
+               :
+               e.approval_status == 1 && e.active_status == 1 ?
+               <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" /></span>
+               :
+               ""
+              }
+              </>
+          }
+        </td>
         <td>{i+1}</td>
         <td>
           <div className="media">
-            <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="token" className="rounded-circle"  alt="Token img" />
+            <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="token" className="rounded-circle"  />
             <div className="media-body">
               <h4 class="media-heading">{e.token_name} <span>{e.symbol}</span></h4>
             </div>
@@ -260,6 +316,7 @@ const getTokensCurrentList=(items, offset)=>
               <table className="table table-borderless">
                 <thead>
                       <tr>
+                          <th></th>
                           <th>#</th>
                           <th className="manage_token_name">Token</th>
                           <th>Max Supply</th>
@@ -282,7 +339,7 @@ const getTokensCurrentList=(items, offset)=>
                       </td>
                     </tr>
                   :
-                  <TableContentLoader row="10" col="7" />
+                  <TableContentLoader row="10" col="8" />
                   }
                 </tbody>
               </table>

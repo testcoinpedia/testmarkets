@@ -1,84 +1,177 @@
-import React, {useEffect, useState} from 'react'
+import React , {useState, useEffect} from 'react';  
 import Link from 'next/link' 
+import ReactPaginate from 'react-paginate'; 
+import Head from 'next/head';
 import cookie from "cookie"
-import ReactPaginate from 'react-paginate'  
-import { API_BASE_URL, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY, count_live_price, Logout} from '../components/constants' 
-import Axios from 'axios'  
-import Head from 'next/head'
-import Search_Contract_Address from '../components/searchContractAddress'
-import TableContentLoader from '../components/loaders/tableLoader'
+import Axios from 'axios'
 import moment from 'moment'
+import TableContentLoader from '../components/loaders/tableLoader'
+import Search_Contract_Address from '../components/searchContractAddress'
 import WatchList from '../components/watchlist'
+import { API_BASE_URL, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY,count_live_price} from '../components/constants'; 
+var $ = require( "jquery" );
 
-export default function Companies({user_token, config})
+export default function Home({resData, userAgent, config, user_token}) 
 { 
-    const [tokenStatus,set_tokenStatus] = useState("")
-    const [tokens_list, set_tokens_list] = useState([]) 
-    const [voting_ids, setvoting_ids] = useState([])  // commented
-    const [watchlist, set_watchlist] = useState([])
-    const [watch_list_status, set_watch_list_status] = useState(false)
-    const [currentPage, setCurrentPage] = useState(0)
-    const [per_page_count, set_per_page_count] = useState(100)
-    const [pageCount, setPageCount] = useState(0)
-    const [sl_no, set_sl_no]=useState(0)
-    const [firstcount, setfirstcount] = useState(1)
-    const [finalcount, setfinalcount] = useState(per_page_count)
-    const [selectedPage, setSelectedPage] = useState(0) 
-    const [image_base_url] = useState(IMAGE_BASE_URL + '/tokens/')
-    const [count, setCount]=useState()
-    const [voting_status, set_voting_status] = useState(false)
-    const [loader_status, set_loader_status]=useState(false)
-    const [handleModalVote, setHandleModalVote] = useState(false)
-    const [total_votes, set_total_votes] = useState()
-    const [token_id, set_Token_id] = useState("")
-    const [vote_id, set_vote_id] = useState("")
-    const [item, set_item] = useState("")
-    const [voting_message, set_voting_message] = useState("")
-    const [all_tab_status, set_all_tab_status] = useState(true)
-    const [watchlist_tab_status, set_watchlist_tab_status] = useState("")
-   
-   useEffect(()=>
-   {  
-      tokensList({selected : 0})
-      voteIds()
-      watchListIds()
-   },[per_page_count,watch_list_status]) 
 
-   const tokensList = async (page) =>
-   {  
-      let current_pages = 0 
-      if(page.selected) 
-      {
-         current_pages = ((page.selected) * per_page_count) 
-      } 
+  const [tokenStatus] = useState(resData.tokenStatus)
+  const [tokenslist,set_tokenslist] = useState(resData.message)
+  const [total_tokens_count, set_total_tokens_count] = useState(resData.message.length)  
+  const [current_page_token_list, set_current_page_token_list] = useState([]); 
+  const [voting_ids, setvoting_ids] = useState([])  // commented
+  const [watchlist, set_watchlist] = useState([])
+ 
+  const [watch_list_status, set_watch_list_status] = useState(false)
+  const [err_searchBy, setErrsearchBy] = useState("")
+  const [per_page_count, set_per_page_count] = useState(100)
+  const [sl_no, set_sl_no]=useState(0)
+  const [firstcount, setfirstcount] = useState(1)
+  const [finalcount, setfinalcount] = useState(per_page_count)
+  const [selectedPage, setSelectedPage] = useState(0) ;
+  const [image_base_url] = useState(IMAGE_BASE_URL + '/tokens/')
+  const [searchBy, setSearchBy] = useState("")   
+  const [search_contract_address, set_search_contract_address] = useState("")    
+  const [validSearchContract, setvalidContractAddress] = useState("")
+  const [dataLoaderStatus, setDataLoaderStatus] = useState(true)
+  const [voting_status, set_voting_status] = useState(false)
+  const [filteredTokens, setFilteredTokens] = useState([])  
+  const [searchTokens, setsearchTokens] = useState("")
+  const [searchParam] = useState(["token_name"])
+  const [current_url]= useState(website_url)
+  const [handleModalVote, setHandleModalVote] = useState(false)
+  const [total_votes, set_total_votes] = useState()
+  const [token_id, set_Token_id] = useState("")
+  const [vote_id, set_vote_id] = useState("")
+  const [item, set_item] = useState("")
+  const [voting_message, set_voting_message] = useState("")
+  const [tokens] = useState(resData.message)
+  const [all_tab_status, set_all_tab_status] = useState(true)
+  const [watchlist_tab_status, set_watchlist_tab_status] = useState("")
 
-      const res = await Axios.get(API_BASE_URL+"markets/tokens/list/"+current_pages+'/'+per_page_count, config)
-      console.log("company_list", res)
-      if(res.data)
-      {
-         if(res.data.status === true)
-         {     
-            set_loader_status(true)
-            set_tokens_list(res.data.message)
-            set_tokenStatus(res.data.tokenStatus)
-            setPageCount(Math.ceil(res.data.count/per_page_count))
-            set_sl_no(current_pages)
-            setCurrentPage(page.selected)
-            setfirstcount(current_pages+1)
-            //setfinalcount(parseInt(current_pages)+parseInt(per_page_count))
-            const presentPage = page.selected+1
-            const totalcompany = res.data.count
-            var sadf = presentPage*per_page_count
-            if((presentPage*per_page_count) > totalcompany)
-            {
-            sadf = totalcompany
-            }
-            const final_count=sadf
-            setfinalcount(final_count)
-         } 
-      }
-   }
-   const voteIds = () =>
+  useEffect(()=>
+  {  
+    getTokensList(tokenslist , 0) 
+    Pages_Counts(0 , per_page_count)
+    setPageCount(Math.ceil(tokenslist.length / per_page_count))
+    setSelectedPage(0) 
+    voteIds()
+    watchListIds()
+    var $j = jQuery.noConflict()
+    $j(document).ready(function() {
+      $j('[data-toggle="tooltip"]').tooltip()
+    })
+  },[per_page_count,watch_list_status,tokenslist])
+ 
+const handlePageClick = (e) => 
+{  
+  console.log("e.selected", e.selected)
+  setSelectedPage(e.selected)
+  const selectPage = e.selected; 
+  Pages_Counts(selectPage , tokenslist.length)
+  getTokensList(tokenslist , selectPage * per_page_count)
+}
+
+
+const addToWatchlist = (param_token_id) =>
+{
+  Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config)
+  .then(res=>
+  { 
+    console.log("add", res.data)
+    if(res.data.status)
+    {
+      var sdawatchlist = watchlist
+      set_watchlist([])
+      sdawatchlist.push(param_token_id)
+      set_watchlist(sdawatchlist)
+      console.log("watchlist", watchlist)
+    }
+  })
+}
+
+const removeFromWatchlist = (param_token_id) =>
+{
+  Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config)
+  .then(res=>
+  {
+    console.log("remove", res.data)
+    if(res.data.status)
+    {
+      var sdawatchlist = watchlist
+      set_watchlist([])
+      sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
+      set_watchlist(sdawatchlist)
+      console.log("watchlist", watchlist)
+    }
+  })
+}
+
+ const ModalVote=(token_id,status,_id,item)=> 
+  { 
+    console.log(item)   
+    setHandleModalVote(!handleModalVote) 
+    set_voting_status(status)
+    set_Token_id(token_id)
+    set_vote_id(_id)
+    set_item(item)
+    
+  }
+
+  const vote = (param) =>
+  {
+    
+    if(param == 1)
+    {
+      Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+token_id, config)
+      .then(res=>
+      { 
+        console.log(res)
+        if(res.data.status === true) 
+        {
+          
+          var testList = tokenslist
+          var result = testList.filter(obj => {
+            return obj._id === vote_id
+          })
+          var testObj = result ? result[0] : "" 
+          console.log("testObj",testObj)
+          var test_total_votes = testObj.total_votes+1
+          testObj['total_votes'] = test_total_votes
+          testList[item] = testObj
+          set_tokenslist(testList)
+          voting_ids.push(vote_id)
+          set_voting_message(res.data.message) 
+          setHandleModalVote(!handleModalVote)
+        }
+      })
+    }
+    else
+    {
+      Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+token_id, config)
+      .then(res=>
+      { 
+        console.log(res)
+        if(res.data.status === true) 
+        {
+          var testList = tokenslist
+          var result = testList.filter(obj => {
+            return obj._id === vote_id
+          })
+          var testObj = result ? result[0] : "" 
+          var test_total_votes = 0
+          test_total_votes = testObj.total_votes-1
+          testObj['total_votes'] = test_total_votes
+          testList[item] = testObj
+          console.log(testObj)
+          set_tokenslist(testList)
+          voting_ids.splice(voting_ids.indexOf(vote_id), 1) 
+          set_voting_message(res.data.message)
+          setHandleModalVote(!handleModalVote) 
+        }
+      })
+    }
+  }
+  const voteIds = () =>
     {
         Axios.get(API_BASE_URL+"markets/tokens/voting_ids", config).then(res=>
         { 
@@ -102,121 +195,8 @@ export default function Companies({user_token, config})
         }
         })
     }
-    const ModalVote=(token_id,status,_id,item)=> 
-    { 
-      console.log(item)   
-      setHandleModalVote(!handleModalVote) 
-      set_voting_status(status)
-      set_Token_id(token_id)
-      set_vote_id(_id)
-      set_item(item)
-      
-    }
-  
-    const vote = (param) =>
-    {
-      
-      if(param == 1)
-      {
-        Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+token_id, config)
-        .then(res=>
-        { 
-          console.log(res)
-          if(res.data.status === true) 
-          {
-            
-            var testList = tokens_list
-            var result = testList.filter(obj => {
-              return obj._id === vote_id
-            })
-            var testObj = result ? result[0] : "" 
-            console.log("testObj",testObj)
-            var test_total_votes = testObj.total_votes+1
-            testObj['total_votes'] = test_total_votes
-            testList[item] = testObj
-            set_tokens_list(testList)
-            voting_ids.push(vote_id)
-            set_voting_message(res.data.message) 
-            setHandleModalVote(!handleModalVote)
-          }
-        })
-      }
-      else
-      {
-        Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+token_id, config)
-        .then(res=>
-        { 
-          console.log(res)
-          if(res.data.status === true) 
-          {
-            var testList = tokens_list
-            var result = testList.filter(obj => {
-              return obj._id === vote_id
-            })
-            var testObj = result ? result[0] : "" 
-            var test_total_votes = 0
-            test_total_votes = testObj.total_votes-1
-            testObj['total_votes'] = test_total_votes
-            testList[item] = testObj
-            console.log(testObj)
-            set_tokens_list(testList)
-            voting_ids.splice(voting_ids.indexOf(vote_id), 1) 
-            set_voting_message(res.data.message)
-            setHandleModalVote(!handleModalVote) 
-          }
-        })
-      }
-    }
-
-    const addToWatchlist = (param_token_id) =>
-    {
-      Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config)
-      .then(res=>
-      { 
-        console.log("add", res.data)
-        if(res.data.status)
-        {
-          var sdawatchlist = watchlist
-          set_watchlist([])
-          sdawatchlist.push(param_token_id)
-          set_watchlist(sdawatchlist)
-          console.log("watchlist", watchlist)
-        }
-      })
-    }
     
-    const removeFromWatchlist = (param_token_id) =>
-    {
-      Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config)
-      .then(res=>
-      {
-        console.log("remove", res.data)
-        if(res.data.status)
-        {
-          var sdawatchlist = watchlist
-          set_watchlist([])
-          sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
-          set_watchlist(sdawatchlist)
-          console.log("watchlist", watchlist)
-        }
-      })
-    }
-
-   // watchlist api STARTS HERE
-   const getWatchlist = () =>
-   {
-      Axios.get(API_BASE_URL+"markets/token_watchlist/list/", config).then(res=>
-      { 
-         set_api_loader_status(true)
-         if(res.data.status)
-         {
-         set_watchlist(res.data.message)
-         }
-      })
-   }
-   // watchlist api ENDS HERE
-    
-   const set_all_tab_active=()=>
+  const set_all_tab_active=()=>
   {  
     set_watch_list_status(false)
     set_watchlist_tab_status("")
@@ -230,50 +210,70 @@ export default function Companies({user_token, config})
     set_all_tab_status(false)
   } 
 
-  const makeJobSchema=()=>
+  const Pages_Counts = (page_selected, length_value) => 
+  {
+    const presentPage = page_selected+1
+    const first_count=(presentPage-1)*per_page_count+1
+    const totalcompany = length_value
+    var sadf = presentPage*per_page_count
+    if((presentPage*per_page_count) > totalcompany)
+    {
+      sadf = totalcompany
+    }
+    const final_count=sadf
+    setfirstcount(first_count)
+    setfinalcount(final_count)
+  }
+
+  const getTokensList=(tokenslist, offset)=>
   {  
-      return { 
-         "@context":"http://schema.org/",
-         "@type":"Organization",
-         "name":"Coinpedia",
-         "url":"https://pro.coinpedia.org",
-         "logo":"http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
-         "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
-       } 
-   }
-   
-   
+    let slice = tokenslist.slice(offset, offset + per_page_count) 
+    set_current_page_token_list(slice)
+    console.log(current_page_token_list)
+    set_sl_no(offset) 
+  }  
  
-return (
-    
-   <>
+  const makeJobSchema=()=>{  
+    return { 
+        "@context":"http://schema.org/",
+        "@type":"Table",
+        "name":"Coinpedia",
+        "url":website_url,
+        "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
+        "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
+      }  
+} 
+
+  return(
+    <>
       <Head>
-         <title>Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and MaketCap</title>
-         <meta name="description" content="Discover the list of top blockchain technology companies, Crypto startups and other Fintech Giants across the world.Didn’t Find your firm? List your company now and gain visibility."/>
-         <meta name="keywords" content="Blockchain startups , Crypto startups , Top Fintech companies , blockchain technology companies , Crypto and Blockchain firms , Top Blockchain companies." />
-         <meta property="og:locale" content="en_US" />
-         <meta property="og:type" content="website" />
-         <meta property="og:title" content="List of Top Fintech Companies across the Globe | Coinpedia PRO" />
-         <meta property="og:description" content="Coinpedia company listing page offers quick view of all listed companies of Fintech, Blockchain and Finance category. Get Exchages, Wallets, Coins, Tools, Trading forms and more. " />
-         <meta property="og:url" content={website_url} />
-         <meta property="og:site_name" content="List of Fintech Companies | CoinPedia Pro Account. " />
-         <meta property="og:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
-         <meta property="og:image:secure_url" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
-         <meta property="og:image:width" content="400" />
-         <meta property="og:image:height" content="400" />
+        <title>Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and MaketCap</title>
+        <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
+        <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market cap, price charts, historical data and More. Bitcoin, Altcoin, DeFi tokens and NFT tokens. " />
+        <meta name="keywords" content="Cryptocurrency Market , cryptocurrency market sentiments ,Crypto market insights , Cryptocurrency Market Analysis , NFT Price today, Defi token Price ,  Top crypto gainers, top crypto losers , Cryptocurrency market, Cryptocurrency Live  market Price, NFT Live Chart , Cryptocurrency analysis tool." />
 
-         <meta name="twitter:card" content="summary" />
-         <meta name="twitter:site" content="@coinpedia" />
-         <meta name="twitter:creator" content="@coinpedia" />
-         <meta name="twitter:title" content="List of Top Fintech Companies across the Globe | Coinpedia PRO" />
-         <meta name="twitter:description" content="Here's a list of the leading fintech companies in the country across the various sub-sectors.We are extending and updating the list regularly." />
-         <meta name="twitter:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
-
-         <link rel="canonical" href={website_url+"companies"}/>
-         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and MaketCap" />
+        <meta property="og:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market cap, price charts, historical data and More. Bitcoin, Altcoin, DeFi tokens and NFT tokens. " />
+        <meta property="og:url" content={website_url} />
+        <meta property="og:site_name" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and MaketCap" />
+        <meta property="og:image" itemprop="thumbnailUrl" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
+        <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
+        <meta property="og:image:width" content="730" />
+        <meta property="og:image:height" content="411" />  
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@coinpedia" />
+        <meta name="twitter:creator" content="@coinpedia" />
+        <meta name="twitter:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and MaketCap" />
+        <meta name="twitter:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market cap, price charts, historical data and More. Bitcoin, Altcoin, DeFi tokens and NFT tokens. " />
+        <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
+        <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
+        <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
+        <link rel="canonical" href={website_url} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
-
-      <div className="page new_markets_index min_height_page">
+    <div className="page new_markets_index min_height_page">
       <div className="market-page">
 
 
@@ -363,18 +363,16 @@ return (
                       <li class={all_tab_status?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
                       {
                       tokenStatus?
-                      <li class={watchlist_tab_status===2?"active_tab":null}><img src="/assets/img/wishlist_star.svg"/> Watchlist</li>
-                      // <li class={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist?tokens=true"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
+                      <li class={watchlist_tab_status===2?"active_tab":null}><a onClick={()=>set_watch_list()}><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></li>
                       :
                       <li>
-                      <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link>
+                      <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link>
                       </li>
                       }
                     </ul>
                   </div>
-                  {
-                     !watch_list_status?
-                      <div class="col-md-6 col-5">
+
+                  <div class="col-md-6 col-5">
                     <ul class="filter_rows">
                       <li>
                         Show rows
@@ -386,12 +384,7 @@ return (
                       </li>
                     </ul>
                   </div>
-                  :
-                  null
 
-
-                  }
-                  
                 </div>
                 {
                      watch_list_status?
@@ -410,7 +403,7 @@ return (
                                <th className="table_max_supply mobile_hide_table_col">Max Supply</th> 
                                <th className="mobile_hide_table_col table_circulating_supply">Market Cap</th>  
                                <th className="table_circulating_supply mobile_hide_table_col">Votes</th>  
-                               <th className="table_circulating_supply mobile_hide_table_col">Action</th>  
+                               <th className="table_circulating_supply mobile_hide_table_col"></th>  
                               
                              </tr>
                          </thead>
@@ -418,12 +411,9 @@ return (
    
                          <tbody>
                            {
-                            loader_status ?
-                           <>
-                           {
-                             tokens_list.length > 0
+                             current_page_token_list.length > 0
                              ?
-                             tokens_list.map((e, i) => 
+                             current_page_token_list.map((e, i) => 
                              <tr key={i}>
                                      <td>
                                      {
@@ -443,7 +433,7 @@ return (
                                      </td>
                                      
                                      <td className="mobile_hide_table_col">
-                                      {sl_no+i+1}
+                                       {sl_no+i+1}
                                      </td>
                                      <td>
                                        <Link href={"/"+e.token_id}>
@@ -469,37 +459,35 @@ return (
                                          <a>
                                          <span className="block_price">{e.price?"$":null}{e.price?count_live_price(e.price):"-"}</span>
                                            {/* <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(9)):"-"}</span> */}
-                                           
+                                           <br/>
                                            {e.price_updated_on ? moment(e.price_updated_on).fromNow():null} 
                                          </a>
                                          </Link>
-                                    </td>
-                                    
-                                    <td className="mobile_hide_table_col"> 
+                                     </td>
+                                     <td className="mobile_hide_table_col"> 
                                        <Link href={"/"+e.token_id}>
-                                        <a>
-                                          {
-                                            e.contract_addresses.length > 0
-                                            ?
-                                            e.contract_addresses[0].network_type === "1" ? "ERC20" : "BEP20" 
-                                            // e.contract_addresses.map((ca)=>
-                                            //   parseInt(ca.network_type) === 1 ? "ERC20" : "BEP20" 
-                                            //)
-                                            :
-                                            null
-                                          } 
-                                        </a>
+                                         <a>
+                                         {
+                                             e.contract_addresses.length > 0
+                                             ?
+                                               e.contract_addresses[0].network_type === "1" ? "ERC20" : "BEP20" 
+                                             // e.contract_addresses.map((ca)=>
+                                             //   parseInt(ca.network_type) === 1 ? "ERC20" : "BEP20" 
+                                             //)
+                                             :
+                                             null
+                                           } 
+                                         </a>
                
                                          </Link>
-                                    </td>
-                                    
-                                    <td className="mobile_hide_table_col">
+                                     </td>
+                                     <td className="mobile_hide_table_col">
                                        <Link href={"/"+e.token_id}>
                                          <a>
                                            {e.total_max_supply ? separator(e.total_max_supply) : "-"} 
                                          </a>
                                        </Link>
-                                    </td>
+                                     </td>
                
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/"+e.token_id}><a>
@@ -530,10 +518,10 @@ return (
                                            <span className="market_list_price markets_voted"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,true,e._id,i)} >Voted</button></span>
                                            :
                                            <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,false,e._id,i)} className="vote_btn">Vote</button></span>
-                                          }
+                                           }
                                          </>
                                          :
-                                         <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><span className="market_list_price"><button data-toggle="tooltip" className="vote_btn">Vote</button></span></a></Link>
+                                         <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><span className="market_list_price"><button data-toggle="tooltip" className="vote_btn">Vote</button></span></a></Link>
                                        }
                                        </td> 
                                </tr> 
@@ -545,11 +533,6 @@ return (
                                </td>
                              </tr>
                            }
-                             </>
-                             :
-                             <TableContentLoader row="10" col="9" />  
-                          }
-                           
                          </tbody>
                        </table>
                      </div>
@@ -558,17 +541,15 @@ return (
                 
 
                   {
-                    
-                     !watch_list_status?
-                  
+                    !watch_list_status?
+                    total_tokens_count > per_page_count
+                    ? 
                     <div className="col-md-12">
                       <div className="pagination_block">
                         <div className="row">
                           <div className="col-lg-3 col-md-3  col-sm-3 col-12">
                               <p className="page_range">{firstcount}-{finalcount} of {pageCount} Pages</p>
                           </div>
-                          {
-                            pageCount > 100 ?
                           <div className="col-lg-9 col-md-9 col-sm-9 col-12">
                             <div className="pagination_div">
                               <div className="pagination_element">
@@ -581,7 +562,7 @@ return (
                                     forcePage={selectedPage}
                                     pageCount={pageCount}
                                     marginPagesDisplayed={2} 
-                                    onPageChange={tokensList}
+                                    onPageChange={handlePageClick}
                                     containerClassName={"pagination"}
                                     subContainerClassName={"pages pagination"}
                                     activeClassName={"active"} />
@@ -589,15 +570,13 @@ return (
                               </div>
                             </div>
                           </div>
-                          :
-                          ""
-                          }
                         </div>
                       </div>
                     </div>
                   :
                   null
-                 
+                  :
+                  null
                 } 
 
 
@@ -675,14 +654,29 @@ return (
         </div>
       </div>
     </div>
-</>
-)
-} 
-
-export async function getServerSideProps({req}) 
-{
-   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
-   var user_token = userAgent.user_token ? userAgent.user_token : ""
-
-  return { props: {userAgent:userAgent, config:config(user_token), user_token:user_token}}
+    </>
+  )
 }
+
+export async function getServerSideProps({query, req}) 
+{ 
+   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
+   var user_token = ''
+   if(userAgent.user_token)
+   {
+     user_token = userAgent.user_token
+   }
+   
+   const link = await fetch(API_BASE_URL+"markets/tokens/list", config(user_token))
+   const result = await link.json()
+   if(result.status)
+    {  
+      return { props: {resData:result, userAgent:userAgent, config:config(user_token), user_token:user_token}}
+    }
+    else
+    {
+      return { props: {resData: [], user_token:user_token}}
+    }
+}
+
+

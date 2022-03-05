@@ -95,7 +95,7 @@ var object =  {
   const [err_accept, set_err_accept]= useState("")
   const [err_access_type, set_err_access_type]= useState("")
   const [err_airdrop, set_err_airdrop]= useState("")
-
+ 
  
   const [edit_launchpad_row_id, set_edit_launchpad_row_id] = useState('')
   const [edit_launchpad_object, set_edit_launchpad_object] = useState('')
@@ -724,6 +724,18 @@ const onRemove = (selectedList, removedItem) => {
                           <input type="number" placeholder="Eg.,$00.00"  value={price} onChange={(e)=>set_price(e.target.value)}  />
                         </div>
                         <div className="error">{err_price}</div>
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <div className="col-md-4">
+                        <label htmlFor="price">Soft Cap</label>
+                      </div>
+                      <div className="col-md-7 mb-4">
+                        <div className="form-group input_block_outline">
+                          <input type="number" placeholder="Soft cap"  value={soft_cap} onChange={(e)=>set_soft_cap(e.target.value)}  />
+                        </div>
+                        <div className="error"></div>
                       </div>
                     </div>
 
