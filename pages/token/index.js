@@ -36,7 +36,7 @@ export default function WalletTokensList({userAgent, config})
     useEffect(()=>
     {  
       getTokens() 
-    },[token_list])
+    },[])
          
     
     const getTokens=()=>

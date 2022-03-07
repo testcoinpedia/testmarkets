@@ -17,6 +17,7 @@ export default function OngoingLaunchPad({userAgent}) {
   const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")
   const [tokenStatus,set_tokenStatus] = useState("")
   const [watchlist, set_watchlist] = useState([])
+  const [per_page_count, set_per_page_count] = useState(100)
 
   useEffect(()=>{ 
     GetAllOngoing()
@@ -145,8 +146,7 @@ export default function OngoingLaunchPad({userAgent}) {
                     <div className="col-md-9 col-6">
                       <ul className="category_list">
                         <li className="active_tab">All</li>
-                        <li><img src="/assets/img/wishlist_star.svg"/> Watchlist</li>
-                        {/* <li><Link href={app_coinpedia_url+"watchlist?tokens=true"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li> */}
+                        <li><Link href={app_coinpedia_url+"watchlist?tokens=true"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
                         <li className="inactive"  data-toggle="modal" data-target="#comingSoon">DeFi</li>
                         <li className="inactive" data-toggle="modal" data-target="#comingSoon">NFT</li>
                         <li className="inactive" data-toggle="modal" data-target="#comingSoon">Metaverse</li>
@@ -156,18 +156,18 @@ export default function OngoingLaunchPad({userAgent}) {
                         <li className="inactive" data-toggle="modal" data-target="#comingSoon">Avalanche</li>
                       </ul>
                     </div>
-                    <div className="col-md-3 col-6">
+                    {/* <div className="col-md-3 col-6">
                       <ul className="filter_rows">
                         <li>
-                          Show rows 
-                          <select>
-                            <option>100</option>
-                            <option>50</option>
-                            <option>10</option>
+                           
+                          <select onChange={(e)=>set_per_page_count(e.target.value)}>
+                          <option value={100}>100</option>
+                          <option value={50}>50</option>
+                          <option value={20}>20</option>
                           </select>
                         </li>
                       </ul>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="table-responsive">

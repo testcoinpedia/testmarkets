@@ -25,7 +25,7 @@ export default function Companies({user_token, config})
     const [finalcount, setfinalcount] = useState(per_page_count)
     const [selectedPage, setSelectedPage] = useState(0) 
     const [image_base_url] = useState(IMAGE_BASE_URL + '/tokens/')
-    const [count, setCount]=useState()
+    const [count, setCount]=useState(0)
     const [voting_status, set_voting_status] = useState(false)
     const [loader_status, set_loader_status]=useState(false)
     const [handleModalVote, setHandleModalVote] = useState(false)
@@ -65,6 +65,7 @@ export default function Companies({user_token, config})
             set_sl_no(current_pages)
             setCurrentPage(page.selected)
             setfirstcount(current_pages+1)
+            setCount(res.data.count)
             //setfinalcount(parseInt(current_pages)+parseInt(per_page_count))
             const presentPage = page.selected+1
             const totalcompany = res.data.count
@@ -363,8 +364,7 @@ return (
                       <li class={all_tab_status?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
                       {
                       tokenStatus?
-                      <li class={watchlist_tab_status===2?"active_tab":null}><img src="/assets/img/wishlist_star.svg"/> Watchlist</li>
-                      // <li class={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist?tokens=true"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
+                      <li class={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist?tokens=true"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
                       :
                       <li>
                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link>
@@ -568,7 +568,7 @@ return (
                               <p className="page_range">{firstcount}-{finalcount} of {pageCount} Pages</p>
                           </div>
                           {
-                            pageCount > 100 ?
+                            count > per_page_count?
                           <div className="col-lg-9 col-md-9 col-sm-9 col-12">
                             <div className="pagination_div">
                               <div className="pagination_element">
