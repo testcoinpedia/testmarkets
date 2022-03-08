@@ -4,6 +4,8 @@ import Link from 'next/link'
 import Head from 'next/head';
 import Error from './404'
 import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, graphqlApiKEY, count_live_price, Logout,DomainName} from '../components/constants'
+import { live_price_graphql } from '../components/token_details/graphql'
+import { live_price } from '../components/token_details/coingecko'
 import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
 import moment from 'moment'
 import Highcharts from 'highcharts';    
@@ -33,7 +35,7 @@ let inputProps2 = {
 export default function tokenDetailsFunction({errorCode, data, token_id, userAgent, config}) 
 {   
    
-  // console.log("data", data)
+   console.log("data", data)
   if(errorCode) {return <Error/> }
   const communityRef = useRef(null);
   const explorerRef = useRef(null);
@@ -58,6 +60,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   const [tokentransactionsCurrentPage , settokentransactionsCurrentPage] = useState(0)
   const [today_date, set_today_date]= useState(data.today_date)
   const [no_data_link, set_no_data_link]= useState("")
+  const [graph_data_date, set_graph_data_date]= useState(4)
   
   const [searchBy, setSearchBy] = useState("")  
   const [err_searchBy, setErrsearchBy] = useState("") 
@@ -500,10 +503,10 @@ const get24hVolume=(id, networktype)=> {
 
 useEffect(()=>
 { 
- 
+  
   if(data.contract_addresses.length > 0)
   { 
-    getGraphData(4, data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
+   // getGraphData(4, data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
     getexchangedata(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
     get24hVolume(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
     getTokenTransactions(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
@@ -1256,349 +1259,352 @@ const get24hChange=(fun_live_price, id, networks)=>
     .catch(console.error);
 } 
 
-const getGraphData=(datetime, id, networks)=> 
+const getGraphData=async(value)=> 
 {   
- 
-  let query =""
-  if(datetime === "") 
-  { 
-    datetime = graphDate;
-  } 
-  set_graphDate(datetime)
+  await set_graph_data_date("")
+  await set_graph_data_date(value)
+  // let query =""
+  // if(datetime === "") 
+  // { 
+  //   datetime = graphDate;
+  // } 
+  // set_graphDate(datetime)
   
-  var from_n_to_date = fromNToDate(datetime)
-  let fromDate= from_n_to_date.fromDate
-  let toDate= from_n_to_date.toDate 
+  // var from_n_to_date = fromNToDate(datetime)
+  // let fromDate= from_n_to_date.fromDate
+  // let toDate= from_n_to_date.toDate 
 
-    if(networks === "1")
-    {
-      if(id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
-      {
-        query = `
-          query
-                {
-                  ethereum(network: ethereum) {
-                    dexTrades(
-                      exchangeName : {is: ""}
-                      date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-                      any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xdac17f958d2ee523a2206206994597c13d831ec7"}}]
-                      options: {asc: "timeInterval.hour"}
-                    ) {
-                      timeInterval {
-                        hour(count: 1)
-                      }
-                      baseCurrency {
-                        symbol
-                      }        
-                      quoteCurrency {
-                        symbol
-                      }
-                      quote: quotePrice
-                      buyAmount: baseAmount
-                      sellAmount: quoteAmount
-                      tradeAmountInUsd: tradeAmount(in: USD)
-                    }
-                  }
-                }
-          ` ;  
-      }
-      else
-      {
-        query = `
-        query
-              {
-                ethereum(network: ethereum) {
-                  dexTrades(
-                    exchangeName : {is: ""}
-                    date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-                    any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]
-                    options: {asc: "timeInterval.hour"}
-                  ) {
-                    timeInterval {
-                      hour(count: 1)
-                    }
-                    baseCurrency {
-                      symbol
-                    }        
-                    quoteCurrency {
-                      symbol
-                    }
-                    quote: quotePrice
-                    buyAmount: baseAmount
-                    sellAmount: quoteAmount
-                    tradeAmountInUsd: tradeAmount(in: USD)
-                  }
-                }
-              }
-        ` ;  
-      }
-    }
+  //   if(networks === "1")
+  //   {
+  //     if(id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
+  //     {
+  //       query = `
+  //         query
+  //               {
+  //                 ethereum(network: ethereum) {
+  //                   dexTrades(
+  //                     exchangeName : {is: ""}
+  //                     date: {after: "` + fromDate + `" , till: "` + toDate + `"}
+  //                     any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xdac17f958d2ee523a2206206994597c13d831ec7"}}]
+  //                     options: {asc: "timeInterval.hour"}
+  //                   ) {
+  //                     timeInterval {
+  //                       hour(count: 1)
+  //                     }
+  //                     baseCurrency {
+  //                       symbol
+  //                     }        
+  //                     quoteCurrency {
+  //                       symbol
+  //                     }
+  //                     quote: quotePrice
+  //                     buyAmount: baseAmount
+  //                     sellAmount: quoteAmount
+  //                     tradeAmountInUsd: tradeAmount(in: USD)
+  //                   }
+  //                 }
+  //               }
+  //         ` ;  
+  //     }
+  //     else
+  //     {
+  //       query = `
+  //       query
+  //             {
+  //               ethereum(network: ethereum) {
+  //                 dexTrades(
+  //                   exchangeName : {is: ""}
+  //                   date: {after: "` + fromDate + `" , till: "` + toDate + `"}
+  //                   any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]
+  //                   options: {asc: "timeInterval.hour"}
+  //                 ) {
+  //                   timeInterval {
+  //                     hour(count: 1)
+  //                   }
+  //                   baseCurrency {
+  //                     symbol
+  //                   }        
+  //                   quoteCurrency {
+  //                     symbol
+  //                   }
+  //                   quote: quotePrice
+  //                   buyAmount: baseAmount
+  //                   sellAmount: quoteAmount
+  //                   tradeAmountInUsd: tradeAmount(in: USD)
+  //                 }
+  //               }
+  //             }
+  //       ` ;  
+  //     }
+  //   }
  
-    if(networks === "2"){ 
+  //   if(networks === "2"){ 
 
-      if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"){
+  //     if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"){
 
-        query = `
-        query
-              {
-                ethereum(network: bsc) {
-                  dexTrades(
-                    exchangeName : {is: "Pancake v2"}
-                    date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-                    any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xe9e7cea3dedca5984780bafc599bd69add087d56"}}]
-                    options: {asc: "timeInterval.hour"}
-                  ) {
-                    timeInterval {
-                      hour(count: 1)
-                    }
-                    baseCurrency {
-                      symbol
-                    }        
-                    quoteCurrency {
-                      symbol
-                    }
-                    quote: quotePrice
-                    buyAmount: baseAmount
-                    sellAmount: quoteAmount
-                    tradeAmountInUsd: tradeAmount(in: USD)
-                  }
-                }
-              }
-        ` ; 
+  //       query = `
+  //       query
+  //             {
+  //               ethereum(network: bsc) {
+  //                 dexTrades(
+  //                   exchangeName : {is: "Pancake v2"}
+  //                   date: {after: "` + fromDate + `" , till: "` + toDate + `"}
+  //                   any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xe9e7cea3dedca5984780bafc599bd69add087d56"}}]
+  //                   options: {asc: "timeInterval.hour"}
+  //                 ) {
+  //                   timeInterval {
+  //                     hour(count: 1)
+  //                   }
+  //                   baseCurrency {
+  //                     symbol
+  //                   }        
+  //                   quoteCurrency {
+  //                     symbol
+  //                   }
+  //                   quote: quotePrice
+  //                   buyAmount: baseAmount
+  //                   sellAmount: quoteAmount
+  //                   tradeAmountInUsd: tradeAmount(in: USD)
+  //                 }
+  //               }
+  //             }
+  //       ` ; 
 
-      }
-      else{
+  //     }
+  //     else{
         
-        query = `
-        query
-              {
-                ethereum(network: bsc) {
-                  dexTrades(
-                    exchangeName : {is: "Pancake v2"}
-                    date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-                    any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}}]
-                    options: {asc: "timeInterval.hour"}
-                  ) {
-                    timeInterval {
-                      hour(count: 1)
-                    }
-                    baseCurrency {
-                      symbol
-                    }        
-                    quoteCurrency {
-                      symbol
-                    }
-                    quote: quotePrice
-                    buyAmount: baseAmount
-                    sellAmount: quoteAmount
-                    tradeAmountInUsd: tradeAmount(in: USD)
-                  }
-                }
-              }
-        ` ;
+  //       query = `
+  //       query
+  //             {
+  //               ethereum(network: bsc) {
+  //                 dexTrades(
+  //                   exchangeName : {is: "Pancake v2"}
+  //                   date: {after: "` + fromDate + `" , till: "` + toDate + `"}
+  //                   any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}}]
+  //                   options: {asc: "timeInterval.hour"}
+  //                 ) {
+  //                   timeInterval {
+  //                     hour(count: 1)
+  //                   }
+  //                   baseCurrency {
+  //                     symbol
+  //                   }        
+  //                   quoteCurrency {
+  //                     symbol
+  //                   }
+  //                   quote: quotePrice
+  //                   buyAmount: baseAmount
+  //                   sellAmount: quoteAmount
+  //                   tradeAmountInUsd: tradeAmount(in: USD)
+  //                 }
+  //               }
+  //             }
+  //       ` ;
 
-      } 
-    }  
+  //     } 
+  //   }  
  
 
     
-    const opts = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-KEY": "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
-      },
-      body: JSON.stringify({
-        query
-      })
-    };
-    fetch(graphQlURL, opts)
-      .then(res => res.json())
-      .then(result => { 
+  //   const opts = {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "X-API-KEY": "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
+  //     },
+  //     body: JSON.stringify({
+  //       query
+  //     })
+  //   };
+  //   fetch(graphQlURL, opts)
+  //     .then(res => res.json())
+  //     .then(result => { 
         
-        if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) { 
-        var prices= [];
-        var arr = result.data.ethereum.dexTrades; 
+  //       if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) { 
+  //       var prices= [];
+  //       var arr = result.data.ethereum.dexTrades; 
 
-        for (let index = 0; index < arr.length; index++) {
-          if (arr[index] !== undefined) {
-            var rate = 0 
-            rate = arr[index].tradeAmountInUsd / arr[index].buyAmount; 
+  //       for (let index = 0; index < arr.length; index++) {
+  //         if (arr[index] !== undefined) {
+  //           var rate = 0 
+  //           rate = arr[index].tradeAmountInUsd / arr[index].buyAmount; 
              
-            var date = new Date(arr[index].timeInterval.hour)
-            var val = []
-            val[0] = date.getTime()
-            val[1] = rate; 
+  //           var date = new Date(arr[index].timeInterval.hour)
+  //           var val = []
+  //           val[0] = date.getTime()
+  //           val[1] = rate; 
 
 
-            prices.push(val)
-            // console.log(prices)
-          }
-        } 
+  //           prices.push(val)
+  //           // console.log(prices)
+  //         }
+  //       } 
         
-        if(JsCookie.get('light_dark_mode')=="dark"){
-            Highcharts.chart('container',{
-            chart: {
-              backgroundColor: {
-                linearGradient: [0, 0, 0, 1],
-                stops: [
-                  [0, 'rgb(23, 23, 26,1)'],
-                  [1, 'rgb(23, 23, 26,1)']
-                ]
-              },
-              borderWidth: 0,
-              borderRadius: 15,
-              plotBackgroundColor: null,
-              plotShadow: false,
-              plotBorderWidth: 0
-            },
-            title: {
-              text: ''
-            },
-            xAxis: {
-              type: 'datetime',
-                lineColor: '#f7931a',
-                dashStyle: 'Dash',
-            },
-            yAxis: {
-              title: {
-                text: ('USD Prices')
-            },
-            dashStyle: 'Dash',
-        },
-        colors: ['#f7931a'],
-        legend: {
-            enabled: false
-            },
-            tooltip: {
-              backgroundColor: {
-                linearGradient: [0, 0, 0, 1],
-                stops: [
-                  [0, 'rgb(23, 23, 26,1)'],
-                  [1, 'rgb(23, 23, 26,1)']
-                ]
-              },
-              borderWidth: 0,
-              style: {
-                color: '#FFF'
-              },
-              formatter: function () {
-                  var point = this.points[0];
-                  return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
-                  '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
-              },
-            shared: true
-   },
+  //       if(JsCookie.get('light_dark_mode')=="dark"){
+  //           Highcharts.chart('container',{
+  //           chart: {
+  //             backgroundColor: {
+  //               linearGradient: [0, 0, 0, 1],
+  //               stops: [
+  //                 [0, 'rgb(23, 23, 26,1)'],
+  //                 [1, 'rgb(23, 23, 26,1)']
+  //               ]
+  //             },
+  //             borderWidth: 0,
+  //             borderRadius: 15,
+  //             plotBackgroundColor: null,
+  //             plotShadow: false,
+  //             plotBorderWidth: 0
+  //           },
+  //           title: {
+  //             text: ''
+  //           },
+  //           xAxis: {
+  //             type: 'datetime',
+  //               lineColor: '#f7931a',
+  //               dashStyle: 'Dash',
+  //           },
+  //           yAxis: {
+  //             title: {
+  //               text: ('USD Prices')
+  //           },
+  //           dashStyle: 'Dash',
+  //       },
+  //       colors: ['#f7931a'],
+  //       legend: {
+  //           enabled: false
+  //           },
+  //           tooltip: {
+  //             backgroundColor: {
+  //               linearGradient: [0, 0, 0, 1],
+  //               stops: [
+  //                 [0, 'rgb(23, 23, 26,1)'],
+  //                 [1, 'rgb(23, 23, 26,1)']
+  //               ]
+  //             },
+  //             borderWidth: 0,
+  //             style: {
+  //               color: '#FFF'
+  //             },
+  //             formatter: function () {
+  //                 var point = this.points[0];
+  //                 return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
+  //                 '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
+  //             },
+  //           shared: true
+  //  },
             
-   plotOptions: {
-    area: {
-          fillColor: {
-              linearGradient: {
-                  x1: 0,
-                  y1: 0,
-                  x2: 0,
-                  y2: 1
-              },
-              stops: [
-                [0, 'rgb(255 248 241 / 1%)'],
-                            [1, 'rgb(255 255 255 / 1%)']
-              ]
-          },
-          marker: {
-              radius: 1
-          },
-          lineWidth: 3,
-          states: {
-              hover: {
-                  lineWidth: 3
-              }
-          },
-          threshold: null
-      }
-  },
+  //  plotOptions: {
+  //   area: {
+  //         fillColor: {
+  //             linearGradient: {
+  //                 x1: 0,
+  //                 y1: 0,
+  //                 x2: 0,
+  //                 y2: 1
+  //             },
+  //             stops: [
+  //               [0, 'rgb(255 248 241 / 1%)'],
+  //                           [1, 'rgb(255 255 255 / 1%)']
+  //             ]
+  //         },
+  //         marker: {
+  //             radius: 1
+  //         },
+  //         lineWidth: 3,
+  //         states: {
+  //             hover: {
+  //                 lineWidth: 3
+  //             }
+  //         },
+  //         threshold: null
+  //     }
+  // },
 
-  series: [{
-      type: 'area',
-      name: '',
-      data: prices
-  }]
-          });
+  // series: [{
+  //     type: 'area',
+  //     name: '',
+  //     data: prices
+  // }]
+  //         });
 
          
-        }
-        else
-        {
-          Highcharts.chart('container', {
-            chart: {
-                zoomType: 'x'
-            },
-            title: {
-                text: ''
-            },
-            xAxis: {
-                type: 'datetime',
-                lineColor: '#f7931a',
-                dashStyle: 'Dash',
-            },
-            yAxis: {
-                title: {
-                    text: ('USD Prices')
-                },
-                dashStyle: 'Dash',
-            },
-            colors: ['#f7931a'],
-            legend: {
-                enabled: false
-            },
-            tooltip: {
-                      formatter: function () {
-                          var point = this.points[0];
-                          return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
-                          '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
-                      },
-        shared: true
-           },
-            plotOptions: {
-              area: {
-                    fillColor: {
-                        linearGradient: {
-                            x1: 0,
-                            y1: 0,
-                            x2: 0,
-                            y2: 1
-                        },
-                        stops: [
-                            [0, 'rgb(255 248 241 / 59%)'],
-                            [1, 'rgb(255 255 255 / 59%)']
-                        ]
-                    },
-                    marker: {
-                        radius: 1
-                    },
-                    lineWidth: 3,
-                    states: {
-                        hover: {
-                            lineWidth: 3
-                        }
-                    },
-                    threshold: null
-                }
-            },
+  //       }
+  //       else
+  //       {
+  //         Highcharts.chart('container', {
+  //           chart: {
+  //               zoomType: 'x'
+  //           },
+  //           title: {
+  //               text: ''
+  //           },
+  //           xAxis: {
+  //               type: 'datetime',
+  //               lineColor: '#f7931a',
+  //               dashStyle: 'Dash',
+  //           },
+  //           yAxis: {
+  //               title: {
+  //                   text: ('USD Prices')
+  //               },
+  //               dashStyle: 'Dash',
+  //           },
+  //           colors: ['#f7931a'],
+  //           legend: {
+  //               enabled: false
+  //           },
+  //           tooltip: {
+  //                     formatter: function () {
+  //                         var point = this.points[0];
+  //                         return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
+  //                         '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
+  //                     },
+  //       shared: true
+  //          },
+  //           plotOptions: {
+  //             area: {
+  //                   fillColor: {
+  //                       linearGradient: {
+  //                           x1: 0,
+  //                           y1: 0,
+  //                           x2: 0,
+  //                           y2: 1
+  //                       },
+  //                       stops: [
+  //                           [0, 'rgb(255 248 241 / 59%)'],
+  //                           [1, 'rgb(255 255 255 / 59%)']
+  //                       ]
+  //                   },
+  //                   marker: {
+  //                       radius: 1
+  //                   },
+  //                   lineWidth: 3,
+  //                   states: {
+  //                       hover: {
+  //                           lineWidth: 3
+  //                       }
+  //                   },
+  //                   threshold: null
+  //               }
+  //           },
       
-            series: [{
-                type: 'area',
-                name: '',
-                data: prices
-            }]
-        }); 
+  //           series: [{
+  //               type: 'area',
+  //               name: '',
+  //               data: prices
+  //           }]
+  //       }); 
 
 
-        }
+  //       }
         
-    }
+  //   }
 
-      })
-      .catch(console.error);  
+  //     })
+  //     .catch(console.error);  
+  
+ 
 } 
 const myReferrlaLink=()=> {
     var copyText = document.getElementById("referral-link");
@@ -2264,20 +2270,21 @@ const removeFromWatchlist = (param_token_id) =>
                         <div className="col-md-6 col-5">
                           <ul className=" chart_tabs_ul nav nav-tabs">
                             <li className="nav-item">
-                              <a className="nav-link " data-toggle="tab" href="#one_day" onClick={()=> getGraphData(1 , data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 D</a>
+                              <a className="nav-link " data-toggle="tab" href="#one_day" onClick={()=> getGraphData(1)}>1 D</a>
                             </li>
                             <li className="nav-item">
-                              <a className="nav-link" data-toggle="tab"  href="#one_week" onClick={()=> getGraphData(2, data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 W</a>
+                              <a className="nav-link" data-toggle="tab"  href="#one_week" onClick={()=> getGraphData(2)}>1 W</a>
                             </li>
                             <li className="nav-item">
-                              <a className="nav-link" data-toggle="tab"  href="#one_month" onClick={()=> getGraphData(3, data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 M</a>
+                              <a className="nav-link" data-toggle="tab"  href="#one_month" onClick={()=> getGraphData(3)}>1 M</a>
                             </li>
                             <li className="nav-item">
-                              <a  className="nav-link active" data-toggle="tab"  href="#one_year" onClick={()=> getGraphData(4, data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 Y</a>
+                              <a  className="nav-link active" data-toggle="tab"  href="#one_year" onClick={()=> getGraphData(4)}>1 Y</a>
                             </li>
                           </ul>
                         </div>
-
+                                  
+                                
                       </div>
                     </div>
 
@@ -2294,63 +2301,14 @@ const removeFromWatchlist = (param_token_id) =>
                     <div className="token_details_tabs">
                       <div className="tab-content">
                         <div id="overview" className="tab-pane fade show in active">
-                          <figure className="highcharts-figure">
-                            <div
-                              id="container"
-                              style={{ height: 250, overflow: "hidden" }}
-                              data-highcharts-chart={0}
-                              role="region"
-                              aria-label="Chart. Highcharts interactive chart."
-                              aria-hidden="false"
-                            >  
-                            </div>
-                          </figure>
-                          <div className="chart_tabs"> 
-                            {/* <ul className="chart_tabs">
-                              <li><button type="button" onClick={()=> getGraphData(1 , data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 D</button></li>
-                              <li><button type="button" onClick={()=> getGraphData(2, data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 W</button></li>
-                              <li><button type="button" onClick={()=> getGraphData(3, data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 M</button></li>
-                              <li><button type="button" onClick={()=> getGraphData(4, data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}>1 Y</button></li>
-                              <li><button onClick={()=> setCustomDate(!customDate)}><img src="/assets/img/table_dropdown_dots.png" className="more_dates" /></button></li> 
-                            </ul>  */}
-
-                            
-                            
-                            {
-                              customDate
-                              ?
-                              <div className="market-details-custom-search-block"> 
-                                <h5>Filter by Date</h5>
-                                <div className="search_by_date">
-                                  <div className="row">
-                                    <div className="col-md-5 col-5">
-                                      <div className="graph_date_table"><Datetime inputProps={ inputProps } onClick={()=> setCustomDate(true)} isValidDate={valid}  dateFormat="YYYY-MM-DD" timeFormat={false}  name="start_date" value={customstartdate}   onChange={(e)=> setCustomstartdate(e)} /></div>
-                                      {/* <input className="market-details-date-search" max={moment().format('YYYY-MM-DD')} value={customstartdate} onChange={(e)=> setCustomstartdate(e.target.value)} placeholder="Start date" type="date" /> */}
-                                    </div>
-                                    <div className="col-md-5 col-5">
-                                      <div className="graph_date_table"><Datetime inputProps={ inputProps2 } onClick={()=> setCustomDate(true)} isValidDate={valid2}  dateFormat="YYYY-MM-DD" timeFormat={false}  name="end_date" value={customenddate}  onChange={(e)=> setCustomenddate(e)} /></div>
-                                      {/* <input className="market-details-date-search" max={moment().format('YYYY-MM-DD')} value={customenddate} onChange={(e)=> setCustomenddate(e.target.value)} placeholder="End date" type="date" /> */}
-                                    </div>
-                                    <div className="col-md-2 col-2">
-                                      {
-                                        customstartdate && customenddate
-                                        ?
-                                        <button type="button" onClick={()=> getGraphData(6,data.contract_addresses[0].contract_address ,data.contract_addresses[0].network_type)}><img src="/assets/img/search-box-white.png" alt="Search" width="16px" height="16px" /></button>
-                                        :
-                                        <button type="button"><img src="/assets/img/search-box-white.png" alt="Search" width="16px" height="16px" /></button>
-                                      }
-                                    </div>
-                                  </div>
-                                </div>  
-                              </div>
-                              :
-                              null
-                            }
-
-                          </div>
-
-
-
+                          {
+                            graph_data_date ?
+                            <Graph_Data reqData={data} graph_data_date={graph_data_date} />
+                            :
+                            ""
+                          }
+                        
+                         
                          
                         </div>
 

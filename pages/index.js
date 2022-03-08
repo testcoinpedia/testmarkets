@@ -10,6 +10,9 @@ import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
 import WatchList from '../components/watchlist'
 
+// import {coingeckoId} from '../components/token_details/coingecko'
+
+
 export default function Companies({user_token, config})
 { 
     const [tokenStatus,set_tokenStatus] = useState("")
@@ -37,8 +40,13 @@ export default function Companies({user_token, config})
     const [all_tab_status, set_all_tab_status] = useState(true)
     const [watchlist_tab_status, set_watchlist_tab_status] = useState("")
    
-   useEffect(()=>
+    
+   
+   useEffect(async ()=>
    {  
+      // var asdfsf = await coingeckoId('bitcoin')
+      // console.log(asdfsf)
+      
       tokensList({selected : 0})
       voteIds()
       watchListIds()

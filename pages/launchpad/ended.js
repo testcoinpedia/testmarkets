@@ -5,9 +5,10 @@ import Link from 'next/link'
 import Axios from 'axios'; 
 import Head from 'next/head';
 import cookie from 'cookie'
-import {IMAGE_BASE_URL,API_BASE_URL,config,separator,website_url, app_coinpedia_url,market_coinpedia_url} from '../../components/constants' 
+import ReactPaginate from 'react-paginate'  
+import {IMAGE_BASE_URL, API_BASE_URL, config, separator, website_url, app_coinpedia_url, market_coinpedia_url} from '../../components/constants' 
 import TableContentLoader from '../../components/loaders/tableLoader'
- import moment from 'moment'
+import moment from 'moment'
  
 export default function OngoingLaunchPad({userAgent}) { 
 
@@ -17,23 +18,52 @@ export default function OngoingLaunchPad({userAgent}) {
   const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")
   const [tokenStatus,set_tokenStatus] = useState("")
   const [watchlist, set_watchlist] = useState([])
-  const [per_page_count, set_per_page_count] = useState(100)
+ 
+   const [perPage, set_perPage] = useState(100)
+   const [currentPage, setCurrentPage] = useState(0);
+   const [pageCount, setPageCount] = useState(0)
+   const [count, setCount]=useState()
+   const [firstcount, setfirstcount] = useState(1)
+   const [finalcount, setfinalcount] = useState(perPage)
+   const [selectedPage, setSelectedPage] = useState(0) 
 
   useEffect(()=>{ 
-    GetAllOngoing()
-  },[])
+    GetAllOngoing({selected : 0})
+  },[perPage])
 
-  const GetAllOngoing = ()=>{ 
-    Axios.get(API_BASE_URL+"markets/launchpads/ended", config(user_token))
-    .then(response=>{
-      console.log(response)
-          if(response.data.status){  
+  const GetAllOngoing = async (page)=>{ 
+
+    let current_pages = 0 
+      if(page.selected) 
+      {
+         current_pages = ((page.selected) * perPage) 
+      } 
+
+    const response = await Axios.get(API_BASE_URL+"markets/launchpads/ended/"+current_pages+'/'+perPage, config(user_token))
+    console.log("company_list", response)
+      if(response.data)
+      {
+          if(response.data.status == true)
+          {  
             setapistatus(true)
             setended(response.data.message)
             set_tokenStatus(response.data.tokenStatus)
             set_watchlist(response.data.watchlist) 
+            setCount(response.data.count)
+            setPageCount(Math.ceil(response.data.count/perPage))
+            setCurrentPage(page.selected)
+            setfirstcount(current_pages+1)
+            const presentPage = page.selected+1
+            const totalcompany = response.data.count
+            var sadf = presentPage*perPage
+            if((presentPage*perPage) > totalcompany)
+            {
+            sadf = totalcompany
+            }
+            const final_count=sadf
+            setfinalcount(final_count)
           }
-    })
+        }
   } 
   const addToWatchlist = (param_token_id) =>
   {
@@ -156,19 +186,22 @@ export default function OngoingLaunchPad({userAgent}) {
                         <li className="inactive" data-toggle="modal" data-target="#comingSoon">Avalanche</li>
                       </ul>
                     </div>
-                    {/* <div className="col-md-3 col-6">
+                    {
+                    <div className="col-md-3 col-6">
                       <ul className="filter_rows">
                         <li>
-                           
-                          <select onChange={(e)=>set_per_page_count(e.target.value)}>
+                           Show rows
+                          <select onChange={(e)=>set_perPage(e.target.value)}>
                           <option value={100}>100</option>
                           <option value={50}>50</option>
                           <option value={20}>20</option>
                           </select>
                         </li>
                       </ul>
-                    </div> */}
+                    </div>
+                  }
                   </div>
+                  
 
                   <div className="table-responsive">
                     <table className="table table-borderless">
@@ -292,6 +325,46 @@ export default function OngoingLaunchPad({userAgent}) {
                             
                         </tbody>
                     </table>
+
+                    {
+                   
+                     <div className="col-md-12">
+                      <div className="pagination_block">
+                        <div className="row">
+                          <div className="col-lg-3 col-md-3  col-sm-3 col-12">
+                              <p className="page_range">{firstcount}-{finalcount} of {pageCount} Pages</p>
+                          </div>
+                          {
+                            count > perPage?
+                          <div className="col-lg-9 col-md-9 col-sm-9 col-12">
+                            <div className="pagination_div">
+                              <div className="pagination_element">
+                                <div className="pager__list pagination_element"> 
+                                  <ReactPaginate 
+                                    previousLabel={currentPage+1 !== 1 ? "Prev" : ""}
+                                    nextLabel={currentPage+1 !== pageCount ? "Next" : ""}
+                                    breakLabel={"..."}
+                                    breakClassName={"break-me"}
+                                    forcePage={selectedPage}
+                                    pageCount={pageCount}
+                                    marginPagesDisplayed={2} 
+                                    onPageChange={GetAllOngoing}
+                                    containerClassName={"pagination"}
+                                    subContainerClassName={"pages pagination"}
+                                    activeClassName={"active"} />
+                                </div> 
+                              </div>
+                            </div>
+                          </div>
+                          :
+                          ""
+                          }
+                        </div>
+                      </div>
+                    </div>
+                     
+                  }
+
                   </div>
 
                   <div className="launchpad_overview_data">
