@@ -5,7 +5,7 @@ import Head from 'next/head';
 import Error from './404'
 import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, graphqlApiKEY, count_live_price, Logout,DomainName} from '../components/constants'
 import { live_price_graphql } from '../components/token_details/graphql'
-import { live_price } from '../components/token_details/coingecko'
+import { live_price_coingecko } from '../components/token_details/coingecko'
 import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
 import moment from 'moment'
 import Highcharts from 'highcharts';    
@@ -34,8 +34,8 @@ let inputProps2 = {
 
 export default function tokenDetailsFunction({errorCode, data, token_id, userAgent, config}) 
 {   
-   
-   console.log("data", data)
+  
+  console.log("data",data)
   if(errorCode) {return <Error/> }
   const communityRef = useRef(null);
   const explorerRef = useRef(null);
@@ -78,8 +78,11 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   const [customenddate, setCustomenddate] = useState("")
 
   const [price_change_24h, set_priceChange24H] = useState("") 
-  const [circulating_supply, setcirculating_supply] = useState("") 
+  const [circulating_supply, setcirculating_supply] = useState(0) 
   const [live_price, setLivePrice] = useState("")
+  const [mcap_to_tvl_ratio, set_mcap_to_tvl_ratio] = useState("")
+  const [volume,set_volume] = useState(0)  
+
   const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
 
   const [otherContract, setOtherContract] = useState(false) 
@@ -97,16 +100,77 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   const [launchpad_object, set_launchpad_object] = useState(data.launch_pads_data.length > 0 ? data.launch_pads_data[0] : "")
   
   
+  useEffect(async ()=>
+  {  
+    if(parseInt(data.api_from_type)===1)
+    { 
+      coingeckoId()
+    } 
+    else{
+     
+      graphqldata()
+    }
 
-  const makeJobSchema=()=>{  
-      return { 
-          "@context":"http://schema.org/",
-          "@type":"Organization",
-          "name": data.token_name,
-          "url": website_url+data.token_id,
-          "logo": image_base_url+data.token_image,
-          "sameAs":["","", "", ""]
-        }  
+    // if(data.contract_addresses.length > 0)
+    // { 
+      
+    
+    //   // getGraphData(4, data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
+    //   getexchangedata(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
+    //   get24hVolume(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
+    //   getTokenTransactions(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
+    //   //getTokenexchange(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
+    //   getTokenUsdPrice(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
+    //   // console.log(data.contract_addresses[0].contract_address)
+    // } 
+
+    
+
+    set_light_dark_mode(JsCookie.get('light_dark_mode'))
+    document.addEventListener("click", handleClickOutside, false);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, false);
+    }
+  
+  },[])
+
+  const coingeckoId= async()=> 
+  {    
+    var coingecko_data = await live_price_coingecko(data.api_from_id)
+    console.log(coingecko_data)
+    set_mcap_to_tvl_ratio(coingecko_data.mcap_to_tvl_ratio)
+    settoken_max_supply(coingecko_data.token_max_supply)
+    set_priceChange24H(coingecko_data.price_change_24h)
+    setcirculating_supply(coingecko_data.circulating_supply)
+    setLivePrice(coingecko_data.live_price)
+    set_market_cap(coingecko_data.market_cap)
+    set_exchange_list_new(coingecko_data.exchanges)
+    set_volume(coingecko_data.total_volume)
+  }
+  const graphqldata= async()=> 
+  {  
+    const graphql_data = await live_price_graphql(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
+    console.log("live_price_graphql", graphql_data) 
+    setcirculating_supply(graphql_data.circulating_supply)
+    settoken_max_supply(graphql_data.token_max_supply)
+    set_priceChange24H(graphql_data.price_change_24h)
+    setLivePrice(graphql_data.live_price)
+    set_market_cap(graphql_data.market_cap)
+    set_contract_24h_volume(graphql_data.contract_24h_volume)
+    set_liquidity(graphql_data.liquidity)
+  }
+  
+
+  const makeJobSchema=()=>
+  {  
+    return { 
+      "@context":"http://schema.org/",
+      "@type":"Organization",
+      "name": data.token_name,
+      "url": website_url+data.token_id,
+      "logo": image_base_url+data.token_image,
+      "sameAs":["","", "", ""]
+      }  
   } 
  
   var yesterday = moment()
@@ -423,106 +487,10 @@ const exchangespagination=(data, offset)=>{
 
 
 
-const getCirculatingSupply=(id,decimal,networktype)=>{
-if(networktype==1){
-
-}
-else{
-  Axios.get("https://api.bscscan.com/api?module=stats&action=tokenCsupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
-    .then(response=>{
-          if(response.status){ 
-            // console.log(response)
-            setcirculating_supply(response.data.result/10**decimal) 
-          }
-    })
-}
 
 
-}
-
-const get24hVolume=(id, networktype)=> {   
-  let query =""
-  const dateSince = ((new Date).toISOString())
-
-  if(networktype === "1"){
-      query = `
-      query
-      {
-        ethereum(network: ethereum) {
-          dexTrades(
-            date: {since: "` + dateSince + `"}
-            baseCurrency: {is: "`+id+`"}
-            options: {desc: "tradeAmount"}
-          ) {
-            tradeAmount(in: USD)
-          }
-        }
-      }
-    ` ;
-  }
-  else{
-    query = `
-    query
-    {
-      ethereum(network: bsc) {
-        dexTrades(
-          date: {since: "` + dateSince + `"}
-          baseCurrency: {is: "`+id+`"}
-          options: {desc: "tradeAmount"}
-        ) {
-          tradeAmount(in: USD)
-        }
-      }
-    }
-  ` ;
-  }
 
 
-  
-  const opts = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
-    },
-    body: JSON.stringify({
-      query
-    })
-  };
-
-  fetch(graphQlURL, opts)
-    .then(res => res.json())
-    .then(result => {  
-      if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) {  
-        set_contract_24h_volume(result.data.ethereum.dexTrades[0].tradeAmount) 
-      }
-    })
-    .catch(console.error);
-}
-
-
-useEffect(()=>
-{ 
-  
-  if(data.contract_addresses.length > 0)
-  { 
-   // getGraphData(4, data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
-    getexchangedata(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
-    get24hVolume(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
-    getTokenTransactions(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
-    //getTokenexchange(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
-     getTokenUsdPrice(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
-    // console.log(data.contract_addresses[0].contract_address)
-    
-  } 
-
-  set_light_dark_mode(JsCookie.get('light_dark_mode'))
-  document.addEventListener("click", handleClickOutside, false);
-  return () => {
-    document.removeEventListener("click", handleClickOutside, false);
-  };
- 
-},[])
 
 
 const handleClickOutside = event => {  
@@ -856,753 +824,20 @@ const getexchangevalue = async (pool_token_address,networks)=>
   
 } 
 
-const getTokenUsdPrice=async(id, networks)=>
-{  
-  let query = "" 
-  const dateSince = ((new Date()).toISOString())
-  if(networks === "1")
-  {
-    query = `
-    query
-    {
-      ethereum(network: ethereum) {
-        dexTrades(
-          date: {since: "` + dateSince + `"}
-          any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}, {baseCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}, quoteCurrency: {is: "0xdac17f958d2ee523a2206206994597c13d831ec7"}}]
-          options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
-        ) {
-          baseCurrency {
-            symbol
-          }
-          block {
-            height
-          }
-          transaction {
-            index
-          }
-    
-          quoteCurrency {
-            symbol
-          }
-          quote: quotePrice
-        }
-      }
-    }
-` ;
-  } 
-  else{
-    query = `
-    query
-    {
-      ethereum(network: bsc) {
-        dexTrades(
-          date: {since: "` + dateSince + `"}
-          any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}}, {baseCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}, quoteCurrency: {is: "0xe9e7cea3dedca5984780bafc599bd69add087d56"}}]
-          options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
-        ) {
-          baseCurrency {
-            symbol
-          }
-          block {
-            height
-          }
-          transaction {
-            index
-          }
-    
-          quoteCurrency {
-            symbol
-          }
-          quote: quotePrice
-        }
-      }
-    }
-` ;
-  } 
-       
-  
-  const opts = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
-    },
-    body: JSON.stringify({
-      query
-    })
-  };
-  const livePriceQuery = await fetch(graphQlURL, opts)
-  const liveQueryRun = await livePriceQuery.json() 
-  if(liveQueryRun)
-  {
-      if(liveQueryRun.data.ethereum != null && liveQueryRun.data.ethereum.dexTrades != null) 
-      { 
-        //console.log("Live Price",liveQueryRun.data)   
-        var cal_live_price = 0
-        if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c")
-        {
-          cal_live_price = liveQueryRun.data.ethereum.dexTrades[0].quote
-        }
-        else if(liveQueryRun.data.ethereum.dexTrades.length == 2)
-        {
-          cal_live_price = liveQueryRun.data.ethereum.dexTrades[0].quote*liveQueryRun.data.ethereum.dexTrades[1].quote
-        }
-        getTokendetails(id, cal_live_price, networks)
-        setLivePrice(cal_live_price) 
-        get24hChange(cal_live_price, id, networks) 
-          // getTotalMaxSupply(id,decimal, networks)
-          // getMarketCap(id, decimal, result.data.ethereum.dexTrades[0].quote, networks) 
-          
-          
-      } 
-       
-  }
-}
 
 
 
-const getTokendetails=async (id, usd_price, network_type)=> 
-{  
-  let query =""
-  if(network_type === "1")
-  {
-    query = `
-        query
-        { 
-          ethereum(network: ethereum) {
-            address(address: {is: `+ '"' +id+ '"' + `}){
-
-              annotation
-              address
-
-              smartContract {
-                contractType
-                currency{
-                  symbol
-                  name
-                  decimals
-                  tokenType
-                }
-              }
-              balance
-            }
-          } 
-        }
-      ` ;
-  }
-  else{
-    query = `
-        query
-        { 
-          ethereum(network: bsc) {
-            address(address: {is: `+ '"' +id+ '"' + `}){
-
-              annotation
-              address
-
-              smartContract {
-                contractType
-                currency{
-                  symbol
-                  name
-                  decimals
-                  tokenType
-                }
-              }
-              balance
-            }
-          } 
-        }
-      ` ;
-  }
- 
-  
-  const opts = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
-    },
-    body: JSON.stringify({
-      query
-    })
-  }
-  const liveDecimalQuery = await fetch(graphQlURL, opts)
-  const liveDecimalRun = await liveDecimalQuery.json()
-  if(liveDecimalRun.data.ethereum !== null) 
-  { 
-    //console.log("usd price",usd_price)
-    setdecimal(liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals)
-    var get_total_supply_value = await getTotalMaxSupply(id, network_type)
-    var cal_total_supply_value = get_total_supply_value/10**liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals
-    settoken_max_supply(cal_total_supply_value) 
-    var cal_market_cap = cal_total_supply_value * usd_price
-    set_market_cap(cal_market_cap)
-    getMarketCap(id, liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals, usd_price, network_type) 
-    getCirculatingSupply(id,liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals, network_type)
-    const reqObj = {
-      network_type : network_type,
-      contract_address: id,
-      live_price: usd_price,
-      total_max_supply:cal_total_supply_value,
-      market_cap:cal_market_cap
-    } 
-
-    await Axios.post(API_BASE_URL+'markets/tokens/save_token_live_price', reqObj, config)
-  }  
-}
 
 
-const getTotalMaxSupply= async (id, networktype)=>
-{
-  var req_url = "https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=E9DBMPJU7N6FK7ZZDK86YR2EZ4K4YTHZJ1"
-  if(networktype==2)
-  {
-    req_url = "https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2"
-  }
-  const resObj = await Axios.get(req_url)
-  if(resObj.status)
-  { 
-    return resObj.data.result
-  }
-  else
-  {
-    return 0
-  }
-}
-const getMarketCap =async(id, decval, usd_price, network_type)=> {  
 
-  let mainnetUrl = ""
 
-  if(network_type === "1" ){
-    mainnetUrl = 'https://mainnet.infura.io/v3/5fd436e2291c47fe9b20a17372ad8057'
-  }
-  else{
-    mainnetUrl = "https://bsc-dataseed.binance.org/";
-  }
- 
- 
-    const provider = new ethers.providers.JsonRpcProvider(mainnetUrl); 
 
-    const tokenAbi = ["function totalSupply() view returns (uint256)"];
-    const tokenContract = new ethers.Contract(id, tokenAbi, provider);
-    const supply = await tokenContract.totalSupply() / (10 ** decval);  
-    //console.log("supply", supply)
-    // set_market_cap(supply * usd_price) 
-   // console.log(market_cap) 
 
-  if(network_type === "1")
-  {
-    // if(id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' || id !== '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984'){
-      
-    //       const pairAbi = ["function getPair(address first, address second) view returns (address)"]
-    //       const pairContract = new ethers.Contract("0x1f9840a85d5af5bf1d1762f925bdaddc4201f984", pairAbi, provider);
-    //       const pairAddr = await pairContract.getPair(id, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2');
-  
-    //       const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
-    //       const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
-    //       const reserve = await liqContract.getReserves();
-    //       const token0 = await liqContract.token0();
-    //       const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
-    //       set_liquidity(liquidity) 
-    //       console.log(liquidity)
-     // } 
-  }
-  else
-  {
-    if(id !== '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c')
-    {
-      
-      const pairAbi = ["function getPair(address first, address second) view returns (address)"]
-      const pairContract = new ethers.Contract("0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73", pairAbi, provider);
-      const pairAddr = await pairContract.getPair(id, '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c');
-     
-      const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
-      const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
-      const reserve = await liqContract.getReserves();
-      const token0 = await liqContract.token0();
-      const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
-      set_liquidity(liquidity)
-     // console.log(liquidity)
-      }
-      else
-      {
-        const pairAbi = ["function getPair(address first, address second) view returns (address)"]
-        const pairContract = new ethers.Contract("0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73", pairAbi, provider);
-        const pairAddr = await pairContract.getPair(id, '0xe9e7cea3dedca5984780bafc599bd69add087d56');
-       
-          const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
-          const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
-          const reserve = await liqContract.getReserves();
-          const token0 = await liqContract.token0();
-          const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
-          set_liquidity(liquidity)
-    
-      }
-
-  } 
-}
-
-const get24hChange=(fun_live_price, id, networks)=>
-{  
- 
-  let query = ""
-
-  const date = ((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString()) 
-  // console.log(date)
-  if(networks === "1"){
-
-  query = `
-              query
-              {
-                ethereum(network: ethereum) {
-                  dexTrades(
-                    date: {in: "` + date + `"}
-                    any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}, {baseCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}, quoteCurrency: {is: "0xdac17f958d2ee523a2206206994597c13d831ec7"}}]
-                    options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
-                  ) {
-                    baseCurrency {
-                      symbol
-                    }
-                    block {
-                      height
-                    }
-                    transaction {
-                      index
-                    }
-                    quoteCurrency {
-                      symbol
-                    }
-                    quote: quotePrice
-                  }
-                }
-              }
-        ` ; 
-    }
- 
-  if(networks === "2"){
-
-    query = `
-    query
-    {
-      ethereum(network: bsc) {
-        dexTrades(
-          date: {in: "` + date + `"}
-          any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}}, {baseCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}, quoteCurrency: {is: "0xe9e7cea3dedca5984780bafc599bd69add087d56"}}]
-          options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
-        ) {
-          baseCurrency {
-            symbol
-          }
-          block {
-            height
-          }
-          transaction {
-            index
-          }
-          quoteCurrency {
-            symbol
-          }
-          quote: quotePrice
-        }
-      }
-    }
-` ;
-  }
-  
-  
-  const opts = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
-    },
-    body: JSON.stringify({
-      query
-    })
-  };
-   
-  const contract_usdt_price = fun_live_price 
-  let change24h = 0
-  fetch(graphQlURL, opts)
-    .then(res => res.json())
-    .then(result => 
-      {     
-        if(result.data.ethereum != null && result.data.ethereum.dexTrades != null)
-        {    
-          if(result.data.ethereum.dexTrades[0].baseCurrency.symbol === "WBNB" || id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
-          {
-            var quote_zero = 0
-            if(result.data.ethereum.dexTrades)
-            {
-              quote_zero = result.data.ethereum.dexTrades[0].quote
-            }
-
-            var quote_one = 0
-            if(result.data.ethereum.dexTrades.length > 1)
-            {
-              quote_one = result.data.ethereum.dexTrades[1].quote
-            }
-
-            change24h = ((contract_usdt_price - (quote_zero*quote_one)) / (contract_usdt_price) * 100) 
-            set_priceChange24H(change24h)
-            //console.log(change24h)
-          } 
-          else
-          {
-            change24h = (contract_usdt_price / (quote_zero * quote_one) - 1) * 100
-            // change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote ) - 1) * 100
-            set_priceChange24H(change24h) 
-          } 
-        }
-    })
-    .catch(console.error);
-} 
 
 const getGraphData=async(value)=> 
 {   
   await set_graph_data_date("")
   await set_graph_data_date(value)
-  // let query =""
-  // if(datetime === "") 
-  // { 
-  //   datetime = graphDate;
-  // } 
-  // set_graphDate(datetime)
-  
-  // var from_n_to_date = fromNToDate(datetime)
-  // let fromDate= from_n_to_date.fromDate
-  // let toDate= from_n_to_date.toDate 
-
-  //   if(networks === "1")
-  //   {
-  //     if(id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
-  //     {
-  //       query = `
-  //         query
-  //               {
-  //                 ethereum(network: ethereum) {
-  //                   dexTrades(
-  //                     exchangeName : {is: ""}
-  //                     date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-  //                     any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xdac17f958d2ee523a2206206994597c13d831ec7"}}]
-  //                     options: {asc: "timeInterval.hour"}
-  //                   ) {
-  //                     timeInterval {
-  //                       hour(count: 1)
-  //                     }
-  //                     baseCurrency {
-  //                       symbol
-  //                     }        
-  //                     quoteCurrency {
-  //                       symbol
-  //                     }
-  //                     quote: quotePrice
-  //                     buyAmount: baseAmount
-  //                     sellAmount: quoteAmount
-  //                     tradeAmountInUsd: tradeAmount(in: USD)
-  //                   }
-  //                 }
-  //               }
-  //         ` ;  
-  //     }
-  //     else
-  //     {
-  //       query = `
-  //       query
-  //             {
-  //               ethereum(network: ethereum) {
-  //                 dexTrades(
-  //                   exchangeName : {is: ""}
-  //                   date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-  //                   any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]
-  //                   options: {asc: "timeInterval.hour"}
-  //                 ) {
-  //                   timeInterval {
-  //                     hour(count: 1)
-  //                   }
-  //                   baseCurrency {
-  //                     symbol
-  //                   }        
-  //                   quoteCurrency {
-  //                     symbol
-  //                   }
-  //                   quote: quotePrice
-  //                   buyAmount: baseAmount
-  //                   sellAmount: quoteAmount
-  //                   tradeAmountInUsd: tradeAmount(in: USD)
-  //                 }
-  //               }
-  //             }
-  //       ` ;  
-  //     }
-  //   }
- 
-  //   if(networks === "2"){ 
-
-  //     if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"){
-
-  //       query = `
-  //       query
-  //             {
-  //               ethereum(network: bsc) {
-  //                 dexTrades(
-  //                   exchangeName : {is: "Pancake v2"}
-  //                   date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-  //                   any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xe9e7cea3dedca5984780bafc599bd69add087d56"}}]
-  //                   options: {asc: "timeInterval.hour"}
-  //                 ) {
-  //                   timeInterval {
-  //                     hour(count: 1)
-  //                   }
-  //                   baseCurrency {
-  //                     symbol
-  //                   }        
-  //                   quoteCurrency {
-  //                     symbol
-  //                   }
-  //                   quote: quotePrice
-  //                   buyAmount: baseAmount
-  //                   sellAmount: quoteAmount
-  //                   tradeAmountInUsd: tradeAmount(in: USD)
-  //                 }
-  //               }
-  //             }
-  //       ` ; 
-
-  //     }
-  //     else{
-        
-  //       query = `
-  //       query
-  //             {
-  //               ethereum(network: bsc) {
-  //                 dexTrades(
-  //                   exchangeName : {is: "Pancake v2"}
-  //                   date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-  //                   any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}}]
-  //                   options: {asc: "timeInterval.hour"}
-  //                 ) {
-  //                   timeInterval {
-  //                     hour(count: 1)
-  //                   }
-  //                   baseCurrency {
-  //                     symbol
-  //                   }        
-  //                   quoteCurrency {
-  //                     symbol
-  //                   }
-  //                   quote: quotePrice
-  //                   buyAmount: baseAmount
-  //                   sellAmount: quoteAmount
-  //                   tradeAmountInUsd: tradeAmount(in: USD)
-  //                 }
-  //               }
-  //             }
-  //       ` ;
-
-  //     } 
-  //   }  
- 
-
-    
-  //   const opts = {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "X-API-KEY": "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
-  //     },
-  //     body: JSON.stringify({
-  //       query
-  //     })
-  //   };
-  //   fetch(graphQlURL, opts)
-  //     .then(res => res.json())
-  //     .then(result => { 
-        
-  //       if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) { 
-  //       var prices= [];
-  //       var arr = result.data.ethereum.dexTrades; 
-
-  //       for (let index = 0; index < arr.length; index++) {
-  //         if (arr[index] !== undefined) {
-  //           var rate = 0 
-  //           rate = arr[index].tradeAmountInUsd / arr[index].buyAmount; 
-             
-  //           var date = new Date(arr[index].timeInterval.hour)
-  //           var val = []
-  //           val[0] = date.getTime()
-  //           val[1] = rate; 
-
-
-  //           prices.push(val)
-  //           // console.log(prices)
-  //         }
-  //       } 
-        
-  //       if(JsCookie.get('light_dark_mode')=="dark"){
-  //           Highcharts.chart('container',{
-  //           chart: {
-  //             backgroundColor: {
-  //               linearGradient: [0, 0, 0, 1],
-  //               stops: [
-  //                 [0, 'rgb(23, 23, 26,1)'],
-  //                 [1, 'rgb(23, 23, 26,1)']
-  //               ]
-  //             },
-  //             borderWidth: 0,
-  //             borderRadius: 15,
-  //             plotBackgroundColor: null,
-  //             plotShadow: false,
-  //             plotBorderWidth: 0
-  //           },
-  //           title: {
-  //             text: ''
-  //           },
-  //           xAxis: {
-  //             type: 'datetime',
-  //               lineColor: '#f7931a',
-  //               dashStyle: 'Dash',
-  //           },
-  //           yAxis: {
-  //             title: {
-  //               text: ('USD Prices')
-  //           },
-  //           dashStyle: 'Dash',
-  //       },
-  //       colors: ['#f7931a'],
-  //       legend: {
-  //           enabled: false
-  //           },
-  //           tooltip: {
-  //             backgroundColor: {
-  //               linearGradient: [0, 0, 0, 1],
-  //               stops: [
-  //                 [0, 'rgb(23, 23, 26,1)'],
-  //                 [1, 'rgb(23, 23, 26,1)']
-  //               ]
-  //             },
-  //             borderWidth: 0,
-  //             style: {
-  //               color: '#FFF'
-  //             },
-  //             formatter: function () {
-  //                 var point = this.points[0];
-  //                 return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
-  //                 '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
-  //             },
-  //           shared: true
-  //  },
-            
-  //  plotOptions: {
-  //   area: {
-  //         fillColor: {
-  //             linearGradient: {
-  //                 x1: 0,
-  //                 y1: 0,
-  //                 x2: 0,
-  //                 y2: 1
-  //             },
-  //             stops: [
-  //               [0, 'rgb(255 248 241 / 1%)'],
-  //                           [1, 'rgb(255 255 255 / 1%)']
-  //             ]
-  //         },
-  //         marker: {
-  //             radius: 1
-  //         },
-  //         lineWidth: 3,
-  //         states: {
-  //             hover: {
-  //                 lineWidth: 3
-  //             }
-  //         },
-  //         threshold: null
-  //     }
-  // },
-
-  // series: [{
-  //     type: 'area',
-  //     name: '',
-  //     data: prices
-  // }]
-  //         });
-
-         
-  //       }
-  //       else
-  //       {
-  //         Highcharts.chart('container', {
-  //           chart: {
-  //               zoomType: 'x'
-  //           },
-  //           title: {
-  //               text: ''
-  //           },
-  //           xAxis: {
-  //               type: 'datetime',
-  //               lineColor: '#f7931a',
-  //               dashStyle: 'Dash',
-  //           },
-  //           yAxis: {
-  //               title: {
-  //                   text: ('USD Prices')
-  //               },
-  //               dashStyle: 'Dash',
-  //           },
-  //           colors: ['#f7931a'],
-  //           legend: {
-  //               enabled: false
-  //           },
-  //           tooltip: {
-  //                     formatter: function () {
-  //                         var point = this.points[0];
-  //                         return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
-  //                         '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
-  //                     },
-  //       shared: true
-  //          },
-  //           plotOptions: {
-  //             area: {
-  //                   fillColor: {
-  //                       linearGradient: {
-  //                           x1: 0,
-  //                           y1: 0,
-  //                           x2: 0,
-  //                           y2: 1
-  //                       },
-  //                       stops: [
-  //                           [0, 'rgb(255 248 241 / 59%)'],
-  //                           [1, 'rgb(255 255 255 / 59%)']
-  //                       ]
-  //                   },
-  //                   marker: {
-  //                       radius: 1
-  //                   },
-  //                   lineWidth: 3,
-  //                   states: {
-  //                       hover: {
-  //                           lineWidth: 3
-  //                       }
-  //                   },
-  //                   threshold: null
-  //               }
-  //           },
-      
-  //           series: [{
-  //               type: 'area',
-  //               name: '',
-  //               data: prices
-  //           }]
-  //       }); 
-
-
-  //       }
-        
-  //   }
-
-  //     })
-  //     .catch(console.error);  
   
  
 } 
@@ -1785,6 +1020,9 @@ const removeFromWatchlist = (param_token_id) =>
                       </div>
                     <div className="col-md-6 order-md-1">
                       { 
+                        data.list_type==1?
+                        ""
+                        :
                         data.contract_addresses.length > 0
                         ?
                         <div className="wallets__inner contract_address">
@@ -1794,13 +1032,13 @@ const removeFromWatchlist = (param_token_id) =>
                               { 
                                 data.contract_addresses.length > 1
                                 ?
-                                  data.contract_addresses[0].network_type === "1"
+                                  parseInt(data.contract_addresses[0].network_type) === 1
                                   ?
                                   <>  
                                   {/* src="/assets/img/copy.png" */}
                                   <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
                                     <span >
-                                      <img  className="token_dropdown_img" src="/assets/img/ETH.svg"></img>
+                                      <img  className="token_dropdown_img" src="/assets/img/ETH.svg" alt="Ethereum"></img>
                                       Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
                                     </span>
                                   </a>&nbsp;
@@ -1839,7 +1077,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   }
                                   </> 
                                   :  
-                                  data.contract_addresses[0].network_type === "2"
+                                  parseInt(data.contract_addresses[0].network_type) === 2
                                   ?
                                   <> 
                                   <a href={"https://bscscan.com/token/" + data.contract_addresses[0].contract_address} target="_blank">
@@ -1882,7 +1120,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   :
                                   null
                                 :
-                                data.contract_addresses[0].network_type === "1"
+                                data.contract_addresses[0].network_type === 1
                                 ? 
                                 <span className="wallet_address_token" onClick={()=> setOtherContract(!otherContract)}>
                                   <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
@@ -1959,7 +1197,7 @@ const removeFromWatchlist = (param_token_id) =>
                       <div className="col-md-6">
                         <div className="token_price_block">
                           <h5>
-                            {live_price?"$":null} {live_price > 0 ? separator(live_price.toFixed(10)) : "NA"} 
+                            {live_price?"$":null} {live_price > 0 ? separator(live_price.toFixed(6)) : "NA"} 
                             {
                               live_price?
                               price_change_24h
@@ -2213,7 +1451,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   </div>
                                   <div className="token_list_values">
                                     <h4>Volume / Market Cap</h4>
-                                    <h5>NA</h5>
+                                    <h5>{parseInt(data.api_from_type)===1 ? mcap_to_tvl_ratio : 'NA'}</h5>
                                   </div>
                                 </div>
                               </div>
@@ -2234,8 +1472,15 @@ const removeFromWatchlist = (param_token_id) =>
                               <div className="col-md-4 col-6">
                                 <div className="token_left_border">
                                   <div className="token_list_values">
-                                    <h4>Volume 24H</h4>
-                                    <h5>{contract_24h_volume?"$":null}{contract_24h_volume?separator(contract_24h_volume.toFixed(2)): "NA"}</h5>
+                                    <h4>Volume {parseInt(data.api_from_type)===1 ? '' : '24H'}</h4>
+                                    <h5>
+                                      {
+                                        parseInt(data.api_from_type)===1 ?
+                                        volume
+                                        :
+                                        contract_24h_volume?"$"+separator(contract_24h_volume.toFixed(2)):'NA'
+                                      }
+                                      {}{}</h5>
                                     {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />0.58%</span></h6> */}
                                     <h6 className="values_growth"></h6>
                                   </div>
@@ -2259,10 +1504,20 @@ const removeFromWatchlist = (param_token_id) =>
                               <a className="nav-link active" data-toggle="tab" href="#overview"><span>Overview</span></a>
                             </li>
                             <li className="nav-item" >
-                              <a className="nav-link" data-toggle="tab" href="#home"><span>Exchange</span></a>
+                              {
+                                data.api_from_type==0?
+                                <a className="nav-link" data-toggle="tab" href="#home" onClick={()=>getexchangedata(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)}><span>Exchange</span></a>
+                                :
+                                <a className="nav-link" data-toggle="tab" href="#home" ><span>Exchange</span></a>
+                              }
                             </li>
                             <li className="nav-item" >
-                              <a className="nav-link" data-toggle="tab" href="#menu1"><span>Transactions</span></a>
+                              {
+                                data.api_from_type==0?
+                                <a className="nav-link" data-toggle="tab" href="#menu1"  onClick={()=>getTokenTransactions(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)} ><span>Transactions</span></a>
+                                :
+                                null
+                              }
                             </li>
                           </ul>
                         </div>
@@ -2318,7 +1573,19 @@ const removeFromWatchlist = (param_token_id) =>
                       <div className="table-responsive">
                         <table className="table table-borderless">
                             <thead>
-                              <tr>
+                              {
+                                parseInt(data.api_from_type)===1 ?
+                                <tr>
+                                  <th>Exchange</th>
+                                  <th>Pair</th>
+                                  <th>Price </th>
+                                  <th>Volume %</th>
+                                  <th>Volume</th>
+                                  <th>Last Traded</th>
+                                  <th>Trust Score</th>
+                                </tr>
+                                :
+                                <tr>
                                   <th>Exchange</th>
                                   <th>Pairs</th>
                                   <th>Liquidity in Pool</th>
@@ -2327,15 +1594,36 @@ const removeFromWatchlist = (param_token_id) =>
                                   <th>Makers</th>
                                   <th>Amount</th>
                               </tr>
+                              }
+                              
                             </thead>
                               {
-                               
+                               parseInt(data.api_from_type)===1 ?
                                 <tbody>
                                   {
                                     exchangelistnew.map((e, i) => {
                                       return <tr key={i}>
+                                        <td >{e.exchange_name}</td>
+                                        <td >{e.pair_one_name} / {e.pair_two_name}</td>
+                                        
+                                        <td>{e.price}</td>
+                                        <td>{e.volume_percentage}</td>
+                                        <td>{e.volume}</td>
+                                        <td>Recently</td>
+                                        <td>{e.trust_score}</td>
+                                      </tr>
+                                    } )
+                                  }
+                                </tbody>
+                                :
+                                <tbody>
+                                  {
+                                    exchangelistnew.length > 0
+                                    ?
+                                    exchangelistnew.map((e, i) => {
+                                      return <tr key={i}>
                                         <td title= {e.exchange_address}>{e.exchange_name}</td>
-                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({e.pair_one_value?separator(e.pair_one_value.toFixed(3)):null}) / ({e.pair_two_value?separator(e.pair_two_value.toFixed(3)):null})</span> </td>
+                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({e.pair_one_value?separator(e.pair_one_value.toFixed(3)):null}) / ({e.pair_two_value?separator((e.pair_two_value).toFixed(3)):null})</span> </td>
                                         {
                                           e.pair_one_token_address== "0x3ff997eaea488a082fb7efc8e6b9951990d0c3ab"?
                                           "--"
@@ -2347,6 +1635,10 @@ const removeFromWatchlist = (param_token_id) =>
                                         <td>--</td>
                                       </tr>
                                     } )
+                                    :
+                                        <tr>
+                                          <td colSpan="7"><h5 className="text-center no_data_found">No data found</h5></td>
+                                        </tr>
                                     
                                     
                                   }
@@ -2360,7 +1652,6 @@ const removeFromWatchlist = (param_token_id) =>
                                         </tr>
                                       }  */}
                                   </tbody>
-
 
                                 
                               }

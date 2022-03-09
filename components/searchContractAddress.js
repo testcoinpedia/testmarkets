@@ -20,10 +20,15 @@ export default function Details()
         setvalidContractAddress("")
         setErrsearchBy("")
 
-        let formValid=true 
-        if(!parseInt(searchBy))
+        let formValid=true
+        if((!search_contract_address) && (!parseInt(searchBy))) 
         {
-          setErrsearchBy("Please enter contract address and Select Network type")
+          setErrsearchBy("Please Enter Contract address and Select Network type")
+          formValid=false
+        }
+        else if(!parseInt(searchBy))
+        {
+          setErrsearchBy("Please Select Network type")
           formValid=false
         }
         else if(!search_contract_address)

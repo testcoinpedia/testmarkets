@@ -32,10 +32,12 @@ export default function WalletTokensList({userAgent, config})
   const [searchApprovalStatusParam] = useState(["approval_status"])
   const [watchlist, set_watchlist] = useState([])
   const [tokenStatus,set_tokenStatus] = useState("")
+  const [sl_no, set_sl_no]=useState(0)
  
     useEffect(()=>
     {  
       getTokens() 
+      handlePageClick({selected : 0})
     },[])
          
     
@@ -55,6 +57,7 @@ export default function WalletTokensList({userAgent, config})
           getTokensCurrentList(res.data.message, 0)
           set_watchlist(res.data.watchlist)
           set_tokenStatus(res.data.tokenStatus)
+          
         }
         else
         { 
@@ -101,12 +104,13 @@ export default function WalletTokensList({userAgent, config})
     })
   }
 
-    const handlePageClick = (page) => 
+    const handlePageClick =  (page) => 
    { 
+      let currentPage = 0
+      set_sl_no(perPage)
       const selectedPage = page.selected;
       const selectedoffset = selectedPage * perPage 
-      setCurrentPage(selectedPage) 
-     
+      setCurrentPage(page.selectedPage) 
       setPageCount(Math.ceil(filteredTokens.length / perPage))
       getTokensCurrentList(filteredTokens, selectedoffset)
    }
@@ -134,6 +138,8 @@ export default function WalletTokensList({userAgent, config})
           setPageCount(Math.ceil(token_list.length / perPage)) 
           getTokensCurrentList(token_list, 0) 
           set_token_counts(token_list.length)
+          
+         
         }
    }
 
@@ -168,7 +174,7 @@ const getTokensCurrentList=(items, offset)=>
               </>
           }
         </td>
-        <td>{i+1}</td>
+        <td>{sl_no+i+1}</td>
         <td>
           <div className="media">
             <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="token" className="rounded-circle"  />
@@ -345,12 +351,24 @@ const getTokensCurrentList=(items, offset)=>
               </table>
               </div>
             </div> 
-          </div>
         
           {
             filteredTokens.length > 10 ?
             <div className="pager__list pagination_element"> 
-              <ReactPaginate
+             <ReactPaginate
+                                    previousLabel={currentPage + 1 !== 1 ? "← " : ""}
+                                    nextLabel={currentPage+1 !== pageCount ? " →" : ""} 
+                                    breakLabel={<span className="gap">...</span>}
+                                    pageCount={pageCount}
+                                    onPageChange={handlePageClick}
+                                    forcePage={currentPage}
+                                    containerClassName={"pagination"}
+                                    previousLinkClassName={"pagination__link"}
+                                    nextLinkClassName={"pagination__link"}
+                                    disabledClassName={"disabled"}
+                                    activeClassName={"active"}
+                                    />
+              {/* <ReactPaginate
                 previousLabel={currentPage+1 !== 1 ? "← Previous" : ""} 
                 nextLabel={currentPage+1 !== pageCount ? "Next →" : ""} 
                 breakLabel={<span className="gap">...</span>}
@@ -358,15 +376,16 @@ const getTokensCurrentList=(items, offset)=>
                 onPageChange={handlePageClick}
                 forcePage={currentPage}
                 containerClassName={"pagination"}
-                previousLinkClassName={"previous_page"}
-                nextLinkClassName={"next_page"}
+                previousLinkClassName={"pagination__link"}
+                nextLinkClassName={"pagination__link"}
                 disabledClassName={"disabled"}
                 activeClassName={"active"}
-              />
+              /> */}
           </div>
             :
             null 
           } 
+        </div>
         </div>
 
         <div className={"modal connect_wallet_error_block"+ (rejectreason ? " collapse show" : "")}> 

@@ -49,7 +49,7 @@ var object =  {
   accept_payment_type: [],
   access_type: "",
   how_to_participate: "",
-  err_launch_pad_type :"" 
+ 
 } 
 
   
@@ -85,6 +85,7 @@ var object =  {
   const [active_launchpad_row_id, set_active_launchpad_row_id]= useState("")
   
   const [err_launchpad, set_err_launchpad]= useState("")
+  const [err_tokenlaunchpa, set_err_tokenlaunchpa]= useState("")
   const [err_start_date, set_err_start_date]= useState("")
   const [err_end_date, set_err_end_date]= useState("")
   const [err_tokens_sale, set_err_tokens_sale]= useState("")
@@ -235,15 +236,18 @@ var object =  {
     
     setModalData({ icon: "", title: "", content: "" })
     let formIsValid = true  
-    if(launch_pad_type=="")
+    
+    if(launch_pad_type=="" && tokens_sold=="")
     {
       formIsValid=false
-      set_err_launchpad("The Launchpad Type field is required.")
+      set_err_launchpad("The Launchpad Type and Tokens for sale field is required. ")
     }
-    else{
-      set_err_launchpad("")
+    else if(launch_pad_type=="")
+    {
+      formIsValid=false
+      set_err_launchpad("The Launch Type field is required. ")
     }
-    if(tokens_sold=="")
+    else if(tokens_sold=="")
     {
       formIsValid=false
       set_err_launchpad("The Tokens for sale field is required.")
@@ -251,6 +255,21 @@ var object =  {
     else{
       set_err_launchpad("")
     }
+
+    // if(launch_pad_type=="" && tokens_sold=="")
+    // {
+    //   formIsValid=false
+    //   set_err_tokenlaunchpa("The Launchpad Type and Tokens for sale field is required. ")
+    // }
+    // else if(tokens_sold=="")
+    // {
+    //   formIsValid=false
+    //   set_err_tokens_sale("The Tokens for sale field is required.")
+    // }
+    // else{
+    //   set_err_tokens_sale("")
+    // }
+    
     if(access_type=="")
     {
       formIsValid=false
@@ -656,7 +675,8 @@ const onRemove = (selectedList, removedItem) => {
                             </div>
                             <input type="number" className="form-control" placeholder="Number of Tokens for Sale" value={tokens_sold} onChange={(e)=>set_tokens_sold(e.target.value)}/>
                            </div>
-                           <div className="error">{err_launchpad} {err_tokens_sale}</div>
+                           <div className="error">{err_launchpad} </div>
+                           <div className="error">{err_tokenlaunchpa}</div>
                         </div>
                     </div>
 
@@ -746,8 +766,8 @@ const onRemove = (selectedList, removedItem) => {
                       <div className="col-md-7 mb-4">
                         <div className="form-group input_block_outline">
                           <input autoComplete="off" type="text" placeholder="Where to Buy Title"   value={where_to_buy_title} onChange={(e)=>set_where_to_buy_title(e.target.value)} />
-                          <div className="error">{err_wheretobuy}</div>
                         </div>
+                        <div className="error">{err_wheretobuy}</div>
                       </div>
                     </div>
 

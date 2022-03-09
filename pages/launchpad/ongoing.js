@@ -29,6 +29,7 @@ export default function OngoingLaunchPad({userAgent}) {
   const [firstcount, setfirstcount] = useState(1)
   const [finalcount, setfinalcount] = useState(perPage)
   const [selectedPage, setSelectedPage] = useState(0) 
+  const [sl_no, set_sl_no]=useState(0)
 
   useEffect(()=>{ 
     GetAllOngoing({selected:0})
@@ -53,6 +54,8 @@ export default function OngoingLaunchPad({userAgent}) {
             set_watchlist(response.data.watchlist)
             set_tokenStatus(response.data.tokenStatus)
             setCount(response.data.count)
+            set_sl_no(current_pages)
+            setSelectedPage(page.selected)
             setPageCount(Math.ceil(response.data.count/perPage))
             setCurrentPage(page.selected)
             setfirstcount(current_pages+1)
@@ -224,8 +227,8 @@ export default function OngoingLaunchPad({userAgent}) {
                       <tbody>
                         {
                             
-                            ongoing.length > 0
-                            ?
+                            ongoing.length ?
+                            
                               ongoing.map((e,i)=>
                         <tr key={i}>
                           <td>
@@ -243,7 +246,8 @@ export default function OngoingLaunchPad({userAgent}) {
                                        <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" /></a></Link>
                                      }
                           </td>
-                          <td>{i+1}</td>
+                          
+                          <td>{sl_no+i+1}</td>
                           <td>
                             <a href={"/"+e.token_id}>
                               <div class="media">
@@ -304,8 +308,8 @@ export default function OngoingLaunchPad({userAgent}) {
                             </a>
                           </td>
                           
-                          <td><p>{moment.utc(e.start_date).format("MMM D, YYYY")}</p></td>
-                          <td><p>{moment.utc(e.end_date).format("MMM D, YYYY")}</p></td>
+                          <td className="table_date"><p>{moment.utc(e.start_date).format("MMM D, YYYY")}</p></td>
+                          <td className="table_date"><p>{moment.utc(e.end_date).format("MMM D, YYYY")}</p></td>
                         </tr>
                          )
                          :
@@ -345,12 +349,12 @@ export default function OngoingLaunchPad({userAgent}) {
                                 <ReactPaginate 
                                   previousLabel={currentPage+1 !== 1 ? "Prev" : ""}
                                   nextLabel={currentPage+1 !== pageCount ? "Next" : ""}
-                                  breakLabel={"..."}
+                                  breakLabel={<span className="gap">...</span>}
+                                  pageCount={pageCount}
+                                  onPageChange={GetAllOngoing}
                                   breakClassName={"break-me"}
                                   forcePage={selectedPage}
-                                  pageCount={pageCount}
                                   marginPagesDisplayed={2} 
-                                  onPageChange={GetAllOngoing}
                                   containerClassName={"pagination"}
                                   subContainerClassName={"pages pagination"}
                                   activeClassName={"active"} />

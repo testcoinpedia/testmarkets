@@ -3,7 +3,8 @@ import React , {useState, useEffect} from 'react'
 import Axios from 'axios'
 import Highcharts from 'highcharts';
 import Datetime from "react-datetime"
-import "react-datetime/css/react-datetime.css"   
+import "react-datetime/css/react-datetime.css" 
+import JsCookie from "js-cookie"   
 import moment from 'moment'
 import {count_live_price,graphqlApiKEY, headers,createValidURL, IMAGE_BASE_URL} from '../components/constants'
 import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
@@ -16,6 +17,7 @@ export default function Details({reqData,graph_data_date})
     const [api_from_type, set_api_from_type] = useState(reqData.api_from_type)
     const [customDate, setCustomDate] = useState(false)
     const [graphDate , set_graphDate] = useState(1) 
+    const [light_dark_mode, set_light_dark_mode]=useState(JsCookie.get('light_dark_mode')) 
     const [Err_api_from_id, setErr_api_from_id] = useState()
     const [token_row_id, set_token_row_id] = useState(reqData.token_row_id)
     const [coingecko, set_coingecko] = useState("")
@@ -31,7 +33,13 @@ useEffect(()=>
     {
         coingeckoGraph(graph_data_date,reqData.api_from_id)
     }
-},[])
+
+    if(JsCookie.get('light_dark_mode') === "dark")
+    { 
+      set_light_dark_mode("dark")
+     
+    }
+},[light_dark_mode])
     const getGraphData=(datetime, id, networks)=> 
     {   
       
@@ -48,7 +56,7 @@ useEffect(()=>
       let toDate= from_n_to_date.toDate 
       console.log("fromDate",fromDate)
 
-        if(networks === "1")
+        if(parseInt(networks) === 1)
         {
           if(id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
           {
@@ -112,7 +120,7 @@ useEffect(()=>
           }
         }
      
-        if(networks === "2"){ 
+        if(parseInt(networks) === 2){ 
     
           if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"){
     
@@ -197,7 +205,6 @@ useEffect(()=>
             if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) { 
             var prices= [];
             var arr = result.data.ethereum.dexTrades; 
-    
             for (let index = 0; index < arr.length; index++) {
               if (arr[index] !== undefined) {
                 var rate = 0 
@@ -210,73 +217,149 @@ useEffect(()=>
     
     
                 prices.push(val)
-                // console.log(prices)
+                console.log(prices)
               }
             }  
-    
-            Highcharts.chart('container', {
-              chart: {
-                  zoomType: 'x'
-              },
+        if(light_dark_mode=="dark"){
+          console.log("dark")
+        Highcharts.chart('container', {
+          chart: {
+            backgroundColor: {
+                stops: [
+                    [0, 'rgb(23, 23, 26)'],
+                    [1, 'rgb(23, 23, 26)']
+                ]
+            },
+        },
+          title: {
+              text: ''
+          },
+          xAxis: {
+              type: 'datetime',
+              lineColor: '#f7931a',
+              dashStyle: 'Dash',
+          },
+          yAxis: {
               title: {
-                  text: ''
+                  text: ('USD Prices')
               },
-              xAxis: {
-                  type: 'datetime',
-                  lineColor: '#f7931a',
-                  dashStyle: 'Dash',
-              },
-              yAxis: {
-                  title: {
-                      text: ('USD Prices')
+              dashStyle: 'Dash',
+          },
+          colors: ['#f7931a'],
+          legend: {
+              enabled: false
+          },
+          tooltip: {
+                    formatter: function () {
+                        var point = this.points[0];
+                        return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
+                        '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
+                    },
+      shared: true
+         },
+          plotOptions: {
+              area: {
+                  fillColor: {
+                      linearGradient: {
+                          x1: 0,
+                          y1: 0,
+                          x2: 0,
+                          y2: 1
+                      },
+                      stops: [
+                        [0, 'rgb(23 23 26 / 1%)'],
+                        [1, 'rgb(23 23 26 / 1%)']
+                      ]
                   },
-                  dashStyle: 'Dash',
+                  marker: {
+                      radius: 1
+                  },
+                  lineWidth: 3,
+                  states: {
+                      hover: {
+                          lineWidth: 3
+                      }
+                  },
+                  threshold: null
+              }
+          },
+    
+          series: [{
+              type: 'area',
+              name: '',
+              data: prices
+          }]
+      });
+
+        }
+        else{
+          console.log("light")
+        Highcharts.chart('container', {
+          chart: {
+              zoomType: 'x'
+          },
+          title: {
+              text: ''
+          },
+          xAxis: {
+              type: 'datetime',
+              lineColor: '#f7931a',
+              dashStyle: 'Dash',
+          },
+          yAxis: {
+              title: {
+                  text: ('USD Prices')
               },
-              colors: ['#f7931a'],
-              legend: {
-                  enabled: false
-              },
-              tooltip: {
-                        formatter: function () {
-                            var point = this.points[0];
-                            return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
-                            '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
-                        },
-          shared: true
-             },
-              plotOptions: {
-                  area: {
-                      fillColor: {
-                          linearGradient: {
-                              x1: 0,
-                              y1: 0,
-                              x2: 0,
-                              y2: 1
-                          },
-                          stops: [
-                              [0, 'rgb(255 248 241 / 59%)'],
-                              [1, 'rgb(255 255 255 / 59%)']
-                          ]
+              dashStyle: 'Dash',
+          },
+          colors: ['#f7931a'],
+          legend: {
+              enabled: false
+          },
+          tooltip: {
+                    formatter: function () {
+                        var point = this.points[0];
+                        return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
+                        '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
+                    },
+      shared: true
+         },
+          plotOptions: {
+              area: {
+                  fillColor: {
+                      linearGradient: {
+                          x1: 0,
+                          y1: 0,
+                          x2: 0,
+                          y2: 1
                       },
-                      marker: {
-                          radius: 1
-                      },
-                      lineWidth: 3,
-                      states: {
-                          hover: {
-                              lineWidth: 3
-                          }
-                      },
-                      threshold: null
-                  }
-              },
-        
-              series: [{
-                  type: 'area',
-                  name: '',
-                  data: prices
-              }]
-          }); 
+                      stops: [
+                        [0, 'rgb(255 248 241 / 1%)'],
+                        [1, 'rgb(255 255 255 / 1%)']
+                      ]
+                  },
+                  marker: {
+                      radius: 1
+                  },
+                  lineWidth: 3,
+                  states: {
+                      hover: {
+                          lineWidth: 3
+                      }
+                  },
+                  threshold: null
+              }
+          },
+    
+          series: [{
+              type: 'area',
+              name: '',
+              data: prices
+          }]
+      });
+         
+        }
+             
         }
     
           })
@@ -287,44 +370,63 @@ useEffect(()=>
     {   
       
       var from_n_to_date = fromNToDate(datetime)
-      let fromDate= new Date(from_n_to_date.fromDate).getTime()
-      let toDate=new Date(from_n_to_date.toDate).getTime()
-       console.log(fromDate)
-       console.log(toDate)
-      console.log(new Date(1615121599000))
-      console.log(new Date(1646657599000))
-      console.log("Graph from coingecko")
+      let fromDate= new Date(from_n_to_date.fromDate).getTime()/1000
+      let toDate=new Date(from_n_to_date.toDate).getTime()/1000
+      console.log("Graph from coingecko") 
         Axios.get("https://api.coingecko.com/api/v3/coins/"+token_id+"/market_chart/range?vs_currency=usd&from="+fromDate+"&to="+toDate)
           .then(response=>{ 
-            console.log("graphcoingeckodata",response.data)
-            set_coingecko(response.data)
+            if (response!= null && response.data.prices != null) { 
+              var prices= [];
+              var arr = response.data.prices; 
+      
+              for (let index = 0; index < arr.length; index++) {
+                if (arr[index] !== undefined) {
+                  var rate = 0 
+                  rate = arr[index]
+                  var val = []
+                  val[0] =rate[0]
+                  val[1] =rate[1]
+                   prices.push(val)
+                   console.log("prices",prices)
+                }
+              }  
+
+            console.log("graphcoingeckodata",response)
             
-        })
-        {
-          var data = coingecko.prices;
-            Highcharts.chart('container', {
+            if(light_dark_mode=="dark"){
+              console.log("dark")
+              Highcharts.chart('container', {
                 chart: {
-                    zoomType: 'x'
-                },
+                  backgroundColor: {
+                      stops: [
+                          [0, 'rgb(23, 23, 26)'],
+                          [1, 'rgb(23, 23, 26)']
+                      ]
+                  },
+              },
                 title: {
                     text: ''
                 },
                 xAxis: {
-                    type: 'datetime'
+                    type: 'datetime',
+                    lineColor: '#f7931a',
+                    dashStyle: 'Dash',
                 },
                 yAxis: {
                     title: {
-                        text: 'USD Prices'
-                    }
+                        text: ('USD Prices')
+                    },
+                    dashStyle: 'Dash',
                 },
+                colors: ['#f7931a'],
                 legend: {
                     enabled: false
                 },
                 tooltip: {
                           formatter: function () {
                               var point = this.points[0];
-                              return '<b>' + point.series.name + '</b><br/>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br/>' +
-                                  '<strong>Price :</strong> $' + Highcharts.numberFormat(point.y, 2) + '';
+                              return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
+                              '<strong>Price :</strong> '+ ('$ ') + Highcharts.numberFormat(point.y, 10) + '';  
                           },
             shared: true
                },
@@ -338,33 +440,108 @@ useEffect(()=>
                                 y2: 1
                             },
                             stops: [
-                                [0, Highcharts.getOptions().colors[0]],
-                                [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                              [0, 'rgb(23 23 26 / 1%)'],
+                              [1, 'rgb(23 23 26 / 1%)']
                             ]
                         },
                         marker: {
-                            radius: 2
+                            radius: 1
                         },
-                        lineWidth: 1,
+                        lineWidth: 3,
                         states: {
                             hover: {
-                                lineWidth: 1
+                                lineWidth: 3
                             }
                         },
                         threshold: null
                     }
                 },
-    
+          
                 series: [{
                     type: 'area',
                     name: '',
-                    data: data
+                    data: prices
                 }]
             });
-        }
-    
-    }
+            }
+            else
+            {
+              Highcharts.chart('container', {
+                chart: {
+                    zoomType: 'x'
+                },
+                title: {
+                    text: ''
+                },
+                xAxis: {
+                    type: 'datetime',
+                    lineColor: '#f7931a',
+                    dashStyle: 'Dash',
+                },
+                yAxis: {
+                    title: {
+                        text: ('USD Prices')
+                    },
+                    dashStyle: 'Dash',
+                },
+                colors: ['#f7931a'],
+                legend: {
+                    enabled: false
+                },
+                tooltip: {
+                          formatter: function () {
+                              var point = this.points[0];
+                              return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
+                              '<strong>Price :</strong> '+ ('$ ') + Highcharts.numberFormat(point.y, 10) + '';  
+                          },
+            shared: true
+               },
+               plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, 'rgb(255 248 241 / 59%)'],
+                            [1, 'rgb(255 255 255 / 59%)']
+                        ]
+                    },
+                    marker: {
+                        radius: 1
+                    },
+                    lineWidth: 3,
+                    states: {
+                        hover: {
+                            lineWidth: 3
+                        }
+                    },
+                    threshold: null
+                }
+            },
+              
+                series: [{
+                    type: 'area',
+                    name: '',
+                    data: prices
+                }]
+             })
+            }
+         }
+         })
+         
+           
+        
+   
+        
 
+       
+         
+    }
+      
 
     return (
       <>

@@ -10,7 +10,7 @@ import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
 import WatchList from '../components/watchlist'
 
-// import {coingeckoId} from '../components/token_details/coingecko'
+
 
 
 export default function Companies({user_token, config})
@@ -44,8 +44,7 @@ export default function Companies({user_token, config})
    
    useEffect(async ()=>
    {  
-      // var asdfsf = await coingeckoId('bitcoin')
-      // console.log(asdfsf)
+      
       
       tokensList({selected : 0})
       voteIds()
@@ -487,9 +486,12 @@ return (
                                        <Link href={"/"+e.token_id}>
                                         <a>
                                           {
+                                            e.list_type==1?
+                                            "--"
+                                            :
                                             e.contract_addresses.length > 0
                                             ?
-                                            e.contract_addresses[0].network_type === "1" ? "ERC20" : "BEP20" 
+                                            parseInt(e.contract_addresses[0].network_type) === 1 ? "ERC20" : "BEP20" 
                                             // e.contract_addresses.map((ca)=>
                                             //   parseInt(ca.network_type) === 1 ? "ERC20" : "BEP20" 
                                             //)

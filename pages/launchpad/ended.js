@@ -26,6 +26,7 @@ export default function OngoingLaunchPad({userAgent}) {
    const [firstcount, setfirstcount] = useState(1)
    const [finalcount, setfinalcount] = useState(perPage)
    const [selectedPage, setSelectedPage] = useState(0) 
+   const [sl_no, set_sl_no]=useState(0)
 
   useEffect(()=>{ 
     GetAllOngoing({selected : 0})
@@ -52,6 +53,7 @@ export default function OngoingLaunchPad({userAgent}) {
             setCount(response.data.count)
             setPageCount(Math.ceil(response.data.count/perPage))
             setCurrentPage(page.selected)
+            set_sl_no(current_pages)
             setfirstcount(current_pages+1)
             const presentPage = page.selected+1
             const totalcompany = response.data.count
@@ -244,7 +246,7 @@ export default function OngoingLaunchPad({userAgent}) {
                                        <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" /></a></Link>
                                      }
                               </td>
-                              <td className="mobile_hide">{i+1}</td>
+                              <td className="mobile_hide">{sl_no+i+1}</td>
                               <td className="mobile_td_fixed">
                                 <a href={"/"+e.token_id}>
                                   <div class="media">
