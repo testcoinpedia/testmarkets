@@ -413,7 +413,7 @@ return (
                                <th className="mobile_hide_table_col">#</th>
                                <th className="">Name</th>
                                <th className="table_token">Live Price</th>
-                               <th className="table_token mobile_hide_table_col">Token Type</th>
+                               <th className="table_token mobile_hide_table_col">Type</th>
                                <th className="table_max_supply mobile_hide_table_col">Max Supply</th> 
                                <th className="mobile_hide_table_col table_circulating_supply">Market Cap</th>  
                                <th className="table_circulating_supply mobile_hide_table_col">Votes</th>  
@@ -487,7 +487,7 @@ return (
                                         <a>
                                           {
                                             e.list_type==1?
-                                            "--"
+                                            "Coin"
                                             :
                                             e.contract_addresses.length > 0
                                             ?

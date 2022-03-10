@@ -37,7 +37,7 @@ export default function WalletTokensList({userAgent, config})
     useEffect(()=>
     {  
       getTokens() 
-      handlePageClick({selected : 0})
+      // handlePageClick({selected : 0})
     },[])
          
     
@@ -99,6 +99,7 @@ export default function WalletTokensList({userAgent, config})
         sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
         set_watchlist(sdawatchlist)
         console.log("watchlist", watchlist)
+       
         getTokens()
       }
     })
@@ -107,12 +108,15 @@ export default function WalletTokensList({userAgent, config})
     const handlePageClick =  (page) => 
    { 
       let currentPage = 0
-      set_sl_no(perPage)
+      
       const selectedPage = page.selected;
       const selectedoffset = selectedPage * perPage 
+      set_sl_no(selectedPage * perPage)
       setCurrentPage(page.selectedPage) 
       setPageCount(Math.ceil(filteredTokens.length / perPage))
       getTokensCurrentList(filteredTokens, selectedoffset)
+     
+      console.log(selectedPage * perPage)
    }
 
    
@@ -143,21 +147,13 @@ export default function WalletTokensList({userAgent, config})
         }
    }
 
-   const resetFilter=() =>
-   {
-    setfilteredTokens(token_list)
-    setPageCount(Math.ceil(token_list.length / perPage)) 
-    getTokensCurrentList(token_list, 0) 
-    set_token_counts(token_list.length)
-    document.getElementById("formID").reset() 
-   }
-
 const getTokensCurrentList=(items, offset)=>
 {  
   const token_list = items.slice(offset, offset + perPage) 
   console.log(token_list)
-  const postData = token_list.map((e, i)=>
-    <tr key={i}>
+  const postData = token_list.map((e, i)=>{
+    var my_sl = sl_no
+    return <tr key={i}>
         <td>
         {
            
@@ -174,7 +170,8 @@ const getTokensCurrentList=(items, offset)=>
               </>
           }
         </td>
-        <td>{sl_no+i+1}</td>
+      
+        <td>{offset+i+1}</td>
         <td>
           <div className="media">
             <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="token" className="rounded-circle"  />
@@ -260,7 +257,7 @@ const getTokensCurrentList=(items, offset)=>
        
               
     </tr>
-  )  
+  })  
   setCurrentPageArray(postData) 
 }
 
@@ -360,8 +357,10 @@ const getTokensCurrentList=(items, offset)=>
                                     nextLabel={currentPage+1 !== pageCount ? " →" : ""} 
                                     breakLabel={<span className="gap">...</span>}
                                     pageCount={pageCount}
+                                    marginPagesDisplayed={2} 
                                     onPageChange={handlePageClick}
                                     forcePage={currentPage}
+                                   
                                     containerClassName={"pagination"}
                                     previousLinkClassName={"pagination__link"}
                                     nextLinkClassName={"pagination__link"}

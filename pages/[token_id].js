@@ -32,7 +32,7 @@ let inputProps2 = {
 } 
 
 
-export default function tokenDetailsFunction({errorCode, data, token_id, userAgent, config}) 
+export default function tokenDetailsFunction({errorCode, data, token_id, userAgent, config, tokenStatus}) 
 {   
   
   console.log("data",data)
@@ -46,8 +46,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   const [share_modal_status, set_share_modal_status] = useState(false)
   const [light_dark_mode, set_light_dark_mode]=useState(JsCookie.get('light_dark_mode'))
   const [user_token]= useState((userAgent.user_token) ? userAgent.user_token:"")
-  const [perPage] = useState(10);
-  const [tokenStatus] = useState(data.tokenStatus)
+  const [perPage] = useState(10)
   const [current_url]= useState(website_url+token_id)
   const [exchangelistnew, set_exchange_list_new]= useState([])
   const [exchangelist, set_exchangelist]= useState([])
@@ -158,6 +157,15 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
     set_market_cap(graphql_data.market_cap)
     set_contract_24h_volume(graphql_data.contract_24h_volume)
     set_liquidity(graphql_data.liquidity)
+    const reqObj = {
+      network_type : data.contract_addresses[0].network_type,
+      contract_address: data.contract_addresses[0].contract_address,
+      live_price: graphql_data.live_price,
+      total_max_supply:graphql_data.token_max_supply,
+      market_cap:graphql_data.market_cap
+    } 
+ await Axios.post(API_BASE_URL+'markets/tokens/save_token_live_price', reqObj, config)
+    
   }
   
 
@@ -1012,7 +1020,7 @@ const removeFromWatchlist = (param_token_id) =>
                                 </a></Link>
                             </li>
                         }
-                        <li>Token</li>
+                        <li>{data.list_type==1?"Coin":"Token"}</li>
                         <li onClick={()=>set_share_modal_status(true)} style={{cursor:"pointer"}}><img src="/assets/img/coin_share.svg" /> Share</li>
                       </ul>
 
@@ -2161,7 +2169,7 @@ export async function getServerSideProps({ query, req})
   const tokenQueryRun = await tokenQuery.json() 
   if(tokenQueryRun.status)
   {
-    return { props: {data:tokenQueryRun.message, errorCode:false, token_id:token_id, userAgent:userAgent, config:config(userAgent.user_token)}}
+    return { props: {data:tokenQueryRun.message, errorCode:false, token_id:token_id, userAgent:userAgent, tokenStatus:tokenQueryRun.tokenStatus, config:config(userAgent.user_token)}}
   }
   else
   {

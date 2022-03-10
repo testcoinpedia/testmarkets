@@ -69,14 +69,14 @@ export const live_price_graphql= async (id,networks)=>
       }
   ` 
     }
-    const config = {  
+    const graphConfig = {  
       headers: {
         "Content-Type": "application/json",
         "X-API-KEY": graphqlApiKEY
       }
     }
     resObj['live_price'] = 0
-    const liveQueryRun = await Axios.post(graphQlURL, JSON.stringify({query}), config)
+    const liveQueryRun = await Axios.post(graphQlURL, JSON.stringify({query}), graphConfig)
    // console.log(liveQueryRun)
     if(liveQueryRun.data.data.ethereum != null && liveQueryRun.data.data.ethereum.dexTrades != null) 
     { 
@@ -161,7 +161,7 @@ export const live_price_graphql= async (id,networks)=>
     
     
     resObj['price_change_24h'] = 0
-    const change24hQueryRun = await Axios.post(graphQlURL, JSON.stringify({query}), config)
+    const change24hQueryRun = await Axios.post(graphQlURL, JSON.stringify({query}), graphConfig)
     //console.log(change24hQueryRun)
      
     const contract_usdt_price = cal_live_price 
@@ -232,7 +232,7 @@ else{
 ` ;
 }
 
-const volume24hQueryRun = await Axios.post(graphQlURL, JSON.stringify({query}), config)
+const volume24hQueryRun = await Axios.post(graphQlURL, JSON.stringify({query}), graphConfig)
 //console.log(volume24hQueryRun)
 if (volume24hQueryRun.data.data.ethereum != null && volume24hQueryRun.data.data.ethereum.dexTrades != null) {  
       resObj['contract_24h_volume']=volume24hQueryRun.data.data.ethereum.dexTrades[0].tradeAmount
@@ -294,7 +294,7 @@ if (volume24hQueryRun.data.data.ethereum != null && volume24hQueryRun.data.data.
       ` ;
   }
  
-  const liveDecimalQuery = await Axios.post(graphQlURL, JSON.stringify({query}), config)
+  const liveDecimalQuery = await Axios.post(graphQlURL, JSON.stringify({query}), graphConfig)
   if(liveDecimalQuery.data.ethereum !== null) 
   { 
    
@@ -408,209 +408,12 @@ if (volume24hQueryRun.data.data.ethereum != null && volume24hQueryRun.data.data.
             }
           }
   
-
-
-  // exchange data starts here
-  // const dateSince1 = ((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString()) 
-  // if(parseInt(networks) === 1){
-  //   query = `
-  //    query {
-  //      ethereum(network: ethereum) {
-  //        dexTrades(
-  //          quoteCurrency: {is: "`+id+`"}
-  //          options: {desc: ["tradeAmount","trades"] limit: 100}
-  //          date: {after: "`+dateSince1+`"}
-  //        ) {
-  //          poolToken: smartContract {
-  //            address {
-  //              address
-  //            }
-  //          }
-  //          exchange {
-  //            fullName
-  //          }
-  //          pair:baseCurrency {
-  //            symbol
-  //            address
-  //            name
-  //          }
-  //          trades: count
-  //          tradeAmount(in: USD)
-  //        }
-  //      }
-  //    }
-  //        ` ;
-  //  }
-  //  else{
-  //     query = `
-  //    query {
-  //      ethereum(network: bsc) {
-  //        dexTrades(
-  //          quoteCurrency: {is: "`+id+`"}
-  //          options: {desc: ["tradeAmount","trades"] limit: 100}
-  //          date: {after: "`+dateSince+`"}
-  //        ) {
-  //          poolToken: smartContract {
-  //            address {
-  //              address
-  //            }
-  //          }
-  //          exchange {
-  //            fullName
-  //          }
-  //          pair:baseCurrency {
-  //            symbol
-  //            address
-  //            name
-  //          }
-  //          trades: count
-  //          tradeAmount(in: USD)
-  //        }
-  //      }
-  //    }
-  //        ` ;
-  //  }
-   
-  
-   
-  //  const resultArray = new Array()
-  //  var response1 = 0
-  //  var pair_two_value_in_Usd=0
-  //  var pair_one_value_in_usd=0
-  //  const exchangequery = await Axios.get(graphQlURL, JSON.stringify({query}),config)
-  //   console.log(exchangequery)
-  //      if ( exchangequery.data.data.ethereum) { 
-  //       if(exchangequery.data.data.ethereum.dexTrades)
-  //        {
-  //         exchangequery.data.data.ethereum.dexTrades.map(async (item,i) => 
-  //          {
-  //            var createObj = {}
-  //            createObj['exchange_name'] = item.exchange.fullName
-  //            createObj['pair_one_name'] = item.pair.name
-  //            createObj['exchange_address']=item.poolToken.address.address
-  //            createObj['pair_one_token_address']=item.pair.address
-  //            if(parseInt(networks) === 1){
-  //             query = `
-  //              query {
-  //                ethereum(network: ethereum) {
-  //                address(address: {is: "`+item.poolToken.address.address+`"}) {
-  //                balances {
-  //                value
-  //                currency {
-  //                address
-  //                symbol
-  //                tokenType
-  //                }
-  //                }
-  //                }
-  //                }
-  //                }
-  //                  ` ;
-  //              }
-  //              else{
-  //                 query = `
-  //              query {
-  //                ethereum(network: bsc) {
-  //                address(address: {is: "`+item.poolToken.address.address+`"}) {
-  //                balances {
-  //                value
-  //                currency {
-  //                address
-  //                symbol
-  //                tokenType
-  //                }
-  //                }
-  //                }
-  //                }
-  //                }
-  //                  ` ;
-  //              }
-             
-            
-  //              const exchangevaluequery = await Axios.post(graphQlURL, JSON.stringify({query}), config)
-  //              console.log(exchangevaluequery)
-  //                if (exchangevaluequery.data.data.ethereum) {
-  //                 if(exchangevaluequery.data.data.ethereum.address)
-  //                  {
-  //                   if(exchangevaluequery.data.data.ethereum.address[0].balances)
-  //                    {
-  //                     const response1 = exchangevaluequery.data.data.ethereum.address[0].balances
-  //                    }
-  //                  }
-  //                }
-             
-    
-  //             if(response1)
-  //            {
-  //             exchangevaluequery.data.data.ethereum.address[0].balances.map(async (e)=>{
-  //                     if(item.pair.address==e.currency.address){
-  //                      createObj['pair_one_value']=e.value
-  //                      var res =await livePrice(item.pair.address,networks)
-  //                        //console.log(item.pair.name, res)
-  //                        createObj['pair_one_live_price']=res
-  //                        pair_one_value_in_usd = e.value*res
-                         
-  //                     }
-  //                     if(id.toLowerCase() ==e.currency.address){
-  //                      createObj['pair_two_value']=e.value
-  //                      pair_two_value_in_Usd = e.value*live_price
-                       
-  //                    }
-  //                    createObj['liquidity_in_pool']=pair_one_value_in_usd
-  //              })
-  //            }
-  //            await resultArray.push(createObj) 
-  //            resObj['exchange_list_new']=resultArray
-  //            if(networks==1){
-  //              var reqObj = {
-  //                contract_address:id,
-  //                network_type:"ethereum",
-  //                exchanges: [createObj]
-  //              }
-  //             // console.log('req Obj',reqObj)
-  //              const config = { headers: { "Content-Type": "application/json" } }
-  //              const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
-  //              //console.log("Api Response", sadfdsf)
-             
-  //           }
-  //           else
-  //           {
-  //            var reqObj = {
-  //              contract_address:id,
-  //              network_type:"bsc",
-  //              exchanges: [createObj]
-  //            }
-  //            //console.log('req Obj',reqObj)
-  //            const config = { headers: { "Content-Type": "application/json" } }
-  //            const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
-  //            //console.log("Api Response", sadfdsf)
-  //           }
-             
-  //          })
-             
-             
-             
-  //        }
- 
-  //      }
-
-
-
-
-
-  // exchange data ends here
-
-   return resObj
+         
+     
+       return resObj
 }
 
 
-// token_max_supply
-// price_change_24h
-// circulating_supply
-// live_price
-// contract_24h_volume
-// market_cap
-// liquidity
 
 
   
