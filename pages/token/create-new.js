@@ -367,7 +367,7 @@ const createNewToken = () =>
       token_image: token_image,
       website_link: website_link,
       whitepaper: whitepaper,
-      token_max_supply: token_max_supply,
+      total_max_supply: token_max_supply,
       price: live_price,
       market_cap: market_cap, 
       token_description: token_description,
@@ -562,10 +562,9 @@ const createNewToken = () =>
       const tokenAbi = ["function totalSupply() view returns (uint256)"];
       const tokenContract = new ethers.Contract(id, tokenAbi, provider);
       const supply = await tokenContract.totalSupply() / (10 ** decval);  
-      console.log(supply)
       getTokenUsdPrice(id,network_type)
-      console.log(live_price)
       set_market_cap(supply * live_price)  
+      await console.log(supply * live_price)
   }
 
 

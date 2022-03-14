@@ -217,7 +217,7 @@ useEffect(()=>
     
     
                 prices.push(val)
-                console.log(prices)
+                //console.log(prices)
               }
             }  
         if(light_dark_mode=="dark"){
@@ -387,13 +387,10 @@ useEffect(()=>
                   val[0] =rate[0]
                   val[1] =rate[1]
                    prices.push(val)
-                   console.log("prices",prices)
+              
                 }
               }  
-
-            console.log("graphcoingeckodata",response)
-            
-            if(light_dark_mode=="dark"){
+             if(light_dark_mode=="dark"){
               console.log("dark")
               Highcharts.chart('container', {
                 chart: {

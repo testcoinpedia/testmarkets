@@ -1,6 +1,6 @@
 
 const graphQlURL = "https://graphql.bitquery.io/"
-const fromNToDate = (datetime)=>
+const fromNToDate = (datetime,customstartdate,customenddate)=>
 {
     var from_date = new Date();
     from_date = from_date.setDate(from_date.getDate() - 1);
@@ -38,7 +38,7 @@ const fromNToDate = (datetime)=>
       to_date = Date.parse((new Date()).toString()) / 1000;
     } 
     else if(datetime === 6){
-      setCustomDate(!customDate)
+     // setCustomDate(!customDate)
       from_date = Date.parse(customstartdate)
       to_date = Date.parse(customenddate)
 

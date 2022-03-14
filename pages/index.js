@@ -370,12 +370,12 @@ return (
                     <ul class="category_list">
                       <li class={all_tab_status?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
                       {
-                      tokenStatus?
-                      <li class={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist?tokens=true"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
-                      :
-                      <li>
-                      <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link>
-                      </li>
+                        tokenStatus?
+                        <li class={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist?tokens=true"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
+                        :
+                        <li>
+                        <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link>
+                        </li>
                       }
                     </ul>
                   </div>
@@ -444,7 +444,7 @@ return (
                                          }
                                        </>
                                        :
-                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><img src="/assets/img/wishlist_star.svg" /></a></Link>
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" /></a></Link>
                                      }
                                      
                                      </td>
@@ -489,7 +489,7 @@ return (
                                             e.list_type==1?
                                             "Coin"
                                             :
-                                            e.contract_addresses.length > 0
+                                            (e.contract_addresses) && ((e.contract_addresses).length > 0)
                                             ?
                                             parseInt(e.contract_addresses[0].network_type) === 1 ? "ERC20" : "BEP20" 
                                             // e.contract_addresses.map((ca)=>
@@ -497,6 +497,7 @@ return (
                                             //)
                                             :
                                             null
+                                            
                                           } 
                                         </a>
                
@@ -513,7 +514,7 @@ return (
                
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/"+e.token_id}><a>
-                                         {e.market_cap ?separator(e.market_cap.toFixed(2)) : "-"}
+                                         {e.market_cap ?"$"+separator(e.market_cap.toFixed(2)) : "-"}
                                        </a></Link>
                                      </td>  
                                      
@@ -584,11 +585,11 @@ return (
                               <div className="pagination_element">
                                 <div className="pager__list pagination_element"> 
                                   <ReactPaginate 
-                                    previousLabel={selectedPage+1 !== 1 ? "Prev" : ""}
-                                    nextLabel={selectedPage+1 !== pageCount ? "Next" : ""}
+                                    previousLabel={currentPage+1 !== 1 ? "←" : ""}
+                                    nextLabel={currentPage+1 !== pageCount ? " →" : ""} 
                                     breakLabel={"..."}
                                     breakClassName={"break-me"}
-                                    forcePage={selectedPage}
+                                    forcePage={currentPage}
                                     pageCount={pageCount}
                                     marginPagesDisplayed={2} 
                                     onPageChange={tokensList}

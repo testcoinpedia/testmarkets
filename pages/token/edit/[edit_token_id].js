@@ -985,7 +985,6 @@ const getTokensDetails = (type, address) =>{
                                 onEditorChange={(e)=>setTokenDescription(e)}
                                 value={token_description} 
                                     onInit={(evt, editor) => {editorRef.current = editor}}
-                                    initialValue={token_description}
                                     init={{
                                       height: 300,
                                       menubar: false,

@@ -2,16 +2,23 @@ import React, {useState, useRef, useEffect} from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link' 
 import Head from 'next/head';
-import Graph_Data from '../../components/graphData'
-import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, graphqlApiKEY,count_live_price} from '../../components/constants'
+
+import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, graphqlApiKEY, count_live_price, Logout,DomainName} from '../../components/constants'
+import { live_price_graphql } from '../../components/token_details/graphql'
+import { live_price_coingecko } from '../../components/token_details/coingecko'
 import { graphQlURL, fromNToDate } from '../../components/tokenDetailsFunctions' 
 import moment from 'moment'
 import Highcharts from 'highcharts';    
 import ReactPaginate from 'react-paginate';
 import cookie from "cookie"
+import JsCookie from "js-cookie" 
 import Axios from 'axios'
 import Datetime from "react-datetime"
 import "react-datetime/css/react-datetime.css" 
+import Popupmodal from '../../components/popupmodal'
+import Search_Contract_Address from '../../components/searchContractAddress'
+import Graph_Data from '../../components/graphData'
+
   
 let inputProps = {
   className: 'market-details-date-search my_input', 
@@ -26,94 +33,189 @@ let inputProps2 = {
 } 
 
 
-export default function tokenDetailsFunction({errorCode, data, token_id, paymentTypes, userAgent, config}) 
+export default function tokenDetailsFunction({errorCode, data, token_id, userAgent, config, tokenStatus}) 
 {   
-   
   
-    const [view_details, set_view_details] = useState({data, config:config})
-    const communityRef = useRef(null);
-    const explorerRef = useRef(null);
-    const contractRef = useRef(null);  
-    const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")     
-    const [symbol] = useState(data.symbol)
-    const [watchlist_status, set_watchlist_status] = useState(data.watchlist_status)
-    const [share_modal_status, set_share_modal_status] = useState(false)
-    
-    const [user_token]= useState(userAgent.user_token)
-    const [perPage] = useState(10);
-    const [current_url]= useState(website_url+token_id)
-    const [exchangelistnew, set_exchange_list_new]= useState([])
-    const [exchangelist, set_exchangelist]= useState([])
-    const [exchangesPageCount, setExchnagesPageCount] = useState(0)
-    const [exchangesCurrentPage , setExchangesCurrentPage] = useState(0)
-    const [token_max_supply , settoken_max_supply] = useState(0)
-    const [tokentransactions, set_tokentransactions]= useState([])
-    const [tokentransactionsData, set_tokentransactionsdata]= useState([])
-    const [tokentransactionsPageCount, settokentransactionsPageCount] = useState(0)
-    const [tokentransactionsCurrentPage , settokentransactionsCurrentPage] = useState(0)
-    const [decimal,setdecimal]=useState(0)
-    
+  console.log("data",data)
  
-    const [explorer_links, set_explorer_links] = useState(false)
-    const [handleModalConnections, setHandleModalConnections] = useState(false)
-    const [handleModalVote, setHandleModalVote] = useState(false)
+  const communityRef = useRef(null);
+  const explorerRef = useRef(null);
+  const contractRef = useRef(null);  
+  const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")     
+  const [symbol] = useState(data.symbol)
+  const [watchlist, set_watchlist] = useState(data.watchlist_status)
+  const [share_modal_status, set_share_modal_status] = useState(false)
+  const [light_dark_mode, set_light_dark_mode]=useState(JsCookie.get('light_dark_mode'))
+  const [user_token]= useState((userAgent.user_token) ? userAgent.user_token:"")
+  const [perPage] = useState(10)
+  const [current_url]= useState(website_url+token_id)
+  const [exchange_list_new, set_exchange_list_new]= useState([])
+  const [exchange_list, set_exchange_list]= useState([])
+  const [exchangelist, set_exchangelist]= useState([])
+  const [exchangesPageCount, setExchnagesPageCount] = useState(0)
+  const [exchangesCurrentPage , setExchangesCurrentPage] = useState(0)
+  const [token_max_supply , set_token_max_supply] = useState(0)
+  const [tokentransactions, set_tokentransactions]= useState([])
+  const [tokentransactionsData, set_tokentransactionsdata]= useState([])
+  const [tokentransactionsPageCount, settokentransactionsPageCount] = useState(0)
+  const [tokentransactionsCurrentPage , settokentransactionsCurrentPage] = useState(0)
+  const [today_date, set_today_date]= useState(data.today_date)
+  const [no_data_link, set_no_data_link]= useState("")
+  const [graph_data_date, set_graph_data_date]= useState(4)
+  const [watchlist_count, set_watchlist_count]= useState(data.total_watchlist_count)
+  const [graph_status, set_graph_status] = useState(false)
+
+  // const [searchBy, setSearchBy] = useState("")  
+  // const [err_searchBy, setErrsearchBy] = useState("") 
+  // const [search_contract_address, set_search_contract_address] = useState("")    
+  // const [validSearchContract, setvalidContractAddress] = useState("")
+
+  const [decimal,setdecimal]=useState(0)
+  
+  const [community_links, set_community_links] = useState(false)
+  const [explorer_links, set_explorer_links] = useState(false)
+  const [handleModalConnections, setHandleModalConnections] = useState(false)
+  const [handleModalVote, setHandleModalVote] = useState(false)
+  const [param,set_param] = useState("")
+  const [customstartdate, setCustomstartdate] = useState("")
+  const [customenddate, setCustomenddate] = useState("")
+
+  const [price_change_24h, set_price_change_24h] = useState("") 
+  const [circulating_supply, set_circulating_supply] = useState(0) 
+  const [live_price, set_live_price] = useState("")
+  const [mcap_to_tvl_ratio, set_mcap_to_tvl_ratio] = useState("")
+  const [volume,set_volume] = useState(0)  
+  const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
+
+  const [other_contract, set_other_contract] = useState(false) 
+  const [customDate, setCustomDate] = useState(false)
+  const [graphDate , set_graphDate] = useState(1) 
+  const [contract_24h_volume,set_contract_24h_volume] = useState(0)  
+  const [market_cap, set_market_cap] = useState(0) 
+  const [liquidity, set_liquidity] = useState(0) 
+  const [contract_copy_status, set_contract_copy_status] = useState("")
+  const [desc_read_more, set_desc_read_more] = useState(false)
+  const [votes, set_votes] = useState(data.total_voting_count)
+  const [voting_status, set_voting_status] = useState(data.voting_status)
+  const [searchApprovalStatusParam] = useState(["pair_two_name"])
+  const [launchpad_row_id, set_launchpad_row_id] = useState(data.launch_pads_data.length > 0 ? parseInt(data.launch_pads_data[0]._id) : "")
+  const [launchpad_object, set_launchpad_object] = useState(data.launch_pads_data.length > 0 ? data.launch_pads_data[0] : "")
+  
+  
+  useEffect(async ()=>
+  {  
+    if(parseInt(data.api_from_type)===1)
+    { 
+      coingeckoId()
+    } 
+    else
+    {
+      graphqldata()
+    }
+
+    set_light_dark_mode(JsCookie.get('light_dark_mode'))
+    document.addEventListener("click", handleClickOutside, false);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, false);
+    }
+  
+  },[])
+
+  const coingeckoId= async(res)=> 
+  {    
+    var coingecko_data = await live_price_coingecko(data.api_from_id)
+    set_mcap_to_tvl_ratio(coingecko_data.mcap_to_tvl_ratio)
+    set_token_max_supply(coingecko_data.token_max_supply)
+    set_price_change_24h(coingecko_data.price_change_24h)
+    set_circulating_supply(coingecko_data.circulating_supply)
+    set_live_price(coingecko_data.live_price)
+    set_market_cap(coingecko_data.market_cap)
+    set_exchange_list_new(coingecko_data.exchanges)
+    set_exchange_list(coingecko_data.exchanges)
+    set_volume(coingecko_data.total_volume)
+    
+    
+  }
+  const uniques = exchange_list.map(item => item.pair_two_name).filter((value, index, self) => self.indexOf(value) === index)
+  console.log(uniques)
  
-    const [customstartdate, setCustomstartdate] = useState("")
-    const [customenddate, setCustomenddate] = useState("")
+  
+  const getexchangedata2= (param)=> 
+  { 
+    set_graph_status(true)
+    console.log(param)
+    var token_listData = exchange_list
+    var fi_tokens =  token_listData.filter((item) => searchApprovalStatusParam.some((newItem) =>  !item[newItem].toString().indexOf(param)))
+    // var fi_tokens =  token_listData.filter((item) => searchApprovalStatusParam.some((newItem) =>  item[newItem].indexOf(param)))
+    set_exchange_list_new(fi_tokens)
+    console.log("fi_tokens",fi_tokens)
+    
+  }
+  
 
-    const [price_change_24h, set_priceChange24H] = useState("") 
-    const [live_price, setLivePrice] = useState("")
+  const graphqldata= async()=> 
+  {  
+    const graphql_data = await live_price_graphql(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
+ 
+    set_circulating_supply(graphql_data.circulating_supply)
+    set_token_max_supply(graphql_data.token_max_supply)
+    set_price_change_24h(graphql_data.price_change_24h)
+    set_live_price(graphql_data.live_price)
+    set_market_cap(graphql_data.market_cap)
+    set_contract_24h_volume(graphql_data.contract_24h_volume)
+    set_liquidity(graphql_data.liquidity)
+    const reqObj = {
+      network_type : data.contract_addresses[0].network_type,
+      contract_address: data.contract_addresses[0].contract_address,
+      live_price: graphql_data.live_price,
+      total_max_supply:graphql_data.token_max_supply,
+      market_cap:graphql_data.market_cap
+    } 
+    await Axios.post(API_BASE_URL+'markets/tokens/save_token_live_price', reqObj, config)
+    
+  }
+  
 
-    const [otherContract, setOtherContract] = useState(false) 
-    const [customDate, setCustomDate] = useState(false)
-    const [graphDate , set_graphDate] = useState(1) 
-    const [contract_24h_volume,set_contract_24h_volume]=useState(0)  
-    const [market_cap, set_market_cap] = useState(0) 
-    const [liquidity, set_liquidity] = useState(0) 
-    const [contract_copy_status, set_contract_copy_status] = useState("")
-    const [desc_read_more, set_desc_read_more] = useState(false)
-    const [votes, set_votes] = useState(data.total_voting_count)
-    const [voting_status, set_voting_status] = useState(data.voting_status)
-
-
-  const makeJobSchema=()=>{  
-      return { 
-          "@context":"http://schema.org/",
-          "@type":"Organization",
-          "name": data.token_name,
-          "url": website_url+data.token_id,
-          "logo": image_base_url+data.token_image,
-          "sameAs":["","", "", ""]
-        }  
+  const makeJobSchema=()=>
+  {  
+    return { 
+      "@context":"http://schema.org/",
+      "@type":"Organization",
+      "name": data.token_name,
+      "url": website_url+data.token_id,
+      "logo": image_base_url+data.token_image,
+      "sameAs":["","", "", ""]
+      }  
   } 
  
-var yesterday = moment()
-function valid(current) 
-{  
-  return current.isBefore(yesterday)
-}
+  // var yesterday = moment()
+  // function valid(current) 
+  // {  
+  //   return current.isBefore(yesterday)
+  // }
 
-const valid2=(current)=> 
-{    
-  return current.isBefore(yesterday)
-}
+  // const valid2=(current)=> 
+  // {    
+  //   return current.isBefore(yesterday)
+  // }
 
-const removeTags=(str)=>
-{
-  if ((str===null) || (str===''))
-      return false;
-  else
-      str = str.toString();
-  return str.replace( /(<([^>]+)>)/ig, '');
-}
+  // const removeTags=(str)=>
+  // {
+  //   if ((str===null) || (str===''))
+  //       return false;
+  //   else
+  //       str = str.toString();
+  //   return str.replace( /(<([^>]+)>)/ig, '');
+  // }
 
 
-const getTokenTransactions=(id, networktype)=>
-{ 
-  let query =""
-  const dateSince = ((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString()) 
+  const getTokenTransactions=(id, networktype)=>
+  { 
+    let query =""
+    const dateSince = ((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString()) 
 
-  if(networktype === "1"){
+    if(networktype === "1")
+    {
         query = `
         query
         {
@@ -152,9 +254,10 @@ const getTokenTransactions=(id, networktype)=>
               }
             }
         ` ;
-  }
-  else{
-         query = `
+      }
+      else
+      {
+        query = `
               query
               {
                 ethereum(network: bsc) {
@@ -192,67 +295,62 @@ const getTokenTransactions=(id, networktype)=>
                 }
               }
         ` ;
-  }
+      }
 
 
         
-        const opts = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-              "X-API-KEY": graphqlApiKEY
-            },
-            body: JSON.stringify({
-                query
-            })
-        };
-        fetch(graphQlURL, opts)
-            .then(res => res.json())
-            .then(result=>{ 
-              
-              if (result.data.ethereum != null) {  
-                      set_tokentransactions(result.data.ethereum.dexTrades) 
-                      if(result.data.ethereum.dexTrades)
-                      {
-                        settokentransactionsPageCount(Math.ceil(result.data.ethereum.dexTrades.length  / 10 ))
-                      }
-                      
-                      tokenTrasactionspagination(result.data.ethereum.dexTrades , 0) 
-              }        
-            })
-            .catch(console.error);
-} 
+    const opts = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": graphqlApiKEY
+        },
+        body: JSON.stringify({ query })
+    }
+    fetch(graphQlURL, opts).then(res => res.json()).then(result=>
+    { 
+          
+      if (result.data.ethereum != null) 
+      {  
+        set_tokentransactions(result.data.ethereum.dexTrades) 
+        if(result.data.ethereum.dexTrades)
+        {
+          settokentransactionsPageCount(Math.ceil(result.data.ethereum.dexTrades.length  / 10 ))
+        }
+        
+        tokenTrasactionspagination(result.data.ethereum.dexTrades , 0) 
+      }        
+    }).catch(console.error)
+  } 
 
-const tokenTrasactionspagination=(data, offset)=>
-{ 
-  if(data)
-  {
-    let slice = data.slice(offset, offset + 10)   
+  const tokenTrasactionspagination=(data, offset)=>
+  { 
+    if(data)
+    {
+      let slice = data.slice(offset, offset + 10)   
 
-    const postData = slice.map((e,i)=>{
+      const postData = slice.map((e,i)=>{
       return <tr key={i}>
                 
-                <td>{separator(Number.parseFloat((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd).toFixed(2))} {(e.baseCurrency.symbol === "WBNB") ? e.quoteCurrency.symbol : e.baseCurrency.symbol}</td>
-                <td>{moment(e.block.timestamp.time).format("ll")}</td>
-                <td>{separator(Number.parseFloat((e.tradeAmountInUsd / ((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd)).toString()).toFixed(7))} USD</td>
-                <td>{separator(Number.parseFloat(e.tradeAmountInUsd).toFixed(4))} USD</td>
-                <td><a rel="noreferrer" href={"https://bscscan.com/tx/"+e.transaction.hash} target="_blank">{e.exchange.name ? e.exchange.name : "-"}</a></td>
-              </tr>
-    })
-
-    set_tokentransactionsdata(postData) 
+          <td>{separator(Number.parseFloat((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd).toFixed(2))} {(e.baseCurrency.symbol === "WBNB") ? e.quoteCurrency.symbol : e.baseCurrency.symbol}</td>
+          <td>{moment(e.block.timestamp.time).format("ll")}</td>
+          <td>{separator(Number.parseFloat((e.tradeAmountInUsd / ((e.baseCurrency.symbol === "WBNB") ? e.sellAmountInUsd : e.buyAmountInUsd)).toString()).toFixed(7))} USD</td>
+          <td>{separator(Number.parseFloat(e.tradeAmountInUsd).toFixed(4))} USD</td>
+          <td><a rel="noreferrer" href={"https://bscscan.com/tx/"+e.transaction.hash} target="_blank">{e.exchange.name ? e.exchange.name : "-"}</a></td>
+        </tr>
+      })
+      set_tokentransactionsdata(postData) 
+    }
   }
-   
 
-}
+  const tokenTrasactionshandlePageClick = (e) => 
+  {    
+    settokentransactionsCurrentPage(e.selected)
+    const selectPage = e.selected * 10;  
+    tokenTrasactionspagination(tokentransactions , selectPage)
+  }
 
-const tokenTrasactionshandlePageClick = (e) => {    
-  settokentransactionsCurrentPage(e.selected)
-  const selectPage = e.selected * 10;  
-  tokenTrasactionspagination(tokentransactions , selectPage)
-};
-
-const getWalletDetails=(id, networktype, wallettype)=>{ 
+  const getWalletDetails=(id, networktype, wallettype)=>{ 
   const query = `
               query
               {
@@ -333,7 +431,7 @@ const getWalletDetails=(id, networktype, wallettype)=>{
   fetch(graphQlURL, opts)
     .then(res => res.json())
     .then(result => { 
-      console.log("wallet_details",result)
+     // console.log("wallet_details",result)
       let get_inbond_list = []
       let get_outbond_list = []
 
@@ -401,106 +499,10 @@ const exchangespagination=(data, offset)=>{
 
 
 
-const getCirculatingSupply=(id,decimal,networktype)=>{
-if(networktype==1){
-
-}
-else{
-  Axios.get("https://api.bscscan.com/api?module=stats&action=tokenCsupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
-    .then(response=>{
-          if(response.status){ 
-            // console.log(response)
-            setcirculating_supply(response.data.result/10**decimal) 
-          }
-    })
-}
 
 
-}
-
-const get24hVolume=(id, networktype)=> {   
-  let query =""
-  const dateSince = ((new Date).toISOString())
-
-  if(networktype === "1"){
-      query = `
-      query
-      {
-        ethereum(network: ethereum) {
-          dexTrades(
-            date: {since: "` + dateSince + `"}
-            baseCurrency: {is: "`+id+`"}
-            options: {desc: "tradeAmount"}
-          ) {
-            tradeAmount(in: USD)
-          }
-        }
-      }
-    ` ;
-  }
-  else{
-    query = `
-    query
-    {
-      ethereum(network: bsc) {
-        dexTrades(
-          date: {since: "` + dateSince + `"}
-          baseCurrency: {is: "`+id+`"}
-          options: {desc: "tradeAmount"}
-        ) {
-          tradeAmount(in: USD)
-        }
-      }
-    }
-  ` ;
-  }
 
 
-  
-  const opts = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
-    },
-    body: JSON.stringify({
-      query
-    })
-  };
-
-  fetch(graphQlURL, opts)
-    .then(res => res.json())
-    .then(result => {  
-      if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) {  
-        set_contract_24h_volume(result.data.ethereum.dexTrades[0].tradeAmount) 
-      }
-    })
-    .catch(console.error);
-}
-
-
-useEffect(()=>
-{ 
- 
-  if(data.contract_addresses.length > 0)
-  { 
-    getexchangedata(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
-    get24hVolume(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)  
-    getTokenTransactions(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
-    //getTokenexchange(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
-    // getGraphData(4, data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)     
-    getTokenUsdPrice(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
-    // console.log(data.contract_addresses[0].contract_address)
-    
-  } 
-
-  
-  document.addEventListener("click", handleClickOutside, false);
-  return () => {
-    document.removeEventListener("click", handleClickOutside, false);
-  };
- 
-},[])
 
 
 const handleClickOutside = event => {  
@@ -513,7 +515,7 @@ const handleClickOutside = event => {
   }
 
   if (contractRef.current && !contractRef.current.contains(event.target)) {
-    setOtherContract(false);
+    set_other_contract(false);
   }
  
   
@@ -617,7 +619,7 @@ const getexchangedata= async (id,networks)=> {
                      if(item.pair.address==e.currency.address){
                       createObj['pair_one_value']=e.value
                       var res =await livePrice(item.pair.address,networks)
-                        console.log(item.pair.name, res)
+                        //console.log(item.pair.name, res)
                         createObj['pair_one_live_price']=res
                         pair_one_value_in_usd = e.value*res
                         
@@ -638,10 +640,10 @@ const getexchangedata= async (id,networks)=> {
                 network_type:"ethereum",
                 exchanges: [createObj]
               }
-              console.log('req Obj',reqObj)
+             // console.log('req Obj',reqObj)
               const config = { headers: { "Content-Type": "application/json" } }
               const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
-              console.log("Api Response", sadfdsf)
+              //console.log("Api Response", sadfdsf)
             
            }
            else
@@ -651,10 +653,10 @@ const getexchangedata= async (id,networks)=> {
               network_type:"bsc",
               exchanges: [createObj]
             }
-            console.log('req Obj',reqObj)
+            //console.log('req Obj',reqObj)
             const config = { headers: { "Content-Type": "application/json" } }
             const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
-            console.log("Api Response", sadfdsf)
+            //console.log("Api Response", sadfdsf)
            }
             
           })
@@ -746,7 +748,7 @@ const livePrice =async(id,networks)=>
      
       if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
       { 
-        console.log(result.data.ethereum.dexTrades)
+        //console.log(result.data.ethereum.dexTrades)
         
         if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c")
         {
@@ -834,656 +836,22 @@ const getexchangevalue = async (pool_token_address,networks)=>
   
 } 
 
-const getTokenUsdPrice=async(id, networks)=>
-{  
-  let query = "" 
-  const dateSince = ((new Date()).toISOString())
-  if(networks === "1")
-  {
-    query = `
-    query
-    {
-      ethereum(network: ethereum) {
-        dexTrades(
-          date: {since: "` + dateSince + `"}
-          any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}, {baseCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}, quoteCurrency: {is: "0xdac17f958d2ee523a2206206994597c13d831ec7"}}]
-          options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
-        ) {
-          baseCurrency {
-            symbol
-          }
-          block {
-            height
-          }
-          transaction {
-            index
-          }
-    
-          quoteCurrency {
-            symbol
-          }
-          quote: quotePrice
-        }
-      }
-    }
-` ;
-  } 
-  else{
-    query = `
-    query
-    {
-      ethereum(network: bsc) {
-        dexTrades(
-          date: {since: "` + dateSince + `"}
-          any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}}, {baseCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}, quoteCurrency: {is: "0xe9e7cea3dedca5984780bafc599bd69add087d56"}}]
-          options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
-        ) {
-          baseCurrency {
-            symbol
-          }
-          block {
-            height
-          }
-          transaction {
-            index
-          }
-    
-          quoteCurrency {
-            symbol
-          }
-          quote: quotePrice
-        }
-      }
-    }
-` ;
-  } 
-       
-  
-  const opts = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
-    },
-    body: JSON.stringify({
-      query
-    })
-  };
-  const livePriceQuery = await fetch(graphQlURL, opts)
-  const liveQueryRun = await livePriceQuery.json() 
-  if(liveQueryRun)
-  {
-      if(liveQueryRun.data.ethereum != null && liveQueryRun.data.ethereum.dexTrades != null) 
-      { 
-        console.log("Live Price",liveQueryRun.data)   
-        var cal_live_price = 0
-        if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c")
-        {
-          cal_live_price = liveQueryRun.data.ethereum.dexTrades[0].quote
-        }
-        else if(liveQueryRun.data.ethereum.dexTrades.length == 2)
-        {
-          cal_live_price = liveQueryRun.data.ethereum.dexTrades[0].quote*liveQueryRun.data.ethereum.dexTrades[1].quote
-        }
-        getTokendetails(id, cal_live_price, networks)
-        setLivePrice(cal_live_price) 
-        get24hChange(cal_live_price, id, networks) 
-          // getTotalMaxSupply(id,decimal, networks)
-          // getMarketCap(id, decimal, result.data.ethereum.dexTrades[0].quote, networks) 
-          
-          
-      } 
-       
-  }
-}
 
 
 
-const getTokendetails=async (id, usd_price, network_type)=> 
-{  
-  let query =""
-  if(network_type === "1")
-  {
-    query = `
-        query
-        { 
-          ethereum(network: ethereum) {
-            address(address: {is: `+ '"' +id+ '"' + `}){
-
-              annotation
-              address
-
-              smartContract {
-                contractType
-                currency{
-                  symbol
-                  name
-                  decimals
-                  tokenType
-                }
-              }
-              balance
-            }
-          } 
-        }
-      ` ;
-  }
-  else{
-    query = `
-        query
-        { 
-          ethereum(network: bsc) {
-            address(address: {is: `+ '"' +id+ '"' + `}){
-
-              annotation
-              address
-
-              smartContract {
-                contractType
-                currency{
-                  symbol
-                  name
-                  decimals
-                  tokenType
-                }
-              }
-              balance
-            }
-          } 
-        }
-      ` ;
-  }
- 
-  
-  const opts = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
-    },
-    body: JSON.stringify({
-      query
-    })
-  }
-  const liveDecimalQuery = await fetch(graphQlURL, opts)
-  const liveDecimalRun = await liveDecimalQuery.json()
-  if(liveDecimalRun.data.ethereum !== null) 
-  { 
-    console.log("usd price",usd_price)
-    setdecimal(liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals)
-    var get_total_supply_value = await getTotalMaxSupply(id, network_type)
-    var cal_total_supply_value = get_total_supply_value/10**liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals
-    settoken_max_supply(cal_total_supply_value) 
-    var cal_market_cap = cal_total_supply_value * usd_price
-    set_market_cap(cal_market_cap)
-    getMarketCap(id, liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals, usd_price, network_type) 
-    //getCirculatingSupply(id,liveDecimalRun.data.ethereum.address[0].smartContract.currency.decimals, network_type)
-    const reqObj = {
-      network_type : network_type,
-      contract_address: id,
-      live_price: usd_price,
-      total_max_supply:cal_total_supply_value,
-      market_cap:cal_market_cap
-    } 
-
-    await Axios.post(API_BASE_URL+'markets/tokens/save_token_live_price', reqObj, config)
-  }  
-}
 
 
-const getTotalMaxSupply= async (id, networktype)=>
-{
-  var req_url = "https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=E9DBMPJU7N6FK7ZZDK86YR2EZ4K4YTHZJ1"
-  if(networktype==2)
-  {
-    req_url = "https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2"
-  }
-  const resObj = await Axios.get(req_url)
-  if(resObj.status)
-  { 
-    return resObj.data.result
-  }
-  else
-  {
-    return 0
-  }
-}
-const getMarketCap =async(id, decval, usd_price, network_type)=> {  
 
-  let mainnetUrl = ""
 
-  if(network_type === "1" ){
-    mainnetUrl = 'https://mainnet.infura.io/v3/5fd436e2291c47fe9b20a17372ad8057'
-  }
-  else{
-    mainnetUrl = "https://bsc-dataseed.binance.org/";
-  }
- 
- 
-    const provider = new ethers.providers.JsonRpcProvider(mainnetUrl); 
 
-    const tokenAbi = ["function totalSupply() view returns (uint256)"];
-    const tokenContract = new ethers.Contract(id, tokenAbi, provider);
-    const supply = await tokenContract.totalSupply() / (10 ** decval);  
-    console.log("supply", supply)
-    // set_market_cap(supply * usd_price) 
-    console.log(market_cap) 
 
-  if(network_type === "1")
-  {
-    // if(id !== '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' || id !== '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984'){
-      
-    //       const pairAbi = ["function getPair(address first, address second) view returns (address)"]
-    //       const pairContract = new ethers.Contract("0x1f9840a85d5af5bf1d1762f925bdaddc4201f984", pairAbi, provider);
-    //       const pairAddr = await pairContract.getPair(id, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2');
-  
-    //       const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
-    //       const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
-    //       const reserve = await liqContract.getReserves();
-    //       const token0 = await liqContract.token0();
-    //       const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
-    //       set_liquidity(liquidity) 
-    //       console.log(liquidity)
-     // } 
-  }
-  else
-  {
-    if(id !== '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c')
-    {
-      
-      const pairAbi = ["function getPair(address first, address second) view returns (address)"]
-      const pairContract = new ethers.Contract("0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73", pairAbi, provider);
-      const pairAddr = await pairContract.getPair(id, '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c');
-     
-      const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
-      const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
-      const reserve = await liqContract.getReserves();
-      const token0 = await liqContract.token0();
-      const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
-      set_liquidity(liquidity)
-      console.log(liquidity)
-      }
-      else
-      {
-        const pairAbi = ["function getPair(address first, address second) view returns (address)"]
-        const pairContract = new ethers.Contract("0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73", pairAbi, provider);
-        const pairAddr = await pairContract.getPair(id, '0xe9e7cea3dedca5984780bafc599bd69add087d56');
-       
-          const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
-          const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
-          const reserve = await liqContract.getReserves();
-          const token0 = await liqContract.token0();
-          const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
-          set_liquidity(liquidity)
-    
-      }
 
-  } 
-}
-
-const get24hChange=(fun_live_price, id, networks)=>
-{  
- 
-  let query = ""
-
-  const date = ((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString()) 
-  // console.log(date)
-  if(networks === "1"){
-
-  query = `
-              query
-              {
-                ethereum(network: ethereum) {
-                  dexTrades(
-                    date: {in: "` + date + `"}
-                    any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}, {baseCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}, quoteCurrency: {is: "0xdac17f958d2ee523a2206206994597c13d831ec7"}}]
-                    options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
-                  ) {
-                    baseCurrency {
-                      symbol
-                    }
-                    block {
-                      height
-                    }
-                    transaction {
-                      index
-                    }
-                    quoteCurrency {
-                      symbol
-                    }
-                    quote: quotePrice
-                  }
-                }
-              }
-        ` ; 
-    }
- 
-  if(networks === "2"){
-
-    query = `
-    query
-    {
-      ethereum(network: bsc) {
-        dexTrades(
-          date: {in: "` + date + `"}
-          any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}}, {baseCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}, quoteCurrency: {is: "0xe9e7cea3dedca5984780bafc599bd69add087d56"}}]
-          options: {desc: ["block.height"], limitBy: {each: "baseCurrency.symbol", limit: 1}}
-        ) {
-          baseCurrency {
-            symbol
-          }
-          block {
-            height
-          }
-          transaction {
-            index
-          }
-          quoteCurrency {
-            symbol
-          }
-          quote: quotePrice
-        }
-      }
-    }
-` ;
-  }
-  
-  
-  const opts = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": graphqlApiKEY
-    },
-    body: JSON.stringify({
-      query
-    })
-  };
-   
-  const contract_usdt_price = fun_live_price 
-  let change24h = 0
-  fetch(graphQlURL, opts)
-    .then(res => res.json())
-    .then(result => 
-      {     
-        if(result.data.ethereum != null && result.data.ethereum.dexTrades != null)
-        {    
-          if(result.data.ethereum.dexTrades[0].baseCurrency.symbol === "WBNB" || id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
-          {
-            var quote_zero = 0
-            if(result.data.ethereum.dexTrades)
-            {
-              quote_zero = result.data.ethereum.dexTrades[0].quote
-            }
-
-            var quote_one = 0
-            if(result.data.ethereum.dexTrades.length > 1)
-            {
-              quote_one = result.data.ethereum.dexTrades[1].quote
-            }
-
-            change24h = ((contract_usdt_price - (quote_zero*quote_one)) / (contract_usdt_price) * 100) 
-            set_priceChange24H(change24h)
-            console.log(change24h)
-          } 
-          else
-          {
-            change24h = (contract_usdt_price / (quote_zero * quote_one) - 1) * 100
-            // change24h = (contract_usdt_price / (result.data.ethereum.dexTrades[0].quote ) - 1) * 100
-            set_priceChange24H(change24h) 
-          } 
-        }
-    })
-    .catch(console.error);
-} 
-
-const getGraphData=(datetime, id, networks)=> 
+const getGraphData=async(value)=> 
 {   
- 
-  let query =""
-  if(datetime === "") 
-  { 
-    datetime = graphDate;
-  } 
-  set_graphDate(datetime)
+  await set_graph_data_date("")
+  await set_graph_data_date(value)
   
-  var from_n_to_date = fromNToDate(datetime)
-  let fromDate= from_n_to_date.fromDate
-  let toDate= from_n_to_date.toDate 
-
-    if(networks === "1")
-    {
-      if(id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
-      {
-        query = `
-          query
-                {
-                  ethereum(network: ethereum) {
-                    dexTrades(
-                      exchangeName : {is: ""}
-                      date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-                      any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xdac17f958d2ee523a2206206994597c13d831ec7"}}]
-                      options: {asc: "timeInterval.hour"}
-                    ) {
-                      timeInterval {
-                        hour(count: 1)
-                      }
-                      baseCurrency {
-                        symbol
-                      }        
-                      quoteCurrency {
-                        symbol
-                      }
-                      quote: quotePrice
-                      buyAmount: baseAmount
-                      sellAmount: quoteAmount
-                      tradeAmountInUsd: tradeAmount(in: USD)
-                    }
-                  }
-                }
-          ` ;  
-      }
-      else
-      {
-        query = `
-        query
-              {
-                ethereum(network: ethereum) {
-                  dexTrades(
-                    exchangeName : {is: ""}
-                    date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-                    any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]
-                    options: {asc: "timeInterval.hour"}
-                  ) {
-                    timeInterval {
-                      hour(count: 1)
-                    }
-                    baseCurrency {
-                      symbol
-                    }        
-                    quoteCurrency {
-                      symbol
-                    }
-                    quote: quotePrice
-                    buyAmount: baseAmount
-                    sellAmount: quoteAmount
-                    tradeAmountInUsd: tradeAmount(in: USD)
-                  }
-                }
-              }
-        ` ;  
-      }
-    }
  
-    if(networks === "2"){ 
-
-      if(id === "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"){
-
-        query = `
-        query
-              {
-                ethereum(network: bsc) {
-                  dexTrades(
-                    exchangeName : {is: "Pancake v2"}
-                    date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-                    any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xe9e7cea3dedca5984780bafc599bd69add087d56"}}]
-                    options: {asc: "timeInterval.hour"}
-                  ) {
-                    timeInterval {
-                      hour(count: 1)
-                    }
-                    baseCurrency {
-                      symbol
-                    }        
-                    quoteCurrency {
-                      symbol
-                    }
-                    quote: quotePrice
-                    buyAmount: baseAmount
-                    sellAmount: quoteAmount
-                    tradeAmountInUsd: tradeAmount(in: USD)
-                  }
-                }
-              }
-        ` ; 
-
-      }
-      else{
-        
-        query = `
-        query
-              {
-                ethereum(network: bsc) {
-                  dexTrades(
-                    exchangeName : {is: "Pancake v2"}
-                    date: {after: "` + fromDate + `" , till: "` + toDate + `"}
-                    any: [{baseCurrency: {is: "`+id+`"}, quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"}}]
-                    options: {asc: "timeInterval.hour"}
-                  ) {
-                    timeInterval {
-                      hour(count: 1)
-                    }
-                    baseCurrency {
-                      symbol
-                    }        
-                    quoteCurrency {
-                      symbol
-                    }
-                    quote: quotePrice
-                    buyAmount: baseAmount
-                    sellAmount: quoteAmount
-                    tradeAmountInUsd: tradeAmount(in: USD)
-                  }
-                }
-              }
-        ` ;
-
-      } 
-    }  
- 
-
-    
-    const opts = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-KEY": graphqlApiKEY
-      },
-      body: JSON.stringify({
-        query
-      })
-    };
-    fetch(graphQlURL, opts)
-      .then(res => res.json())
-      .then(result => { 
-        
-        if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) { 
-        var prices= [];
-        var arr = result.data.ethereum.dexTrades; 
-
-        for (let index = 0; index < arr.length; index++) {
-          if (arr[index] !== undefined) {
-            var rate = 0 
-            rate = arr[index].tradeAmountInUsd / arr[index].buyAmount; 
-             
-            var date = new Date(arr[index].timeInterval.hour)
-            var val = []
-            val[0] = date.getTime()
-            val[1] = rate; 
-
-
-            prices.push(val)
-            // console.log(prices)
-          }
-        }  
-
-        Highcharts.chart('container', {
-          chart: {
-              zoomType: 'x'
-          },
-          title: {
-              text: ''
-          },
-          xAxis: {
-              type: 'datetime',
-              lineColor: '#f7931a',
-              dashStyle: 'Dash',
-          },
-          yAxis: {
-              title: {
-                  text: ('USD Prices')
-              },
-              dashStyle: 'Dash',
-          },
-          colors: ['#f7931a'],
-          legend: {
-              enabled: false
-          },
-          tooltip: {
-                    formatter: function () {
-                        var point = this.points[0];
-                        return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
-                        '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
-                    },
-      shared: true
-         },
-          plotOptions: {
-              area: {
-                  fillColor: {
-                      linearGradient: {
-                          x1: 0,
-                          y1: 0,
-                          x2: 0,
-                          y2: 1
-                      },
-                      stops: [
-                          [0, 'rgb(255 248 241 / 59%)'],
-                          [1, 'rgb(255 255 255 / 59%)']
-                      ]
-                  },
-                  marker: {
-                      radius: 1
-                  },
-                  lineWidth: 3,
-                  states: {
-                      hover: {
-                          lineWidth: 3
-                      }
-                  },
-                  threshold: null
-              }
-          },
-    
-          series: [{
-              type: 'area',
-              name: '',
-              data: prices
-          }]
-      }); 
-    }
-
-      })
-      .catch(console.error);  
 } 
 const myReferrlaLink=()=> {
     var copyText = document.getElementById("referral-link");
@@ -1503,7 +871,7 @@ const myReferrlaLink=()=> {
     // document.execCommand("Copy"); 
     // copytext.remove()
     set_contract_copy_status(type)
-     console.log(type)
+     //console.log(type)
    
 
     var copyText = document.createElement("input")
@@ -1516,6 +884,38 @@ const myReferrlaLink=()=> {
     setTimeout(() => set_contract_copy_status(""), 3000)
   }
 
+  const LaunchpadDetails = (object)=>
+  {
+    set_launchpad_row_id(parseInt(object._id))
+
+    set_launchpad_object(object)
+  
+  }
+ 
+
+  const addToWatchlist = (param_token_id) =>
+  {
+    Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config)
+    .then(res=>
+    { 
+      if(res.data.status)
+      {
+        set_watchlist(true)
+      }
+    })
+  }
+
+const removeFromWatchlist = (param_token_id) =>
+{
+  Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config)
+  .then(res=>
+  {
+    if(res.data.status)
+    {
+      set_watchlist(false)
+    }
+  })
+}
 
     
  
@@ -1533,16 +933,17 @@ const myReferrlaLink=()=> {
   const vote = (param) =>
   {
     ModalVote()
+    setModalData({icon: "", title: "", content:""})
     if(param == 1)
     {   
       Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+data.token_id, config)
       .then(res=>{ 
-      console.log(res)
+      //console.log(res)
       if(res.data.status === true) 
       {
         set_votes(votes+1)
         set_voting_status(true)
-        set_voting_message(res.data.message)
+        setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message})
       }
     })
     }
@@ -1550,12 +951,12 @@ const myReferrlaLink=()=> {
     {
       Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+data.token_id, config)
       .then(res=>{ 
-      console.log(res)
+     // console.log(res)
       if(res.data.status === true) 
       {
         set_votes(votes-1)
         set_voting_status(false)
-        set_voting_message(res.data.message)
+        setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message})
       }
     })
     }
@@ -1564,10 +965,10 @@ const myReferrlaLink=()=> {
   return(
     <>
       <Head>
-         <title>{data.token_name.toUpperCase()} ({data.symbol}) Live Price | Coinpedia Market</title>  
-         <meta name="description" content={data.meta_description} />
+        <title>{data.token_name.toUpperCase()} ({data.symbol}) Live Price | Coinpedia Market</title>  
+        <meta name="description" content={data.meta_description} />
         <meta name="keywords" content={data.meta_keywords} />
- 
+
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={data.token_name.toUpperCase()+ " ("+data.symbol+")  Live Price" + "  | Coinpedia Market" } />
@@ -1591,29 +992,257 @@ const myReferrlaLink=()=> {
  
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
+      
     <div className="page">
-      <div className="airdrop_single_page">
+      <div className="market_token_details">
           <div className="container">
             <div className="col-md-12">
-                {/* <div className="row">
-                  <div className="col-md-12">
-                    <div className="slider_promotions">
-                      <div className="slider__item">
-                          <div className="slider__wrap">
-                          <div className="slider__date">Oct 26th - Nov 25th</div>
-                          <div className="slider__title">Bitcoin x TRON Net Deposit Campaign</div>
-                          <div className="slider__info">To celebrate our new multi-chain deposit and withdrawal support for Bitcoin on TRON (BTCTRON), we’re beginning a 30-day net deposit…</div>
-                          <button className="slider__btn btn btn_white">Connect your Wallet</button>
+              <div className="row">
+                
+                <div className="col-md-6 order-md-2">
+                  <div className="row">
+                    <div className="col-md-6 order-md-2">
+                      {
+                        <Search_Contract_Address  /> 
+                      }
+                    
+                      <ul className="token_share_vote"> 
+                        {
+                          tokenStatus ?
+                            <>
+                              {
+                                voting_status == false ?
+                                <li onClick={()=>ModalVote()} style={{cursor:"pointer"}}><img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span></li>
+                                :
+                                <li onClick={()=>ModalVote()} style={{cursor:"pointer"}}><img src="/assets/img/coin_vote.svg" /> Voted <span>{votes}</span></li>
+                              }
+                            </>
+                            :
+                            <li  style={{cursor:"pointer"}} >
+                                <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a onClick={()=> Logout()}>
+                                <img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span>
+                                </a></Link>
+                            </li>
+                        }
+                        <li>{data.list_type==1?"Coin":"Token"}</li>
+                        <li onClick={()=>set_share_modal_status(true)} style={{cursor:"pointer"}}><img src="/assets/img/coin_share.svg" /> Share</li>
+                      </ul>
+
+
+                      </div>
+                    <div className="col-md-6 order-md-1">
+                      { 
+                        data.list_type==1?
+                        ""
+                        :
+                        data.contract_addresses.length > 0
+                        ?
+                        <div className="wallets__inner contract_address">
+                          <div className="wallets__details">
+                            
+                            <span className="token-contract-details h5"> 
+                              { 
+                                data.contract_addresses.length > 1
+                                ?
+                                  parseInt(data.contract_addresses[0].network_type) === 1
+                                  ?
+                                  <>  
+                                  {/* src="/assets/img/copy.png" */}
+                                  <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
+                                    <span >
+                                      <img  className="token_dropdown_img" src="/assets/img/ETH.svg" alt="Ethereum"></img>
+                                      Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
+                                    </span>
+                                  </a>&nbsp;
+                                  {/* {
+                                    contract_copy_status === 'ETH' ? 
+                                    <span>Copied</span>
+                                    : */}
+                                    <img  onClick={()=> {copyContract(data.contract_addresses[0].contract_address, 'ETH')}} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                   
+                                  {/* } */}
+                                  <img src="/assets/img/down-arrow.png" ref={contractRef}  onClick={()=> set_other_contract(!other_contract)} className="dropdown_arrow_img" />
+                                  {
+                                    other_contract
+                                    ?
+                                    <div className="dropdown_block"> 
+                                      <div className="media">
+                                        <img src="/assets/img/binance.svg" alt="Binance" className="token_dropdown_img" />
+                                        <div className="media-body">
+                                          <p className="wallets__info">Binance smart chain</p> 
+                                          <p><a  href={"https://bscscan.com/token/"+data.contract_addresses[1].contract_address} target="_blank"> <img  className="token_dropdown_img" src="/assets/img/BSC.svg"></img> {(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}
+                                          </a>
+                                          &nbsp; 
+                                          {
+                                            contract_copy_status === 'BNB'?
+                                            <span>Copied</span>
+                                            :
+                                            <img onClick={()=> copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                           
+                                          }
+                                          </p>
+                                        </div>
+                                      </div>
+                                      </div>
+                                    :
+                                    null 
+                                  }
+                                  </> 
+                                  :  
+                                  parseInt(data.contract_addresses[0].network_type) === 2
+                                  ?
+                                  <> 
+                                  <a href={"https://bscscan.com/token/" + data.contract_addresses[0].contract_address} target="_blank">
+                                    <span >Binance smart chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
+                                    </span>
+                                  </a>
+                                  {
+                                      contract_copy_status === 'BNB'?
+                                      <span  className="votes_market">Copied</span>
+                                      :
+                                      <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" /> 
+                                 
+                                  }
+                                  
+                                  
+                                  <img  ref={contractRef} onClick={()=> set_other_contract(!other_contract)} src="/assets/img/down-arrow.png" className="dropdown_arrow_img" />
+                                  {
+                                    other_contract
+                                    ?
+                                    <div className="dropdown_block">
+                                      <p>Ethereum</p> 
+                                      <p>
+                                        <a  href={"https://etherscan.io/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}</a>
+                                        <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address,"ETH")} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                        {/* {
+                                          
+                                    contract_copy_status === 'ETH' ? 
+                                    <span className="votes_market" >Copied</span>
+                                    :
+                                    <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address,"ETH")} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                     
+                                        } 
+                                         */}
+                                      </p>
+                                    </div>
+                                    :
+                                    null
+                                  }
+                                  </> 
+                                  :
+                                  null
+                                :
+                                data.contract_addresses[0].network_type === 1
+                                ? 
+                                <span className="wallet_address_token" onClick={()=> set_other_contract(!other_contract)}>
+                                  <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
+                                  <img  className="token_dropdown_img" src="/assets/img/ETH.svg"></img> Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
+                                  </a> 
+                                  <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,"ETH")} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
+                                  
+                                  
+                                </span>
+                                : 
+                                <span className="wallet_address_token" onClick={()=> set_other_contract(!other_contract)}>
+                                  <a href={"https://bscscan.com/token/"+data.contract_addresses[0].contract_address} target="_blank"><img  className="token_dropdown_img" src="/assets/img/BSC.svg"></img> Binance Smart Chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
+                                  </a> 
+                                  <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,'BNB')} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
+                                </span>
+                              } 
+                            </span> 
+                            {/* <span className="votes_market">Copied</span> */}
                           </div>
-                          <div className="slider__preview"><img src="/assets/img/figures-2.png" alt="" /></div>
+                        </div>
+                        :
+                        null
+                      } 
+                       {
+                                      contract_copy_status === 'ETH' ? 
+                                      <span className="votes_market" >Copied</span>
+                                      :
+                                      null
+                                   
+                        }
+                          {
+                                      contract_copy_status === 'BNB'?
+                                      <span  className="votes_market">Copied</span>
+                                      :
+                                    null
+                                
+                           }
+                    </div>
+                   
+                  </div>
+                </div>
+
+
+                <div className="col-md-6  order-md-1">
+                  <div className="token_main_details">
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="media">
+                          <img src={data.token_image ? image_base_url+data.token_image : image_base_url+"default.png"} className="token_img" alt="logo" width="100%" height="100%" />
+                          <div className="media-body">
+                            <h4 className="media-heading">{data.token_name ? data.token_name : "-"} 
+                              {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
+                              {
+                                tokenStatus ?
+                                <>
+                                  {
+                                  watchlist == true ?
+                                  <span onClick={()=>removeFromWatchlist(data._id)} ><img src="/assets/img/watchlist_token.svg" /></span>
+                                  :
+                                  <span onClick={()=>addToWatchlist(data._id)} ><img src="/assets/img/watchlist_normal.svg" /></span>
+                                  }
+                                </>
+                                :
+                                <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a onClick={()=> Logout()}>
+                                <img src="/assets/img/watchlist_normal.svg" />
+                                </a></Link>
+                              }
+                            </h4>
+                            <h5><span>{data.symbol ? (data.symbol).toUpperCase() : "-"}</span></h5>
+                            {
+                              watchlist_count > 0 ?
+                              <h5><span>{watchlist_count ? "Token has " + watchlist_count + (watchlist_count > 1 ? " watchlists" : " watchlist" ) : "-"}</span></h5>
+                              :
+                              null
+                            }
+                            
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="col-md-6">
+                        <div className="token_price_block">
+                          <h5>
+                            {live_price?"$":null} {live_price > 0 ? separator(live_price.toFixed(6)) : "NA"} 
+                            {
+                              live_price?
+                              price_change_24h
+                              ?
+                              price_change_24h > 0
+                              ?
+                              <span className="market_growth market_up"><img src="/assets/img/caret-up.png" />{price_change_24h.toFixed(2)}%</span>
+                              :
+                              <span className="market_growth market_down"><img src="/assets/img/caret-angle-down.png" />{price_change_24h.toPrecision(3)}%</span>
+                              :
+                              null
+                              :
+                              null
+                            }
+                          </h5>
+                          <p>{data.token_name ? data.token_name : "-"} Price({data.symbol ? (data.symbol).toUpperCase() : "-"})</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div> */}
+                </div>
+              </div>
 
                 <div className="row">
                   <div className="col-md-12"> 
-                    <div className="market_details_block">
+                    {/* <div className="market_details_block">
                       <div className="widgets__item">
                         <div className="widgets__head">
                           <div className="">
@@ -1649,15 +1278,8 @@ const myReferrlaLink=()=> {
 
                                     <ul className="market_details_share_wishlist desktop_view">
                                       <li>
-                                        {/* <div className="share_market_detail_page" data-toggle="modal" data-target="#market_share_page"><img src="/assets/img/share-icon.png"  width="100%" height="100%" /> Share</div> */}
                                         <div className="share_market_detail_page" data-toggle="modal" onClick={()=>set_share_modal_status(true)}>Share</div>
                                       </li>
-                                      {/* <li>
-                                        <div className="wishlist_market_detail_page">
-                                          <div className="star-img"><img src="/assets/img/star.png" width="100%" height="100%" />
-                                          </div>
-                                        </div>
-                                      </li> */}
                                       
                                     </ul>
 
@@ -1666,95 +1288,46 @@ const myReferrlaLink=()=> {
                                 </div>
                               </div>
                             </div>
-
-
-                            <div>
-                              <div className="widgets__price">{live_price?"$":null} {live_price > 0 ? separator(live_price.toFixed(10)) : "NA"} 
-                                {
-                                  price_change_24h
-                                  ?
-                                  price_change_24h > 0
-                                  ?
-                                  <span className="market_growth market_up"><img src="/assets/img/caret-up.png" />{price_change_24h.toFixed(2)}%</span>
-                                  :
-                                  <span className="market_growth market_down"><img src="/assets/img/caret-angle-down.png" />{price_change_24h.toPrecision(3)}%</span>
-                                  :
-                                  null
-                                }
-                              </div>
-                            </div>
                           </div>
 
 
-                          <div >
+                      
+
+
+
+                          
+
+                          <div className="row">
+                            <div class="col-4 text-right token_share_block token_share_for_left">
+                              <ul className="market_details_share_wishlist mobile_view">
+                                <li>
+                                  <div className="share_market_detail_page" data-toggle="modal" onClick={()=>set_share_modal_status(true)}>Share</div>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+
+                        
+                        <div className="wallets__inner">
+                          <div className="wallets__list" />
+                        </div>
+                      </div>
+                    </div> */}
+
+                    <div className="coin_details">
+                        <div className="row">
+                          <div className="col-md-5">
                             <div className="coin_main_links">
                               <ul className="coin_quick_details">
-                                {/* <li className="coin_individual_list">
-                                  <div className="quick_block_links">
-                                    <div className="widgets__select links_direct"><a href="#" target="_blank"> # Rank -07 </a></div>
-                                  </div>
-                                </li> */}
-                                {
-                                  data.website_link==""?
-                                  null
-                                  :
-                                  <li className="coin_individual_list">
-                                  <div className="quick_block_links">
-                                    <div className="widgets__select links_direct"><a href={createValidURL(data.website_link)} target="_blank"> <img src="/assets/img/website.svg" className="coin_cat_img" />Website </a></div>
-                                  </div>
-                                </li>
-                                }
                                 
 
-                                
-                                {/* { 
-                                  data.community_address.length > 0
-                                  ?
-                                  <li className="coin_individual_list">
-                                    <div className="quick_block_links">
-                                      <div className="widgets__select links_direct"  ref={communityRef} onClick={()=> {set_community_links(!community_links); set_explorer_links(false) }}><a><img src="/assets/img/community.svg" className="coin_cat_img" />Community {data.community_address.length > 0 ? <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img" /> : null}</a></div>
-                                    </div> 
-                                    {
-                                      community_links
-                                      ?
-                                        <div className="dropdown_block badge_dropdown_block">
-                                            <ul>
-                                                { 
-                                                  // http:// ,https://, https://www, http://www,
-                                                    data.community_address.map((e, i)=>{
-                                                      // var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
-                                                      // let url = ""
-                                                      // if(regexp.test(e)){
-                                                      //     url = new URL(e);
-                                                      // }
-                                                      // else{
-                                                      //     e = "http://"+e
-                                                      //     url = new URL(e);
-                                                      // }  
-                                                      //   return <li key={i}><a href={e ? e : ""} target="_blank">{(url.hostname).indexOf(".") !== -1 ?(url.hostname).slice(0, (url.hostname).indexOf(".")) : url.hostname}</a></li>
-                                                      return <li key={i}><a href={e ? e : ""} target="_blank">{getDomainName(e)}</a></li>
-                                                    }) 
-                                                    
-                                                }
-                                            </ul>
-                                        </div>
-                                        :
-                                        null
-                                    }
-                                  </li> 
-                                  :
-                                  null
-                                } */}
-
-
-
                                 {
-                                  
                                   data.explorer.length > 0
                                   ?
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links); set_community_links(false) }}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img" /> : null} </a></div>
+                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> : null} </a></div>
                                     </div> 
                                     { 
                                       explorer_links
@@ -1778,359 +1351,236 @@ const myReferrlaLink=()=> {
                                           </ul>
                                       </div>
                                       :
-                                      null
+                                     null
                                     }
                                   </li> 
                                   :
-                                  null
+                                  <li className="coin_individual_list">
+                                      <div className="quick_block_links">
+                                        <div className="widgets__select links_direct" > <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Explorer Not Avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> : null} </a></div>
+                                      </div>
+                                      </li>
                                 }
 
                                 {
-                                    data.source_code_link
-                                    ?
-                                    <li className="coin_individual_list">
-                                      <div className="quick_block_links">
-                                        <div className="widgets__select links_direct"><a href={createValidURL(data.source_code_link)} target="_blank"><img src="/assets/img/source_code.svg" className="coin_cat_img" /> Source Code </a></div>
-                                      </div>
-                                    </li>
-                                    :
-                                    null
-                                }
-                                {
-                                    data.whitepaper
-                                    ?
-                                    <li className="coin_individual_list">
-                                      <div className="quick_block_links">
-                                        <div className="widgets__select links_direct"><a href={createValidURL(data.whitepaper)} target="_blank"> <img src="/assets/img/whitepaper.png" className="coin_cat_img" /> White paper </a></div>
-                                      </div>
-                                    </li>
-                                    :
-                                    null 
-                                }
-                              </ul>
-                            </div>
-                          </div>
-
-
-
-                          <div className="wallets__inner token_overview_block">
-                            <ul className="overview_ul">
-                              <li>
-                                <div className="wallets__details">
-                                  <div className="wallets__info">Circulating Supply</div>
-                                  <div className="wallets__number h5">NA</div>
-                                  {/* <div className="wallets__number h5">{circulating_supply ? separator(circulating_supply) : "-"}</div> */}
-                                  {/* <div className="circulating_progress">
-                                    <div className="progress">
-                                      <div className="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={{width:"60%"}}></div>
+                                  data.whitepaper
+                                  ?
+                                  <li className="coin_individual_list">
+                                    <div className="quick_block_links">
+                                      <div className="widgets__select links_direct"><a href={createValidURL(data.whitepaper)} target="_blank"> <img src="/assets/img/whitepaper.svg" className="coin_cat_img" /> White paper </a></div>
                                     </div>
-                                    <p className="progress_bar_status">75%</p>
-                                  </div> */}
-                                </div>
-                              </li>
-                              <li>
-                                <div className="wallets__details">
-                                  <div className="wallets__info">Total Max Supply</div>
-                                  <div className="wallets__number h5">{token_max_supply ? separator(token_max_supply) : data.total_max_supply ? separator(data.total_max_supply.toFixed(4)) : "NA"}</div>
-                                </div>
-                              </li>
-                              <li>
-                                <div className="wallets__details">
-                                  <div className="wallets__info">24h volume</div>
-                                  <div className="wallets__number h5">{contract_24h_volume?"$":null}{contract_24h_volume?separator(contract_24h_volume.toFixed(2)): "NA"}</div>
-                                  <div className="twenty_block">
-                                    {/* {
-                                      price_change_24h
-                                      ?
-                                      price_change_24h > 0
-                                      ?
-                                      <span className="twenty_high"><img src="/assets/img/green-up.png" />{price_change_24h}%</span>
-                                      :
-                                      <span className="twenty_low"><img src="/assets/img/red-down.png" />{price_change_24h}%</span>
-                                      :
-                                      null
-                                    } */}
+                                  </li>
+                                  :
+                                  <li className="coin_individual_list">
+                                  <div className="quick_block_links">
+                                    <div className="widgets__select links_direct"><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("White paper is not avaliable")}} ><img src="/assets/img/whitepaper.svg" className="coin_cat_img" /> White paper </a></div>
                                   </div>
-                                </div>
-                              </li>
-                              <li>
-                                <div className="wallets__details">
-                                  <div className="wallets__info">Market cap</div>
-                                  <div className="wallets__number h5">{market_cap?"$":null}{market_cap ? separator(market_cap.toFixed(4)) : data.market_cap ? separator(data.market_cap.toFixed(4)) : "NA"}</div>
-                                  <div className="twenty_block">
-                                    {/* <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span> */}
-                                    {/* <span className="twenty_high"><img src="/assets/img/red-down.png" />2.79%</span> */}
-                                  </div>
-                                </div>
-                              </li>
-                              <li>
-                                <div className="wallets__details">
-                                  <div className="wallets__info">Liquidity</div>
-                                  <div className="wallets__number h5">{liquidity?"$":null}{liquidity ? separator(liquidity.toFixed(4)) : "NA"}</div>
-                                </div>
-                              </li>
-
-                              <li>
-                                <div className="wallets__details">
-                                  <div className="wallets__info">Social</div>
-                                    <div className="market_details_community">
-                                      <h6 class="social_icons">
-                                      {
-                                        data.community_address.map((e, i)=>{
-                                          // return <a href={e} target="_blank">
-                                          //       <img src={"/assets/img/social-icons/"+(getDomainName(e) != "medium" || getDomainName(e) != "linkedin" || getDomainName(e) != "reddit" || getDomainName(e) != "twitter"|| getDomainName(e) != "youtube" || getDomainName(e) != "facebook" || getDomainName(e) != "instagram") ? "default" : getDomainName(e) +".png"} class="1" alt={getDomainName(e)} title={getDomainName(e)}/>
-                                          //     </a>
-                                          if(getDomainName(e)  === "medium")
-                                          {
-                                            return <a href={e} target="_blank">
-                                                <img src="/assets/img/social-icons/medium.png" class="1" alt="Medium" title="Medium"/>
-                                              </a>
-                                          }
-                                          else if(getDomainName(e)  === "linkedin")
-                                          {
-                                            return <a href={e} target="_blank">
-                                                <img src="/assets/img/social-icons/linkedin.png" class="1" alt="Linked" title="Linked"/>
-                                              </a>
-                                          }
-                                          else if(getDomainName(e)  === "reddit")
-                                          {
-                                            return <a href={e} target="_blank">
-                                                <img src="/assets/img/social-icons/reddit.png" class="1" alt="Reddit" title="Reddit"/>
-                                              </a>
-                                          }
-                                          else if(getDomainName(e)  === "twitter")
-                                          {
-                                            return <a href={e} target="_blank">
-                                                <img src="/assets/img/social-icons/twitter.png" class="1" alt="Twitter" title="Twitter"/>
-                                              </a>
-                                          }
-                                          else if(getDomainName(e)  === "youtube")
-                                          {
-                                            return <a href={e} target="_blank">
-                                                <img src="/assets/img/social-icons/youtube.png" class="1" alt="Youtube" title="Youtube"/>
-                                              </a>
-                                          }
-                                          else if(getDomainName(e)  === "facebook")
-                                          {
-                                            return <a href={e} target="_blank">
-                                                <img src="/assets/img/social-icons/facebook.png" class="1" alt="Facebook" title="Facebook"/>
-                                              </a>
-                                          }
-                                          else if(getDomainName(e)  === "instagram")
-                                          {
-                                            return <a href={e} target="_blank">
-                                                <img src="/assets/img/social-icons/instagram.png" class="1" alt="Instagram" title="Instagram"/>
-                                              </a>
-                                          }
-                                          else if(getDomainName(e)  === "t")
-                                          {
-                                            return <a href={e} target="_blank">
-                                                <img src="/assets/img/social-icons/telegram.png" class="1" alt="Telegram" title="Telegram"/>
-                                              </a>
-                                          }
-                                          else
-                                          {
-                                            return <a href={e} target="_blank">
-                                                <img src="/assets/img/social-icons/default.png" class="1" alt={getDomainName(e)} title={getDomainName(e)}/>
-                                              </a>
-                                          }
-                                          
-                                        }) 
-                                      }
-                                      </h6>
-                                    </div>
-                                  </div>
-                              </li>
-
-                            </ul>
-                          </div>
-
-                          <div className="row">
-                            <div className="col-md-12 col-8 token_share_block">
-                              { 
-                                data.contract_addresses.length > 0
-                                ?
-                                <div className="wallets__inner contract_address">
-                                  <div className="wallets__details">
-                                    <div className="wallets__info">Contracts:</div>
-                                    <span className="token-contract-details h5"> 
-                                      { 
-                                        data.contract_addresses.length > 1
-                                        ?
-                                          data.contract_addresses[0].network_type === "1"
-                                          ?
-                                          <>  
-                                          {/* src="/assets/img/copy.png" */}
-                                          <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
-                                            <span >
-                                              <img  className="token_dropdown_img" src="/assets/img/ETH.svg"></img>
-                                              Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
-                                            </span>
-                                          </a>&nbsp;
-                                          {
-                                            contract_copy_status === 'ETH' ? 
-                                            <span>Copied</span>
-                                            :
-                                            <img  onClick={()=> {copyContract(data.contract_addresses[0].contract_address, 'ETH')}} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
-                                          }
-                                          
-                                          <img src="/assets/img/down-arrow.png" ref={contractRef}  onClick={()=> setOtherContract(!otherContract)} className="dropdown_arrow_img" />
-                                          {
-                                            otherContract
-                                            ?
-                                            <div className="dropdown_block"> 
-                                              <div className="media">
-                                                <img src="/assets/img/binance.svg" alt="Binance" className="token_dropdown_img" />
-                                                <div className="media-body">
-                                                  <p className="wallets__info">Binance smart chain</p> 
-                                                  <p><a  href={"https://bscscan.com/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}
-                                                  </a>
-                                                  &nbsp; 
-                                                  {
-                                                    contract_copy_status === 'BNB'?
-                                                    <span>Copied</span>
-                                                    :
-                                                    <img onClick={()=> copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
-                                                  }
-                                                  </p>
-                                                </div>
-                                              </div>
-                                              </div>
-                                            :
-                                            null 
-                                          }
-                                          </> 
-                                          :  
-                                          data.contract_addresses[0].network_type === "2"
-                                          ?
-                                          <> 
-                                          <a href={"https://bscscan.com/token/" + data.contract_addresses[0].contract_address} target="_blank">
-                                            <span >Binance smart chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
-                                            </span>
-                                          </a>
-                                          {
-                                             contract_copy_status === 'BNB'?
-                                             <span  className="votes_market">Copied</span>
-                                             :
-                                             <span id="copyTooltip">
-                                             <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" /> 
-                                             </span>
-                                          }
-                                         
-                                          
-                                          <img  ref={contractRef} onClick={()=> setOtherContract(!otherContract)} src="/assets/img/down-arrow.png" className="dropdown_arrow_img" />
-                                          {
-                                            otherContract
-                                            ?
-                                            <div className="dropdown_block">
-                                              <p>Ethereum</p> 
-                                              <p>
-                                                <a  href={"https://etherscan.io/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}</a>
-                                                {
-                                                  
-                                            contract_copy_status === 'ETH' ? 
-                                            <span className="votes_market" >Copied</span>
-                                            :
-                                            <span id="copyTooltip">
-                                                <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address,"ETH")} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
-                                                </span>
-                                                } 
-                                                
-                                              </p>
-                                            </div>
-                                            :
-                                            null
-                                          }
-                                          </> 
-                                          :
-                                          null
-                                        :
-                                        data.contract_addresses[0].network_type === "1"
-                                        ? 
-                                        <span  onClick={()=> setOtherContract(!otherContract)}>
-                                          <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
-                                            Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
-                                          </a> 
-                                          {
-                                              contract_copy_status === 'ETH' ? 
-                                              <span className="votes_market" >Copied</span>
-                                              :
-                                            <span id="copyTooltip">
-                                            <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,"ETH")} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
-                                            </span>
-                                          }
-                                          
-                                        </span>
-                                        : 
-                                        <span  onClick={()=> setOtherContract(!otherContract)}>
-                                          <a href={"https://bscscan.com/token/"+data.contract_addresses[0].contract_address} target="_blank">Binance Smart Chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
-                                          </a> 
-                                          {
-                                             contract_copy_status === 'BNB'?
-                                             <span  className="votes_market">Copied</span>
-                                             :
-                                            <span id="copyTooltip">
-                                          <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,'BNB')} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
-                                          </span>
-                                          }
-                                          
-                                        </span>
-                                      } 
-                                    </span> 
-                                    {/* <span className="votes_market">Copied</span> */}
-                                  </div>
-                                </div>
-                                :
-                                null
-                              } 
-                            </div>
-
-                            <div class="col-4 text-right token_share_block token_share_for_left">
-                              <ul className="market_details_share_wishlist mobile_view">
-                                <li>
-                                  <div className="share_market_detail_page" data-toggle="modal" onClick={()=>set_share_modal_status(true)}>Share</div>
                                 </li>
-                                {/* <li>
-                                  <div className="wishlist_market_detail_page">
-                                    <div className="star-img"><img src="/assets/img/star.png" width="100%" height="100%" />
-                                    </div>
+                                }
+                                {
+                                  data.community_address.length > 0
+                                  ?
+                                  <li className="coin_individual_list">
+                                    <div className="quick_block_links">
+                                      <div className="widgets__select links_direct" ref={communityRef} onClick={()=> {set_community_links(!community_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Community {data.community_address.length > 0 ? <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> : null} </a></div>
+                                    </div> 
+                                    { 
+                                      community_links
+                                      ? 
+                                      <div className="dropdown_block badge_dropdown_block">
+                                          <ul>
+                                              {
+                                                  data.community_address.map((e, i)=>{
+                                                    var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+                                                    let url = ""
+                                                    if(regexp.test(e)){
+                                                        url = new URL(e);
+                                                    }
+                                                    else{
+                                                        e = "http://"+e
+                                                        url = new URL(e);
+                                                    }  
+                                                      return <li key={i}><a href={e ? e : ""} target="_blank">{(url.hostname).includes("t.me") ?url.hostname : null}{(url.hostname).indexOf(".") !== -1 ?(url.hostname).slice(0, (url.hostname).indexOf(".")) : url.hostname}</a></li>
+                                                  }) 
+                                              }
+                                          </ul>
+                                      </div>
+                                      :
+                                     null
+                                    }
+                                  </li> 
+                                  :
+                                  <li className="coin_individual_list">
+                                      <div className="quick_block_links">
+                                        <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Community address is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Community  </a></div>
+                                      </div>
+                                      </li>
+                                }
+
+                                </ul>
+
+                                <ul className="coin_quick_details">
+                                {
+                                  data.website_link==""?
+                                  <>
+                                  <li className="coin_individual_list">
+                                  <div className="quick_block_links">
+                                  <div className="widgets__select links_direct"> <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Website link is not avaliable")}} ><img src="/assets/img/website.svg" className="coin_cat_img" />Website</a></div>
                                   </div>
-                                </li> */}
-                                
+                                  </li>
+                                 </>
+                                  
+                                  :
+                                  <li className="coin_individual_list">
+                                  <div className="quick_block_links">
+                                    <div className="widgets__select links_direct"><a href={createValidURL(data.website_link)} target="_blank"> <img src="/assets/img/website.svg" className="coin_cat_img" />{DomainName(data.website_link)} </a></div>
+                                  </div>
+                                </li>
+                                }
+                              </ul>
+
+                              <ul className="coin_quick_details">
+                              {
+                                  data.source_code_link
+                                  ?
+                                  <li className="coin_individual_list">
+                                    <div className="quick_block_links">
+                                      <div className="widgets__select links_direct"><a href={createValidURL(data.source_code_link)} target="_blank"><img src="/assets/img/source_code.svg" className="coin_cat_img" /> Source Code </a></div>
+                                    </div>
+                                  </li>
+                                  :
+                                  <li className="coin_individual_list">
+                                    <div className="quick_block_links">
+                                      <div className="widgets__select links_direct"> <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Source code is not avaliable")}} ><img src="/assets/img/source_code.svg" className="coin_cat_img" /> Source Code </a></div>
+                                    </div>
+                                  </li>
+                                }
                               </ul>
                             </div>
-                            
                           </div>
-
-                          
-
-                        </div>
-
-                        {/* <div className="widgets__body">
-                          <div className="widgets__line">
-                            <div className="widgets__price">USD 33152</div>
-                            <div className="status negative">-3.66499%</div>
+                          <div className="col-md-7">
+                            <div className="row">
+                              <div className="col-md-4 col-6">
+                                <div className="token_left_border">
+                                  <div className="token_list_values">
+                                    <h4>Market Cap</h4>
+                                    <h5>{market_cap?"$":null}{market_cap ? separator(market_cap.toFixed(4)) : data.market_cap ? separator(data.market_cap.toFixed(4)) : "NA"}</h5>
+                                    {/* <h6 className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />0.58%</span></h6> */}
+                                    <h6 className="values_growth"></h6> 
+                                  </div>
+                                  <div className="token_list_values">
+                                    <h4>Volume / Market Cap</h4>
+                                    <h5>{parseInt(data.api_from_type)===1 ? mcap_to_tvl_ratio : 'NA'}</h5>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col-md-4 col-6">
+                                <div className="token_left_border">
+                                  <div className="token_list_values">
+                                    <h4>Circulating Supply</h4>
+                                    <h5>{circulating_supply?separator(circulating_supply):"NA"}</h5>
+                                    <h6 className="values_growth"><span className="normal">{circulating_supply?((circulating_supply/token_max_supply)*100).toFixed(2)+"%":null}</span></h6>
+                                  </div>
+                                  <div className="token_list_values">
+                                    <h4>Max Supply</h4>
+                                    <h5>{token_max_supply ? separator(token_max_supply) : data.total_max_supply ? separator(data.total_max_supply.toFixed(4)) : "NA"}</h5>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col-md-4 col-6">
+                                <div className="token_left_border">
+                                  <div className="token_list_values">
+                                    <h4>Volume {parseInt(data.api_from_type)===1 ? '' : '24H'}</h4>
+                                    <h5>
+                                      {
+                                        parseInt(data.api_from_type)===1 ?
+                                        separator(volume)
+                                        :
+                                        contract_24h_volume?"$"+separator(contract_24h_volume.toFixed(2)):'NA'
+                                      }
+                                      {}{}</h5>
+                                    {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />0.58%</span></h6> */}
+                                    <h6 className="values_growth"></h6>
+                                  </div>
+                                  <div className="token_list_values">
+                                    <h4>Liquidity</h4>
+                                    <h5>{liquidity?"$":null}{liquidity ? separator(liquidity.toFixed(4)) : "NA"}</h5>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                        </div> */}
-                        <div className="wallets__inner">
-                          <div className="wallets__list" />
                         </div>
-                      </div>
                     </div>
 
-                    <div className="market">
-                      <div className="company_profile_tabs">
-                        <ul className="nav nav-tabs">
+                    <div className="market_token_tabs">
+                      <div className="row">
+                        <div className="col-md-3 col-7">
+                          <h5>{(data.symbol).toUpperCase()} Price Chart</h5>
+                          <ul className="nav nav-tabs">
+                            <li className="nav-item">
+                              <a className="nav-link active" data-toggle="tab" href="#overview" onClick={()=>set_graph_status(false)}><span>Overview</span></a>
+                            </li>
+                            <li className="nav-item" >
+                              {
+                                data.api_from_type==0?
+                                <a className="nav-link" data-toggle="tab" href="#home" onClick={()=>getexchangedata(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)}><span>Exchange</span></a>
+                                :
+                                <a className="nav-link" data-toggle="tab" href="#home" onClick={()=>set_graph_status(true)} ><span>Exchange</span></a>
+                              }
+                            </li>
+                            <li className="nav-item" >
+                              {
+                                data.api_from_type==0?
+                                <a className="nav-link" data-toggle="tab" href="#menu1"  onClick={()=>getTokenTransactions(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)} ><span>Transactions</span></a>
+                                :
+                                null
+                              }
+                            </li>
+                           
+                          </ul>
+                        </div>
+                        {
+                             graph_status?
+                          <div className="col-md-6 col-5">
+                        <ul className=" chart_tabs_ul nav nav-tabs">
                           <li className="nav-item">
-                            <a className="nav-link active" data-toggle="tab" href="#overview"><span>Overview</span></a>
-                          </li>
-                          <li className="nav-item" >
-                            <a className="nav-link" data-toggle="tab" href="#home"><span>Exchange</span></a>
-                          </li>
-                          <li className="nav-item" >
-                            <a className="nav-link" data-toggle="tab" href="#menu1"><span>Transactions</span></a>
+                          <select className="nav-link" data-toggle="tab" href="#home" onChange={(e)=>getexchangedata2(e.target.value)}>
+                               <option value="">Select</option>  
+                               {   
+                                 uniques.map((e)=>
+                                  <option>{e}</option>
+                                  )
+                               } 
+                                </select>
                           </li>
                         </ul>
+                      </div>
+                             
+                        :
+                        <div className="col-md-6 col-5">
+                        <ul className=" chart_tabs_ul nav nav-tabs">
+                          <li className="nav-item">
+                            <a className="nav-link " data-toggle="tab" href="#one_day" onClick={()=> getGraphData(1)}>1 D</a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" data-toggle="tab"  href="#one_week" onClick={()=> getGraphData(2)}>1 W</a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" data-toggle="tab"  href="#one_month" onClick={()=> getGraphData(3)}>1 M</a>
+                          </li>
+                          <li className="nav-item">
+                            <a  className="nav-link active" data-toggle="tab"  href="#one_year" onClick={()=> getGraphData(4)}>1 Y</a>
+                          </li>
+                        </ul>
+                      </div>
+
+                        }
+                       
+                    
+                        
+                                  
+                                
                       </div>
                     </div>
 
@@ -2144,56 +1594,18 @@ const myReferrlaLink=()=> {
                       </ul>
                     </div> */}
 
-                    <div className="exchange_transactions">
+                    <div className="token_details_tabs">
                       <div className="tab-content">
                         <div id="overview" className="tab-pane fade show in active">
-                          <h5 className="price_change">{(data.symbol).toUpperCase()} Price Change</h5>
                           {
-                            data.token_id ?
-                            <Graph_Data reqData={data} /> 
+                            graph_data_date ?
+                            <Graph_Data reqData={data} graph_data_date={graph_data_date} />
                             :
-                            null
-                         }
+                            ""
+                          }
+                        
                          
-                           <div className="token_content">
-                            <div className="">
-                              <div className="row">
-                                <div className="col-md-12">
-                                  {
-                                    data.token_description ?
-                                    <h1>About {data.token_name ? data.token_name : "-"}</h1>
-                                    :
-                                    null
-                                  }
-                                  
-                                  {
-                                    ((data.token_description != null) && ((data.token_description).length > 900)) ?
-                                    <>
-                                    {
-                                      desc_read_more ? 
-                                      <>
-                                       <div className="promotion__text" style={{wordBreak: "break-all"}} dangerouslySetInnerHTML={{ __html: data.token_description }}></div>
-                                       <p className="participate_link">
-                                       <a onClick={() =>set_desc_read_more(false)}><span>Read Less</span></a>
-                                       </p>
-                                      </>
-                                      :
-                                      <>
-                                      <div className="promotion__text" style={{wordBreak: "break-all"}} dangerouslySetInnerHTML={{ __html: strLenTrim(data.token_description, 900)}}></div>
-                                      <p className="participate_link">
-                                      <a onClick={() =>set_desc_read_more(true)}><span>Read More</span></a>
-                                      </p>
-                                     </>
-                                    }
-                                      
-                                    </>
-                                    :
-                                    <div dangerouslySetInnerHTML={{ __html:data.token_description}}></div> 
-                                  }
-                                </div>
-                              </div> 
-                            </div>
-                          </div>   
+                         
                         </div>
 
                         <div id="home" className="tab-pane fade">
@@ -2202,7 +1614,19 @@ const myReferrlaLink=()=> {
                       <div className="table-responsive">
                         <table className="table table-borderless">
                             <thead>
-                              <tr>
+                              {
+                                parseInt(data.api_from_type)===1 ?
+                                <tr>
+                                  <th>Source</th>
+                                  <th>Pairs</th>
+                                  <th>Price </th>
+                                  <th>Volume %</th>
+                                  <th>Volume</th>
+                                  <th>Last Traded</th>
+                                  <th>Trust Score</th>
+                                </tr>
+                                :
+                                <tr>
                                   <th>Exchange</th>
                                   <th>Pairs</th>
                                   <th>Liquidity in Pool</th>
@@ -2211,15 +1635,36 @@ const myReferrlaLink=()=> {
                                   <th>Makers</th>
                                   <th>Amount</th>
                               </tr>
+                              }
+                              
                             </thead>
                               {
-                               
+                               parseInt(data.api_from_type)===1 ?
                                 <tbody>
                                   {
-                                    exchangelistnew.map((e, i) => {
+                                    exchange_list_new.map((e, i) => {
+                                      return <tr key={i}>
+                                        <td >{e.exchange_name}</td>
+                                        <td >{e.pair_one_name} / {e.pair_two_name}</td>
+                                        
+                                        <td>{"$" + e.price}</td>
+                                        <td>{e.volume_percentage}</td>
+                                        <td>{e.volume}</td>
+                                        <td>{moment(e.last_traded_at).fromNow()}</td>
+                                        <td>{e.trust_score}</td>
+                                      </tr>
+                                    } )
+                                  }
+                                </tbody>
+                                :
+                                <tbody>
+                                  {
+                                    exchange_list_new.length > 0
+                                    ?
+                                    exchange_list_new.map((e, i) => {
                                       return <tr key={i}>
                                         <td title= {e.exchange_address}>{e.exchange_name}</td>
-                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({e.pair_one_value?separator(e.pair_one_value.toFixed(3)):null}) / ({e.pair_two_value?separator(e.pair_two_value.toFixed(3)):null})</span> </td>
+                                        <td title={e.pair_one_token_address}>{e.pair_one_name} / {symbol}<br/><span className="pooledvalue">({e.pair_one_value?separator(e.pair_one_value.toFixed(3)):null}) / ({e.pair_two_value?separator((e.pair_two_value).toFixed(3)):null})</span> </td>
                                         {
                                           e.pair_one_token_address== "0x3ff997eaea488a082fb7efc8e6b9951990d0c3ab"?
                                           "--"
@@ -2231,6 +1676,10 @@ const myReferrlaLink=()=> {
                                         <td>--</td>
                                       </tr>
                                     } )
+                                    :
+                                        <tr>
+                                          <td colSpan="7"><h5 className="text-center no_data_found">No data found</h5></td>
+                                        </tr>
                                     
                                     
                                   }
@@ -2244,7 +1693,6 @@ const myReferrlaLink=()=> {
                                         </tr>
                                       }  */}
                                   </tbody>
-
 
                                 
                               }
@@ -2277,7 +1725,7 @@ const myReferrlaLink=()=> {
 
                         </div>
                         <div id="menu1" className="tab-pane fade in">
-                          <h4>Transactions</h4>
+                     
                           <div className="table-responsive">
                             <table className="table table-borderless">
                               <thead>
@@ -2334,80 +1782,199 @@ const myReferrlaLink=()=> {
                       </div>
                     </div>
 
-                    <div className="coin_ico_list">
-                      <h4>List of ongoing, upcoming and completed launchpads</h4>
-                      <p>This feature is in beta testing. Place your estimates for next 6 months and see what other’s are thinking about it. Data displayed are based on user CoinMarketCap. The cut-off for estimates for each month-end is on the 21st of each month.</p>
+                
+                    <div className="how_do_you_feel">
                       <div className="row">
                         <div className="col-md-6">
-                          <div className="col-md-12 launchpad_list_content  active_launchpad">
-                            <div className="row">
-                              <div className="col-md-4 col-4">
-                                <h5>ICO&nbsp;<span className="launchpad_completed">Completed</span></h5>
-                              </div>
-                              <div className="col-md-6 col-6">
-                                <h5><img src="/assets/img/launchpad_calender.svg" /> Feb 08 - Feb 09, 2022</h5>
-                              </div>
-                              <div className="col-md-2 col-3">
-                                <img src="/assets/img/launchpad-active.svg" className="active_launchpad_list_icon" />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="col-md-12 launchpad_list_content">
-                            <div className="row">
-                              <div className="col-md-4 col-4">
-                                <h5>ICO&nbsp;<span className="launchpad_completed">Completed</span></h5>
-                              </div>
-                              <div className="col-md-6 col-6">
-                                <h5><img src="/assets/img/launchpad_calender.svg" /> Feb 08 - Feb 09, 2022</h5>
-                              </div>
-                              <div className="col-md-2 col-3">
-                                <img src="/assets/img/launchpad-active.svg" className="active_launchpad_list_icon" />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="col-md-12 launchpad_list_content">
-                            <div className="row">
-                              <div className="col-md-4 col-4">
-                                <h5>ICO&nbsp;<span className="launchpad_completed">Completed</span></h5>
-                              </div>
-                              <div className="col-md-6 col-6">
-                                <h5><img src="/assets/img/launchpad_calender.svg" /> Feb 08 - Feb 09, 2022</h5>
-                              </div>
-                              <div className="col-md-2 col-3">
-                                <img src="/assets/img/launchpad-active.svg" className="active_launchpad_list_icon" />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="col-md-12 launchpad_list_content">
-                            <div className="row">
-                              <div className="col-md-4 col-4">
-                                <h5>ICO&nbsp;<span className="launchpad_completed">Completed</span></h5>
-                              </div>
-                              <div className="col-md-6 col-6">
-                                <h5><img src="/assets/img/launchpad_calender.svg" /> Feb 08 - Feb 09, 2022</h5>
-                              </div>
-                              <div className="col-md-2 col-3">
-                                <img src="/assets/img/launchpad-active.svg" className="active_launchpad_list_icon" />
-                              </div>
-                            </div>
-                          </div>
+                          <h4>How do you feel about {data.token_name} today?</h4>
+                          <p>Market sentiments, at your quick watch! we're working hard on this new feature, Follow us on <a href={"https://twitter.com/Coinpedianews"} target="_blank">Twitter</a>,to be the first to know when it's ready!</p>
                         </div>
-                        <div className="col-md-6 token_launchpad_details">
-                          <h5>Cardano (ADA) ICO ongoing <span><img src="/assets/img/launchpad_calender.svg" /> Feb 08 - Feb 09, 2022</span></h5>
-                          <p>Your vote is for 24Hrs. Inorder to update how you feel about bitcoin, come back tomorrow</p>
+                        <div className="col-md-6">
+                          <button className="" data-toggle="modal" data-target="#comingSoon">😪 Bad</button>
+                          <button className="" data-toggle="modal" data-target="#comingSoon">🙂 Good</button>
                         </div>
                       </div>
                     </div>
 
                     {
+                       data.launch_pads_data.length > 0 ?
+                    <div className="coin_ico_list">
+                      <h4>List of ongoing, upcoming and completed launchpads</h4>
+                      <p>Walk through the early and whitelisted launches of new cryptos and NFT's offerings.</p>
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="token_launchpad_list">
+                             {data.launch_pads_data.map((e, i)=> 
+                              // <div className="col-md-12 launchpad_list_content  active_launchpad">
+                              <div className={"col-md-12 launchpad_list_content "+(launchpad_row_id == e._id ? " active_launchpad":"")}>
+                                <div className="row">
+                                  <div className="col-md-4 col-4">
+                                    <h5>{ e.launch_pad_type == 1 ? "ICO": e.launch_pad_type==2 ? "IDO" : e.launch_pad_type==3 ? "IEO" : null }
+                                    &nbsp;
+                                    {
+                                      moment(today_date).isBefore(moment(e.start_date).format('ll')) ?
+                                      <span className="launchpad_upcoming">Upcoming</span>
+                                      :
+                                      moment(today_date).isAfter(moment(e.start_date).format('ll')) && moment(today_date).isBefore(e.end_date) ?
+                                      <span className="launchpad_upcoming">Ongoing</span>
+                                      :
+                                      moment(moment(e.end_date).format('ll')).isSame(today_date) || moment(moment(e.start_date).format('ll')).isSame(today_date)
+                                      ?
+                                      <span className="launchpad_upcoming">Ongoing</span>
+                                      :
+                                      moment(moment(e.end_date).format('ll')).isBefore(today_date) ?
+                                      <span className="launchpad_completed">Completed</span>
+                                      : 
+                                      null
+                                    } 
+                                    </h5>
+                                  </div>
+                                  <div className="col-md-6 col-6">
+                                    <h5><img src="/assets/img/launchpad_calender.svg" />&nbsp;
+                                      {moment.utc(e.start_date).format("MMM DD")} - {moment.utc(e.end_date).format("MMM DD, YYYY")}
+                                    </h5>
+                                  </div>
+                                  <div className="col-md-2 col-2">
+                                    {
+                                      launchpad_row_id == e._id ? 
+                                      <img src="/assets/img/launchpad-active.svg" className="active_launchpad_list_icon" />
+                                      :
+                                      <img src="/assets/img/launchpad.svg" className="launchpad_list_icon" onClick={()=>LaunchpadDetails(e)}/>
+                                    }
+                                  </div>
+                                </div>
+                              </div> 
+                              )}
+                              
+                            
+
+                          </div>
+                        </div>
+                        <div className="col-md-6 ">
+                          <div className="token_launchpad_details">
+                            {
+                              launchpad_object ? 
+                              <>
+                              <h5>{data.token_name ? data.token_name : "-"} {data.symbol ? "("+(data.symbol).toUpperCase()+")" : "-"}
+                              { launchpad_object.launch_pad_type == 1 ? " ICO": launchpad_object.launch_pad_type==2 ? " IDO" : launchpad_object.launch_pad_type==3 ? " IEO" : null } 
+                                {
+                                  moment(today_date).isBefore(moment(launchpad_object.start_date).format('ll')) ?
+                                  " Upcoming"
+                                  :
+                                  moment(today_date).isAfter(moment(launchpad_object.start_date).format('ll')) && moment(today_date).isBefore(launchpad_object.end_date) ?
+                                  " Ongoing"
+                                  :
+                                  moment(moment(launchpad_object.end_date).format('ll')).isSame(today_date) || moment(moment(launchpad_object.start_date).format('ll')).isSame(today_date)
+                                  ?
+                                  " Ongoing"
+                                  :
+                                  moment(moment(launchpad_object.end_date).format('ll')).isBefore(today_date) ?
+                                  " Completed"
+                                  : 
+                                  null
+                                } 
+                                <span><img src="/assets/img/launchpad_calender.svg" /> 
+                                {moment.utc(launchpad_object.start_date).format("MMM DD")} - {moment.utc(launchpad_object.end_date).format("MMM DD, YYYY")}
+                                </span></h5>
+                              <p>Find a quick review of this event below, helping you get started.</p>
+
+                              <ul>
+                                <li>ICO Price <span>{launchpad_object.price} USD</span></li>
+                                <li>Softcap <span>{launchpad_object.soft_cap}</span></li>
+                                <li>Tokens Sold <span>{launchpad_object.tokens_sold} {data.symbol ? (data.symbol).toUpperCase() : "-"}</span></li>
+                                <li>Access <span>{launchpad_object.access_type == 1 ? "Public" : "Private"}</span></li>
+                                <li>Where to buy <span>{launchpad_object.where_to_buy_link}</span></li>
+                                <li>% of Total Supply <span> {launchpad_object.percentage_total_supply}({(token_max_supply*(launchpad_object.percentage_total_supply/100))} {data.symbol ? (data.symbol).toUpperCase() : "-"})</span></li>
+                                <li>Accept 
+                                  {/* <span>{
+                                                   paymentTypes.map((inner)=>
+                                                   <>{launchpad_object.accept_payment_type.includes(inner._id) ?
+                                                    <>{inner.payment_name } <span>{launchpad_object.accept_payment_type.length>1?"/":null}</span></>
+                                                    
+                                                  :
+                                                  null
+                                                   }</> 
+                                                 )
+                                                 }</span> */}
+                                                  <span >{
+                                                      launchpad_object.accept_payment_type.map((e, i) => 
+                                                         i < launchpad_object.accept_payment_type.length-1?
+                                                           <>{e.payment_name + "/"}</>
+                                                           :
+                                                           ""
+                                                        )}
+                                                        
+                                               {
+                                                      launchpad_object.accept_payment_type.map((e, i) => 
+                                                         i == launchpad_object.accept_payment_type.length-1?
+                                                         <>{e.payment_name}</>
+                                                         :
+                                                         ""
+                                                      )
+                                                }</span>
+                                                 </li>
+                              </ul>
+                              
+                              <div className="how_to_participate">
+                                <h5>How to participate</h5>
+                                <div dangerouslySetInnerHTML={{ __html: launchpad_object.how_to_participate }}/>
+                              </div>
+                              </>
+                              :
+                              null
+                            }
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    :
+                    null
+                  }
+
+                    <div className="about_token_details">
+                    {
+                      data.token_description ?
+                      <h4>About {data.token_name ? data.token_name : "-"}</h4>
+                      :
+                      null
+                    }
+                   
+                   <div dangerouslySetInnerHTML={{ __html:data.token_description}}></div> 
+
+{/*                     
+                    {
+                      ((data.token_description != null) && ((data.token_description).length > 900)) ?
+                      <>
+                      {
+                        desc_read_more ? 
+                        <>
+                          <div className="promotion__text" style={{wordBreak: "break-all"}} dangerouslySetInnerHTML={{ __html: data.token_description }}></div>
+                          <p className="about_token_view_more">
+                          <a onClick={() =>set_desc_read_more(false)}><span>Read Less</span></a>
+                          </p>
+                        </>
+                        :
+                        <>
+                          <div className="promotion__text" style={{wordBreak: "break-all"}} dangerouslySetInnerHTML={{ __html: strLenTrim(data.token_description, 900)}}></div>
+                          <p className="about_token_view_more">
+                          <a onClick={() =>set_desc_read_more(true)}><span>View More &gt;&gt; </span></a>
+                          </p>
+                        </>
+                      }
+                        
+                      </>
+                      :
+                      <div dangerouslySetInnerHTML={{ __html:data.token_description}}></div> 
+                    } */}
+                      
+                    </div>
+
+                    {/* {
                     data.launch_pads_data.length > 0
                     ?
                     <div className="promotion launchpads">
                       <div className="">
-                        {/* <div className="promotion__category">🔥 Launchpad's</div> */}
                         <div className="panel-group ico_plans" id="accordion" role="tablist" aria-multiselectable="true"> 
                           { 
                             data.launch_pads_data.map((e, i)=>
@@ -2450,12 +2017,6 @@ const myReferrlaLink=()=> {
                                           <span className="start-end-date"><img src="/assets/img/calander.png" className="ico_calender" />
                                           {e.start_date !== "0000-00-00" ? moment.utc(e.start_date).format("MMM D, YYYY") : "-"} - {e.start_date !== "0000-00-00" ? moment.utc(e.end_date).format("MMM D, YYYY") : "-"}
                                           
-                                          {/* {
-                                            moment(data.today_date).isBefore(e.start_date) ?
-                                            <>, starts in 24 hours </>
-                                            :
-                                            null
-                                          }  */}
                                           <img src="/assets/img/down-arrow.png" className="dropdown_arrow_img ico_dropdown"></img></span>
                                         </a>
                                       </div>
@@ -2469,7 +2030,6 @@ const myReferrlaLink=()=> {
                                           <div className="col-md-6"> 
                                             <p>ICO Price <b>${e.price ? e.price : "-"}</b></p>
                                             <p>Soft Cap <b>{e.soft_cap ? "$"+e.soft_cap : "-"}</b></p>
-                                            {/* <p>Fundraising Goal <b>${e.fundraising_goal ? e.fundraising_goal : "-"}</b></p> */}
                                             <p>Tokens Sold <b>{e.tokens_sold ? e.tokens_sold : "--"}</b></p>
                                           </div>
                                           <div className="col-md-6">
@@ -2503,30 +2063,10 @@ const myReferrlaLink=()=> {
                                       <div className="how_to_participate">
                                         <h4>How to participate ?</h4>
                                         <p className="participate_para_one">
-                                        {/* {
-                                          ((e.how_to_participate != null) && ((e.how_to_participate).length > 800)) ?
-                                          <>
-                                          {
-                                            read_more == e._id ? 
-                                            <p className="participate_link" dangerouslySetInnerHTML={{ __html: "<div>"+e.how_to_participate+"</div>" }}>
-                                            <br />
-                                            <a onClick={() =>set_read_more("")}><span>Read Less</span></a>
-                                            </p>
-                                            :
-                                            <p className="participate_link" dangerouslySetInnerHTML={{__html: "<div>"+strLenTrim(e.how_to_participate, 800)+"</div>" }}>  
-                                            <br />
-                                            <a onClick={() =>set_read_more(e._id)}><span>Read More</span></a>
-                                            </p>
-                                          }
-                                            
-                                          </>
-                                          :
-                                          <div dangerouslySetInnerHTML={{ __html: "<div>"+e.how_to_participate+"</div>" }}></div>
-                                        } */}
+                                       
                                         </p>
                                        
                                         <p className="participate_para_two">
-                                        {/* {removeTags(e.how_to_participate)}*/}
                                         {e.how_to_participate} 
                                         </p>
                                       </div>
@@ -2540,7 +2080,7 @@ const myReferrlaLink=()=> {
                     </div> 
                     :
                     null 
-                    } 
+                    }  */}
 
                   </div>
                    
@@ -2550,70 +2090,104 @@ const myReferrlaLink=()=> {
           </div>
         </div>
         
-      <div className={"modal "+(share_modal_status ? " modal_show":" ")} id="market_share_page">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h4 className="modal-title">Share</h4>
-              <button type="button" className="close" data-dismiss="modal" onClick={()=>set_share_modal_status(false)}>×</button>
-            </div>
-            <div className="modal-body">
-              <div className="row">
-                <div className="col-md-1" />
-                <div className="col-md-10">
-                  <div className="input-group">
-                    <input type="text" id="referral-link" className="form-control" defaultValue={website_url+data.token_id} readOnly />
-                    <div className="input-group-prepend">
-                      <span className="input-group-text" id="myTooltip" onClick={()=>myReferrlaLink()}>
-                        <img src="/assets/img/copy-file.png" className="copy_link" width="100%" height="100%" />
-                      </span>
-                    </div>
-                  </div>
-                  <h6>Share with </h6>
-                  <p className="share_social">
-                    <a href={"https://www.facebook.com/sharer/sharer.php?u="+website_url+data.token_id} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
-                    <a href={"https://www.linkedin.com/shareArticle?mini=true&url="+website_url+data.token_id} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
-                    <a href={"http://twitter.com/share?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
-                    <a href={"https://wa.me/?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
-                  </p>
+        <div className="coming_soon_modal">
+          <div className="modal" id="comingSoon">
+            <div className="modal-dialog modal-sm">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h4 className="modal-title coming_soon_title">Coming Soon !!</h4>
+                  <button type="button" className="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div className="modal-body">
+                  <p className="coming_soon_subtext">This feature will be available soon</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-                          
-      <div className={"modal connect_wallet_error_block"+ (handleModalVote ? " collapse show" : "")}>
-        <div className="modal-dialog modal-sm">
-          <div className="modal-content">
-            <div className="modal-body">
-              <button type="button" className="close" data-dismiss="modal" onClick={()=>ModalVote()}>&times;</button>
-              {
-                voting_status == false ?
-                <h4> Do you want to support this token ? </h4>
-                :
-                <h4> Do not support this token ? </h4>
-              }
-              
-              <div className="vote_yes_no">
-                {/* className={voting_status == 1 ? "vote_yes" : "vote_no"} */}
-                {
-                  voting_status == false ?
-                  <>
-                  <button onClick={()=>vote(1)}>Confirm</button>  
-                  <button onClick={()=>ModalVote()}>Cancel</button>
-                  </>
-                  :
-                  <>
-                  <button onClick={()=>vote(0)}>Confirm</button>  
-                  <button onClick={()=>ModalVote()}>Cancel</button>
-                  </>
-                }
+
+        <div className="coming_soon_modal">
+          <div className="modal" id="linksData">
+            <div className="modal-dialog modal-sm">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h4 className="modal-title coming_soon_title">Oops!</h4>
+                  <button type="button" className="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div className="modal-body">
+                  <p className="coming_soon_subtext">{no_data_link}</p>
+                </div>
               </div>
             </div>
-          </div> 
+          </div>
         </div>
-      </div> 
+
+        <div className={"modal "+(share_modal_status ? " modal_show":" ")} id="market_share_page">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h4 className="modal-title">Share</h4>
+                <button type="button" className="close" data-dismiss="modal" onClick={()=>set_share_modal_status(false)}>×</button>
+              </div>
+              <div className="modal-body">
+                <div className="row">
+                  <div className="col-md-1" />
+                  <div className="col-md-10">
+                    <div className="input-group">
+                      <input type="text" id="referral-link" className="form-control" defaultValue={website_url+data.token_id} readOnly />
+                      <div className="input-group-prepend">
+                        <span className="input-group-text" id="myTooltip" onClick={()=>myReferrlaLink()}>
+                          <img src="/assets/img/copy-file.png" className="copy_link" width="100%" height="100%" />
+                        </span>
+                      </div>
+                    </div>
+                    <h6>Share with </h6>
+                    <p className="share_social">
+                      <a href={"https://www.facebook.com/sharer/sharer.php?u="+website_url+data.token_id} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
+                      <a href={"https://www.linkedin.com/shareArticle?mini=true&url="+website_url+data.token_id} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
+                      <a href={"http://twitter.com/share?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
+                      <a href={"https://wa.me/?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+                          
+        <div className={"modal connect_wallet_error_block"+ (handleModalVote ? " collapse show" : "")}>
+          <div className="modal-dialog modal-sm">
+            <div className="modal-content">
+              <div className="modal-body">
+                <button type="button" className="close" data-dismiss="modal" onClick={()=>ModalVote()}>&times;</button>
+                {
+                  voting_status == false ?
+                  <h4> Do you want to support this token ? </h4>
+                  :
+                  <h4> Do not support this token ? </h4>
+                }
+                
+                <div className="vote_yes_no">
+                  {/* className={voting_status == 1 ? "vote_yes" : "vote_no"} */}
+                  {
+                    voting_status == false ?
+                    <>
+                    <button onClick={()=>vote(1)}>Confirm</button>  
+                    <button onClick={()=>ModalVote()}>Cancel</button>
+                    </>
+                    :
+                    <>
+                    <button onClick={()=>vote(0)}>Confirm</button>  
+                    <button onClick={()=>ModalVote()}>Cancel</button>
+                    </>
+                  }
+                </div>
+              </div>
+            </div> 
+          </div>
+        </div>
+
+      {modal_data.title ? <Popupmodal name={modal_data} /> : null} 
     </>
   )
 }
@@ -2628,7 +2202,7 @@ export async function getServerSideProps({ query, req})
   const tokenQueryRun = await tokenQuery.json() 
   if(tokenQueryRun.status)
   {
-    return { props: {data:tokenQueryRun.message, paymentTypes:tokenQueryRun.payment_types, errorCode:false, token_id:token_id, userAgent:userAgent, config:config(userAgent.user_token)}}
+    return { props: {data:tokenQueryRun.message, errorCode:false, token_id:token_id, userAgent:userAgent, tokenStatus:tokenQueryRun.tokenStatus, config:config(userAgent.user_token)}}
   }
   else
   {

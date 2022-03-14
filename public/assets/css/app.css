@@ -4552,6 +4552,26 @@ body.dark .field__input {
   opacity: 0;
 }
 
+.exchange_pair
+{
+  float: right;
+  margin-top: 30px;
+}
+
+.exchange_pair .exchange-form-control
+{
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #e6ebef;
+  background-clip: padding-box;
+  border: 1px solid #e6ebef;
+  border-radius: 0.25rem;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
 .checkbox__in {
   display: -webkit-box;
   display: -ms-flexbox;

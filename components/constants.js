@@ -125,12 +125,19 @@ export const createValidURL = (link)=>
   // {
   //   return "#"
   // }
-  if(link.includes("https") || link.includes("http")){
-    return link
+  if(link)
+  {
+    if(link.includes("https") || link.includes("http")){
+      return link
+    }
+    else
+    {
+      return "https://"+link
+    }
   }
   else
   {
-    return "https://"+link
+    return false
   }
 }
 
@@ -163,22 +170,29 @@ export const DomainName = (link)=>
   // {
   //   return "#"
   // }
-  if(link.includes("https://")  ){
-    link = link.split("https://")
-    return link
-  }
-  else if(link.includes("http://"))
+  if(link)
   {
-    link = link.split("http://")
-    return link
-   
+    if(link.includes("https://")  ){
+      link = link.split("https://")
+      return link
+    }
+    else if(link.includes("http://"))
+    {
+      link = link.split("http://")
+      return link
+     
+    }
+    else if(link.includes("www")){
+      link = link.split("www.")
+      return link
+    }
+    else{
+      return link
+    }
   }
-  else if(link.includes("www")){
-    link = link.split("www.")
-    return link
-  }
-  else{
-    return link
+  else
+  {
+    return false
   }
 }
 export const count_live_price=(live_price)=> 
