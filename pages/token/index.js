@@ -241,8 +241,8 @@ const getTokensCurrentList=(items, offset)=>
               :
               parseInt(e.approval_status) === 1 ?
               <>
-               {/* <Link href={market_coinpedia_url+"token/launchpad/"+e.token_id}> */}
-                  <a href={market_coinpedia_url+"token/launchpad/"+e.token_id}><span className="manage_tokens_edit">Edit Launchpad</span></a>
+               {/* <Link > */}
+                  <a href={market_coinpedia_url+"token/launchpads/"+e.token_id}><span className="manage_tokens_edit">Edit Launchpad</span></a>
               {/* </Link> */}
 
               <Link href={market_coinpedia_url + e.token_id}>
