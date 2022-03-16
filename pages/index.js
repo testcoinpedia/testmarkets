@@ -10,7 +10,7 @@ import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
 import WatchList from '../components/watchlist'
 
-
+// dummy
 
 
 export default function Companies({user_token, config})
