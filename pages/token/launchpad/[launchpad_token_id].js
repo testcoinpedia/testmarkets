@@ -17,7 +17,13 @@ import cookie from "cookie"
 import JsCookie from "js-cookie"
 import { Editor } from '@tinymce/tinymce-react';
 
-export default function CreateLauchPad({config, token_id}) {  
+export default function CreateLauchPad() {  
+
+
+  const router = useRouter()
+  const {launchpad_token_id}= router.query
+   console.log(launchpad_token_id)
+
   const Multiselect = dynamic(
     () => import('multiselect-react-dropdown').then(module => module.Multiselect),
     {
@@ -55,7 +61,7 @@ var object =  {
   
 
   const editorRef = useRef(null) 
-  const router = useRouter()
+
   const [validError, setValidError] = useState("")
   const [alert_message, setAlertMessage] = useState('')
   const [element,set_element]=useState([])
@@ -71,6 +77,7 @@ var object =  {
   const [endDate, setEndDate] = useState(new Date())
   const [tokens_sold, set_tokens_sold]= useState("")
   const [price, set_price]= useState("")
+  const [user_token, set_user_token]= useState(JsCookie.get('user_token'))
   const [soft_cap, set_soft_cap]= useState("")
   const [where_to_buy_title, set_where_to_buy_title]= useState("")
   const [where_to_buy_link, set_where_to_buy_link]= useState("")
@@ -83,7 +90,7 @@ var object =  {
   const [confirm_remove_modal, set_confirm_remove_modal]=useState(false)
   const [today_date, set_today_date]= useState("")
   const [active_launchpad_row_id, set_active_launchpad_row_id]= useState("")
-  
+  // const [token_id,set_token_id]= useState(launchpad_token_id)
   const [err_launchpad, set_err_launchpad]= useState("")
   const [err_tokenlaunchpa, set_err_tokenlaunchpa]= useState("")
   const [err_start_date, set_err_start_date]= useState("")
@@ -103,8 +110,15 @@ var object =  {
 
   useEffect(()=>
   { 
+    if(JsCookie.get('user_token'))
+    {
+      set_user_token(JsCookie.get('user_token'))
+    }
+    acceptPaymentType()
     getTokenDetails() 
-  },[])
+    
+
+  },[launchpad_token_id])
 
   const editLaunchpadDetails = (object)=>
   {
@@ -123,21 +137,21 @@ var object =  {
     set_percentage_total_supply(parseFloat(object.percentage_total_supply))
     set_how_to_participate(object.how_to_participate)
     set_accept_payment_type_ids(object.accept_payment_type)
-    set_accept_payment_type(object.accept_payment_type)
+    set_accept_payment_type(object.accept_payment_names)
    
   }
   
   const removeLaunchpad = (id)=>
   {
     const reqObj = {
-      token_id : token_id,
+      token_id : launchpad_token_id,
       launchpad_row_id:id
       } 
       setModalData({icon: "", title: "", content: ""})
       if(edit_launchpad_row_id==id){
         createLaunchpad()
       }
-    Axios.post(API_BASE_URL+"markets/listing_tokens/remove_launch_pad", reqObj, config)
+    Axios.post(API_BASE_URL+"markets/listing_tokens/remove_launch_pad", reqObj, config(user_token))
     .then(res=>
     {
       // console.log(res.data)
@@ -179,13 +193,14 @@ var object =  {
   
   const getTokenDetails = ()=>
   {
-    Axios.get(API_BASE_URL+"markets/listing_tokens/individual_details/"+token_id, config).then(res=>
+    //console.log(launchpad_token_id)
+    Axios.get(API_BASE_URL+"markets/listing_tokens/individual_details/"+launchpad_token_id, config(user_token)).then(res=>
     {
        console.log(res.data)
         if(res.data.status)
         {
           set_today_date(res.data.message.today_date)
-          set_payment_types(res.data.message.payment_types)
+          //set_payment_types(res.data.message.payment_types)
           if(res.data.message.launch_pads_data.length)
           {
             setLaunchPadList(res.data.message.launch_pads_data)
@@ -198,7 +213,25 @@ var object =  {
         }
     })
   }
-  
+  const acceptPaymentType = ()=>
+  {
+   
+      // setModalData({icon: "", title: "", content: ""})
+      Axios.get("https://markets-nodejs-api-l9lg8.ondigitalocean.app/app/payment_type", config(user_token))
+    // Axios.get(API_BASE_URL+"app/payment_type", config)
+    .then(res=>
+    {
+      console.log(res)
+        if(res.data.status)
+        {
+          set_payment_types(res.data.message)
+         
+         
+          
+        }
+    })
+
+  }
   var yesterday = moment().subtract(1, "day")
   function valid(current) 
   {  
@@ -382,7 +415,7 @@ var object =  {
 
     setValidError("") 
     const reqObj = {
-      token_id : token_id,
+      token_id : launchpad_token_id,
       launchpad_row_id:edit_launchpad_row_id, 
       launch_pad_type:launch_pad_type,
       start_date: startDate,
@@ -400,7 +433,7 @@ var object =  {
     } 
     console.log("reqObj", reqObj)
    
-    Axios.post(API_BASE_URL+'markets/listing_tokens/update_launch_pad', reqObj, config)
+    Axios.post(API_BASE_URL+'markets/listing_tokens/update_launch_pad', reqObj, config(user_token))
     .then(res=>{ 
        console.log(res.data)
       if(res.data.status)
@@ -456,9 +489,7 @@ var object =  {
           if(res.data.message.innerErr.percentage_total_supply){
             setValidError(res.data.message.innerErr.percentage_total_supply)
           }  
-          if(res.data.message.innerErr.accept_payment_type){
-            setValidError(res.data.message.innerErr.accept_payment_type)
-          }  
+         
           if(res.data.message.innerErr.access_type){
             setValidError(res.data.message.innerErr.access_type)
           }  
@@ -492,22 +523,13 @@ const handleChange2=(value , name , i)=>  {
 }
 
 
-// const closeNRedirect = () =>
-// {
-//   setAlertMessage('')
-//   router.push('/token')
-// }
 
-// const redirectToPage = () =>
-// {
-//   setEmptyAlertMessage('')
-//   router.push('/token/launchpad/'+token_id)
-// }
 
 const onSelect =(selectedList, selectedItem)=> {  
-   console.log(selectedItem)
+  console.log(selectedItem)
   accept_payment_type_ids.push(selectedItem._id)
-  accept_payment_type.push(selectedItem)  
+  accept_payment_type.push(selectedItem) 
+  console.log(accept_payment_type_ids) 
 }
 
 const onRemove = (selectedList, removedItem) => {
@@ -823,7 +845,7 @@ const onRemove = (selectedList, removedItem) => {
                               onEditorChange={(e)=>set_how_to_participate(e)}
                               value={how_to_participate} 
                                   onInit={(evt, editor) => {editorRef.current = editor}}
-                                  initialValue=""
+                               
                                   init={{
                                     height: 300,
                                     menubar: false,
@@ -903,32 +925,32 @@ const onRemove = (selectedList, removedItem) => {
   )
 }
 
-export async function getServerSideProps({query, req}) 
-{ 
-  const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
-  if(!userAgent.user_token) 
-  {
-      return {
-          redirect: {
-              destination: app_coinpedia_url+'login',
-              permanent: false,
-          }
-      }
-  }
-  else 
-  {
-      if(parseInt(userAgent.user_email_status)==1)
-      { 
-          return { props: { userAgent: userAgent, config: config(userAgent.user_token), token_id:query.launchpad_token_id } }
-      }
-      else
-      {
-          return {
-              redirect: {
-                  destination: app_coinpedia_url+'verify-email',
-                  permanent: false,
-              }
-          }
-      }
-  }
-}
+// export async function getServerSideProps({query, req}) 
+// { 
+//   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
+//   if(!userAgent.user_token) 
+//   {
+//       return {
+//           redirect: {
+//               destination: app_coinpedia_url+'login',
+//               permanent: false,
+//           }
+//       }
+//   }
+//   else 
+//   {
+//       if(parseInt(userAgent.user_email_status)==1)
+//       { 
+//           return { props: { userAgent: userAgent, config: config(userAgent.user_token), token_id:query.launchpad_token_id } }
+//       }
+//       else
+//       {
+//           return {
+//               redirect: {
+//                   destination: app_coinpedia_url+'verify-email',
+//                   permanent: false,
+//               }
+//           }
+//       }
+//   }
+// }

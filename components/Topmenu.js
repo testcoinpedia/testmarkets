@@ -6,7 +6,7 @@ import Axios from 'axios'
 import cookie from 'cookie'
 import JsCookie from "js-cookie" 
 import $ from 'jquery';
-import {website_url, app_coinpedia_url, market_coinpedia_url, coinpedia_url, Logout, separator,logo, config, api_url, cookieDomainExtension} from '../components/constants'    
+import {API_BASE_URL, website_url, app_coinpedia_url, market_coinpedia_url, coinpedia_url, Logout, separator,logo, config, api_url, cookieDomainExtension} from '../components/constants'    
 import Popupmodal from './popupmodal'  
 
 
@@ -51,38 +51,53 @@ export default function Topmenu()
   }
 
 
+  // const getLivePricesList = async ()=>
+  // {
+  //   var my_array = []
+  //   const resOutput = await Axios.get("https://api.binance.com/api/v3/ticker/24hr")
+  //   if(resOutput.data)
+  //   {
+  //     for(var key in resOutput.data) 
+  //     {  
+  //       if(check_in_array.includes(resOutput.data[key].symbol))
+  //       {  
+  //           var createObj = {} 
+  //           createObj['price'] =  resOutput.data[key].lastPrice 
+  //           createObj['usd_24h_change'] = resOutput.data[key].priceChangePercent
+  //           createObj['symbol'] =  resOutput.data[key].symbol.replace('USDT', '')
+  //           await my_array.push(createObj)
+  //       }
+  //     }
+  //     await set_live_prices_list(my_array)
+  //   }
+  // }
+
+
   const getLivePricesList = async ()=>
   {
     var my_array = []
-    const resOutput = await Axios.get("https://api.binance.com/api/v3/ticker/24hr")
-    if(resOutput.data)
+    const res = await Axios.get(API_BASE_URL+"main/tokens/live_prices", config(""))
+    if(res.data)
     {
-      for(var key in resOutput.data) 
-      {  
-        if(check_in_array.includes(resOutput.data[key].symbol))
-        {  
+        if(res.data.status === true)
+        { 
+          for(var key of res.data.message) 
+          {
             var createObj = {} 
-            createObj['price'] =  resOutput.data[key].lastPrice 
-            createObj['usd_24h_change'] = resOutput.data[key].priceChangePercent
-            createObj['symbol'] =  resOutput.data[key].symbol.replace('USDT', '')
+            createObj['symbol'] =  key.symbol
+            createObj['price'] = key.price
+            createObj['usd_24h_change'] =  key.usd_24h_change
+            createObj['token_id'] =  key.token_id
+            createObj['token_name'] =  key.token_name
+  
             await my_array.push(createObj)
-        }
-      }
-      await set_live_prices_list(my_array)
-    }
-  }
-
-  // const getLivePricesList=()=>
-  // {
-  //   Axios.get("https://api.coingecko.com/api/v3/simple/price?ids=ethereum%2Cbitcoin%2Cbinancecoin%2Ctether%2Csiacoin&vs_currencies=usd&include_24hr_change=true", config)
-  //       .then(response => {  
+          }    
           
-  //         if(response.status) 
-  //         {
-  //           set_live_prices_list(response.data)
-  //         }
-  //       })
-  // }
+
+          await set_live_prices_list(my_array)
+        } 
+    }
+  } 
 
  
 
@@ -130,17 +145,19 @@ export default function Topmenu()
                               <div className="market_live_price">
                               <ul>
                               {    
-                                   live_prices_list.length > 0 ?
-                                   live_prices_list.map((e)=>
-                                   <li key="101">
-                                        <a>
-                                          <h4 className="text-uppercase">{e.symbol}</h4>
-                                          <h6>$ {separator(((parseFloat(e.price))).toFixed(2))} <span className={(parseFloat(e.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(e.usd_24h_change)).toFixed(2)}%)</span></h6>
-                                        </a>
-                                    </li>
-                                    )
-                                    :
-                                    null
+                                live_prices_list.length > 0 ?
+                                live_prices_list.map((e)=>
+                                <li key="101">
+                                  {/* <Link href={market_coinpedia_url+e.token_id}> */}
+                                    <a  href={market_coinpedia_url+e.token_id}>
+                                      <h4 className="text-uppercase">{e.symbol}</h4>
+                                      <h6>$ {separator(((parseFloat(e.price))).toFixed(2))} <span className={(parseFloat(e.usd_24h_change) >= 0 ? "green":"red")}>({(parseFloat(e.usd_24h_change)).toFixed(2)}%)</span></h6>
+                                    </a>
+                                  {/* </Link> */}
+                                </li>
+                                )
+                                :
+                                null
                                }
                                </ul>
                               </div>

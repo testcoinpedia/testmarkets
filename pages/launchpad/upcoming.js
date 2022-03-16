@@ -26,6 +26,8 @@ export default function UpcomingLaunchPad({userAgent}) {
   const [firstcount, setfirstcount] = useState(1)
   const [finalcount, setfinalcount] = useState(perPage)
   const [selectedPage, setSelectedPage] = useState(0) 
+  const [sl_no, set_sl_no]=useState(0)
+
 
   useEffect(()=>{ 
     GetAllUpcoming({selected:0});
@@ -51,6 +53,7 @@ export default function UpcomingLaunchPad({userAgent}) {
             setCount(response.data.count)
             setPageCount(Math.ceil(response.data.count/perPage))
             setCurrentPage(page.selected)
+            set_sl_no(current_pages)
             setfirstcount(current_pages+1)
             const presentPage = page.selected+1
             const totalcompany = response.data.count
@@ -248,7 +251,7 @@ export default function UpcomingLaunchPad({userAgent}) {
                                        <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" /></a></Link>
                                      }
                           </td>
-                          <td className="mobile_hide">{i+1}</td>
+                          <td className="mobile_hide">{sl_no+i+1}</td>
                           <td className="mobile_td_fixed">
                             <a href={"/"+e.token_id}>
                               <div class="media">
@@ -343,8 +346,8 @@ export default function UpcomingLaunchPad({userAgent}) {
                             <div className="pagination_element">
                               <div className="pager__list pagination_element"> 
                                 <ReactPaginate 
-                                  previousLabel={currentPage+1 !== 1 ? "Prev" : ""}
-                                  nextLabel={currentPage+1 !== pageCount ? "Next" : ""}
+                                  previousLabel={currentPage+1 !== 1 ? "←" : ""}
+                                  nextLabel={currentPage+1 !== pageCount ? " →" : ""}
                                   breakLabel={"..."}
                                   breakClassName={"break-me"}
                                   forcePage={selectedPage}

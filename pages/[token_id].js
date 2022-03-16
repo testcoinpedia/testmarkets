@@ -64,6 +64,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   // const [err_searchBy, setErrsearchBy] = useState("") 
   // const [search_contract_address, set_search_contract_address] = useState("")    
   // const [validSearchContract, setvalidContractAddress] = useState("")
+  const [api_from_type] = useState(data.api_from_type)
 
   const [decimal,setdecimal]=useState(0)
   
@@ -114,7 +115,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   
   useEffect(async ()=>
   {  
-    if(parseInt(data.api_from_type)===1)
+    if(parseInt(api_from_type)===1)
     { 
       coingeckoId()
     } 
@@ -1526,13 +1527,13 @@ const removeFromWatchlist = (param_token_id) =>
                                   </div>
                                   <div className="token_list_values">
                                     <h4>Volume / Market Cap</h4>
-                                    <h5>{parseInt(data.api_from_type)===1 ? mcap_to_tvl_ratio : 'NA'}</h5>
+                                    <h5>{parseInt(api_from_type)===1 ? mcap_to_tvl_ratio : 'NA'}</h5>
                                   </div>
                                   {
-                                    parseInt(data.api_from_type)===1?
+                                    parseInt(api_from_type)===1?
                                       <div className="token_list_values">
                                       <h4>Fully diluted valuation</h4>
-                                      <h5>{parseInt(data.api_from_type)===1 ? fully_diluted_valuation !=undefined?"$"+separator(fully_diluted_valuation) : 'NA':"NA"}</h5>
+                                      <h5>{parseInt(api_from_type)===1 ? fully_diluted_valuation !=undefined?"$"+separator(fully_diluted_valuation) : 'NA':"NA"}</h5>
                                     </div>
                                     :
                                     ""
@@ -1552,7 +1553,7 @@ const removeFromWatchlist = (param_token_id) =>
                                     <h5>{token_max_supply ? separator(token_max_supply) : data.total_max_supply ? separator(data.total_max_supply.toFixed(4)) : "NA"}</h5>
                                   </div>
                                   {
-                                    parseInt(data.api_from_type)===1?
+                                    parseInt(api_from_type)===1?
                                     <div className="token_list_values">
                                       <h4>Total Supply</h4>
                                       <h5>{total_supply ? separator(total_supply) : data.total_supply ? separator(data.total_supply.toFixed(4)) : "NA"}</h5>
@@ -1565,10 +1566,10 @@ const removeFromWatchlist = (param_token_id) =>
                               <div className="col-md-4 col-6">
                                 <div className="token_left_border">
                                   <div className="token_list_values">
-                                    <h4>Volume {parseInt(data.api_from_type)===1 ? '' : '24H'}</h4>
+                                    <h4>Volume {parseInt(api_from_type)===1 ? '' : '24H'}</h4>
                                     <h5>
                                       {
-                                        parseInt(data.api_from_type)===1 ?
+                                        parseInt(api_from_type)===1 ?
                                         "$"+separator(volume)
                                         :
                                         contract_24h_volume?"$"+separator(contract_24h_volume.toFixed(2)):'NA'
@@ -1581,7 +1582,7 @@ const removeFromWatchlist = (param_token_id) =>
                                     <h5>{liquidity?"$":null}{liquidity ? separator(liquidity.toFixed(4)) : "NA"}</h5>
                                   </div>
                                   {
-                                    parseInt(data.api_from_type)===1?
+                                    parseInt(api_from_type)===1?
                                   <div className="token_list_values">
                                     <h4>All Time High </h4>
                                     <h5>
@@ -1601,7 +1602,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   ""
                                 }
                                  {
-                                    parseInt(data.api_from_type)===1?
+                                    parseInt(api_from_type)===1?
                                   <div className="token_list_values">
                                     <h4>All Time Low </h4>
                                     <h5>${atl ? separator(atl) : 'NA' } 
@@ -1635,7 +1636,7 @@ const removeFromWatchlist = (param_token_id) =>
                             </li>
                             <li className="nav-item" >
                               {
-                                data.api_from_type==0?
+                                api_from_type==0?
                                 <a className="nav-link" data-toggle="tab" href="#home" onClick={()=>getexchangedata(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)}><span>Exchange</span></a>
                                 :
                                 <a className="nav-link" data-toggle="tab" href="#home" onClick={()=>exchangecoingecko()} ><span>Exchange</span></a>
@@ -1643,7 +1644,7 @@ const removeFromWatchlist = (param_token_id) =>
                             </li>
                             <li className="nav-item" >
                               {
-                                data.api_from_type==0?
+                                api_from_type==0?
                                 <a className="nav-link" data-toggle="tab" href="#menu1"  onClick={()=>getTokenTransactions(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)} ><span>Transactions</span></a>
                                 :
                                 null
@@ -1712,7 +1713,7 @@ const removeFromWatchlist = (param_token_id) =>
                             <table className="table table-borderless">
                               <thead>
                                 {
-                                  parseInt(data.api_from_type)===1 ?
+                                  parseInt(api_from_type)===1 ?
                                   <tr>
                                     <th>Source</th>
                                     <th>Pairs</th>
@@ -1735,7 +1736,7 @@ const removeFromWatchlist = (param_token_id) =>
                                 }
                               </thead>
                                 {
-                                  parseInt(data.api_from_type)===1 ?
+                                  parseInt(api_from_type)===1 ?
                                     <tbody>
                                     {
                                       exchange_list_new.map((e, i) => {

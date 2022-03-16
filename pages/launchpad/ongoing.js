@@ -347,8 +347,8 @@ export default function OngoingLaunchPad({userAgent}) {
                             <div className="pagination_element">
                               <div className="pager__list pagination_element"> 
                                 <ReactPaginate 
-                                  previousLabel={currentPage+1 !== 1 ? "Prev" : ""}
-                                  nextLabel={currentPage+1 !== pageCount ? "Next" : ""}
+                                  previousLabel={currentPage+1 !== 1 ? "←" : ""}
+                                  nextLabel={currentPage+1 !== pageCount ? " →" : ""}
                                   breakLabel={<span className="gap">...</span>}
                                   pageCount={pageCount}
                                   onPageChange={GetAllOngoing}
