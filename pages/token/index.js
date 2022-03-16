@@ -224,14 +224,14 @@ const getTokensCurrentList=(items, offset)=>
         </td>
 
         <td>
-            {
+            {/* {
                 parseInt(e.approval_status) !== 2 ?
                 <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
                   <a><span className="manage_tokens_edit">Edit Token</span></a>
                 </Link>
                 :
                 ""
-            }
+            } */}
             {
               parseInt(e.approval_status) === 0 ?
               <>
