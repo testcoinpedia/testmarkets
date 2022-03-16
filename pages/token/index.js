@@ -224,14 +224,14 @@ const getTokensCurrentList=(items, offset)=>
         </td>
 
         <td>
-            {/* {
+            {
                 parseInt(e.approval_status) !== 2 ?
                 <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
                   <a><span className="manage_tokens_edit">Edit Token</span></a>
                 </Link>
                 :
                 ""
-            } */}
+            }
             {
               parseInt(e.approval_status) === 0 ?
               <>
@@ -241,9 +241,9 @@ const getTokensCurrentList=(items, offset)=>
               :
               parseInt(e.approval_status) === 1 ?
               <>
-               <Link href={market_coinpedia_url+"token/launchpad/"+e.token_id}>
-                  <a><span className="manage_tokens_edit">Edit Launchpad</span></a>
-              </Link>
+               {/* <Link href={market_coinpedia_url+"token/launchpad/"+e.token_id}> */}
+                  <a href={market_coinpedia_url+"token/launchpad/"+e.token_id}><span className="manage_tokens_edit">Edit Launchpad</span></a>
+              {/* </Link> */}
 
               <Link href={market_coinpedia_url + e.token_id}>
                 <a><span className="manage_tokens_edit">View</span></a>
