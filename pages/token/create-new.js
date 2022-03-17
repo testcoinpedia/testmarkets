@@ -239,10 +239,10 @@ const createNewToken = () =>
         list = "The Contract address field must be equal to 42 characters."
         formValid = false
       }  
-      else if(contract_address[0].contract_address === contract_address[1].contract_address){
-        list = "Both Contract addresses must not be same."
-        formValid = false
-      }  
+      // else if(contract_address[0].contract_address === contract_address[1].contract_address){
+      //   list = "Both Contract addresses must not be same."
+      //   formValid = false
+      // }  
       else if(contract_address[0].network_type === contract_address[1].network_type){
         list = "Both Contract addresses network type must not be same."
         formValid = false
@@ -256,8 +256,12 @@ const createNewToken = () =>
       
       let list = err_contract_address 
 
-        if(contract_address[0].network_type === "0" || contract_address[0].network_type === 0){  
-          list = "The Contract address network type field is required."
+        if(contract_address[0].network_type === "0" && contract_address[0].contract_address === ""){  
+          list = "The Contract address and network type field is required."
+          formValid = false
+        }  
+        else if(contract_address[0].network_type === "0"){  
+          list = "The  network type field is required."
           formValid = false
         }  
         else if(contract_address[0].contract_address === ""){   
@@ -339,12 +343,13 @@ const createNewToken = () =>
       })
       setExchangesList(exchanges_link)
     }  
+
    if(token_description === '')
     {
       setErrTokenDescription('The Coin Description field is required.')
       formValid = false
     }
-    else if(token_description.length < 200)
+    else if(token_description.length <= 10)
     {
         setErrTokenDescription('The Coin Description must be atleast 200 characters.')
         formValid = false
@@ -377,6 +382,7 @@ const createNewToken = () =>
       community_address:community_address,
       contract_addresses: contract_address
     }  
+
     console.log(reqObj)
     Axios.post(API_BASE_URL+"markets/listing_tokens/create_new", reqObj, config)
     .then(response=>{ 

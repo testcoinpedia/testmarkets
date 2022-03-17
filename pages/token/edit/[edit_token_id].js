@@ -179,82 +179,73 @@ const onLoad = useCallback((img) => {
       formValid = false
     }
  
-    if(contract_address.length === 2){   
+    if(contract_address.length === 2)
+    {   
       let list = err_contract_address
 
-      if(contract_address[0].network_type === "0" || contract_address[0].network_type === 0){  
+      if(contract_address[0].network_type === "0" || contract_address[0].network_type === 0)
+      {  
         list = "The Contract address network type field is required."
         formValid = false
-      }    
-      
-      if(contract_address[0].contract_address === ""){   
+      }     
+      else if(contract_address[0].contract_address === ""){   
         list = "The Contract address field is required."
         formValid = false
       }
-      else if((contract_address[0].contract_address).length != 41){  
-        list = "The Contract address field must be equal to 34 digits"
+      else if((contract_address[0].contract_address).length !== 42){  
+        list = "The Contract address field must be equal to 42 characters."
         formValid = false
       }
-      else{ 
-        list = ""  
-      } 
-      
-      if(contract_address[1].network_type === "0" || contract_address[1].network_type === 0){  
+      else if(contract_address[1].network_type === "0" || contract_address[1].network_type === 0){  
         list = "The Contract address network type field is required." 
         formValid = false  
-      }
-      else{
-        list = ""
-      }
-  
-      if(contract_address[1].contract_address === ""){ 
+      }  
+      else if(contract_address[1].contract_address === ""){ 
         list = "The Contract address field is required."
         formValid = false   
       }
-      else if((contract_address[1].contract_address).length !== 41){
-        list = "The Contract address field must be equal to 34 digits."
-        formValid = false
-      }
-      else{
-        list = "" 
-      } 
-       
-      if(contract_address[0].contract_address === contract_address[1].contract_address){
-        list = "Both Contract addresses must not be same."
-        formValid = false
-      } 
-  
-      if(contract_address[0].network_type === contract_address[1].network_type){
-        list = "Both Contract addresses network type must not be same."
+      else if((contract_address[1].contract_address).length !== 42){
+        list = "The Contract address field must be equal to 42 characters."
         formValid = false
       }  
+      // else if(contract_address[0].contract_address === contract_address[1].contract_address){
+      //   list = "Both Contract addresses must not be same."
+      //   formValid = false
+      // }  
+      else if(contract_address[0].network_type === contract_address[1].network_type){
+        list = "Both Contract addresses network type must not be same."
+        formValid = false
+      }   
+      else{
+        list = ""
+      }
       setErrContractAddress(list)
     } 
     else if(contract_address.length === 1){
       
       let list = err_contract_address 
 
-        if(contract_address[0].network_type === "0" || contract_address[0].network_type === 0){  
-          list = "The Contract address network type field is required."
+        if(contract_address[0].network_type === "0" && contract_address[0].contract_address === ""){  
+          list = "The Contract address and network type field is required."
           formValid = false
-        } 
-        else{  
-          list = ""
         }  
-        
-        if(contract_address[0].contract_address === ""){   
+        else if(contract_address[0].network_type === "0"){  
+          list = "The  network type field is required."
+          formValid = false
+        }  
+        else if(contract_address[0].contract_address === ""){   
           list = "The Contract address field is required."
           formValid = false
         }
-        else if((contract_address[0].contract_address).length != 42){  
-          list = "The Contract address field must be equal to 34 digits."
+        else if((contract_address[0].contract_address).length !== 42){  
+          list = "The Contract address field must be equal to 42 characters."
           formValid = false
         }
         else{ 
           list = ""   
         } 
         setErrContractAddress(list)  
-    }    
+    }  
 
     if(token_name === '')
     {
@@ -360,7 +351,7 @@ const onLoad = useCallback((img) => {
       setErrTokenDescription('The coin description field is required.')
       formValid = false
     }
-    else if(token_description.length < 200)
+    else if(token_description.length <= 10)
     {
         setErrTokenDescription('The coin description must be at least 200 characters.')
         formValid = false

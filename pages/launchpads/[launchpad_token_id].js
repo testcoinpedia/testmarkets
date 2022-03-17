@@ -580,7 +580,7 @@ const onRemove = (selectedList, removedItem) => {
                 <div className="col-md-5">
                   <div className="main_create_form">
                     <h1 className="create-token-res">Launchpad List</h1>
-                    <p className="token_form_sub_text">Enter all these fields to create Launchpad</p>
+                    <p className="token_form_sub_text">List of Ongoing, Upcoming and Completed launchpads</p>
                     <div className="col-md-12 launchpad_list_title">
                       <div className="row">
                         <div className="col-md-4 col-4">
