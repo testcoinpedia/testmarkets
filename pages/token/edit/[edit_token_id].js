@@ -314,38 +314,6 @@ const onLoad = useCallback((img) => {
       setExchangesList(exchanges_link)
     }  
     
-    // if(token_max_supply === '')
-    // {
-    //     setErrTokenMaxSupply('The token max supply field must contain only numbers.')
-    //     formValid = false
-    // }
-    // else if(token_max_supply.length < 0)
-    // {
-    //     setErrTokenMaxSupply('The token max supply must be at least 2 characters.')
-    //     formValid = false
-    // }
-    // else if(token_max_supply.length > 24)
-    // {
-    //     setErrTokenMaxSupply('The token max supply must be less than 24 characters in length.')
-    //     formValid = false
-    // }
-
-    // if(market_cap === '')
-    // {
-    //   setErrmarket_cap('The market cap field is required.')
-    //     formValid = false
-    // } 
-    // else if(market_cap.length < 1)
-    // {
-    //   setErrmarket_cap('The market cap must be at least 2 characters.')
-    //     formValid = false
-    // }
-    // else if(market_cap.length > 24)
-    // {
-    //   setErrmarket_cap('The market cap must be less than 24 characters in length.')
-    //     formValid = false
-    // }
-
     if(token_description === '')
     {
       setErrTokenDescription('The coin description field is required.')
@@ -353,7 +321,7 @@ const onLoad = useCallback((img) => {
     }
     else if(token_description.length <= 10)
     {
-        setErrTokenDescription('The coin description must be at least 200 characters.')
+        setErrTokenDescription('The coin description must be at least 4 characters.')
         formValid = false
     }
     else if(token_description.length > 5000)

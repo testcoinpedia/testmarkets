@@ -40,10 +40,11 @@ useEffect(()=>
      
     }
 },[light_dark_mode])
+
     const getGraphData=(datetime, id, networks)=> 
     {   
       
-      console.log("Graph from graphqldata")
+      console.log("Graph from graphqldata")  
       let query =""
       if(datetime === "") 
       { 
@@ -55,6 +56,7 @@ useEffect(()=>
       let fromDate= from_n_to_date.fromDate
       let toDate= from_n_to_date.toDate 
       console.log("fromDate",fromDate)
+      console.log(graphDate)
 
         if(parseInt(networks) === 1)
         {

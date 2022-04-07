@@ -3,7 +3,7 @@ import React, { useState, useEffect,useCallback, useRef } from 'react';
 import Axios from 'axios'
 import Link from 'next/link' 
 import Web3 from 'web3' 
-import { ethers } from 'ethers';
+import { ethers } from 'ethers'
 import { useRouter } from 'next/router' 
 import Head from 'next/head'
 import JsCookie from "js-cookie" 
@@ -214,11 +214,15 @@ const createNewToken = () =>
     {   
       let list = err_contract_address
 
-      if(contract_address[0].network_type === "0" || contract_address[0].network_type === 0)
+      if(contract_address[0].network_type === "0" && contract_address[0].contract_address === "")
       {  
         list = "The Contract address network type field is required."
         formValid = false
-      }     
+      }   
+      else if(contract_address[0].network_type === "0"){  
+        list = "The  network type field is required."
+        formValid = false
+      }   
       else if(contract_address[0].contract_address === ""){   
         list = "The Contract address field is required."
         formValid = false
@@ -351,7 +355,7 @@ const createNewToken = () =>
     }
     else if(token_description.length <= 10)
     {
-        setErrTokenDescription('The Coin Description must be atleast 200 characters.')
+        setErrTokenDescription('The Coin Description must be atleast 4 characters.')
         formValid = false
     }
     else if(token_description.length > 5000)

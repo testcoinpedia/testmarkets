@@ -350,37 +350,26 @@ const getTokensCurrentList=(items, offset)=>
             </div> 
         
           {
-            filteredTokens.length > 10 ?
+            filteredTokens.length > 10 
+            ?
             <div className="pager__list pagination_element"> 
-             <ReactPaginate
-                                    previousLabel={currentPage + 1 !== 1 ? "← " : ""}
-                                    nextLabel={currentPage+1 !== pageCount ? " →" : ""} 
-                                    breakLabel={<span className="gap">...</span>}
-                                    pageCount={pageCount}
-                                    marginPagesDisplayed={2} 
-                                    onPageChange={handlePageClick}
-                                    forcePage={currentPage}
-                                   
-                                    containerClassName={"pagination"}
-                                    previousLinkClassName={"pagination__link"}
-                                    nextLinkClassName={"pagination__link"}
-                                    disabledClassName={"disabled"}
-                                    activeClassName={"active"}
-                                    />
-              {/* <ReactPaginate
-                previousLabel={currentPage+1 !== 1 ? "← Previous" : ""} 
-                nextLabel={currentPage+1 !== pageCount ? "Next →" : ""} 
+              <ReactPaginate
+                previousLabel={currentPage + 1 !== 1 ? "← " : ""}
+                nextLabel={currentPage+1 !== pageCount ? " →" : ""} 
                 breakLabel={<span className="gap">...</span>}
                 pageCount={pageCount}
+                marginPagesDisplayed={2} 
                 onPageChange={handlePageClick}
                 forcePage={currentPage}
+                
                 containerClassName={"pagination"}
                 previousLinkClassName={"pagination__link"}
                 nextLinkClassName={"pagination__link"}
                 disabledClassName={"disabled"}
                 activeClassName={"active"}
-              /> */}
-          </div>
+                />
+            
+            </div>
             :
             null 
           } 

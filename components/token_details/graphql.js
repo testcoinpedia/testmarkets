@@ -1,5 +1,5 @@
 import React from 'react';
-import {  graphqlApiKEY} from '../constants'
+import {  graphqlApiKEY } from '../constants'
 import { graphQlURL } from '../tokenDetailsFunctions' 
 import Axios from 'axios'
 import { ethers } from 'ethers';

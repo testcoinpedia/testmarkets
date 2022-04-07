@@ -116,8 +116,6 @@ var object =  {
     // }
     acceptPaymentType()
     getTokenDetails() 
-    
-
   },[launchpad_token_id])
 
   const editLaunchpadDetails = (object)=>
@@ -126,7 +124,7 @@ var object =  {
     set_edit_launchpad_object(object)
     set_edit_launchpad_row_id(parseInt(object._id))
     set_launch_pad_type(object.launch_pad_type)
-    setStartDate(new Date(object.start_date))
+    setStartDate(new Date((moment.utc(object.start_date).format("YYYY-MM-DD"))+"00:00:00"))
     setEndDate(new Date((moment.utc(object.end_date).format("YYYY-MM-DD"))+" 00:00:00"))
     set_tokens_sold(parseInt(object.tokens_sold))
     set_access_type(object.access_type)
@@ -213,6 +211,7 @@ var object =  {
         }
     })
   }
+
   const acceptPaymentType = ()=>
   {
    
@@ -232,6 +231,7 @@ var object =  {
     })
 
   }
+  
   var yesterday = moment().subtract(1, "day")
   function valid(current) 
   {  
@@ -646,7 +646,7 @@ const onRemove = (selectedList, removedItem) => {
                       }   
                   </div>
                 </div>
-
+              
               <div className="col-md-7">
                 <form id="myForm" >
                 <div>

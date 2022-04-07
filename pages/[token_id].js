@@ -3,7 +3,8 @@ import { ethers } from 'ethers';
 import Link from 'next/link' 
 import Head from 'next/head';
 import Error from './404'
-import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, graphqlApiKEY, count_live_price, Logout,DomainName} from '../components/constants'
+import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, 
+  graphqlApiKEY, count_live_price, Logout,DomainName} from '../components/constants'
 import { live_price_graphql } from '../components/token_details/graphql'
 import { live_price_coingecko } from '../components/token_details/coingecko'
 import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
@@ -35,9 +36,9 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
 {   
   console.log("data",data)
   if(errorCode) {return <Error/> }
-  const communityRef = useRef(null);
-  const explorerRef = useRef(null);
-  const contractRef = useRef(null);  
+  const communityRef = useRef(null)
+  const explorerRef = useRef(null)
+  const contractRef = useRef(null)  
   const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")     
   const [symbol] = useState(data.symbol)
   const [watchlist, set_watchlist] = useState(data.watchlist_status)
@@ -236,10 +237,8 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   
   const exchangecoingecko= ()=> 
   { 
-    
     set_graph_status(true)
     set_exchange_list_new(exchange_list)
-    
   }
 
   const getTokenTransactions=(id, networktype)=>
@@ -912,9 +911,7 @@ const myReferrlaLink=()=> {
   const LaunchpadDetails = (object)=>
   {
     set_launchpad_row_id(parseInt(object._id))
-
     set_launchpad_object(object)
-  
   }
  
 
@@ -1021,7 +1018,6 @@ const removeFromWatchlist = (param_token_id) =>
           <div className="container">
             <div className="col-md-12">
               <div className="row">
-                
                 <div className="col-md-6 order-md-2">
                   <div className="row">
                     <div className="col-md-6 order-md-2">
@@ -1031,21 +1027,22 @@ const removeFromWatchlist = (param_token_id) =>
                     
                       <ul className="token_share_vote"> 
                         {
-                          tokenStatus ?
-                            <>
-                              {
-                                voting_status == false ?
-                                <li onClick={()=>ModalVote()} style={{cursor:"pointer"}}><img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span></li>
-                                :
-                                <li onClick={()=>ModalVote()} style={{cursor:"pointer"}}><img src="/assets/img/coin_vote.svg" /> Voted <span>{votes}</span></li>
-                              }
-                            </>
-                            :
-                            <li  style={{cursor:"pointer"}} >
-                                <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a onClick={()=> Logout()}>
-                                <img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span>
-                                </a></Link>
-                            </li>
+                          tokenStatus 
+                          ?
+                          <>
+                            {
+                              voting_status == false ?
+                              <li onClick={()=>ModalVote()} style={{cursor:"pointer"}}><img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span></li>
+                              :
+                              <li onClick={()=>ModalVote()} style={{cursor:"pointer"}}><img src="/assets/img/coin_vote.svg" /> Voted <span>{votes}</span></li>
+                            }
+                          </>
+                          :
+                          <li  style={{cursor:"pointer"}} >
+                              <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a onClick={()=> Logout()}>
+                              <img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span>
+                              </a></Link>
+                          </li>
                         }
                         <li>{data.list_type==1?"Coin":"Token"}</li>
                         <li onClick={()=>set_share_modal_status(true)} style={{cursor:"pointer"}}><img src="/assets/img/coin_share.svg" /> Share</li>
@@ -1058,7 +1055,7 @@ const removeFromWatchlist = (param_token_id) =>
                         data.list_type==1?
                         ""
                         :
-                        data.contract_addresses.length > 0
+                        data.contract_addresses.length > 0 
                         ?
                         <div className="wallets__inner contract_address">
                           <div className="wallets__details">
@@ -1070,88 +1067,71 @@ const removeFromWatchlist = (param_token_id) =>
                                   parseInt(data.contract_addresses[0].network_type) === 1
                                   ?
                                   <>  
-                                  {/* src="/assets/img/copy.png" */}
-                                  <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
-                                    <span >
-                                      <img  className="token_dropdown_img" src="/assets/img/ETH.svg" alt="Ethereum"></img>
-                                      Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
-                                    </span>
-                                  </a>&nbsp;
-                                  {/* {
-                                    contract_copy_status === 'ETH' ? 
-                                    <span>Copied</span>
-                                    : */}
-                                    <img  onClick={()=> {copyContract(data.contract_addresses[0].contract_address, 'ETH')}} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
-                                   
-                                  {/* } */}
-                                  <img src="/assets/img/down-arrow.png" ref={contractRef}  onClick={()=> set_other_contract(!other_contract)} className="dropdown_arrow_img" />
-                                  {
-                                    other_contract
-                                    ?
-                                    <div className="dropdown_block"> 
-                                      <div className="media">
-                                        <img src="/assets/img/binance.svg" alt="Binance" className="token_dropdown_img" />
-                                        <div className="media-body">
-                                          <p className="wallets__info">Binance smart chain</p> 
-                                          <p><a  href={"https://bscscan.com/token/"+data.contract_addresses[1].contract_address} target="_blank"> <img  className="token_dropdown_img" src="/assets/img/BSC.svg"></img> {(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}
-                                          </a>
-                                          &nbsp; 
-                                          {
-                                            contract_copy_status === 'BNB'?
-                                            <span>Copied</span>
-                                            :
-                                            <img onClick={()=> copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
-                                           
-                                          }
-                                          </p>
+                                    <a href={"https://etherscan.io/token/"+data.contract_addresses[0].contract_address} target="_blank">
+                                      <span >
+                                        <img  className="token_dropdown_img" src="/assets/img/ETH.svg" alt="Ethereum"></img>
+                                        Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
+                                      </span>
+                                    </a>&nbsp;
+                                      <img  onClick={()=> {copyContract(data.contract_addresses[0].contract_address, 'ETH')}} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                    <img src="/assets/img/down-arrow.png" ref={contractRef}  onClick={()=> set_other_contract(!other_contract)} className="dropdown_arrow_img" />
+                                    {
+                                      other_contract
+                                      ?
+                                      <div className="dropdown_block"> 
+                                        <div className="media">
+                                          <img src="/assets/img/binance.svg" alt="Binance" className="token_dropdown_img" />
+                                          <div className="media-body">
+                                            <p className="wallets__info">Binance smart chain</p> 
+                                            <p><a  href={"https://bscscan.com/token/"+data.contract_addresses[1].contract_address} target="_blank"> <img  className="token_dropdown_img" src="/assets/img/BSC.svg"></img> {(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}
+                                            </a>
+                                            &nbsp; 
+                                            {
+                                              contract_copy_status === 'BNB'?
+                                              <span>Copied</span>
+                                              :
+                                              <img onClick={()=> copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                            }
+                                            </p>
+                                          </div>
                                         </div>
-                                      </div>
-                                      </div>
-                                    :
-                                    null 
-                                  }
+                                        </div>
+                                      :
+                                      null 
+                                    }
                                   </> 
                                   :  
                                   parseInt(data.contract_addresses[0].network_type) === 2
                                   ?
-                                  <> 
-                                  <a href={"https://bscscan.com/token/" + data.contract_addresses[0].contract_address} target="_blank">
-                                    <span >Binance smart chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
-                                    </span>
-                                  </a>
-                                  {
-                                      contract_copy_status === 'BNB'?
-                                      <span  className="votes_market">Copied</span>
+                                    <> 
+                                    <a href={"https://bscscan.com/token/" + data.contract_addresses[0].contract_address} target="_blank">
+                                      <span >Binance smart chain : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)}
+                                      </span>
+                                    </a>
+                                    {
+                                        contract_copy_status === 'BNB'?
+                                        <span  className="votes_market">Copied</span>
+                                        :
+                                        <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" /> 
+                                  
+                                    }
+                                    
+                                    
+                                    <img  ref={contractRef} onClick={()=> set_other_contract(!other_contract)} src="/assets/img/down-arrow.png" className="dropdown_arrow_img" />
+                                    {
+                                      other_contract
+                                      ?
+                                      <div className="dropdown_block">
+                                        <p>Ethereum</p> 
+                                        <p>
+                                          <a  href={"https://etherscan.io/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}</a>
+                                          <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address,"ETH")} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                        </p>
+                                      </div>
                                       :
-                                      <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,'BNB')} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" /> 
-                                 
-                                  }
-                                  
-                                  
-                                  <img  ref={contractRef} onClick={()=> set_other_contract(!other_contract)} src="/assets/img/down-arrow.png" className="dropdown_arrow_img" />
-                                  {
-                                    other_contract
-                                    ?
-                                    <div className="dropdown_block">
-                                      <p>Ethereum</p> 
-                                      <p>
-                                        <a  href={"https://etherscan.io/token/"+data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0,4)+"..."+(data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4 , data.contract_addresses[1].contract_address.length)}</a>
-                                        <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address,"ETH")} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
-                                        {/* {
-                                          
-                                    contract_copy_status === 'ETH' ? 
-                                    <span className="votes_market" >Copied</span>
-                                    :
-                                    <img  onClick={()=> copyContract(data.contract_addresses[1].contract_address,"ETH")} src="/assets/img/copy.png" className="copy_link copy-contract-img" width="100%" height="100%" />
-                                     
-                                        } 
-                                         */}
-                                      </p>
-                                    </div>
-                                    :
-                                    null
-                                  }
-                                  </> 
+                                      null
+                                    }
+                                    </> 
                                   :
                                   null
                                 :
@@ -1162,8 +1142,6 @@ const removeFromWatchlist = (param_token_id) =>
                                   <img  className="token_dropdown_img" src="/assets/img/ETH.svg"></img> Ethereum : {(data.contract_addresses[0].contract_address).slice(0,4)+"..."+(data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4 , data.contract_addresses[0].contract_address.length)} 
                                   </a> 
                                   <img onClick={()=> copyContract(data.contract_addresses[0].contract_address,"ETH")} src="/assets/img/copy.png"  className="copy_link copy-contract-img" width="100%" height="100%" />
-                                  
-                                  
                                 </span>
                                 : 
                                 <span className="wallet_address_token" onClick={()=> set_other_contract(!other_contract)}>
@@ -1173,7 +1151,6 @@ const removeFromWatchlist = (param_token_id) =>
                                 </span>
                               } 
                             </span> 
-                            {/* <span className="votes_market">Copied</span> */}
                           </div>
                         </div>
                         :
@@ -1186,13 +1163,13 @@ const removeFromWatchlist = (param_token_id) =>
                                       null
                                    
                         }
-                          {
-                                      contract_copy_status === 'BNB'?
-                                      <span  className="votes_market">Copied</span>
-                                      :
-                                    null
-                                
-                           }
+                        {
+                                    contract_copy_status === 'BNB'?
+                                    <span  className="votes_market">Copied</span>
+                                    :
+                                  null
+                              
+                          }
                     </div>
                    
                   </div>
@@ -1378,17 +1355,20 @@ const removeFromWatchlist = (param_token_id) =>
                                       <div className="dropdown_block badge_dropdown_block">
                                         <ul>
                                           {
-                                              data.explorer.map((e, i)=>{
+                                              data.explorer.map((e, i)=>
+                                              {
                                                 var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
                                                 let url = ""
-                                                if(regexp.test(e)){
-                                                    url = new URL(e);
+                                                if(regexp.test(e))
+                                                {
+                                                  url = new URL(e)
                                                 }
-                                                else{
-                                                    e = "http://"+e
-                                                    url = new URL(e);
+                                                else
+                                                {
+                                                  e = "http://"+e
+                                                  url = new URL(e)
                                                 }  
-                                                  return <li key={i}><a href={e ? e : ""} target="_blank">{(url.hostname).indexOf(".") !== -1 ?(url.hostname).slice(0, (url.hostname).indexOf(".")) : url.hostname}</a></li>
+                                                return <li key={i}><a href={e ? e : ""} target="_blank">{(url.hostname).indexOf(".") !== -1 ?(url.hostname).slice(0, (url.hostname).indexOf(".")) : url.hostname}</a></li>
                                               }) 
                                           }
                                         </ul>
@@ -1573,8 +1553,8 @@ const removeFromWatchlist = (param_token_id) =>
                                         "$"+separator(volume)
                                         :
                                         contract_24h_volume?"$"+separator(contract_24h_volume.toFixed(2)):'NA'
-                                      }</h5>
-                                    {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />0.58%</span></h6> */}
+                                      }
+                                    </h5>
                                     <h6 className="values_growth"></h6>
                                   </div>
                                   <div className="token_list_values">
@@ -1583,23 +1563,23 @@ const removeFromWatchlist = (param_token_id) =>
                                   </div>
                                   {
                                     parseInt(api_from_type)===1?
-                                  <div className="token_list_values">
-                                    <h4>All Time High </h4>
-                                    <h5>
-                                    ${ ath ? separator(ath) : 'NA' } 
-                                    {
-                                      ath_change_percentage?
-                                      ath_change_percentage>0?
-                                      <h6 className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{ath_change_percentage.toFixed(2)+"%"}</span></h6>
-                                      :
-                                      <h6 className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{ath_change_percentage.toFixed(2)+"%"}</span></h6>
-                                      :
-                                      <h6 className="values_growth"></h6>
-                                    }
-                                    </h5>
-                                  </div>
-                                  :
-                                  ""
+                                    <div className="token_list_values">
+                                      <h4>All Time High </h4>
+                                      <h5>
+                                      ${ ath ? separator(ath) : 'NA' } 
+                                      {
+                                        ath_change_percentage?
+                                        ath_change_percentage>0?
+                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{ath_change_percentage.toFixed(2)+"%"}</span></h6>
+                                        :
+                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{ath_change_percentage.toFixed(2)+"%"}</span></h6>
+                                        :
+                                        <h6 className="values_growth"></h6>
+                                      }
+                                      </h5>
+                                    </div>
+                                    :
+                                    ""
                                 }
                                  {
                                     parseInt(api_from_type)===1?
@@ -1797,9 +1777,7 @@ const removeFromWatchlist = (param_token_id) =>
                             ? 
                             <div className="pager__list pagination_element"> 
                               <ReactPaginate 
-                                // previousLabel={exchangesCurrentPage+1 !== 1 ? "Previous" : ""}
                                 previousLabel={exchangesCurrentPage+1 !== 1 ?"<-previous" : ""}
-                                // nextLabel={exchangesCurrentPage+1 !== exchangesPageCount ? "Next" : ""}
                                 nextLabel={exchangesCurrentPage+1 !== exchangesPageCount ? "Next->" : ""}
                                 breakLabel={"..."}
                                 breakClassName={"break-me"}
@@ -1889,7 +1867,8 @@ const removeFromWatchlist = (param_token_id) =>
                         <div className="row">
                           <div className="col-md-6">
                             <div className="token_launchpad_list">
-                              {data.launch_pads_data.map((e, i)=> 
+                              {
+                              data.launch_pads_data.map((e, i)=> 
                                 // <div className="col-md-12 launchpad_list_content  active_launchpad">
                                 <div className={"col-md-12 launchpad_list_content "+(launchpad_row_id == e._id ? " active_launchpad":"")}>
                                   <div className="row">
@@ -1972,33 +1951,23 @@ const removeFromWatchlist = (param_token_id) =>
                                   <li>Where to buy <span>{launchpad_object.where_to_buy_link}</span></li>
                                   <li>% of Total Supply <span> {launchpad_object.percentage_total_supply}({(token_max_supply*(launchpad_object.percentage_total_supply/100))} {data.symbol ? (data.symbol).toUpperCase() : "-"})</span></li>
                                   <li>Accept 
-                                    {/* <span>{
-                                                    paymentTypes.map((inner)=>
-                                                    <>{launchpad_object.accept_payment_type.includes(inner._id) ?
-                                                      <>{inner.payment_name } <span>{launchpad_object.accept_payment_type.length>1?"/":null}</span></>
-                                                      
-                                                    :
-                                                    null
-                                                    }</> 
-                                                  )
-                                                  }</span> */}
-                                                    <span >{
-                                                        launchpad_object.accept_payment_type.map((e, i) => 
-                                                          i < launchpad_object.accept_payment_type.length-1?
-                                                            <>{e.payment_name + "/"}</>
-                                                            :
-                                                            ""
-                                                          )}
-                                                          
-                                                {
-                                                        launchpad_object.accept_payment_type.map((e, i) => 
-                                                          i == launchpad_object.accept_payment_type.length-1?
-                                                          <>{e.payment_name}</>
-                                                          :
-                                                          ""
-                                                        )
-                                                  }</span>
-                                                  </li>
+                                      <span >{
+                                            launchpad_object.accept_payment_type.map((e, i) => 
+                                            i < launchpad_object.accept_payment_type.length-1?
+                                              <>{e.payment_name + "/"}</>
+                                              :
+                                              ""
+                                            )}
+                                            
+                                        {
+                                            launchpad_object.accept_payment_type.map((e, i) => 
+                                            i == launchpad_object.accept_payment_type.length-1?
+                                            <>{e.payment_name}</>
+                                            :
+                                            ""
+                                          )
+                                        }</span>
+                                    </li>
                                 </ul>
                                 
                                 <div className="how_to_participate">
@@ -2253,7 +2222,6 @@ const removeFromWatchlist = (param_token_id) =>
                 }
                 
                 <div className="vote_yes_no">
-                  {/* className={voting_status == 1 ? "vote_yes" : "vote_no"} */}
                   {
                     voting_status == false ?
                     <>
