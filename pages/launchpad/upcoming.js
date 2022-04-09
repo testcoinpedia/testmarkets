@@ -186,7 +186,7 @@ export default function UpcomingLaunchPad({userAgent}) {
                   <div className="col-md-9 col-6">
                     <ul className="category_list">
                       <li className="active_tab">All</li>
-                      <li><Link href={app_coinpedia_url+"watchlist?tokens=true"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
+                      <li><Link href={app_coinpedia_url+"watchlist?active_tab=2"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
                       <li className="inactive"  data-toggle="modal" data-target="#comingSoon">DeFi</li>
                       <li className="inactive" data-toggle="modal" data-target="#comingSoon">NFT</li>
                       <li className="inactive" data-toggle="modal" data-target="#comingSoon">Metaverse</li>
@@ -220,6 +220,7 @@ export default function UpcomingLaunchPad({userAgent}) {
                         <th style={{width: '40px'}} className="mobile_hide"></th>
                         <th style={{width: '40px'}} className="mobile_hide">#</th>
                         <th className="ongoing_token mobile_th_fixed">Project</th>
+                        <th>Price</th>
                         <th className="">Network</th>
                         {/* <th className="table_live_price">Total Supply</th> */}
                         <th className="">Type</th>
@@ -261,6 +262,9 @@ export default function UpcomingLaunchPad({userAgent}) {
                                 </div>
                               </div>
                             </a>
+                          </td>
+                          <td>
+                            <a href={"/"+e.token_id}><h5>{e.price ? "$"+parseFloat(e.price) : "-"}</h5></a>
                           </td>
                           <td className="market_list_price">
                                   <a href={"/"+e.token_id}><h5>

@@ -124,8 +124,13 @@ var object =  {
     set_edit_launchpad_object(object)
     set_edit_launchpad_row_id(parseInt(object._id))
     set_launch_pad_type(object.launch_pad_type)
-    setStartDate(new Date((moment.utc(object.start_date).format("YYYY-MM-DD"))+"00:00:00"))
-    setEndDate(new Date((moment.utc(object.end_date).format("YYYY-MM-DD"))+" 00:00:00"))
+
+    // setStartDate(new Date((moment.utc(object.start_date).format("YYYY-MM-DD"))+"00:00:00"))
+    // setEndDate(new Date((moment.utc(object.end_date).format("YYYY-MM-DD"))+" 00:00:00"))
+
+    setStartDate(new Date(object.start_date))
+    setEndDate(new Date(object.end_date))
+
     set_tokens_sold(parseInt(object.tokens_sold))
     set_access_type(object.access_type)
     set_soft_cap(object.soft_cap)
@@ -146,7 +151,7 @@ var object =  {
       launchpad_row_id:id
       } 
       setModalData({icon: "", title: "", content: ""})
-      if(edit_launchpad_row_id==id){
+      if(edit_launchpad_row_id == id){
         createLaunchpad()
       }
     Axios.post(API_BASE_URL+"markets/listing_tokens/remove_launch_pad", reqObj, config(user_token))
@@ -158,7 +163,6 @@ var object =  {
           getTokenDetails()
           setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message})
          
-          
         }
     })
 
@@ -361,9 +365,16 @@ var object =  {
       formIsValid=false
       set_err_wheretobuylink("The Where to buy link field is required.")
     }
-    else{
+    else if(!where_to_buy_link.includes('.')) 
+    {
+      formIsValid = false
+      set_err_wheretobuylink("The Where to buy link field must be contain valid link.")
+    }
+    else
+    {
       set_err_wheretobuylink("")
     }
+    
     if(percentage_total_supply=="")
     {
       formIsValid=false
@@ -374,7 +385,8 @@ var object =  {
       formIsValid=false
       set_err_total_supply("The total supply percentage must be greater than 0 and less than 100.")
     }
-    else {
+    else 
+    {
       set_err_total_supply("")
     }
     if(accept_payment_type=="")
@@ -382,7 +394,8 @@ var object =  {
       formIsValid=false
       set_err_accept("The Accept payment type field is required.")
     }
-    else{
+    else
+    {
       set_err_accept("")
     }
     if(how_to_participate=="")
@@ -390,7 +403,7 @@ var object =  {
       formIsValid=false
       set_err_airdrop("The About airdrop field is required.")
     }
-    else if(how_to_participate.length < 4) 
+    else if(how_to_participate.length < 11) 
     {
       formIsValid=false
       set_err_airdrop("The About airdrop field must be atleast 4 character.")
@@ -433,74 +446,69 @@ var object =  {
     } 
     console.log("reqObj", reqObj)
    
-    Axios.post(API_BASE_URL+'markets/listing_tokens/update_launch_pad', reqObj, config(user_token))
-    .then(res=>{ 
-       console.log(res.data)
-      if(res.data.status)
-      { 
-        
-        setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message}) 
-        getTokenDetails()
-        if(edit_launchpad_row_id==""){
-          createLaunchpad()
+    Axios.post(API_BASE_URL+'markets/listing_tokens/update_launch_pad', reqObj, config(user_token)).then(res=>
+    { 
+        console.log(res.data)
+        if(res.data.status)
+        { 
+          setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message}) 
+          getTokenDetails()
+          if(edit_launchpad_row_id=="")
+          {
+            createLaunchpad()
+          }
         }
-        
-      }
-      else
-      { 
-        setModalData({icon: "/assets/img/close_error.png", title: "Something went wrong ", content: res.data.message.alert_message})
-        
-
-        if(res.data.message.innerErr)
-        {
-          if(res.data.message.innerErr.launch_pad_type){
-            setValidError(res.data.message.innerErr.launch_pad_type) 
+        else
+        { 
+          setModalData({icon: "/assets/img/close_error.png", title: "Something went wrong ", content: res.data.message.alert_message})
+          
+          if(res.data.message.innerErr)
+          {
+            if(res.data.message.innerErr.launch_pad_type){
+              setValidError(res.data.message.innerErr.launch_pad_type) 
+            }
+            if(res.data.message.innerErr.accept_payment_type){
+              setValidError(res.data.message.innerErr.accept_payment_type)
+            }
+            if(res.data.message.innerErr.launch_pad_type){
+              setValidError(res.data.message.innerErr.launch_pad_type)
+            }
+            if(res.data.message.innerErr.title){
+              setValidError(res.data.message.innerErr.title)
+            }  
+            if(res.data.message.innerErr.start_date){
+              setValidError(res.data.message.innerErr.start_date)
+            }  
+            if(res.data.message.innerErr.end_date){
+              setValidError(res.data.message.innerErr.end_date)
+            }  
+            if(res.data.message.innerErr.tokens_sold){
+              setValidError(response.data.message.innerErr.tokens_sold)
+            }  
+            if(res.data.message.innerErr.price){
+              setValidError(res.data.message.innerErr.price)
+            }  
+            if(res.data.message.innerErr.soft_cap){
+              setValidError(res.data.message.innerErr.soft_cap)
+            }   
+            if(response.data.message.innerErr.where_to_buy_title){
+              setValidError(res.data.message.innerErr.where_to_buy_title)
+            }  
+            if(res.data.message.innerErr.where_to_buy_link){
+              setValidError(res.data.message.innerErr.where_to_buy_link)
+            }  
+            if(res.data.message.innerErr.percentage_total_supply){
+              setValidError(res.data.message.innerErr.percentage_total_supply)
+            }  
+          
+            if(res.data.message.innerErr.access_type){
+              setValidError(res.data.message.innerErr.access_type)
+            }  
+            if(res.data.message.innerErr.how_to_participate){
+              setValidError(res.data.message.innerErr.how_to_participate)
+            }
           }
-          if(res.data.message.innerErr.accept_payment_type){
-            setValidError(res.data.message.innerErr.accept_payment_type)
-          }
-          if(res.data.message.innerErr.launch_pad_type){
-            setValidError(res.data.message.innerErr.launch_pad_type)
-           }
-          if(res.data.message.innerErr.title){
-            setValidError(res.data.message.innerErr.title)
-          }  
-          if(res.data.message.innerErr.start_date){
-            setValidError(res.data.message.innerErr.start_date)
-          }  
-          if(res.data.message.innerErr.end_date){
-            setValidError(res.data.message.innerErr.end_date)
-          }  
-          if(res.data.message.innerErr.tokens_sold){
-            setValidError(response.data.message.innerErr.tokens_sold)
-          }  
-          if(res.data.message.innerErr.price){
-            setValidError(res.data.message.innerErr.price)
-          }  
-          if(res.data.message.innerErr.soft_cap){
-            setValidError(res.data.message.innerErr.soft_cap)
-          }   
-          if(response.data.message.innerErr.where_to_buy_title){
-            setValidError(res.data.message.innerErr.where_to_buy_title)
-          }  
-          if(res.data.message.innerErr.where_to_buy_link){
-            setValidError(res.data.message.innerErr.where_to_buy_link)
-          }  
-          if(res.data.message.innerErr.percentage_total_supply){
-            setValidError(res.data.message.innerErr.percentage_total_supply)
-          }  
-         
-          if(res.data.message.innerErr.access_type){
-            setValidError(res.data.message.innerErr.access_type)
-          }  
-          if(res.data.message.innerErr.how_to_participate){
-            setValidError(res.data.message.innerErr.how_to_participate)
-          }
-
         }
- 
-      }
-
     }) 
 
   }

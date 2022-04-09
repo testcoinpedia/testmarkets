@@ -208,7 +208,7 @@ const getTokensCurrentList=(items, offset)=>
               "-"
             } 
         </td>
-        <td>
+        <td className="comp_establish_date mobile_hide_table_col">
           {
             parseInt(e.approval_status) === 0 ?
             <div style={{color: '#f1b50a'}}>Pending</div>
@@ -221,6 +221,12 @@ const getTokensCurrentList=(items, offset)=>
             :
             null
           }
+           {
+              parseInt(e.active_status) === 0 ?
+              "Disable"
+              :
+              "Enable"
+           }
         </td>
 
         <td>
@@ -239,7 +245,7 @@ const getTokensCurrentList=(items, offset)=>
                <span className="manage_tokens_edit_disbale">View</span>
               </>
               :
-              parseInt(e.approval_status) === 1 ?
+              parseInt(e.approval_status) === 1 && parseInt(e.active_status) === 1 ?
               <>
                {/* <Link > */}
                   <a href={market_coinpedia_url+"launchpads/"+e.token_id}><span className="manage_tokens_edit">Edit Launchpad</span></a>

@@ -183,7 +183,7 @@ export default function OngoingLaunchPad({userAgent}) {
                     <div className="col-md-9 col-6">
                       <ul className="category_list">
                         <li className="active_tab">All</li>
-                        <li><Link href={app_coinpedia_url+"watchlist?tokens=true"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
+                        <li><Link href={app_coinpedia_url+"watchlist?active_tab=2"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
                         <li className="inactive"  data-toggle="modal" data-target="#comingSoon">DeFi</li>
                         <li className="inactive" data-toggle="modal" data-target="#comingSoon">NFT</li>
                         <li className="inactive" data-toggle="modal" data-target="#comingSoon">Metaverse</li>
@@ -233,18 +233,18 @@ export default function OngoingLaunchPad({userAgent}) {
                         <tr key={i}>
                           <td>
                           {
-                                       tokenStatus ?
-                                       <>
-                                       {
-                                         watchlist.includes(e.token_row_id) ?
-                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
-                                         :
-                                         <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star.svg" /></span>
-                                         }
-                                       </>
-                                       :
-                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" /></a></Link>
-                                     }
+                            tokenStatus ?
+                            <>
+                            {
+                              watchlist.includes(e.token_row_id) ?
+                              <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
+                              :
+                              <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star.svg" /></span>
+                              }
+                            </>
+                            :
+                            <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" /></a></Link>
+                          }
                           </td>
                           
                           <td>{sl_no+i+1}</td>

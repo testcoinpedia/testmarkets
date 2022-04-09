@@ -859,7 +859,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
         }
       }
   
-} 
+  } 
 
 
 
@@ -871,14 +871,13 @@ const getexchangevalue = async (pool_token_address,networks)=>
 
 
 
-const getGraphData=async(value)=> 
-{   
-  await set_graph_data_date("")
-  await set_graph_data_date(value)
-  
- 
-} 
-const myReferrlaLink=()=> {
+  const getGraphData=async(value)=> 
+  {   
+    await set_graph_data_date("")
+    await set_graph_data_date(value)
+  } 
+  const myReferrlaLink=()=> 
+  {
     var copyText = document.getElementById("referral-link");
     copyText.select();
     document.execCommand("Copy");
@@ -1156,20 +1155,18 @@ const removeFromWatchlist = (param_token_id) =>
                         :
                         null
                       } 
-                       {
-                                      contract_copy_status === 'ETH' ? 
-                                      <span className="votes_market" >Copied</span>
-                                      :
-                                      null
-                                   
-                        }
-                        {
-                                    contract_copy_status === 'BNB'?
-                                    <span  className="votes_market">Copied</span>
-                                    :
-                                  null
-                              
-                          }
+                      {
+                        contract_copy_status === 'ETH' ? 
+                        <span className="votes_market" >Copied</span>
+                        :
+                        null         
+                      }
+                      {
+                        contract_copy_status === 'BNB'?
+                        <span  className="votes_market">Copied</span>
+                        :
+                        null  
+                      }
                     </div>
                    
                   </div>
@@ -1948,7 +1945,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   <li>Softcap <span>{launchpad_object.soft_cap}</span></li>
                                   <li>Tokens Sold <span>{launchpad_object.tokens_sold} {data.symbol ? (data.symbol).toUpperCase() : "-"}</span></li>
                                   <li>Access <span>{launchpad_object.access_type == 1 ? "Public" : "Private"}</span></li>
-                                  <li>Where to buy <span>{launchpad_object.where_to_buy_link}</span></li>
+                                  <li>Where to buy <a href={launchpad_object.where_to_buy_link} target="_blank"><span>{launchpad_object.where_to_buy_title}</span></a></li>
                                   <li>% of Total Supply <span> {launchpad_object.percentage_total_supply}({(token_max_supply*(launchpad_object.percentage_total_supply/100))} {data.symbol ? (data.symbol).toUpperCase() : "-"})</span></li>
                                   <li>Accept 
                                       <span >{
