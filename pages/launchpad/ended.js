@@ -114,7 +114,7 @@ export default function OngoingLaunchPad({userAgent}) {
   return(
     <>
       <Head>
-        <title>Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap</title>
+        <title>Launchpad Ended | markets.coinpedia.org</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
@@ -178,7 +178,7 @@ export default function OngoingLaunchPad({userAgent}) {
                     <div className="col-md-9 col-6">
                       <ul className="category_list">
                         <li className="active_tab">All</li>
-                        <li><Link href={app_coinpedia_url+"watchlist?active_tab=2"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
+                        <li><Link href={app_coinpedia_url+"watchlist?active_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
                         <li className="inactive"  data-toggle="modal" data-target="#comingSoon">DeFi</li>
                         <li className="inactive" data-toggle="modal" data-target="#comingSoon">NFT</li>
                         <li className="inactive" data-toggle="modal" data-target="#comingSoon">Metaverse</li>
@@ -237,13 +237,13 @@ export default function OngoingLaunchPad({userAgent}) {
                                        <>
                                        {
                                          watchlist.includes(e.token_row_id) ?
-                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
+                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist"/></span>
                                          :
                                          <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star.svg" /></span>
                                          }
                                        </>
                                        :
-                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" /></a></Link>
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
                                      }
                               </td>
                               <td className="mobile_hide">{sl_no+i+1}</td>

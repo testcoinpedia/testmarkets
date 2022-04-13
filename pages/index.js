@@ -256,7 +256,7 @@ return (
     
    <>
       <Head>
-         <title>Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and MaketCap</title>
+         <title>Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and MaketCap | Markets.coinpedia.org</title>
          <meta name="description" content="Discover the list of top blockchain technology companies, Crypto startups and other Fintech Giants across the world.Didn’t Find your firm? List your company now and gain visibility."/>
          <meta name="keywords" content="Blockchain startups , Crypto startups , Top Fintech companies , blockchain technology companies , Crypto and Blockchain firms , Top Blockchain companies." />
          <meta property="og:locale" content="en_US" />
@@ -371,10 +371,10 @@ return (
                       <li class={all_tab_status?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
                       {
                         tokenStatus?
-                        <li class={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist?active_tab=2"}><a><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link></li>
+                        <li class={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist?active_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
                         :
                         <li>
-                        <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg"/> Watchlist</a></Link>
+                        <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>
                         </li>
                       }
                     </ul>
@@ -438,13 +438,13 @@ return (
                                        <>
                                        {
                                          watchlist.includes(e._id) ?
-                                         <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
+                                         <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist" /></span>
                                          :
-                                         <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" /></span>
+                                         <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></span>
                                          }
                                        </>
                                        :
-                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" /></a></Link>
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
                                      }
                                      
                                      </td>

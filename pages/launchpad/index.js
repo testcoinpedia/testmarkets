@@ -91,7 +91,7 @@ export default function LaunchPad({userAgent})
   return(
     <>
       <Head>
-        <title>Discover Ongoing & Upcoming Launchpad | Best  ICO and IDO calendar</title>
+        <title>Discover Ongoing & Upcoming Launchpad |  markets.coinpedia.org</title> {/*  Best  ICO and IDO calendar | */}
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Stay updated with the List of Ongoing & Upcoming Launchpad on different blockchain platforms. Get plugged in with the upcoming  ICO, IDO’s and more. ICO and IDO calendar" />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
@@ -347,13 +347,13 @@ export default function LaunchPad({userAgent})
                                        <>
                                        {
                                          watchlist.includes(e.token_row_id) ?
-                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
+                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist"/></span>
                                          :
-                                         <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star.svg" /></span>
+                                         <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></span>
                                          }
                                        </>
                                        :
-                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><img src="/assets/img/wishlist_star.svg" /></a></Link>
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
                                      }
                           </td>
                           <td className="mobile_hide">{i+1}</td>

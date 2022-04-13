@@ -1,4 +1,3 @@
-
 import React , {useState, useEffect,useRef} from 'react';   
 import Axios from 'axios';
 import Link from 'next/link' 
@@ -7,38 +6,31 @@ import {x_api_key, API_BASE_URL,separator, app_coinpedia_url, website_url,config
 import Popupmodal from '../../../components/popupmodal' 
 import { useRouter } from 'next/router'
 import moment from 'moment' 
-import Datetime from "react-datetime"
-import "react-datetime/css/react-datetime.css"
-import DatePicker from 'react-datepicker'
-import "react-datepicker/dist/react-datepicker.css";
-import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import dynamic from 'next/dynamic'; 
 import cookie from "cookie"
 import JsCookie from "js-cookie"
 import { Editor } from '@tinymce/tinymce-react';
+import Datetime from "react-datetime"
+import "react-datetime/css/react-datetime.css"
 
-export default function CreateLauchPad({config, token_id}) {  
+export default function CreateLauchPad() 
+{  
+
+  const router = useRouter()
+  const {launchpad_token_id}= router.query
+  console.log(launchpad_token_id)
+
   const Multiselect = dynamic(
     () => import('multiselect-react-dropdown').then(module => module.Multiselect),
     {
         ssr: false
     }
-)
-
-let inputProps = {
-  className: 'my_input', 
-  readOnly:true
-}
-
-let inputProps2 = {
-  className: 'my_input',
-  readOnly:true
-} 
+  )
  
 var object =  {
   launch_pad_type :"", 
   title: "",
-  startDate : "",
+  start_date : "",
   end_date: "",
   tokens_sold: "",
   price: "",
@@ -55,7 +47,7 @@ var object =  {
   
 
   const editorRef = useRef(null) 
-  const router = useRouter()
+
   const [validError, setValidError] = useState("")
   const [alert_message, setAlertMessage] = useState('')
   const [element,set_element]=useState([])
@@ -65,12 +57,12 @@ var object =  {
   const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
   const [empty_alert_message, setEmptyAlertMessage]= useState("")
   const [launch_pad_type, set_launch_pad_type]= useState("")
-  const [start_date, set_start_date]= useState("")
-  const [end_date, set_end_date]= useState("")
-  const [startDate, setStartDate] = useState(new Date())
-  const [endDate, setEndDate] = useState(new Date())
+
+  const [start_date, setStartDate] = useState(new Date())
+  const [end_date, setEndDate] = useState(new Date())
   const [tokens_sold, set_tokens_sold]= useState("")
   const [price, set_price]= useState("")
+  const [user_token, set_user_token]= useState(JsCookie.get('user_token'))
   const [soft_cap, set_soft_cap]= useState("")
   const [where_to_buy_title, set_where_to_buy_title]= useState("")
   const [where_to_buy_link, set_where_to_buy_link]= useState("")
@@ -83,7 +75,7 @@ var object =  {
   const [confirm_remove_modal, set_confirm_remove_modal]=useState(false)
   const [today_date, set_today_date]= useState("")
   const [active_launchpad_row_id, set_active_launchpad_row_id]= useState("")
-  
+  // const [token_id,set_token_id]= useState(launchpad_token_id)
   const [err_launchpad, set_err_launchpad]= useState("")
   const [err_tokenlaunchpa, set_err_tokenlaunchpa]= useState("")
   const [err_start_date, set_err_start_date]= useState("")
@@ -103,17 +95,45 @@ var object =  {
 
   useEffect(()=>
   { 
+    acceptPaymentType()
     getTokenDetails() 
-  },[])
+  },[launchpad_token_id])
+
+  var yesterday = moment().subtract( 1, 'day' )
+  var valid = function( current ) {
+    return current.isAfter( yesterday )
+  }
+
+  var valid2 = function( current ) {
+    return current.isAfter( yesterday )
+  }
+
+  let inputProps = {
+    placeholder: 'Complete work within',
+    name: 'end_date_n_time',
+    className: 'field__input',
+    useref: 'end_date_n_time', 
+    readOnly:true
+  }
+
+  let inputProps2 = {
+    placeholder: 'Complete work within',
+    name: 'end_date_n_time',
+    className: 'field__input',
+    useref: 'end_date_n_time', 
+    readOnly:true
+  }
 
   const editLaunchpadDetails = (object)=>
   {
-     console.log(object)
+    console.log(object)
     set_edit_launchpad_object(object)
     set_edit_launchpad_row_id(parseInt(object._id))
     set_launch_pad_type(object.launch_pad_type)
-    setStartDate(new Date(object.start_date))
-    setEndDate(new Date((moment.utc(object.end_date).format("YYYY-MM-DD"))+" 00:00:00"))
+
+    setStartDate(moment.utc(object.start_date).format("YYYY-MM-DD"))
+    setEndDate(moment.utc(object.end_date).format("YYYY-MM-DD"))
+
     set_tokens_sold(parseInt(object.tokens_sold))
     set_access_type(object.access_type)
     set_soft_cap(object.soft_cap)
@@ -123,21 +143,20 @@ var object =  {
     set_percentage_total_supply(parseFloat(object.percentage_total_supply))
     set_how_to_participate(object.how_to_participate)
     set_accept_payment_type_ids(object.accept_payment_type)
-    set_accept_payment_type(object.accept_payment_type)
-   
+    set_accept_payment_type(object.accept_payment_names)
   }
   
   const removeLaunchpad = (id)=>
   {
     const reqObj = {
-      token_id : token_id,
+      token_id : launchpad_token_id,
       launchpad_row_id:id
       } 
       setModalData({icon: "", title: "", content: ""})
-      if(edit_launchpad_row_id==id){
+      if(edit_launchpad_row_id == id){
         createLaunchpad()
       }
-    Axios.post(API_BASE_URL+"markets/listing_tokens/remove_launch_pad", reqObj, config)
+    Axios.post(API_BASE_URL+"markets/listing_tokens/remove_launch_pad", reqObj, config(user_token))
     .then(res=>
     {
       // console.log(res.data)
@@ -146,7 +165,6 @@ var object =  {
           getTokenDetails()
           setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message})
          
-          
         }
     })
 
@@ -179,13 +197,14 @@ var object =  {
   
   const getTokenDetails = ()=>
   {
-    Axios.get(API_BASE_URL+"markets/listing_tokens/individual_details/"+token_id, config).then(res=>
+    //console.log(launchpad_token_id)
+    Axios.get(API_BASE_URL+"markets/listing_tokens/individual_details/"+launchpad_token_id, config(user_token)).then(res=>
     {
        console.log(res.data)
         if(res.data.status)
         {
           set_today_date(res.data.message.today_date)
-          set_payment_types(res.data.message.payment_types)
+          //set_payment_types(res.data.message.payment_types)
           if(res.data.message.launch_pads_data.length)
           {
             setLaunchPadList(res.data.message.launch_pads_data)
@@ -198,27 +217,34 @@ var object =  {
         }
     })
   }
-  
-  var yesterday = moment().subtract(1, "day")
-  function valid(current) 
-  {  
-    return current.isAfter(yesterday)
-  }
-  
-  const valid2=(current)=> 
-  {    
-    return current.isAfter(yesterday)
-  }
-  
 
+  const acceptPaymentType = ()=>
+  {
+   
+      // setModalData({icon: "", title: "", content: ""})
+      Axios.get("https://markets-nodejs-api-l9lg8.ondigitalocean.app/app/payment_type", config(user_token))
+    // Axios.get(API_BASE_URL+"app/payment_type", config)
+    .then(res=>
+    {
+      console.log(res)
+        if(res.data.status)
+        {
+          set_payment_types(res.data.message)
+         
+         
+          
+        }
+    })
+
+  }
   
   const createLaunchpad = () =>
   {   
     set_edit_launchpad_object([])
     set_edit_launchpad_row_id("")
     set_launch_pad_type([])
-    setStartDate(new Date())
-    setEndDate(new Date())
+    setStartDate()
+    setEndDate()
     set_tokens_sold("")
     set_access_type([])
     set_soft_cap("")
@@ -278,7 +304,7 @@ var object =  {
     else{
       set_err_access_type("")
     }
-    if(startDate=="")
+    if(start_date=="")
     {
       formIsValid=false
       set_err_start_date("The Start date field is required.")
@@ -286,7 +312,7 @@ var object =  {
     else{
       set_err_start_date("")
     }
-    if(endDate=="")
+    if(end_date=="")
     {
       formIsValid=false
       set_err_end_date("The End date field is required.")
@@ -328,9 +354,16 @@ var object =  {
       formIsValid=false
       set_err_wheretobuylink("The Where to buy link field is required.")
     }
-    else{
+    else if(!where_to_buy_link.includes('.')) 
+    {
+      formIsValid = false
+      set_err_wheretobuylink("The Where to buy link field must be contain valid link.")
+    }
+    else
+    {
       set_err_wheretobuylink("")
     }
+    
     if(percentage_total_supply=="")
     {
       formIsValid=false
@@ -341,7 +374,8 @@ var object =  {
       formIsValid=false
       set_err_total_supply("The total supply percentage must be greater than 0 and less than 100.")
     }
-    else {
+    else 
+    {
       set_err_total_supply("")
     }
     if(accept_payment_type=="")
@@ -349,7 +383,8 @@ var object =  {
       formIsValid=false
       set_err_accept("The Accept payment type field is required.")
     }
-    else{
+    else
+    {
       set_err_accept("")
     }
     if(how_to_participate=="")
@@ -357,7 +392,7 @@ var object =  {
       formIsValid=false
       set_err_airdrop("The About airdrop field is required.")
     }
-    else if(how_to_participate.length < 4) 
+    else if(how_to_participate.length < 11) 
     {
       formIsValid=false
       set_err_airdrop("The About airdrop field must be atleast 4 character.")
@@ -373,19 +408,19 @@ var object =  {
 
     if(edit_launchpad_row_id)
     {
-      var req_end_date = moment(endDate).add(1, 'days')
+      var req_end_date = moment(end_date).add(1, 'days')
     }
     else
     {
-      var req_end_date = endDate
+      var req_end_date = end_date
     }
 
     setValidError("") 
     const reqObj = {
-      token_id : token_id,
+      token_id : launchpad_token_id,
       launchpad_row_id:edit_launchpad_row_id, 
       launch_pad_type:launch_pad_type,
-      start_date: startDate,
+      start_date: start_date,
       end_date: req_end_date,
       tokens_sold:tokens_sold,
       price:price,
@@ -400,76 +435,69 @@ var object =  {
     } 
     console.log("reqObj", reqObj)
    
-    Axios.post(API_BASE_URL+'markets/listing_tokens/update_launch_pad', reqObj, config)
-    .then(res=>{ 
-       console.log(res.data)
-      if(res.data.status)
-      { 
-        
-        setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message}) 
-        getTokenDetails()
-        if(edit_launchpad_row_id==""){
-          createLaunchpad()
+    Axios.post(API_BASE_URL+'markets/listing_tokens/update_launch_pad', reqObj, config(user_token)).then(res=>
+    { 
+        console.log(res.data)
+        if(res.data.status)
+        { 
+          setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message}) 
+          getTokenDetails()
+          if(edit_launchpad_row_id=="")
+          {
+            createLaunchpad()
+          }
         }
-        
-      }
-      else
-      { 
-        setModalData({icon: "/assets/img/close_error.png", title: "Something went wrong ", content: res.data.message.alert_message})
-        
-
-        if(res.data.message.innerErr)
-        {
-          if(res.data.message.innerErr.launch_pad_type){
-            setValidError(res.data.message.innerErr.launch_pad_type) 
+        else
+        { 
+          setModalData({icon: "/assets/img/close_error.png", title: "Something went wrong ", content: res.data.message.alert_message})
+          
+          if(res.data.message.innerErr)
+          {
+            if(res.data.message.innerErr.launch_pad_type){
+              setValidError(res.data.message.innerErr.launch_pad_type) 
+            }
+            if(res.data.message.innerErr.accept_payment_type){
+              setValidError(res.data.message.innerErr.accept_payment_type)
+            }
+            if(res.data.message.innerErr.launch_pad_type){
+              setValidError(res.data.message.innerErr.launch_pad_type)
+            }
+            if(res.data.message.innerErr.title){
+              setValidError(res.data.message.innerErr.title)
+            }  
+            if(res.data.message.innerErr.start_date){
+              setValidError(res.data.message.innerErr.start_date)
+            }  
+            if(res.data.message.innerErr.end_date){
+              setValidError(res.data.message.innerErr.end_date)
+            }  
+            if(res.data.message.innerErr.tokens_sold){
+              setValidError(response.data.message.innerErr.tokens_sold)
+            }  
+            if(res.data.message.innerErr.price){
+              setValidError(res.data.message.innerErr.price)
+            }  
+            if(res.data.message.innerErr.soft_cap){
+              setValidError(res.data.message.innerErr.soft_cap)
+            }   
+            if(response.data.message.innerErr.where_to_buy_title){
+              setValidError(res.data.message.innerErr.where_to_buy_title)
+            }  
+            if(res.data.message.innerErr.where_to_buy_link){
+              setValidError(res.data.message.innerErr.where_to_buy_link)
+            }  
+            if(res.data.message.innerErr.percentage_total_supply){
+              setValidError(res.data.message.innerErr.percentage_total_supply)
+            }  
+          
+            if(res.data.message.innerErr.access_type){
+              setValidError(res.data.message.innerErr.access_type)
+            }  
+            if(res.data.message.innerErr.how_to_participate){
+              setValidError(res.data.message.innerErr.how_to_participate)
+            }
           }
-          if(res.data.message.innerErr.accept_payment_type){
-            setValidError(res.data.message.innerErr.accept_payment_type)
-          }
-          if(res.data.message.innerErr.launch_pad_type){
-            setValidError(res.data.message.innerErr.launch_pad_type)
-           }
-          if(res.data.message.innerErr.title){
-            setValidError(res.data.message.innerErr.title)
-          }  
-          if(res.data.message.innerErr.start_date){
-            setValidError(res.data.message.innerErr.start_date)
-          }  
-          if(res.data.message.innerErr.end_date){
-            setValidError(res.data.message.innerErr.end_date)
-          }  
-          if(res.data.message.innerErr.tokens_sold){
-            setValidError(response.data.message.innerErr.tokens_sold)
-          }  
-          if(res.data.message.innerErr.price){
-            setValidError(res.data.message.innerErr.price)
-          }  
-          if(res.data.message.innerErr.soft_cap){
-            setValidError(res.data.message.innerErr.soft_cap)
-          }   
-          if(response.data.message.innerErr.where_to_buy_title){
-            setValidError(res.data.message.innerErr.where_to_buy_title)
-          }  
-          if(res.data.message.innerErr.where_to_buy_link){
-            setValidError(res.data.message.innerErr.where_to_buy_link)
-          }  
-          if(res.data.message.innerErr.percentage_total_supply){
-            setValidError(res.data.message.innerErr.percentage_total_supply)
-          }  
-          if(res.data.message.innerErr.accept_payment_type){
-            setValidError(res.data.message.innerErr.accept_payment_type)
-          }  
-          if(res.data.message.innerErr.access_type){
-            setValidError(res.data.message.innerErr.access_type)
-          }  
-          if(res.data.message.innerErr.how_to_participate){
-            setValidError(res.data.message.innerErr.how_to_participate)
-          }
-
         }
- 
-      }
-
     }) 
 
   }
@@ -485,29 +513,12 @@ var object =  {
       }  
 } 
 
-const handleChange2=(value , name , i)=>  {
-  const list = [...launch_pad]
-  list[i][name] = value.format("YYYY-MM-DD HH:mm:ss")
-  setLaunchPadList(list) 
-}
-
-
-// const closeNRedirect = () =>
-// {
-//   setAlertMessage('')
-//   router.push('/token')
-// }
-
-// const redirectToPage = () =>
-// {
-//   setEmptyAlertMessage('')
-//   router.push('/token/launchpad/'+token_id)
-// }
 
 const onSelect =(selectedList, selectedItem)=> {  
-   console.log(selectedItem)
+  console.log(selectedItem)
   accept_payment_type_ids.push(selectedItem._id)
-  accept_payment_type.push(selectedItem)  
+  accept_payment_type.push(selectedItem) 
+  console.log(accept_payment_type_ids) 
 }
 
 const onRemove = (selectedList, removedItem) => {
@@ -520,7 +531,7 @@ const onRemove = (selectedList, removedItem) => {
   return(
     <>
       <Head>
-        <title>Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap</title>
+        <title>Create Update Launchpad | markets.coinpedia.org</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
@@ -558,7 +569,7 @@ const onRemove = (selectedList, removedItem) => {
                 <div className="col-md-5">
                   <div className="main_create_form">
                     <h1 className="create-token-res">Launchpad List</h1>
-                    <p className="token_form_sub_text">Enter all these fields to create Launchpad</p>
+                    <p className="token_form_sub_text">List of Ongoing, Upcoming and Completed launchpads</p>
                     <div className="col-md-12 launchpad_list_title">
                       <div className="row">
                         <div className="col-md-4 col-4">
@@ -624,7 +635,7 @@ const onRemove = (selectedList, removedItem) => {
                       }   
                   </div>
                 </div>
-
+              
               <div className="col-md-7">
                 <form id="myForm" >
                 <div>
@@ -702,14 +713,8 @@ const onRemove = (selectedList, removedItem) => {
                       </div>
                       <div className="col-md-7 mb-4">
                         <div className="form-group input_block_outline">
-                          <DatePicker
-                            selected={startDate}
-                            dateFormat="yyyy/MM/dd"
-                            onChange={(date) => setStartDate(date)}
-                            selectsStart
-                            startDate={startDate}
-                            endDate={endDate}
-                          />
+                           {/* <input type="date"  class="form-control" value={start_date} onChange={(e) => setStartDate(e.target.value)} /> */}
+                           <Datetime inputProps={ inputProps } dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid }  name="end_date_n_time" value={start_date} onChange={(e) => setStartDate(e)}/>
                         </div>
                         <div className="error">{err_start_date}</div>
                       </div>
@@ -721,16 +726,9 @@ const onRemove = (selectedList, removedItem) => {
                       </div>
                       <div className="col-md-7 mb-4">
                         <div className="form-group input_block_outline">
-                          <DatePicker
-                            selected={endDate}
-                            dateFormat="yyyy/MM/dd"
-                            onChange={(date) => setEndDate(date)}
-                            selectsEnd
-                            startDate={startDate}
-                            endDate={endDate}
-                            minDate={startDate}
-                          />
-                          </div>
+                          {/* <input type="date"  class="form-control" value={end_date} onChange={(e) => setEndDate(e.target.value)} /> */}
+                          <Datetime inputProps={ inputProps2 } dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid2 }  name="end_date_n_time" value={end_date} onChange={(e) => setEndDate(e)}/>
+                        </div>
                         <div className="error">{err_end_date}</div>
                       </div>
                     </div>
@@ -919,7 +917,7 @@ export async function getServerSideProps({query, req})
   {
       if(parseInt(userAgent.user_email_status)==1)
       { 
-          return { props: { userAgent: userAgent, config: config(userAgent.user_token), token_id:query.launchpad_token_id } }
+          return { props: { userAgent: userAgent, config: config(userAgent.user_token) } }
       }
       else
       {

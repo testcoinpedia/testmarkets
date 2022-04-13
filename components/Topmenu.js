@@ -31,6 +31,7 @@ export default function Topmenu()
 
     if(JsCookie.get('user_username'))
     {
+      console.log(JsCookie.get('user_username'))
       set_login_dropdown(1)
     }
 

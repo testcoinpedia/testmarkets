@@ -2,8 +2,6 @@
 import React , {useState, useEffect} from 'react';   
 import Head from 'next/head';
 import "react-datetime/css/react-datetime.css"
-import "react-datepicker/dist/react-datepicker.css";
-import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import dynamic from 'next/dynamic'; 
 const Multiselect = dynamic(
     () => import('multiselect-react-dropdown').then(module => module.Multiselect),

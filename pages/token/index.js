@@ -1,5 +1,6 @@
 import React , {useState, useEffect} from 'react';  
 import Link from 'next/link' 
+import Head from 'next/head'
 import ReactPaginate from 'react-paginate';  
 import {x_api_key, API_BASE_URL, convertvalue, Logout, app_coinpedia_url, market_coinpedia_url ,config,IMAGE_BASE_URL,graphqlApiKEY} from '../../components/constants'; 
 import TableContentLoader from '../../components/loaders/tableLoader'
@@ -248,7 +249,7 @@ const getTokensCurrentList=(items, offset)=>
               parseInt(e.approval_status) === 1 && parseInt(e.active_status) === 1 ?
               <>
                {/* <Link > */}
-                  <a href={market_coinpedia_url+"launchpads/"+e.token_id}><span className="manage_tokens_edit">Edit Launchpad</span></a>
+                  <a href={market_coinpedia_url+"token/launchpads/"+e.token_id}><span className="manage_tokens_edit">Edit Launchpad</span></a>
               {/* </Link> */}
 
               <Link href={market_coinpedia_url + e.token_id}>
@@ -270,6 +271,10 @@ const getTokensCurrentList=(items, offset)=>
 
 
     return ( 
+      <>
+      <Head>
+        <title>Manage Your Tokens | markets.coinpedia.org</title>
+      </Head>
       <div className="container token-list-pd-rm">
         <div className="prices transaction_table_block token-pg-height">
           <div className="col-md-12">
@@ -394,6 +399,7 @@ const getTokensCurrentList=(items, offset)=>
           </div>
         </div> 
       </div>
+      </>
     )
 } 
 

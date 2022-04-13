@@ -83,6 +83,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   const [market_cap_rank, set_market_cap_rank] = useState("")
   const [market_cap_change_percentage_24h, set_market_cap_change_percentage_24h] = useState("")
   const [fully_diluted_valuation, set_fully_diluted_valuation] = useState("")
+  const [show_exchange_links, set_show_exchange_links] = useState("")
   
   const [low_24h, set_low_24h] = useState("")
   const [total_supply, set_total_supply] = useState("")
@@ -669,19 +670,17 @@ const getexchangedata= async (id,networks)=> {
                 exchanges: [createObj]
               }
             
-              const config = { headers: { "Content-Type": "application/json" } }
               const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
             
             
            }
            else
            {
-            var reqObj = {
-              contract_address:id,
-              network_type:"bsc",
-              exchanges: [createObj]
-            }
-            const config = { headers: { "Content-Type": "application/json" } }
+              var reqObj = {
+                contract_address:id,
+                network_type:"bsc",
+                exchanges: [createObj]
+              }
             const sadfdsf = await Axios.post(API_BASE_URL+"markets/tokens/exchanges_save_data", reqObj, config) 
            }
             
@@ -984,7 +983,7 @@ const removeFromWatchlist = (param_token_id) =>
   return(
     <>
       <Head>
-        <title>{data.token_name.toUpperCase()} ({data.symbol}) Live Price | Coinpedia Market</title>  
+        <title>{data.token_name.toUpperCase()} ({data.symbol}) Live Price | Markets.coinpedia.org</title>  
         <meta name="description" content={data.meta_description} />
         <meta name="keywords" content={data.meta_keywords} />
 
@@ -1461,14 +1460,12 @@ const removeFromWatchlist = (param_token_id) =>
                                 :
                                 <li className="coin_individual_list">
                                   <div className="quick_block_links">
-                                    <div className="widgets__select links_direct"><a href={createValidURL(data.website_link)} target="_blank"> <img src="/assets/img/website.svg" className="coin_cat_img" />{DomainName(data.website_link)} </a></div>
+                                    <div className="widgets__select links_direct"><a href={createValidURL(data.website_link)} target="_blank"> <img src="/assets/img/website.svg" className="coin_cat_img" />Website</a></div>
                                   </div>
                                 </li>
                               }
-                              </ul>
 
-                              <ul className="coin_quick_details">
-                                {
+                              {
                                 data.source_code_link
                                 ?
                                 <li className="coin_individual_list">
@@ -1483,6 +1480,56 @@ const removeFromWatchlist = (param_token_id) =>
                                   </div>
                                 </li>
                                 }
+                              
+                              {
+                                  ((data.exchange_link)&&(data.exchange_link.length > 0))
+                                  ?
+                                  <li className="coin_individual_list">
+                                    <div className="quick_block_links">
+                                      <div className="widgets__select links_direct" onClick={()=> {set_show_exchange_links(!show_exchange_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Exchanges  {data.explorer.length > 0 ? <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> : null}</a></div>
+                                    </div> 
+                                    { 
+                                      show_exchange_links
+                                      ? 
+                                      <div className="dropdown_block badge_dropdown_block">
+                                        <ul>
+                                          {
+                                            data.exchange_link.map((e, i)=>
+                                            {
+                                              var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+                                              let url = ""
+                                              if(e!="")
+                                              {
+                                                if(regexp.test(e))
+                                                {
+                                                  url = new URL(e)
+                                                }
+                                                else
+                                                {
+                                                  e = "http://"+e
+                                                  url = new URL(e)
+                                                }  
+                                                return <li key={i}><a href={e ? e : ""} target="_blank">{(url.hostname).includes("t.me") ?url.hostname : null}{(url.hostname).indexOf(".") !== -1 ?(url.hostname).slice(0, (url.hostname).indexOf(".")) : url.hostname}</a></li>
+                                                  
+                                            
+                                              }
+                                            })
+                                          }
+                                        </ul>
+                                      </div>
+                                          
+                                      :
+                                      null
+                                    }
+                                  </li> 
+                                  :
+                                  <li className="coin_individual_list">
+                                    <div className="quick_block_links">
+                                      <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Exchanges is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Exchanges  </a></div>
+                                    </div>
+                                  </li>
+                                }
+                              
                               </ul>
                             </div>
                           </div>
