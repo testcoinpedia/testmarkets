@@ -1699,7 +1699,7 @@ const connectToEthWallet=()=>
       metadata.smartContract.currency.name.symbol
       ?
       <Head> 
-        <title>{metadata.smartContract.currency.name.symbol.toUpperCase()} | Markets Coinpedia</title> 
+        <title>{metadata.smartContract.currency.name.symbol.toUpperCase()}</title> 
       </Head> 
       :
       null

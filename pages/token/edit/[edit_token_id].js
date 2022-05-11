@@ -15,11 +15,11 @@ import { Editor } from '@tinymce/tinymce-react';
 
  
 export default function UpdateToken({userAgent,config,token_id}) {  
- console.log(token_id)
+//  console.log(token_id)
   const editorRef = useRef(null);
   const router = useRouter()
    
- console.log(token_id)
+//  console.log(token_id)
   const [wallet_address, setWalletAddress] = useState('') 
   const [contract_address, setContractAddress] = useState([{network_type: "0", contract_address: ""}])
   const [err_contract_address, setErrContractAddress] = useState("")
@@ -353,7 +353,7 @@ const onLoad = useCallback((img) => {
       
       Axios.post(API_BASE_URL+"markets/listing_tokens/update_token_details/", reqObj, config)
       .then(response=> { 
-        console.log(response)
+        // console.log(response)
         if(response.data.status)
         { 
             setTokenImage("")
@@ -410,7 +410,7 @@ const onLoad = useCallback((img) => {
     .then(response=>{
       if(response.data.status){ 
       
-        console.log(response.data) 
+        // console.log(response.data) 
         setContractAddress(response.data.message.contract_addresses)
         setErrContractAddress("")  
         setSymbol(response.data.message.symbol) 
@@ -640,7 +640,7 @@ const getTokensDetails = (type, address) =>{
   return(
     <>
       <Head>
-        <title>Edit Token | markets.coinpedia.org</title>
+        <title>Edit Token</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
@@ -691,7 +691,7 @@ const getTokensDetails = (type, address) =>{
               </div>
               
               <div className="row">
-                    <div className="col-md-3">
+                    <div className="col-lg-3 col-md-4">
                       <div className="token_steps_list">
                         <ul>
                           <li>Token Basic <img src={"/assets/img/"+(token_name ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/> </li>
@@ -703,13 +703,13 @@ const getTokensDetails = (type, address) =>{
                         </ul>
                       </div>
                     </div>
-                    <div className="col-md-9">
+                    <div className="col-lg-9 col-md-8">
                       <div className="row">
                       { 
                         contract_address.length > 0
                         ?
                         contract_address.map((e, i)=>
-                        <div className="col-md-8" key={i}>
+                        <div className="col-lg-8 col-md-12" key={i}>
                           <div className="form-custom">
                             <div className="row">
                               <div className="col-md-4">
@@ -766,7 +766,7 @@ const getTokensDetails = (type, address) =>{
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Token Name<span className="label_star">*</span></label>
@@ -785,7 +785,7 @@ const getTokensDetails = (type, address) =>{
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Symbol<span className="label_star">*</span></label>
@@ -803,7 +803,7 @@ const getTokensDetails = (type, address) =>{
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Source code Link</label>
@@ -822,7 +822,7 @@ const getTokensDetails = (type, address) =>{
                   
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Website Link</label>
@@ -840,7 +840,7 @@ const getTokensDetails = (type, address) =>{
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Token Max Supply</label>
@@ -849,7 +849,7 @@ const getTokensDetails = (type, address) =>{
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
                                   <div className="input-group">
-                                    <input type="number" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
+                                    <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
                                     <div className="input-group-prepend">
                                       <span className="input-group-text">{symbol}</span>
                                     </div>
@@ -862,7 +862,7 @@ const getTokensDetails = (type, address) =>{
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                             <label htmlFor="email">Market Cap</label>
@@ -870,7 +870,7 @@ const getTokensDetails = (type, address) =>{
                             <div className="col-md-8">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                  <input type="number" value={market_cap} className="form-control" onChange={(e)=>set_market_cap(e.target.value)} readOnly/> 
+                                  <input type="number" placeholder="Market Cap" value={market_cap} className="form-control" onChange={(e)=>set_market_cap(e.target.value)} readOnly/> 
                                 </div>
                                 <div className="error">{err_market_cap}</div>
                               </div>
@@ -880,7 +880,7 @@ const getTokensDetails = (type, address) =>{
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Whitepaper</label>
@@ -898,7 +898,7 @@ const getTokensDetails = (type, address) =>{
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                        
                           <div className="row">
                             <div className="col-md-4">
@@ -933,7 +933,7 @@ const getTokensDetails = (type, address) =>{
                       </div>
             
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">About coin/Token <span className="label_star">*</span></label>
@@ -967,7 +967,7 @@ const getTokensDetails = (type, address) =>{
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Exchange URL</label>
@@ -1013,7 +1013,7 @@ const getTokensDetails = (type, address) =>{
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Explorer URL</label>
@@ -1061,7 +1061,7 @@ const getTokensDetails = (type, address) =>{
 
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Community URL</label>
@@ -1108,7 +1108,7 @@ const getTokensDetails = (type, address) =>{
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4"></div>
                             <div className="col-md-8">

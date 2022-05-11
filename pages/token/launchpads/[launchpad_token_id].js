@@ -18,7 +18,7 @@ export default function CreateLauchPad()
 
   const router = useRouter()
   const {launchpad_token_id}= router.query
-  console.log(launchpad_token_id)
+  // console.log(launchpad_token_id)
 
   const Multiselect = dynamic(
     () => import('multiselect-react-dropdown').then(module => module.Multiselect),
@@ -126,7 +126,7 @@ var object =  {
 
   const editLaunchpadDetails = (object)=>
   {
-    console.log(object)
+    // console.log(object)
     set_edit_launchpad_object(object)
     set_edit_launchpad_row_id(parseInt(object._id))
     set_launch_pad_type(object.launch_pad_type)
@@ -181,7 +181,7 @@ var object =  {
               <div className="text-center">
                 <img src="/assets/img/cancel.png" />
                 <h4 className="modal-title mb-2">Launch Pad!</h4>
-                <p>Do you want to really remove this Launchpad ?</p>
+                <p>Do you really want to remove this Launchpad ?</p>
               </div>
             </div>
             <div className="modal-footer">
@@ -200,7 +200,7 @@ var object =  {
     //console.log(launchpad_token_id)
     Axios.get(API_BASE_URL+"markets/listing_tokens/individual_details/"+launchpad_token_id, config(user_token)).then(res=>
     {
-       console.log(res.data)
+      //  console.log(res.data)
         if(res.data.status)
         {
           set_today_date(res.data.message.today_date)
@@ -226,7 +226,7 @@ var object =  {
     // Axios.get(API_BASE_URL+"app/payment_type", config)
     .then(res=>
     {
-      console.log(res)
+      // console.log(res)
         if(res.data.status)
         {
           set_payment_types(res.data.message)
@@ -409,10 +409,12 @@ var object =  {
     if(edit_launchpad_row_id)
     {
       var req_end_date = moment(end_date).add(1, 'days')
+      var req_start_date = moment(start_date).add(1, 'days')
     }
     else
     {
       var req_end_date = end_date
+      var req_start_date = start_date
     }
 
     setValidError("") 
@@ -420,7 +422,7 @@ var object =  {
       token_id : launchpad_token_id,
       launchpad_row_id:edit_launchpad_row_id, 
       launch_pad_type:launch_pad_type,
-      start_date: start_date,
+      start_date: req_start_date,
       end_date: req_end_date,
       tokens_sold:tokens_sold,
       price:price,
@@ -433,11 +435,11 @@ var object =  {
       how_to_participate:how_to_participate
 
     } 
-    console.log("reqObj", reqObj)
+    // console.log("reqObj", reqObj)/
    
     Axios.post(API_BASE_URL+'markets/listing_tokens/update_launch_pad', reqObj, config(user_token)).then(res=>
     { 
-        console.log(res.data)
+        // console.log(res.data)
         if(res.data.status)
         { 
           setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message}) 
@@ -515,10 +517,10 @@ var object =  {
 
 
 const onSelect =(selectedList, selectedItem)=> {  
-  console.log(selectedItem)
+  // console.log(selectedItem)
   accept_payment_type_ids.push(selectedItem._id)
   accept_payment_type.push(selectedItem) 
-  console.log(accept_payment_type_ids) 
+  // console.log(accept_payment_type_ids) 
 }
 
 const onRemove = (selectedList, removedItem) => {
@@ -531,7 +533,7 @@ const onRemove = (selectedList, removedItem) => {
   return(
     <>
       <Head>
-        <title>Create Update Launchpad | markets.coinpedia.org</title>
+        <title>Create Update Launchpad</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
@@ -566,7 +568,7 @@ const onRemove = (selectedList, removedItem) => {
           <div className="container">
             <div className="col-md-12">
               <div className="row">
-                <div className="col-md-5">
+                <div className="col-lg-5 col-md-12">
                   <div className="main_create_form">
                     <h1 className="create-token-res">Launchpad List</h1>
                     <p className="token_form_sub_text">List of Ongoing, Upcoming and Completed launchpads</p>
@@ -575,10 +577,10 @@ const onRemove = (selectedList, removedItem) => {
                         <div className="col-md-4 col-4">
                           <h4>Sale Tokens</h4>
                         </div>
-                        <div className="col-md-6 col-6">
+                        <div className="col-md-4 col-4">
                           <h4>Start-End</h4>
                         </div>
-                        <div className="col-md-2 col-3">
+                        <div className="col-md-4 col-4">
                           <h4>Action</h4>
                         </div>
                       </div>
@@ -615,7 +617,7 @@ const onRemove = (selectedList, removedItem) => {
                               {moment.utc(e.start_date).format("MMM DD")} - {moment.utc(e.end_date).format("MMM DD, YYYY")}
                             </h5>
                           </div>
-                          <div className="col-md-2 col-3">
+                          <div className="col-md-2 col-2">
                             {
                               edit_launchpad_row_id == e._id ? 
                               <img src="/assets/img/launchpad-active.svg" className="active_launchpad_list_icon" />
@@ -636,7 +638,7 @@ const onRemove = (selectedList, removedItem) => {
                   </div>
                 </div>
               
-              <div className="col-md-7">
+              <div className="col-lg-7 col-md-12">
                 <form id="myForm" >
                 <div>
                   <div className="token_steps">
@@ -714,12 +716,12 @@ const onRemove = (selectedList, removedItem) => {
                       <div className="col-md-7 mb-4">
                         <div className="form-group input_block_outline">
                            {/* <input type="date"  class="form-control" value={start_date} onChange={(e) => setStartDate(e.target.value)} /> */}
-                           <Datetime inputProps={ inputProps } dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid }  name="end_date_n_time" value={start_date} onChange={(e) => setStartDate(e)}/>
+                           <Datetime inputProps={ inputProps }  dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid }   name="end_date_n_time" value={start_date} onChange={(e) => setStartDate(e)}/>
                         </div>
                         <div className="error">{err_start_date}</div>
                       </div>
-                    </div>
-
+                    </div> 
+                    {/* isValidDate={ valid } inputProps={ inputProps2 } */}
                     <div className="row">
                       <div className="col-md-4">
                         <label htmlFor="email">End Date<span className="label_star">*</span></label>
@@ -727,7 +729,7 @@ const onRemove = (selectedList, removedItem) => {
                       <div className="col-md-7 mb-4">
                         <div className="form-group input_block_outline">
                           {/* <input type="date"  class="form-control" value={end_date} onChange={(e) => setEndDate(e.target.value)} /> */}
-                          <Datetime inputProps={ inputProps2 } dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid2 }  name="end_date_n_time" value={end_date} onChange={(e) => setEndDate(e)}/>
+                          <Datetime inputProps={ inputProps2 }  dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid2 }  name="end_date_n_time" value={end_date} onChange={(e) => setEndDate(e)}/>
                         </div>
                         <div className="error">{err_end_date}</div>
                       </div>

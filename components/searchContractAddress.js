@@ -89,7 +89,7 @@ export default function Details()
         }
         const res = await fetch("https://graphql.bitquery.io/", opts)
         const result = await res.json()
-        console.log("result", result)
+        // console.log("result", result)
         if(result.data.ethereum)
         {
           if(result.data.ethereum.address[0].smartContract)
@@ -98,7 +98,7 @@ export default function Details()
             if(apiRes.data.status)
             {
                 await router.push(website_url+apiRes.data.message.token_id)
-                console.log("API success", apiRes.data.message) 
+                // console.log("API success", apiRes.data.message) 
             }
             else
             {
@@ -145,7 +145,7 @@ return (
                     </div>
                     <input value={search_contract_address} onChange={(e)=> set_search_contract_address(e.target.value)} type="text" className="form-control search-input-box" placeholder="Contract address" />
                    <div className="input-group-prepend ">
-                    <span className="input-group-text" onClick={()=> getTokenData()}><img src="/assets/img/search-box.png" alt="search-box"  width="100%" height="100%"/></span>                 
+                    <span className="input-group-text" onClick={()=> getTokenData()}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                     </div>
                   </div> 
                   <div className="error">  {err_searchBy}</div>

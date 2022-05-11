@@ -125,7 +125,7 @@ export default function Create_token({config})
           reader.readAsDataURL(blob);
           reader.onloadend = function() 
           {
-               console.log(reader.result)
+              //  console.log(reader.result)
               set_blobFile(reader.result)
           }
           resolve(fileUrl);
@@ -282,6 +282,15 @@ const createNewToken = () =>
         setErrContractAddress(list)  
     }  
 
+    if(website_link)
+    {
+        if((/\s/g).test(website_link))
+        {
+          formValid = false
+          setErrWebsiteLink("The Website Link field must not contain whitespace.")
+        }
+    }
+
     if(token_name === '')
     {
         setErrTokenName('The token name field is required.')
@@ -387,10 +396,10 @@ const createNewToken = () =>
       contract_addresses: contract_address
     }  
 
-    console.log(reqObj)
+    // console.log(reqObj)
     Axios.post(API_BASE_URL+"markets/listing_tokens/create_new", reqObj, config)
     .then(response=>{ 
-      console.log(response)
+      // console.log(response)
       if(response.data.status)
       { 
        
@@ -517,7 +526,7 @@ const createNewToken = () =>
     await fetch(url, opts)
       .then(res => res.json())
       .then(result => {  
-        console.log(result)
+        // console.log(result)
         if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
         { 
          
@@ -527,7 +536,7 @@ const createNewToken = () =>
           }
           else
           {
-            console.log(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote)
+            // console.log(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote)
              setLivePrice(result.data.ethereum.dexTrades[0].quote * result.data.ethereum.dexTrades[1].quote) 
           }
           
@@ -574,7 +583,7 @@ const createNewToken = () =>
       const supply = await tokenContract.totalSupply() / (10 ** decval);  
       getTokenUsdPrice(id,network_type)
       set_market_cap(supply * live_price)  
-      await console.log(supply * live_price)
+      // await console.log(supply * live_price)
   }
 
 
@@ -802,7 +811,7 @@ const createNewToken = () =>
   return(
     <>
       <Head>
-        <title>Create New Token | markets.coinpedia.org</title>
+        <title>Create New Token</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
@@ -855,7 +864,7 @@ exchange_link
 */}
 
                   <div className="row">
-                    <div className="col-md-3">
+                    <div className="col-lg-3 col-md-4">
                       <div className="token_steps_list">
                         <ul>
                           <li>Token Basic <img src={"/assets/img/"+(token_name ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/> </li>
@@ -867,13 +876,13 @@ exchange_link
                         </ul>
                       </div>
                     </div>
-                    <div className="col-md-9">
+                    <div className="col-lg-9 col-md-8">
                       <div className="row">
                       { 
                         contract_address.length > 0
                         ?
                         contract_address.map((e, i)=>
-                        <div className="col-md-8" key={i}>
+                        <div className="col-lg-8 col-md-12" key={i}>
                           <div className="form-custom">
                             <div className="row">
                               <div className="col-md-4">
@@ -930,7 +939,7 @@ exchange_link
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Token Name<span className="label_star">*</span></label>
@@ -949,7 +958,7 @@ exchange_link
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Symbol<span className="label_star">*</span></label>
@@ -967,7 +976,7 @@ exchange_link
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Source code Link</label>
@@ -986,7 +995,7 @@ exchange_link
                   
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Website Link</label>
@@ -995,8 +1004,8 @@ exchange_link
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
                                   <input type="text" className="form-control" placeholder="Website Link" value={website_link} onChange={(e)=>setWebsiteLink(e.target.value)}/>
-                                  <div className="error">{err_website_link}</div>
                                 </div>
+                                 <div className="error">{err_website_link}</div>
                               </div>
                             </div>
                           </div>
@@ -1004,7 +1013,7 @@ exchange_link
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Token Max Supply</label>
@@ -1013,7 +1022,7 @@ exchange_link
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
                                   <div className="input-group">
-                                    <input type="number" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
+                                    <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
                                     <div className="input-group-prepend">
                                       <span className="input-group-text">{symbol}</span>
                                     </div>
@@ -1026,7 +1035,7 @@ exchange_link
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                             <label htmlFor="email">Market Cap</label>
@@ -1034,7 +1043,7 @@ exchange_link
                             <div className="col-md-8">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                  <input type="number" className="form-control" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)} readOnly/> 
+                                  <input type="number" placeholder="Market Cap"  className="form-control" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)} readOnly/> 
                                 </div>
                                 <div className="error">{err_market_cap}</div>
                               </div>
@@ -1044,7 +1053,7 @@ exchange_link
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Whitepaper</label>
@@ -1062,7 +1071,7 @@ exchange_link
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Logo</label>
@@ -1093,7 +1102,7 @@ exchange_link
                       </div>
             
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">About coin/Token <span className="label_star">*</span></label>
@@ -1128,7 +1137,7 @@ exchange_link
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Exchange URL</label>
@@ -1174,7 +1183,7 @@ exchange_link
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Explorer URL</label>
@@ -1222,7 +1231,7 @@ exchange_link
 
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                               <label htmlFor="email">Community URL</label>
@@ -1269,7 +1278,7 @@ exchange_link
                       </div>
 
                       <div className="row">
-                        <div className="col-md-8">
+                        <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4"></div>
                             <div className="col-md-8">

@@ -31,7 +31,7 @@ export default function Topmenu()
 
     if(JsCookie.get('user_username'))
     {
-      console.log(JsCookie.get('user_username'))
+      //console.log(JsCookie.get('user_username'))
       set_login_dropdown(1)
     }
 
@@ -178,15 +178,15 @@ export default function Topmenu()
                                     </button>
                                     <div className="dropdown-menu dropdown_wallet_header" aria-labelledby="1"> 
                                       <h6>User</h6>
-                                      <a href={app_coinpedia_url} className="dropdown-item"><img src="/assets/img/menu-wallet.png" />Portfolio</a>
-                                      <a href={app_coinpedia_url+"profile"} className="dropdown-item"><img src="/assets/img/menu-user-profile.png" /> Manage User Profile</a>
-                                      <a href={app_coinpedia_url+"referrals"} className="dropdown-item"><img src="/assets/img/menu-referrals.png" /> Referral List</a>
+                                      <a href={app_coinpedia_url} className="dropdown-item"><img src="/assets/img/menu-wallet.png" className="dark-menu-img" /><img src="/assets/img/menu-wallet.png" className="light-menu-img" />Portfolio</a>
+                                      <a href={app_coinpedia_url+"profile"} className="dropdown-item"><img src="/assets/img/menu-user-profile.png"  className="dark-menu-img" /> <img src="/assets/img/menu-user-profile.png" className="light-menu-img"/> Manage User Profile</a>
+                                      <a href={app_coinpedia_url+"referrals"} className="dropdown-item"><img src="/assets/img/menu-referrals.png" className="dark-menu-img" /> <img src="/assets/img/menu-referrals.png" className="light-menu-img" /> Referral List</a>
 
                                       <h6>Company</h6>
-                                      <Link href={app_coinpedia_url+"company/profile"} ><a className="dropdown-item"><img src="/assets/img/menu-company.png" /> Company Profile</a></Link>
-                                      <a href={market_coinpedia_url+"token"}  className="dropdown-item"><img src="/assets/img/menu-token.png" /> Manage Tokens</a>
+                                      <Link href={app_coinpedia_url+"company/profile"} ><a className="dropdown-item"><img src="/assets/img/menu-company.png" className="dark-menu-img" /> <img src="/assets/img/menu-company.png" className="light-menu-img"/> Company Profile</a></Link>
+                                      <a href={market_coinpedia_url+"token"}  className="dropdown-item"><img src="/assets/img/menu-token.png" className="dark-menu-img" /><img src="/assets/img/menu-token.png" className="light-menu-img" /> Manage Tokens</a>
                                       {/* <a href={market_coinpedia_url+"create-launchpad/maker"}  className="dropdown-item"><img src="/assets/img/menu-airdrop.png" /> Manage Launchpad/Airdrop</a> */}
-                                      <a href={market_coinpedia_url+"token/create-new"}  className="dropdown-item"><img src="/assets/img/menu-list-token.png" /> List a Token</a>
+                                      <a href={market_coinpedia_url+"token/create-new"}  className="dropdown-item"><img src="/assets/img/menu-list-token.png" className="dark-menu-img" /><img src="/assets/img/menu-list-token.png" className="light-menu-img" /> List a Token</a>
 
                                       
                                       {
@@ -215,7 +215,7 @@ export default function Topmenu()
                                         null
                                       }
                                       <h6>Other</h6>
-                                      <a className="dropdown-item" onClick={()=> logoutFunction()}><img src="/assets/img/menu-logout.png" /> Logout</a>
+                                      <a className="dropdown-item" onClick={()=> logoutFunction()}><img src="/assets/img/menu-logout.png" className="dark-menu-img" /><img src="/assets/img/menu-logout.png" className="light-menu-img" /> Logout</a>
                                       
                                     </div>
                                   </div>
@@ -225,8 +225,8 @@ export default function Topmenu()
                                       <img src="/assets/img/connect-wallet-header.svg" className="login_img" /> Login<span className="hide_connnect_wallet">/Connect Wallet</span> <img src="/assets/img/caret-down.svg" className="caret_down" />
                                     </button>
                                     <div className="dropdown-menu dropdown_wallet_header" aria-labelledby="2">
-                                      <a className="dropdown-item" href={app_coinpedia_url+"login"}><img src="/assets/img/menu-wallet.png" /> Login via Wallet<br/><span>Connect wallet here</span></a>
-                                      <a className="dropdown-item" href={app_coinpedia_url+"login"}><img src="/assets/img/menu-login.png"  /> Manual Login</a>
+                                      <a className="dropdown-item" href={app_coinpedia_url+"login"}><img src="/assets/img/menu-wallet.png" className="dark-menu-img" /><img src="/assets/img/menu-wallet.png" className="light-menu-img"/> Login via Wallet<br/><span>Connect wallet here</span></a>
+                                      <a className="dropdown-item" href={app_coinpedia_url+"login"}><img src="/assets/img/menu-login.png" className="dark-menu-img" /><img src="/assets/img/menu-login.png"  className="light-menu-img"/> Manual Login</a>
                                       <div className="register_now">
                                         <p>Don't have your own account? click below link to register </p>
                                         <Link href={app_coinpedia_url+"register"}><a className="header_reg_btn">Register</a></Link>

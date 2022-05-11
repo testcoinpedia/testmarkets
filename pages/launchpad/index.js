@@ -31,7 +31,7 @@ export default function LaunchPad({userAgent})
     Axios.get(API_BASE_URL+"markets/launchpads/list", config(user_token))
     .then(res=>
     {   
-      console.log(res)
+      // console.log(res)
         if(res.data.status)
         {
           setapistatus(true)
@@ -48,14 +48,14 @@ export default function LaunchPad({userAgent})
     Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config(user_token))
     .then(res=>
     { 
-      console.log("add", res.data)
+      // console.log("add", res.data)
       if(res.data.status)
       {
         var sdawatchlist = watchlist
         set_watchlist([])
         sdawatchlist.push(param_token_id)
         set_watchlist(sdawatchlist)
-        console.log("watchlist", watchlist)
+        // console.log("watchlist", watchlist)
       }
     })
   }
@@ -65,14 +65,14 @@ export default function LaunchPad({userAgent})
     Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config(user_token))
     .then(res=>
     {
-      console.log("remove", res.data)
+      // console.log("remove", res.data)
       if(res.data.status)
       {
         var sdawatchlist = watchlist
         set_watchlist([])
         sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
         set_watchlist(sdawatchlist)
-        console.log("watchlist", watchlist)
+        // console.log("watchlist", watchlist)
       }
     })
   }
@@ -91,7 +91,7 @@ export default function LaunchPad({userAgent})
   return(
     <>
       <Head>
-        <title>Discover Ongoing & Upcoming Launchpad |  markets.coinpedia.org</title> {/*  Best  ICO and IDO calendar | */}
+        <title>Discover Ongoing & Upcoming Launchpad</title> {/*  Best  ICO and IDO calendar | */}
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Stay updated with the List of Ongoing & Upcoming Launchpad on different blockchain platforms. Get plugged in with the upcoming  ICO, IDO’s and more. ICO and IDO calendar" />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />

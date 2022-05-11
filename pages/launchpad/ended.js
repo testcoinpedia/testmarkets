@@ -41,7 +41,7 @@ export default function OngoingLaunchPad({userAgent}) {
       } 
 
     const response = await Axios.get(API_BASE_URL+"markets/launchpads/ended/"+current_pages+'/'+perPage, config(user_token))
-    console.log("company_list", response)
+    // console.log("company_list", response)
       if(response.data)
       {
           if(response.data.status == true)
@@ -72,14 +72,14 @@ export default function OngoingLaunchPad({userAgent}) {
     Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config(user_token))
     .then(res=>
     { 
-      console.log("add", res.data)
+      // console.log("add", res.data)
       if(res.data.status)
       {
         var sdawatchlist = watchlist
         set_watchlist([])
         sdawatchlist.push(param_token_id)
         set_watchlist(sdawatchlist)
-        console.log("watchlist", watchlist)
+        // console.log("watchlist", watchlist)
       }
     })
   }
@@ -89,14 +89,14 @@ export default function OngoingLaunchPad({userAgent}) {
     Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config(user_token))
     .then(res=>
     {
-      console.log("remove", res.data)
+      // console.log("remove", res.data)
       if(res.data.status)
       {
         var sdawatchlist = watchlist
         set_watchlist([])
         sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
         set_watchlist(sdawatchlist)
-        console.log("watchlist", watchlist)
+        // console.log("watchlist", watchlist)
       }
     })
   }
@@ -114,7 +114,7 @@ export default function OngoingLaunchPad({userAgent}) {
   return(
     <>
       <Head>
-        <title>Launchpad Ended | markets.coinpedia.org</title>
+        <title>Launchpad Ended</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
@@ -217,7 +217,7 @@ export default function OngoingLaunchPad({userAgent}) {
                           <th className="table_ended_fields">Token Sold</th>
                           {/* <th className="table_live_price">Total Supply</th> */}
                           <th className="table_total_supply">% of total supply</th>
-                          <th className="">Type</th>
+                          <th className="table_ended_fields">Type</th>
                           {/* <th className="">Holders</th>
                           <th className="">Trading On</th> */}
                           <th className="table_completed_date">Completed Date</th>
@@ -313,14 +313,14 @@ export default function OngoingLaunchPad({userAgent}) {
                            :
                            <>
                            {
-                            ! apistatus ?
+                            apistatus ?
                               <tr key="1">
                                 <td className="text-center no_data_found" colSpan="10">
                                   Sorry, No related data found.
                                 </td>
                               </tr>
                               :
-                              <TableContentLoader row="5" col="10" />                   
+                              <TableContentLoader row="5" col="9" />                   
                            }
                            </>
                          }

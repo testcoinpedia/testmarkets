@@ -37,11 +37,12 @@ export default function WalletTokensList({userAgent, config})
  
     useEffect(()=>
     {  
+      
+      
       getTokens() 
       // handlePageClick({selected : 0})
-    },[])
+    },[watchlist])
          
-    
     const getTokens=()=>
     {
       Axios.get(API_BASE_URL+"markets/listing_tokens/listed_tokens", config)
@@ -49,7 +50,7 @@ export default function WalletTokensList({userAgent, config})
       {   
         if(res.data.status===true)
         { 
-          console.log(res.data)
+          // console.log(res.data)
           set_loader_status(true)
           setfilteredTokens(res.data.message)
           set_token_list(res.data.message)
@@ -58,6 +59,7 @@ export default function WalletTokensList({userAgent, config})
           getTokensCurrentList(res.data.message, 0)
           set_watchlist(res.data.watchlist)
           set_tokenStatus(res.data.tokenStatus)
+          
           
         }
         else
@@ -74,15 +76,15 @@ export default function WalletTokensList({userAgent, config})
     Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config)
     .then(res=>
     { 
-      console.log("add", res.data)
+      // console.log("add", res.data)
       if(res.data.status)
       {
         var sdawatchlist = watchlist
         set_watchlist([])
         sdawatchlist.push(param_token_id)
         set_watchlist(sdawatchlist)
-        console.log("watchlist", watchlist)
-        getTokens()
+        // console.log("watchlist", watchlist)
+        
       }
     })
   }
@@ -92,19 +94,19 @@ export default function WalletTokensList({userAgent, config})
     Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config)
     .then(res=>
     {
-      console.log("remove", res.data)
+      // console.log("remove", res.data)
       if(res.data.status)
       {
         var sdawatchlist = watchlist
         set_watchlist([])
         sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
         set_watchlist(sdawatchlist)
-        console.log("watchlist", watchlist)
-       
-        getTokens()
+        // console.log("watchlist", watchlist)
+      
       }
     })
   }
+
 
     const handlePageClick =  (page) => 
    { 
@@ -117,10 +119,8 @@ export default function WalletTokensList({userAgent, config})
       setPageCount(Math.ceil(filteredTokens.length / perPage))
       getTokensCurrentList(filteredTokens, selectedoffset)
      
-      console.log(selectedPage * perPage)
-   }
-
-   
+      // console.log(selectedPage * perPage)
+   }   
    
    const getSearchData=(searchValue, type) =>
    {  
@@ -143,15 +143,13 @@ export default function WalletTokensList({userAgent, config})
           setPageCount(Math.ceil(token_list.length / perPage)) 
           getTokensCurrentList(token_list, 0) 
           set_token_counts(token_list.length)
-          
-         
         }
    }
 
 const getTokensCurrentList=(items, offset)=>
 {  
   const token_list = items.slice(offset, offset + perPage) 
-  console.log(token_list)
+  // console.log(token_list)
   const postData = token_list.map((e, i)=>{
     var my_sl = sl_no
     return <tr key={i}>
@@ -159,15 +157,25 @@ const getTokensCurrentList=(items, offset)=>
         {
            
             <>
-            {
-              e.approval_status == 1 && e.active_status == 1 && watchlist.includes(e._id) ?
+            {/* {
+               e.approval_status == 1 && e.active_status == 1 && watchlist.includes(e._id) ?
               <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
                :
                e.approval_status == 1 && e.active_status == 1 ?
                <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" /></span>
                :
                ""
-              }
+              } */}
+               {
+                   watchlist.includes(e._id) ?
+                   <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist" /></span>
+                   :
+                   e.approval_status == 1 && e.active_status == 1 ?
+                   <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></span>
+                   :
+                   ""
+                   
+                   }
               </>
           }
         </td>
@@ -209,7 +217,7 @@ const getTokensCurrentList=(items, offset)=>
               "-"
             } 
         </td>
-        <td className="comp_establish_date mobile_hide_table_col">
+        <td className="comp_establish_date">
           {
             parseInt(e.approval_status) === 0 ?
             <div style={{color: '#f1b50a'}}>Pending</div>
@@ -273,18 +281,18 @@ const getTokensCurrentList=(items, offset)=>
     return ( 
       <>
       <Head>
-        <title>Manage Your Tokens | markets.coinpedia.org</title>
+        <title>Manage Your Tokens</title>
       </Head>
       <div className="container token-list-pd-rm">
         <div className="prices transaction_table_block token-pg-height">
           <div className="col-md-12">
             <div className="row">
-              <div className="col-md-6 col-lg-6 col-sm-6 col-12">
+              <div className="col-md-6 col-lg-6 col-sm-7 col-12">
                 <div className="prices__title h5"><h1>Manage your Tokens ({token_counts})</h1>
                   <p className="token_form_sub_text">List of token displayed here</p>
                 </div>
               </div>
-              <div className="col-md-6 col-lg-6 col-sm-6 col-12">
+              <div className="col-md-6 col-lg-6 col-sm-5 col-12">
                 <ul className="manage_token_filter_create_token">
                   <li>
                     <form id="formID">

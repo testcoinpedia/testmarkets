@@ -60,7 +60,7 @@ export default function Companies({user_token, config})
       } 
 
       const res = await Axios.get(API_BASE_URL+"markets/tokens/list/"+current_pages+'/'+per_page_count, config)
-      console.log("company_list", res)
+      // console.log("company_list", res)
       if(res.data)
       {
          if(res.data.status === true)
@@ -94,7 +94,7 @@ export default function Companies({user_token, config})
         if(res.data.status)
         {
           setvoting_ids(res.data.voting_ids)
-            console.log(res.data.voting_ids)
+            // console.log(res.data.voting_ids)
         }
         })
     }
@@ -112,7 +112,7 @@ export default function Companies({user_token, config})
     }
     const ModalVote=(token_id,status,_id,item)=> 
     { 
-      console.log(item)   
+      // console.log(item)   
       setHandleModalVote(!handleModalVote) 
       set_voting_status(status)
       set_Token_id(token_id)
@@ -129,7 +129,7 @@ export default function Companies({user_token, config})
         Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+token_id, config)
         .then(res=>
         { 
-          console.log(res)
+          // console.log(res)
           if(res.data.status === true) 
           {
             
@@ -138,7 +138,7 @@ export default function Companies({user_token, config})
               return obj._id === vote_id
             })
             var testObj = result ? result[0] : "" 
-            console.log("testObj",testObj)
+            // console.log("testObj",testObj)
             var test_total_votes = testObj.total_votes+1
             testObj['total_votes'] = test_total_votes
             testList[item] = testObj
@@ -154,7 +154,7 @@ export default function Companies({user_token, config})
         Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+token_id, config)
         .then(res=>
         { 
-          console.log(res)
+          // console.log(res)
           if(res.data.status === true) 
           {
             var testList = tokens_list
@@ -166,7 +166,7 @@ export default function Companies({user_token, config})
             test_total_votes = testObj.total_votes-1
             testObj['total_votes'] = test_total_votes
             testList[item] = testObj
-            console.log(testObj)
+            // console.log(testObj)
             set_tokens_list(testList)
             voting_ids.splice(voting_ids.indexOf(vote_id), 1) 
             set_voting_message(res.data.message)
@@ -181,14 +181,14 @@ export default function Companies({user_token, config})
       Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config)
       .then(res=>
       { 
-        console.log("add", res.data)
+        // console.log("add", res.data)
         if(res.data.status)
         {
           var sdawatchlist = watchlist
           set_watchlist([])
           sdawatchlist.push(param_token_id)
           set_watchlist(sdawatchlist)
-          console.log("watchlist", watchlist)
+          // console.log("watchlist", watchlist)
         }
       })
     }
@@ -198,14 +198,14 @@ export default function Companies({user_token, config})
       Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config)
       .then(res=>
       {
-        console.log("remove", res.data)
+        // console.log("remove", res.data)
         if(res.data.status)
         {
           var sdawatchlist = watchlist
           set_watchlist([])
           sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
           set_watchlist(sdawatchlist)
-          console.log("watchlist", watchlist)
+          // console.log("watchlist", watchlist)
         }
       })
     }
@@ -256,7 +256,7 @@ return (
     
    <>
       <Head>
-         <title>Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and MaketCap | Markets.coinpedia.org</title>
+         <title>Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and MaketCap</title>
          <meta name="description" content="Discover the list of top blockchain technology companies, Crypto startups and other Fintech Giants across the world.Didn’t Find your firm? List your company now and gain visibility."/>
          <meta name="keywords" content="Blockchain startups , Crypto startups , Top Fintech companies , blockchain technology companies , Crypto and Blockchain firms , Top Blockchain companies." />
          <meta property="og:locale" content="en_US" />
@@ -366,12 +366,12 @@ return (
 
               <div className="prices transaction_table_block">
                 <div className="row">
-                  <div class="col-md-6 col-7">
-                    <ul class="category_list">
-                      <li class={all_tab_status?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
+                  <div className="col-md-6 col-7">
+                    <ul className="category_list">
+                      <li className={all_tab_status?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
                       {
                         tokenStatus?
-                        <li class={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist?active_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                        <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist?active_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
                         :
                         <li>
                         <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>
@@ -381,8 +381,8 @@ return (
                   </div>
                   {
                      !watch_list_status?
-                      <div class="col-md-6 col-5">
-                    <ul class="filter_rows">
+                      <div className="col-md-6 col-5">
+                    <ul className="filter_rows">
                       <li>
                         Show rows
                         <select onChange={(e)=>set_per_page_count(e.target.value)} >

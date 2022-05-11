@@ -44,7 +44,7 @@ useEffect(()=>
     const getGraphData=(datetime, id, networks)=> 
     {   
       
-      console.log("Graph from graphqldata")  
+      // console.log("Graph from graphqldata")  
       let query =""
       if(datetime === "") 
       { 
@@ -55,8 +55,8 @@ useEffect(()=>
       var from_n_to_date = fromNToDate(datetime)
       let fromDate= from_n_to_date.fromDate
       let toDate= from_n_to_date.toDate 
-      console.log("fromDate",fromDate)
-      console.log(graphDate)
+      // console.log("fromDate",fromDate)
+      // console.log(graphDate)
 
         if(parseInt(networks) === 1)
         {
@@ -223,7 +223,7 @@ useEffect(()=>
               }
             }  
         if(light_dark_mode=="dark"){
-          console.log("dark")
+          // console.log("dark")
         Highcharts.chart('container', {
           chart: {
             backgroundColor: {
@@ -295,7 +295,7 @@ useEffect(()=>
 
         }
         else{
-          console.log("light")
+          // console.log("light")
         Highcharts.chart('container', {
           chart: {
               zoomType: 'x'
@@ -374,7 +374,7 @@ useEffect(()=>
       var from_n_to_date = fromNToDate(datetime)
       let fromDate= new Date(from_n_to_date.fromDate).getTime()/1000
       let toDate=new Date(from_n_to_date.toDate).getTime()/1000
-      console.log("Graph from coingecko") 
+      // console.log("Graph from coingecko") 
         Axios.get("https://api.coingecko.com/api/v3/coins/"+token_id+"/market_chart/range?vs_currency=usd&from="+fromDate+"&to="+toDate)
           .then(response=>{ 
             if (response!= null && response.data.prices != null) { 
@@ -393,7 +393,7 @@ useEffect(()=>
                 }
               }  
              if(light_dark_mode=="dark"){
-              console.log("dark")
+              // console.log("dark")
               Highcharts.chart('container', {
                 chart: {
                   backgroundColor: {

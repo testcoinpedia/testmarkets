@@ -1,16 +1,16 @@
-import React, {useState, useRef, useEffect} from 'react';  
-import { ethers } from 'ethers';
+import React, {useState, useRef, useEffect} from 'react'  
+import { ethers } from 'ethers'
 import Link from 'next/link' 
-import Head from 'next/head';
+import Head from 'next/head'
 import Error from './404'
 import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, 
-  graphqlApiKEY, count_live_price, Logout,DomainName} from '../components/constants'
+  graphqlApiKEY, count_live_price, Logout, DomainName} from '../components/constants'
 import { live_price_graphql } from '../components/token_details/graphql'
 import { live_price_coingecko } from '../components/token_details/coingecko'
 import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
 import moment from 'moment'
-import Highcharts from 'highcharts';    
-import ReactPaginate from 'react-paginate';
+import Highcharts from 'highcharts'    
+import ReactPaginate from 'react-paginate'
 import cookie from "cookie"
 import JsCookie from "js-cookie" 
 import Axios from 'axios'
@@ -34,7 +34,7 @@ let inputProps2 = {
 
 export default function tokenDetailsFunction({errorCode, data, token_id, userAgent, config, tokenStatus}) 
 {   
-  console.log("data",data)
+  // console.log("data",data)
   if(errorCode) {return <Error/> }
   const communityRef = useRef(null)
   const explorerRef = useRef(null)
@@ -135,7 +135,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   const coingeckoId= async()=> 
   {    
     var coingecko_data = await live_price_coingecko(data.api_from_id)
-    console.log(coingecko_data)
+    // console.log(coingecko_data)
     set_mcap_to_tvl_ratio(coingecko_data.mcap_to_tvl_ratio)
     set_token_max_supply(coingecko_data.token_max_supply)
     set_price_change_24h(coingecko_data.price_change_24h)
@@ -221,19 +221,17 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   //   return str.replace( /(<([^>]+)>)/ig, '');
   // }
   const uniques = exchange_list.map(item => item.pair_two_name).filter((value, index, self) => self.indexOf(value) === index)
-  console.log(uniques)
+  // console.log(uniques)
 
   const getexchangedata2= (param)=> 
   { 
-    
     set_graph_status(true)
-    console.log(param)
+    // console.log(param)
     var token_listData = exchange_list
     var fi_tokens =  token_listData.filter((item) => searchApprovalStatusParam.some((newItem) =>  !item[newItem].toString().indexOf(param)))
     // var fi_tokens =  token_listData.filter((item) => searchApprovalStatusParam.some((newItem) =>  item[newItem].indexOf(param)))
     set_exchange_list_new(fi_tokens)
-    console.log("fi_tokens",fi_tokens)
-    
+    // console.log("fi_tokens",fi_tokens)
   }
   
   const exchangecoingecko= ()=> 
@@ -341,8 +339,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
         body: JSON.stringify({ query })
     }
     fetch(graphQlURL, opts).then(res => res.json()).then(result=>
-    { 
-          
+    {   
       if (result.data.ethereum != null) 
       {  
         set_tokentransactions(result.data.ethereum.dexTrades) 
@@ -524,34 +521,28 @@ const exchangespagination=(data, offset)=>{
 
   const exchangeshandlePageClick = (e) => {   
     setExchangesCurrentPage(e.selected) 
-    const selectPage = e.selected * 10;  
+    const selectPage = e.selected * 10  
     exchangespagination(exchangelist , selectPage)
-  };  
+  }  
  
 
+  const handleClickOutside = event => 
+  {  
+    if (communityRef.current && !communityRef.current.contains(event.target)) 
+    { 
+      set_community_links(false)
+    }
 
+    if (explorerRef.current && !explorerRef.current.contains(event.target)) 
+    {
+      set_explorer_links(false)
+    }
 
-
-
-
-
-
-
-const handleClickOutside = event => {  
-  if (communityRef.current && !communityRef.current.contains(event.target)) { 
-    set_community_links(false)
+    if (contractRef.current && !contractRef.current.contains(event.target)) 
+    {
+      set_other_contract(false)
+    }
   }
-
-  if (explorerRef.current && !explorerRef.current.contains(event.target)) {
-    set_explorer_links(false);
-  }
-
-  if (contractRef.current && !contractRef.current.contains(event.target)) {
-    set_other_contract(false);
-  }
- 
-  
-};
 const getexchangedata= async (id,networks)=> { 
   const dateSince =((new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString())
   let query = "" 
@@ -886,21 +877,13 @@ const getexchangevalue = async (pool_token_address,networks)=>
 
   const copyContract=(data, type)=>
   {
-    // var copytext = document.createElement("input");
-    // copytext.value = data;
-    // document.body.appendChild(copytext)
-    
-    // copytext.select();
-    // document.execCommand("Copy"); 
-    // copytext.remove()
     set_contract_copy_status(type)
    
-
     var copyText = document.createElement("input")
-    copyText.value = data;
+    copyText.value = data
     document.body.appendChild(copyText)
-    copyText.select();
-    document.execCommand("Copy");
+    copyText.select()
+    document.execCommand("Copy")
     copyText.remove()
     // setTimeout(3000)
     setTimeout(() => set_contract_copy_status(""), 3000)
@@ -915,8 +898,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
 
   const addToWatchlist = (param_token_id) =>
   {
-    Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config)
-    .then(res=>
+    Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config).then(res=>
     { 
       if(res.data.status)
       {
@@ -925,17 +907,16 @@ const getexchangevalue = async (pool_token_address,networks)=>
     })
   }
 
-const removeFromWatchlist = (param_token_id) =>
-{
-  Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config)
-  .then(res=>
+  const removeFromWatchlist = (param_token_id) =>
   {
-    if(res.data.status)
+    Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config).then(res=>
     {
-      set_watchlist(false)
-    }
-  })
-}
+      if(res.data.status)
+      {
+        set_watchlist(false)
+      }
+    })
+  }
 
     
  
@@ -956,34 +937,34 @@ const removeFromWatchlist = (param_token_id) =>
     setModalData({icon: "", title: "", content:""})
     if(param == 1)
     {   
-      Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+data.token_id, config)
-      .then(res=>{ 
-      if(res.data.status === true) 
-      {
-        set_votes(votes+1)
-        set_voting_status(true)
-        setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message})
-      }
-    })
+      Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+data.token_id, config).then(res=>
+      { 
+        if(res.data.status === true) 
+        {
+          set_votes(votes+1)
+          set_voting_status(true)
+          setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message})
+        }
+      })
     }
     else
     {
-      Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+data.token_id, config)
-      .then(res=>{ 
-      if(res.data.status === true) 
-      {
-        set_votes(votes-1)
-        set_voting_status(false)
-        setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message})
-      }
-    })
+      Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+data.token_id, config).then(res=>
+      { 
+        if(res.data.status === true) 
+        {
+          set_votes(votes-1)
+          set_voting_status(false)
+          setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message})
+        }
+      })
     }
   }
 
   return(
     <>
       <Head>
-        <title>{data.token_name.toUpperCase()} ({data.symbol}) Live Price | Markets.coinpedia.org</title>  
+        <title>{data.token_name.toUpperCase()} ({data.symbol}) Live Price</title>  
         <meta name="description" content={data.meta_description} />
         <meta name="keywords" content={data.meta_keywords} />
 
@@ -1016,7 +997,7 @@ const removeFromWatchlist = (param_token_id) =>
           <div className="container">
             <div className="col-md-12">
               <div className="row">
-                <div className="col-md-6 order-md-2">
+                <div className="col-lg-6 col-md-12 order-md-2">
                   <div className="row">
                     <div className="col-md-6 order-md-2">
                       {
@@ -1172,7 +1153,7 @@ const removeFromWatchlist = (param_token_id) =>
                 </div>
 
 
-                <div className="col-md-6  order-md-1">
+                <div className="col-lg-6 col-md-12  order-md-1">
                   <div className="token_main_details">
                     <div className="row">
                       <div className="col-md-6">
@@ -1296,7 +1277,7 @@ const removeFromWatchlist = (param_token_id) =>
                           
 
                           <div className="row">
-                            <div class="col-4 text-right token_share_block token_share_for_left">
+                            <div className="col-4 text-right token_share_block token_share_for_left">
                               <ul className="market_details_share_wishlist mobile_view">
                                 <li>
                                   <div className="share_market_detail_page" data-toggle="modal" onClick={()=>set_share_modal_status(true)}>Share</div>
@@ -1339,15 +1320,13 @@ const removeFromWatchlist = (param_token_id) =>
                                 }
                                 
                                 {
-                                  data.explorer.length > 0
-                                  ?
+                                  data.explorer.length > 0 && data.explorer[0] !="" ?
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> : null} </a></div>
+                                      <div className="widgets__select links_direct" ref={explorerRef} onClick={()=> {set_explorer_links(!explorer_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> </a></div>
                                     </div> 
                                     { 
-                                      explorer_links
-                                      ? 
+                                      explorer_links ? 
                                       <div className="dropdown_block badge_dropdown_block">
                                         <ul>
                                           {
@@ -1355,16 +1334,19 @@ const removeFromWatchlist = (param_token_id) =>
                                               {
                                                 var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
                                                 let url = ""
-                                                if(regexp.test(e))
+                                                if(e!="")
                                                 {
-                                                  url = new URL(e)
+                                                  if(regexp.test(e))
+                                                  {
+                                                    url = new URL(e)
+                                                  }
+                                                  else
+                                                  {
+                                                    e = "http://"+e
+                                                    url = new URL(e)
+                                                  }  
+                                                  return <li key={i}><a href={e ? e : ""} target="_blank">{(url.hostname).includes("t.me") ?url.hostname : null}{(url.hostname).indexOf(".") !== -1 ?(url.hostname).slice(0, (url.hostname).indexOf(".")) : url.hostname}</a></li>
                                                 }
-                                                else
-                                                {
-                                                  e = "http://"+e
-                                                  url = new URL(e)
-                                                }  
-                                                return <li key={i}><a href={e ? e : ""} target="_blank">{(url.hostname).indexOf(".") !== -1 ?(url.hostname).slice(0, (url.hostname).indexOf(".")) : url.hostname}</a></li>
                                               }) 
                                           }
                                         </ul>
@@ -1376,7 +1358,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   :
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" > <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Explorer Not Avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer {data.explorer.length > 0 ? <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> : null} </a></div>
+                                      <div className="widgets__select links_direct" > <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Explorer Not Avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /></a></div>
                                     </div>
                                   </li>
                                 }
@@ -1397,11 +1379,10 @@ const removeFromWatchlist = (param_token_id) =>
                                 </li>
                                 }
                                 {
-                                  ((data.community_address)&&(data.community_address.length > 0))
-                                  ?
+                                  data.community_address.length > 0 && data.community_address[0] !="" ?
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" ref={communityRef} onClick={()=> {set_community_links(!community_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Community {((data.community_address)&&(data.community_address.length > 0)) ? <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> : null} </a></div>
+                                      <div className="widgets__select links_direct" ref={communityRef} onClick={()=> {set_community_links(!community_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Community <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /></a></div>
                                     </div> 
                                     { 
                                       community_links
@@ -1440,7 +1421,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   :
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Community address is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Community  </a></div>
+                                      <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Community address is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Community <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> </a></div>
                                     </div>
                                   </li>
                                 }
@@ -1482,11 +1463,10 @@ const removeFromWatchlist = (param_token_id) =>
                                 }
                               
                               {
-                                  ((data.exchange_link)&&(data.exchange_link.length > 0))
-                                  ?
+                                data.exchange_link.length > 0 && data.exchange_link[0] !="" ?
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" onClick={()=> {set_show_exchange_links(!show_exchange_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Exchanges  {data.explorer.length > 0 ? <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> : null}</a></div>
+                                      <div className="widgets__select links_direct" onClick={()=> {set_show_exchange_links(!show_exchange_links)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Exchanges  <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> </a></div>
                                     </div> 
                                     { 
                                       show_exchange_links
@@ -1517,7 +1497,6 @@ const removeFromWatchlist = (param_token_id) =>
                                           }
                                         </ul>
                                       </div>
-                                          
                                       :
                                       null
                                     }
@@ -1525,7 +1504,7 @@ const removeFromWatchlist = (param_token_id) =>
                                   :
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Exchanges is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Exchanges  </a></div>
+                                      <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Exchanges is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Exchanges<img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /></a></div>
                                     </div>
                                   </li>
                                 }
@@ -1652,7 +1631,7 @@ const removeFromWatchlist = (param_token_id) =>
 
                     <div className="market_token_tabs">
                       <div className="row">
-                        <div className="col-md-6 col-7">
+                        <div className="col-md-6 col-sm-6 col-7">
                           <h5>{(data.symbol).toUpperCase()} Price Chart</h5>
                           <ul className="nav nav-tabs">
                             <li className="nav-item">
@@ -1678,7 +1657,7 @@ const removeFromWatchlist = (param_token_id) =>
                         </div>
                         {
                           graph_status?
-                          <div className="col-md-6 col-5">
+                          <div className="col-md-6 col-sm-6 col-5">
                             <div className="exchange_pair ">
                               Pair &nbsp;
                             <select className="exchange-form-control" data-toggle="tab" href="#home" onChange={(e)=>getexchangedata2(e.target.value)}>
@@ -1692,7 +1671,7 @@ const removeFromWatchlist = (param_token_id) =>
                             </div>
                           </div>
                           :
-                          <div className="col-md-6 col-5">
+                          <div className="col-md-6 col-sm-6 col-5">
                             <ul className=" chart_tabs_ul nav nav-tabs">
                               <li className="nav-item">
                                 <a className="nav-link " data-toggle="tab" href="#one_day" onClick={()=> getGraphData(1)}>1 D</a>
@@ -1711,16 +1690,6 @@ const removeFromWatchlist = (param_token_id) =>
                         }     
                       </div>
                     </div>
-
-                    
- 
-                    {/* <div className="exchange_transactions_tabs">
-                      <ul className="nav nav-tabs">
-                        <li><a data-toggle="tab" href="#home" className="active">Exchange</a></li>
-                        <li><a data-toggle="tab" href="#menu1">Transactions</a></li>
-                        <li><a data-toggle="tab" href="#menu2">Wallet Transactions</a></li>
-                      </ul>
-                    </div> */}
 
                     <div className="token_details_tabs">
                       <div className="tab-content">
@@ -1803,15 +1772,6 @@ const removeFromWatchlist = (param_token_id) =>
                                         <td colSpan="7"><h5 className="text-center no_data_found">No data found</h5></td>
                                       </tr>
                                     }
-                                    {/* {
-                                        tokentransactionsData.length > 0
-                                        ?
-                                        tokentransactionsData
-                                        :
-                                        <tr>
-                                          <td colSpan="5"><h5 className="text-center no_data_found">No data found</h5></td>
-                                        </tr>
-                                      }  */}
                                     </tbody>
                                 }
                               </table>
@@ -1938,7 +1898,7 @@ const removeFromWatchlist = (param_token_id) =>
                                       </h5>
                                     </div>
                                     <div className="col-md-6 col-6">
-                                      <h5><img src="/assets/img/launchpad_calender.svg" />&nbsp;
+                                      <h5 className="res-launchpad"><img src="/assets/img/launchpad_calender.svg" />&nbsp;
                                         {moment.utc(e.start_date).format("MMM DD")} - {moment.utc(e.end_date).format("MMM DD, YYYY")}
                                       </h5>
                                     </div>
@@ -1988,7 +1948,7 @@ const removeFromWatchlist = (param_token_id) =>
                                 <p>Find a quick review of this event below, helping you get started.</p>
 
                                 <ul>
-                                  <li>ICO Price <span>{launchpad_object.price} USD</span></li>
+                                  <li>{ launchpad_object.launch_pad_type == 1 ? " ICO": launchpad_object.launch_pad_type==2 ? " IDO" : launchpad_object.launch_pad_type==3 ? " IEO" : null } Price <span>{launchpad_object.price} USD</span></li>
                                   <li>Softcap <span>{launchpad_object.soft_cap}</span></li>
                                   <li>Tokens Sold <span>{launchpad_object.tokens_sold} {data.symbol ? (data.symbol).toUpperCase() : "-"}</span></li>
                                   <li>Access <span>{launchpad_object.access_type == 1 ? "Public" : "Private"}</span></li>

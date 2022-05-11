@@ -1720,7 +1720,7 @@ const connectToEthWallet=()=>
       metadata.smartContract.currency.symbol
       ?
       <Head> 
-        <title>{metadata.smartContract.currency.symbol} | Markets Coinpedia</title> 
+        <title>{metadata.smartContract.currency.symbol}</title> 
       </Head> 
       :
       null 

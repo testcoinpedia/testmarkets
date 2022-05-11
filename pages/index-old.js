@@ -57,56 +57,52 @@ export default function Home({resData, userAgent, config, user_token})
     voteIds()
     watchListIds()
     var $j = jQuery.noConflict()
-    $j(document).ready(function() {
-      $j('[data-toggle="tooltip"]').tooltip()
-    })
+    $j(document).ready(function() { $j('[data-toggle="tooltip"]').tooltip() })
+
   },[per_page_count,watch_list_status,tokenslist])
  
-const handlePageClick = (e) => 
-{  
-  console.log("e.selected", e.selected)
-  setSelectedPage(e.selected)
-  const selectPage = e.selected; 
-  Pages_Counts(selectPage , tokenslist.length)
-  getTokensList(tokenslist , selectPage * per_page_count)
-}
+  const handlePageClick = (e) => 
+  {  
+    console.log("e.selected", e.selected)
+    setSelectedPage(e.selected)
+    const selectPage = e.selected; 
+    Pages_Counts(selectPage, tokenslist.length)
+    getTokensList(tokenslist, selectPage * per_page_count)
+  }
 
-
-const addToWatchlist = (param_token_id) =>
-{
-  Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config)
-  .then(res=>
-  { 
-    console.log("add", res.data)
-    if(res.data.status)
-    {
-      var sdawatchlist = watchlist
-      set_watchlist([])
-      sdawatchlist.push(param_token_id)
-      set_watchlist(sdawatchlist)
-      console.log("watchlist", watchlist)
-    }
-  })
-}
-
-const removeFromWatchlist = (param_token_id) =>
-{
-  Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config)
-  .then(res=>
+  const addToWatchlist = (param_token_id) =>
   {
-    console.log("remove", res.data)
-    if(res.data.status)
-    {
-      var sdawatchlist = watchlist
-      set_watchlist([])
-      sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
-      set_watchlist(sdawatchlist)
-      console.log("watchlist", watchlist)
-    }
-  })
-}
+    Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config).then(res=>
+    { 
+      console.log("add", res.data)
+      if(res.data.status)
+      {
+        var sdawatchlist = watchlist
+        set_watchlist([])
+        sdawatchlist.push(param_token_id)
+        set_watchlist(sdawatchlist)
+        console.log("watchlist", watchlist)
+      }
+    })
+  }
 
- const ModalVote=(token_id,status,_id,item)=> 
+  const removeFromWatchlist = (param_token_id) =>
+  {
+    Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config).then(res=>
+    {
+      console.log("remove", res.data)
+      if(res.data.status)
+      {
+        var sdawatchlist = watchlist
+        set_watchlist([])
+        sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
+        set_watchlist(sdawatchlist)
+        console.log("watchlist", watchlist)
+      }
+    })
+  }
+
+  const ModalVote=(token_id,status,_id,item)=> 
   { 
     console.log(item)   
     setHandleModalVote(!handleModalVote) 
@@ -114,16 +110,13 @@ const removeFromWatchlist = (param_token_id) =>
     set_Token_id(token_id)
     set_vote_id(_id)
     set_item(item)
-    
   }
 
   const vote = (param) =>
   {
-    
     if(param == 1)
     {
-      Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+token_id, config)
-      .then(res=>
+      Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+token_id, config).then(res=>
       { 
         console.log(res)
         if(res.data.status === true) 
@@ -147,8 +140,7 @@ const removeFromWatchlist = (param_token_id) =>
     }
     else
     {
-      Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+token_id, config)
-      .then(res=>
+      Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+token_id, config).then(res=>
       { 
         console.log(res)
         if(res.data.status === true) 
@@ -171,30 +163,29 @@ const removeFromWatchlist = (param_token_id) =>
       })
     }
   }
+
   const voteIds = () =>
-    {
-        Axios.get(API_BASE_URL+"markets/tokens/voting_ids", config).then(res=>
-        { 
-       
-        if(res.data.status)
-        {
-          setvoting_ids(res.data.voting_ids)
-            console.log(res.data.voting_ids)
-        }
-        })
-    }
-    const watchListIds = () =>
-    {
-        Axios.get(API_BASE_URL+"markets/tokens/watchlist_ids", config).then(res=>
-        { 
-       
-        if(res.data.status)
-        {
-          set_watchlist(res.data.message)
-           
-        }
-        })
-    }
+  {
+    Axios.get(API_BASE_URL+"markets/tokens/voting_ids", config).then(res=>
+    { 
+      if(res.data.status)
+      {
+        setvoting_ids(res.data.voting_ids)
+        console.log(res.data.voting_ids)
+      }
+    })
+  }
+
+  const watchListIds = () =>
+  {
+    Axios.get(API_BASE_URL+"markets/tokens/watchlist_ids", config).then(res=>
+    { 
+      if(res.data.status)
+      {
+        set_watchlist(res.data.message)
+      }
+    })
+  }
     
   const set_all_tab_active=()=>
   {  
@@ -470,7 +461,7 @@ const removeFromWatchlist = (param_token_id) =>
                                          {
                                              e.contract_addresses.length > 0
                                              ?
-                                               e.contract_addresses[0].network_type === "1" ? "ERC20" : "BEP20" 
+                                              e.contract_addresses[0].network_type === "1" ? "ERC20" : "BEP20" 
                                              // e.contract_addresses.map((ca)=>
                                              //   parseInt(ca.network_type) === 1 ? "ERC20" : "BEP20" 
                                              //)

@@ -1,5 +1,5 @@
 import React from "react";
-import * as constant from '../components/constants';
+import {API_BASE_URL, config} from '../components/constants';
 // import fs from "fs"; 
 
 const Sitemap = () => {};
@@ -10,10 +10,11 @@ export const getServerSideProps = async ({ res }) => {
     production: "https://markets.coinpedia.org",
   }[process.env.NODE_ENV]; 
  
-    let meta_status;
+    const coins = await fetch(API_BASE_URL+"sitemap/tokens", config(""))
+    const meta_status = await coins.json()
 
-    const coins = await fetch("https://api.coinpedia.org/listing_tokens/tokens_list", constant.config)
-    meta_status = await coins.json()  
+    // const coins = await fetch("https://api.coinpedia.org/listing_tokens/tokens_list", constant.config)
+    // meta_status = await coins.json()  
   
   const sitesmap = `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -26,6 +27,13 @@ export const getServerSideProps = async ({ res }) => {
       
       <url>
         <loc>https://markets.coinpedia.org/gainers-and-losers</loc>
+        <lastmod>${new Date().toISOString()}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+      </url>
+
+      <url>
+        <loc>https://markets.coinpedia.org/launchpad</loc>
         <lastmod>${new Date().toISOString()}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>

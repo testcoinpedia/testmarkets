@@ -72,14 +72,14 @@ export default function UpcomingLaunchPad({userAgent}) {
     Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config(user_token))
     .then(res=>
     { 
-      console.log("add", res.data)
+      // console.log("add", res.data)
       if(res.data.status)
       {
         var sdawatchlist = watchlist
         set_watchlist([])
         sdawatchlist.push(param_token_id)
         set_watchlist(sdawatchlist)
-        console.log("watchlist", watchlist)
+        // console.log("watchlist", watchlist)
       }
     })
   }
@@ -89,14 +89,14 @@ export default function UpcomingLaunchPad({userAgent}) {
     Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config(user_token))
     .then(res=>
     {
-      console.log("remove", res.data)
+      // console.log("remove", res.data)
       if(res.data.status)
       {
         var sdawatchlist = watchlist
         set_watchlist([])
         sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
         set_watchlist(sdawatchlist)
-        console.log("watchlist", watchlist)
+        // console.log("watchlist", watchlist)
       }
     })
   }
@@ -116,7 +116,7 @@ export default function UpcomingLaunchPad({userAgent}) {
   return(
     <>
       <Head>
-        <title>Upcoming LaunchPad | markets.coinpedia.org</title>
+        <title>Upcoming LaunchPad</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
@@ -319,7 +319,7 @@ export default function UpcomingLaunchPad({userAgent}) {
                             :
                             <>
                          {
-                           ! apistatus ?
+                           !apistatus ?
                             <tr key="1">
                               <td className="text-center no_data_found" colSpan="8">
                                 Sorry, No related data found.
@@ -327,7 +327,6 @@ export default function UpcomingLaunchPad({userAgent}) {
                             </tr>
                             :
                           <TableContentLoader row="5" col="8" />
-                                               
                          }
                          </>
                         } 

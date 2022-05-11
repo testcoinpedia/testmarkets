@@ -7,7 +7,7 @@ export const live_price_coingecko = async (token_id) =>
     const res = await Axios.get("https://api.coingecko.com/api/v3/coins/"+token_id)
     if(res.data)
     {
-       console.log(res.data)
+    //    console.log(res.data)
         resObj['name'] = res.data.name
         resObj['id'] = res.data.id
         resObj['live_price'] = res.data.market_data.current_price.usd
