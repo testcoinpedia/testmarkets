@@ -36,38 +36,28 @@ export default function WalletTokensList({userAgent, config})
   const [sl_no, set_sl_no]=useState(0)
  
     useEffect(()=>
-    {  
-      
-      
+    { 
       getTokens() 
-      // handlePageClick({selected : 0})
-    },[watchlist])
+    },[])
          
-    const getTokens=()=>
+    const getTokens= async ()=>
     {
-      Axios.get(API_BASE_URL+"markets/listing_tokens/listed_tokens", config)
-      .then(res => 
-      {   
-        if(res.data.status===true)
-        { 
-          // console.log(res.data)
-          set_loader_status(true)
-          setfilteredTokens(res.data.message)
-          set_token_list(res.data.message)
-          set_token_counts(res.data.message.length)
-          setPageCount(Math.ceil(res.data.message.length / perPage))
-          getTokensCurrentList(res.data.message, 0)
-          set_watchlist(res.data.watchlist)
-          set_tokenStatus(res.data.tokenStatus)
+      const res = await Axios.get(API_BASE_URL+"markets/listing_tokens/listed_tokens", config)
+      if(res.data.status)
+      {
+          console.log(res.data.watchlist)
+          await set_watchlist(res.data.watchlist)
+          await set_loader_status(true)
+
+          await setfilteredTokens(res.data.message)
+          await set_token_list(res.data.message)
+          await set_token_counts(res.data.message.length)
+          await setPageCount(Math.ceil(res.data.message.length / perPage))
+          await getTokensCurrentList(res.data.message, 0)
           
-          
-        }
-        else
-        { 
-          Logout()
-          router.push(app_coinpedia_url+"login")
-        }
-      }) 
+          await set_tokenStatus(res.data.tokenStatus)
+      }
+        
     }
     
   
@@ -84,7 +74,7 @@ export default function WalletTokensList({userAgent, config})
         sdawatchlist.push(param_token_id)
         set_watchlist(sdawatchlist)
         // console.log("watchlist", watchlist)
-        
+        // getTokens() 
       }
     })
   }
@@ -102,7 +92,7 @@ export default function WalletTokensList({userAgent, config})
         sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
         set_watchlist(sdawatchlist)
         // console.log("watchlist", watchlist)
-      
+        // getTokens() 
       }
     })
   }
@@ -117,7 +107,9 @@ export default function WalletTokensList({userAgent, config})
       set_sl_no(selectedPage * perPage)
       setCurrentPage(page.selectedPage) 
       setPageCount(Math.ceil(filteredTokens.length / perPage))
-      getTokensCurrentList(filteredTokens, selectedoffset)
+      const token_list = filteredTokens.slice(selectedoffset, selectedoffset + perPage) 
+      setCurrentPageArray(token_list) 
+      // getTokensCurrentList(filteredTokens, selectedoffset)
      
       // console.log(selectedPage * perPage)
    }   
@@ -149,131 +141,7 @@ export default function WalletTokensList({userAgent, config})
 const getTokensCurrentList=(items, offset)=>
 {  
   const token_list = items.slice(offset, offset + perPage) 
-  // console.log(token_list)
-  const postData = token_list.map((e, i)=>{
-    var my_sl = sl_no
-    return <tr key={i}>
-        <td>
-        {
-           
-            <>
-            {/* {
-               e.approval_status == 1 && e.active_status == 1 && watchlist.includes(e._id) ?
-              <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" /></span>
-               :
-               e.approval_status == 1 && e.active_status == 1 ?
-               <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" /></span>
-               :
-               ""
-              } */}
-               {
-                   watchlist.includes(e._id) ?
-                   <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist" /></span>
-                   :
-                   e.approval_status == 1 && e.active_status == 1 ?
-                   <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></span>
-                   :
-                   ""
-                   
-                   }
-              </>
-          }
-        </td>
-      
-        <td>{offset+i+1}</td>
-        <td>
-          <div className="media">
-            <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="token" className="rounded-circle"  />
-            <div className="media-body">
-              <h4 class="media-heading">{e.token_name} <span>{e.symbol}</span></h4>
-            </div>
-          </div>
-        </td>
-        {/* <td> ${e.token_max_supply ? convertvalue(parseFloat(e.token_max_supply).toFixed(2)) : "-"}</td>
-        <td> ${e.circulating_supply ? convertvalue(parseFloat(e.circulating_supply).toFixed(2)) : "-"} {e.symbol}</td> */}
-        <td> {e.total_max_supply ? convertvalue(parseFloat(e.total_max_supply).toFixed(2)) : "-"}</td>
-        <td> {e.market_cap ? convertvalue(parseFloat(e.market_cap).toFixed(2)) : "-"}</td>
-        <td>
-            {
-              e.contract_addresses?
-              e.contract_addresses.length > 0 
-              ?
-                e.contract_addresses.map((ntwrk,i)=>
-                {
-                  if(parseInt(ntwrk.network_type)=== 1)
-                  {
-                      return <>{i>0 ? "," : null} ETH</>
-                  }
-                  else if(parseInt(ntwrk.network_type) === 2)
-                  {
-                    return <>{i>0 ? "," : null} BSC</>
-                  }
-                  
-                }
-                )
-              :
-              "-"
-              :
-              "-"
-            } 
-        </td>
-        <td className="comp_establish_date">
-          {
-            parseInt(e.approval_status) === 0 ?
-            <div style={{color: '#f1b50a'}}>Pending</div>
-            :
-            parseInt(e.approval_status) === 1 ?
-            <div style={{color: '#339e00'}}>Approved</div>
-            :
-            parseInt(e.approval_status) === 2 ?
-            <div style={{color: '#fb2c10'}}>Rejected</div>
-            :
-            null
-          }
-           {
-              parseInt(e.active_status) === 0 ?
-              "Disable"
-              :
-              "Enable"
-           }
-        </td>
-
-        <td>
-            {
-                parseInt(e.approval_status) !== 2 ?
-                <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
-                  <a><span className="manage_tokens_edit">Edit Token</span></a>
-                </Link>
-                :
-                ""
-            }
-            {
-              parseInt(e.approval_status) === 0 ?
-              <>
-               <span className="manage_tokens_edit_disbale">Edit Launchpad</span>
-               <span className="manage_tokens_edit_disbale">View</span>
-              </>
-              :
-              parseInt(e.approval_status) === 1 && parseInt(e.active_status) === 1 ?
-              <>
-               {/* <Link > */}
-                  <a href={market_coinpedia_url+"token/launchpads/"+e.token_id}><span className="manage_tokens_edit">Edit Launchpad</span></a>
-              {/* </Link> */}
-
-              <Link href={market_coinpedia_url + e.token_id}>
-                <a><span className="manage_tokens_edit">View</span></a>
-              </Link>
-              </>
-              :
-              null
-            }
-       </td> 
-
-       
-              
-    </tr>
-  })  
-  setCurrentPageArray(postData) 
+  setCurrentPageArray(token_list) 
 }
 
 
@@ -353,7 +221,114 @@ const getTokensCurrentList=(items, offset)=>
                   loader_status 
                   ?
                   currentPageArray.length > 0 ?
-                  currentPageArray
+                  currentPageArray.map((e, i)=>
+                   <tr key={i}>
+                        <td>
+                        {
+                           
+                            <>
+                               {
+                                   watchlist.includes(e._id) ?
+                                   <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist" /></span>
+                                   :
+                                   e.approval_status == 1 && e.active_status == 1 ?
+                                   <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></span>
+                                   :
+                                   ""
+                               }
+                              </>
+                          }
+                        </td>
+                        <td>{sl_no+i+1}</td>
+                        <td>
+                          <div className="media">
+                            <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="token" className="rounded-circle"  />
+                            <div className="media-body">
+                              <h4 class="media-heading">{e.token_name} <span>{e.symbol}</span></h4>
+                            </div>
+                          </div>
+                        </td>
+                        {/* <td> ${e.token_max_supply ? convertvalue(parseFloat(e.token_max_supply).toFixed(2)) : "-"}</td>
+                        <td> ${e.circulating_supply ? convertvalue(parseFloat(e.circulating_supply).toFixed(2)) : "-"} {e.symbol}</td> */}
+                        <td> {e.total_max_supply ? convertvalue(parseFloat(e.total_max_supply).toFixed(2)) : "-"}</td>
+                        <td> {e.market_cap ? convertvalue(parseFloat(e.market_cap).toFixed(2)) : "-"}</td>
+                        <td>
+                            {
+                              e.contract_addresses?
+                              e.contract_addresses.length > 0 
+                              ?
+                                e.contract_addresses.map((ntwrk,i)=>
+                                {
+                                  if(parseInt(ntwrk.network_type)=== 1)
+                                  {
+                                      return <>{i>0 ? "," : null} ETH</>
+                                  }
+                                  else if(parseInt(ntwrk.network_type) === 2)
+                                  {
+                                    return <>{i>0 ? "," : null} BSC</>
+                                  }
+                                  
+                                }
+                                )
+                              :
+                              "-"
+                              :
+                              "-"
+                            } 
+                        </td>
+                        <td className="comp_establish_date">
+                          {
+                            parseInt(e.approval_status) === 0 ?
+                            <div style={{color: '#f1b50a'}}>Pending</div>
+                            :
+                            parseInt(e.approval_status) === 1 ?
+                            <div style={{color: '#339e00'}}>Approved</div>
+                            :
+                            parseInt(e.approval_status) === 2 ?
+                            <div style={{color: '#fb2c10'}}>Rejected</div>
+                            :
+                            null
+                          }
+                           {
+                              parseInt(e.active_status) === 0 ?
+                              "Disable"
+                              :
+                              "Enable"
+                           }
+                        </td>
+                
+                        <td>
+                            {
+                                parseInt(e.approval_status) !== 2 ?
+                                <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
+                                  <a><span className="manage_tokens_edit">Edit Token</span></a>
+                                </Link>
+                                :
+                                ""
+                            }
+                            {
+                              parseInt(e.approval_status) === 0 ?
+                              <>
+                               <span className="manage_tokens_edit_disbale">Edit Launchpad</span>
+                               <span className="manage_tokens_edit_disbale">View</span>
+                              </>
+                              :
+                              parseInt(e.approval_status) === 1 && parseInt(e.active_status) === 1 ?
+                              <>
+                               {/* <Link > */}
+                                  <a href={market_coinpedia_url+"token/launchpads/"+e.token_id}><span className="manage_tokens_edit">Edit Launchpad</span></a>
+                              {/* </Link> */}
+                
+                              <Link href={market_coinpedia_url + e.token_id}>
+                                <a><span className="manage_tokens_edit">View</span></a>
+                              </Link>
+                              </>
+                              :
+                              null
+                            }
+                       </td> 
+                    </tr>
+                  ) 
                   :
                   <tr key="1">
                       <td className="text-center" colSpan="7">

@@ -91,17 +91,17 @@ export default function LaunchPad({userAgent})
   return(
     <>
       <Head>
-        <title>Discover Ongoing & Upcoming Launchpad</title> {/*  Best  ICO and IDO calendar | */}
-        <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
-        <meta name="description" content="Stay updated with the List of Ongoing & Upcoming Launchpad on different blockchain platforms. Get plugged in with the upcoming  ICO, IDO’s and more. ICO and IDO calendar" />
-        <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
+        <title>Up-To-Date List of Complete Launchpad Calendar</title> {/*  Best  ICO and IDO calendar | */}
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" /> 
+        <meta name="description" content="Explore updated Launchpad list. Stay update with Ongoing Top crypto launchpads. Keep Eye on Listed and upcoming launchpads." />
+        <meta name="keywords" content="Ongoing Crypto Launchpads, Crypto launchpad list , Crypto launchpad platforms, top launchpad crypto, crypto launchpad projects, IDO launchpads, IEO launchpad." />
 
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Discover Ongoing & Upcoming Launchpad | Best  ICO and IDO calendar" />
+        <meta property="og:title" content="Up-To-Date List of Complete Launchpad Calendar" />
         <meta property="og:description" content="Stay updated with the List of Ongoing & Upcoming Launchpad on different blockchain platforms. Get plugged in with the upcoming  ICO, IDO’s and more. ICO and IDO calendar" />
-        <meta property="og:url" content={website_url} />
-        <meta property="og:site_name" content="Discover Ongoing & Upcoming Launchpad | Best  ICO and IDO calendar" />
+        <meta property="og:url" content={website_url+"launchpad"} />
+        <meta property="og:site_name" content="Up-To-Date List of Complete Launchpad Calendar" />
         <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:width" content="400" />
@@ -110,14 +110,14 @@ export default function LaunchPad({userAgent})
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@coinpedia" />
         <meta name="twitter:creator" content="@coinpedia" />
-        <meta name="twitter:title" content="Discover Ongoing & Upcoming Launchpad | Best  ICO and IDO calendar" />
+        <meta name="twitter:title" content="Up-To-Date List of Complete Launchpad Calendar" />
         <meta name="twitter:description" content="Stay updated with the List of Ongoing & Upcoming Launchpad on different blockchain platforms. Get plugged in with the upcoming  ICO, IDO’s and more. ICO and IDO calendar" />
         <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
 
         <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
         <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
 
-        <link rel="canonical" href={website_url} />
+        <link rel="canonical" href={website_url+"launchpad"} />
 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
@@ -127,8 +127,8 @@ export default function LaunchPad({userAgent})
               <div className="col-md-12">
                 <div className="row launchpad_list">
                   <div className="col-md-8 col-7">
-                    <h1 className="page_title">Launchpad List</h1>
-                    <p>List of ongoing, upcoming and completed launchpads</p>
+                    <h1 className="page_title">List of Complete Launchpad Calendar.</h1>
+                    <p>List of ongoing, upcoming and completed launchpads.</p>
                   </div>
                   <div className="col-md-4 col-5">
                     <div className="launchpad-toke-button">

@@ -38,6 +38,8 @@ export default function Create_token({config})
   const [token_image, setTokenImage] = useState('')
   const [source_code_link, seSourceCodeLink] = useState('')
   const [tokenid , setToken_id] = useState("")
+  const [meta_keywords, set_meta_keywords] = useState("")
+  const [meta_description, set_meta_description] = useState("")
 
   const [err_symbol, setErrSymbol] = useState('') 
   const [err_token_name, setErrTokenName] = useState('')
@@ -379,30 +381,31 @@ const createNewToken = () =>
     }
     
     const reqObj = {
-      wallet_address: wallet_address, 
-      symbol: symbol, 
-      token_name: token_name,
-      token_image: token_image,
-      website_link: website_link,
-      whitepaper: whitepaper,
-      total_max_supply: token_max_supply,
-      price: live_price,
-      market_cap: market_cap, 
-      token_description: token_description,
-      source_code_link: source_code_link,
-      explorer:explorer,
-      exchange_link:exchange_link,
-      community_address:community_address,
-      contract_addresses: contract_address
+      wallet_address : wallet_address, 
+      symbol : symbol, 
+      token_name : token_name,
+      token_image : token_image,
+      website_link : website_link,
+      whitepaper : whitepaper,
+      total_max_supply : token_max_supply,
+      price : live_price,
+      market_cap : market_cap, 
+      token_description : token_description,
+      source_code_link : source_code_link,
+      explorer : explorer,
+      exchange_link : exchange_link,
+      community_address : community_address,
+      contract_addresses : contract_address,
+      meta_keywords : meta_keywords,
+      meta_description : meta_description
     }  
 
     // console.log(reqObj)
-    Axios.post(API_BASE_URL+"markets/listing_tokens/create_new", reqObj, config)
-    .then(response=>{ 
+    Axios.post(API_BASE_URL+"markets/listing_tokens/create_new", reqObj, config).then(response=>
+    { 
       // console.log(response)
       if(response.data.status)
       { 
-       
         setShowNav(true) 
         setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: response.data.message.alert_message})
         clearform()
@@ -1272,6 +1275,43 @@ exchange_link
                                 </div>
                               </div>
                             }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-lg-8 col-md-12">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label>Meta Keywords</label>
+                            </div>
+                            <div className="col-md-8">
+                              <div>
+                                <div className="form-custom create_token_no_space">
+                                  <div className="form-group input_block_outline">
+                                    <input autoComplete="off" type="text" className="form-control" placeholder="Meta Keywords" value={meta_keywords} onChange={(e) => set_meta_keywords(e.target.value)}/>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-lg-8 col-md-12">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label>Meta Description</label>
+                            </div>
+                            <div className="col-md-8">
+                              <div>
+                                  <div className="form-custom create_token_no_space">
+                                    <div className="form-group input_block_outline">
+                                      <input autoComplete="off" type="text" className="form-control" placeholder="Meta Description"  value={meta_description} onChange={(e) => set_meta_description(e.target.value)}/>
+                                    </div>
+                                  </div>
+                                </div>
                             </div>
                           </div>
                         </div>

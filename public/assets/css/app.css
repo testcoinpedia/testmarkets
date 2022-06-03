@@ -10531,6 +10531,7 @@ tbody td {
   font-size: 14px;
   color: #4f6da5;
   font-weight: 500 !important;
+  cursor: pointer;
 }
 
 .coin_main_links ul .coin_individual_list {
@@ -18118,7 +18119,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: #768da782;
 }
 .market_token_details .wallets__details .wallet_address_token a{
-  width: 88%;
+  width: 92%;
 }
 .token_list_table thead{
   white-space: nowrap;

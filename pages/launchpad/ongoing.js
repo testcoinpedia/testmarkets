@@ -118,17 +118,17 @@ export default function OngoingLaunchPad({userAgent}) {
   return(
     <>
       <Head>
-        <title>Launchpad Ongoing</title>
-        <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
-        <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
+        <title>List Of Ongoing Crypto Launchpads | Coinpedia Markets</title>
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" /> 
+        <meta name="description" content="Discover updated Launchpad list. Explore Ongoing Top crypto launchpads. Keep Eye on Listed and upcoming launchpads." />
+        <meta name="keywords" content="Ongoing Crypto Launchpads, Crypto launchpad list , Crypto launchpad platforms, top launchpad crypto, crypto launchpad projects, IDO launchpads, IEO launchpad." />
 
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-        <meta property="og:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta property="og:url" content={website_url} />
-        <meta property="og:site_name" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
+        <meta property="og:title" content="List Of Ongoing Crypto Launchpads | Coinpedia Markets" />
+        <meta property="og:description" content="Ongoing Crypto Launchpads, Crypto launchpad list , Crypto launchpad platforms, top launchpad crypto, crypto launchpad projects, IDO launchpads, IEO launchpad." />
+        <meta property="og:url" content={website_url+"launchpad/ongoing"} />
+        <meta property="og:site_name" content="List Of Ongoing Crypto Launchpads | Coinpedia Markets" />
         <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:width" content="400" />
@@ -137,14 +137,14 @@ export default function OngoingLaunchPad({userAgent}) {
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@coinpedia" />
         <meta name="twitter:creator" content="@coinpedia" />
-        <meta name="twitter:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-        <meta name="twitter:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
+        <meta name="twitter:title" content="List Of Ongoing Crypto Launchpads | Coinpedia Markets" />
+        <meta name="twitter:description" content="Ongoing Crypto Launchpads, Crypto launchpad list , Crypto launchpad platforms, top launchpad crypto, crypto launchpad projects, IDO launchpads, IEO launchpad." />
         <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
 
         <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
         <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
 
-        <link rel="canonical" href={website_url} />
+        <link rel="canonical" href={website_url+"launchpad/ongoing"} />
 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
@@ -154,8 +154,8 @@ export default function OngoingLaunchPad({userAgent}) {
               <div className="col-md-12">
                 <div className="row launchpad_list">
                   <div className="col-md-8 col-7">
-                    <h1 className="page_title">Launchpad List</h1>
-                    <p>These are the ongoing launchpads</p>
+                    <h1 className="page_title">Now Live ! Ongoing Crypto Launchpads List</h1>
+                    <p>All current and ongoing launchpads, listed in date order.</p>
                   </div>
                   <div className="col-md-4 col-5">
                     <div className="launchpad-toke-button">

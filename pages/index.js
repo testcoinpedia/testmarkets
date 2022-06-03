@@ -256,12 +256,12 @@ return (
     
    <>
       <Head>
-         <title>Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and MaketCap</title>
-         <meta name="description" content="Discover the list of top blockchain technology companies, Crypto startups and other Fintech Giants across the world.Didn’t Find your firm? List your company now and gain visibility."/>
-         <meta name="keywords" content="Blockchain startups , Crypto startups , Top Fintech companies , blockchain technology companies , Crypto and Blockchain firms , Top Blockchain companies." />
+         <title>Cryptocurrency Market Live Insights | Coinpedia </title>
+         <meta name="description" content="Coinpedia’s Market bring you with a list of top cryptocurrencies with real timeprices, including percentage change, charts, history, volume and more."/>
+         <meta name="keywords" content="crypto market, crypto market tracker, Crypto tracker live, Cryptocurrency market, crypto market insights , Live crypto insights, crypto price alerts, Live crypto alerts." />
          <meta property="og:locale" content="en_US" />
          <meta property="og:type" content="website" />
-         <meta property="og:title" content="List of Top Fintech Companies across the Globe | Coinpedia PRO" />
+         <meta property="og:title" content="Cryptocurrency Market Live Insights | Coinpedia" />
          <meta property="og:description" content="Coinpedia company listing page offers quick view of all listed companies of Fintech, Blockchain and Finance category. Get Exchages, Wallets, Coins, Tools, Trading forms and more. " />
          <meta property="og:url" content={website_url} />
          <meta property="og:site_name" content="List of Fintech Companies | CoinPedia Pro Account. " />
@@ -273,11 +273,11 @@ return (
          <meta name="twitter:card" content="summary" />
          <meta name="twitter:site" content="@coinpedia" />
          <meta name="twitter:creator" content="@coinpedia" />
-         <meta name="twitter:title" content="List of Top Fintech Companies across the Globe | Coinpedia PRO" />
+         <meta name="twitter:title" content="Cryptocurrency Market Live Insights | Coinpedia" />
          <meta name="twitter:description" content="Here's a list of the leading fintech companies in the country across the various sub-sectors.We are extending and updating the list regularly." />
          <meta name="twitter:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
 
-         <link rel="canonical" href={website_url+"companies"}/>
+         <link rel="canonical" href={website_url}/>
          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
 
@@ -292,7 +292,7 @@ return (
               <div className="row market_insights ">
                 <div className="col-md-6 col-lg-6">
                   <h1 className="page_title">Cryptocurrency Market Insights</h1>
-                  <p>Companies with tech innovation into finance and technology, Globally.</p>
+                  <p>Check the latest Price before you buy.</p>
                 </div>
                 <div className="col-md-1 col-lg-2"></div>
                 <div className="col-md-5 col-lg-4">
@@ -371,7 +371,7 @@ return (
                       <li className={all_tab_status?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
                       {
                         tokenStatus?
-                        <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist?active_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                        <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
                         :
                         <li>
                         <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>

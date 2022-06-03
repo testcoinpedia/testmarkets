@@ -36,7 +36,9 @@ export default function UpdateToken({userAgent,config,token_id}) {
   const [source_code_link, seSourceCodeLink] = useState("")
   const [imagebaseurl, setImageUrl] = useState("") 
   const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/") 
-  
+  const [meta_keywords, set_meta_keywords] = useState("")
+  const [meta_description, set_meta_description] = useState("")
+
   const [err_symbol, setErrSymbol] = useState('') 
   const [err_token_name, setErrTokenName] = useState('')
   const [err_website_link, setErrWebsiteLink] = useState('')
@@ -346,18 +348,19 @@ const onLoad = useCallback((img) => {
       exchange_link: exchange_link,
       community_address: community_address, 
       contract_addresses: contract_address, 
+      meta_keywords : meta_keywords,
+      meta_description : meta_description
     } 
 
     if(formValid)
     { 
       
-      Axios.post(API_BASE_URL+"markets/listing_tokens/update_token_details/", reqObj, config)
-      .then(response=> { 
+      Axios.post(API_BASE_URL+"markets/listing_tokens/update_token_details/", reqObj, config).then(response=> { 
         // console.log(response)
         if(response.data.status)
         { 
-            setTokenImage("")
-            getTokenDetails() 
+          setTokenImage("")
+          getTokenDetails() 
           // console.log(response.data)
           setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: response.data.message.alert_message})
         } 
@@ -420,6 +423,8 @@ const onLoad = useCallback((img) => {
         setTokenMaxSupply(response.data.message.total_max_supply)
         setmarket_cap(response.data.message.market_cap) 
         setTokenDescription(response.data.message.token_description)
+        set_meta_keywords(response.data.message.meta_keywords)
+        set_meta_description(response.data.message.meta_description)
         if(response.data.message.token_image)
         {
           set_disply_token_image(image_base_url+response.data.message.token_image)
@@ -1102,6 +1107,43 @@ const getTokensDetails = (type, address) =>{
                                 </div>
                               </div>
                             }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-lg-8 col-md-12">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label>Meta Keywords</label>
+                            </div>
+                            <div className="col-md-8">
+                              <div>
+                                <div className="form-custom create_token_no_space">
+                                  <div className="form-group input_block_outline">
+                                    <input autoComplete="off" type="text" className="form-control" placeholder="Meta Keywords" value={meta_keywords} onChange={(e) => set_meta_keywords(e.target.value)}/>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-lg-8 col-md-12">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label>Meta Description</label>
+                            </div>
+                            <div className="col-md-8">
+                              <div>
+                                  <div className="form-custom create_token_no_space">
+                                    <div className="form-group input_block_outline">
+                                      <input autoComplete="off" type="text" className="form-control" placeholder="Meta Description"  value={meta_description} onChange={(e) => set_meta_description(e.target.value)}/>
+                                    </div>
+                                  </div>
+                                </div>
                             </div>
                           </div>
                         </div>
