@@ -187,7 +187,7 @@ export default function Topmenu()
                                       <a href={market_coinpedia_url+"token"}  className="dropdown-item"><img src="/assets/img/menu-token.png" className="dark-menu-img" /><img src="/assets/img/menu-token.png" className="light-menu-img" /> Manage Tokens</a>
                                       {/* <a href={market_coinpedia_url+"create-launchpad/maker"}  className="dropdown-item"><img src="/assets/img/menu-airdrop.png" /> Manage Launchpad/Airdrop</a> */}
                                       <a href={market_coinpedia_url+"token/create-new"}  className="dropdown-item"><img src="/assets/img/menu-list-token.png" className="dark-menu-img" /><img src="/assets/img/menu-list-token.png" className="light-menu-img" /> List a Token</a>
-
+                                      <a href={app_coinpedia_url+"profile/my-nft-collection"}  className="dropdown-item"><img src="/assets/img/menu-list-token.png" />My NFT Collection</a>
                                       
                                       {
                                         parseInt(JsCookie.get('user_email_status')) === 0 && JsCookie.get('user_wallet_address') == ""?

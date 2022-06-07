@@ -1463,6 +1463,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                 }
                               
                               {
+                                data.exchange_link?
                                 data.exchange_link.length > 0 && data.exchange_link[0] !="" ?
                                   <li className="coin_individual_list">
                                     <div className="quick_block_links">
@@ -1507,6 +1508,8 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                       <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Exchanges is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Exchanges<img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /></a></div>
                                     </div>
                                   </li>
+                                  :
+                                  null
                                 }
                               
                               </ul>
@@ -1664,7 +1667,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                   <option value="">All</option>  
                                   {   
                                     uniques.map((e)=>
-                                      <option>{e}</option>
+                                      <option >{e}</option>
                                       )
                                   } 
                                 </select>
