@@ -183,7 +183,7 @@ export default function OngoingLaunchPad({userAgent}) {
                     <div className="col-md-9 col-6">
                       <ul className="category_list">
                         <li className="active_tab">All</li>
-                        <li><Link href={app_coinpedia_url+"watchlist?active_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                        <li><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
                         <li className="inactive"  data-toggle="modal" data-target="#comingSoon">DeFi</li>
                         <li className="inactive" data-toggle="modal" data-target="#comingSoon">NFT</li>
                         <li className="inactive" data-toggle="modal" data-target="#comingSoon">Metaverse</li>
