@@ -11878,17 +11878,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .connect_wallet_header .dropdown_wallet_header a {
   font-size: 13px;
-  padding: 6px 7px;
+  padding: 4px 7px;
+  color: #727272;
   cursor: pointer;
 }
 
 .connect_wallet_header .dropdown_wallet_header a span {
   color: #979fb1;
   font-size: 12px;
+  
 }
 
 .connect_wallet_header .dropdown_wallet_header a:hover {
-  background: #e9eef5;
+  /* background: #e9eef5; */
   border-radius: 5px;
   cursor: pointer;
 }
@@ -11914,16 +11916,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .connect_wallet_header .dropdown_wallet_header .register_now p {
   font-size: 10px;
-  color: #4f5455;
+  color: #000;
+  text-align: center;
 }
 
 .connect_wallet_header .dropdown_wallet_header .header_reg_btn {
-  border: 1px solid #2196f3;
-  border-radius: 50px;
-  color: #2196f3;
+  border: 1px solid #422f8e;
+  border-radius: 5px;
+  color: #fff;
   display: block;
   margin-top: 10px;
   text-align: center;
+  background: #422f8e;
 }
 
 .create_account {
@@ -12907,7 +12911,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .market_top_header .connect_wallet_header .connect_wallet .login_img {
-  width: 24px;
+  width: 19px;
+}
+.connect_wallet_header .dropdown_wallet_header .header_reg_btn img {
+  width: 16px;
 }
 
 .connect_wallet_header .dropdown_wallet_header {
@@ -12932,13 +12939,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .connect_wallet_header .dropdown_wallet_header a:hover {
-  background: #e9eef5 !important;
-  border-radius: 5px;
+  /* background: transparent !important; */
+  /* border-radius: 0px; */
 }
 
 .connect_wallet_header .dropdown_wallet_header img {
-  width: 21px;
-  margin-right: 5px;
+  width: 20px;
+  margin-right: 4px;
   position: relative;
   top: -1px;
 }
@@ -12952,14 +12959,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: #4f5455;
 }
 
-.connect_wallet_header .dropdown_wallet_header .header_reg_btn {
+/* .connect_wallet_header .dropdown_wallet_header .header_reg_btn {
   border: 1px solid #2196f3;
   border-radius: 50px;
   color: #2196f3;
   display: block;
   margin-top: 10px;
   text-align: center;
-}
+} */
 
 .main_menu_header .dropdown .dropdown-menu {
   background: #15074d;
@@ -13392,8 +13399,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .dropdown_wallet_header h6 {
   font-size: 14px;
-  margin-top: 5px;
-  border-top: 1px solid #e9eef5;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e9eef5;
   padding-top: 10px;
 }
 
@@ -14693,7 +14700,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 /* Start mobile menu alignment css */
-
+.connect_wallet_header .dropdown_wallet_header .manual_login_reg {
+  background: #f0ecff;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  color: #363636;
+  text-align: center;
+}
 
 
 /* End mobile menu alignment css */
@@ -18157,7 +18170,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .main_menu_header .navbar-nav .mobile_login_block a {
-    color: #fff;
+    color: #fff ;
+  }
+  .main_menu_header .navbar-nav .mobile_login_block a.nav-link 
+     {
+    color:#fff;
   }
 
   .main_menu_header .navbar-nav .mobile_login_block .dropdown-menu a {
@@ -18207,7 +18224,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background: #261863;
     padding: 15px !important;
     border-radius: 5px;
-    margin-top: 15px;
+    margin-top: 4px;
     margin-bottom: 15px;
   }
 
@@ -18228,7 +18245,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .main_menu_header .mobile_after_login_block .dropdown-menu img {
-    width: 26px;
+    width: 23px;
     margin-right: 10px;
   }
 

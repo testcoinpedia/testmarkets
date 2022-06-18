@@ -934,4 +934,7 @@
   .dark_theme .coin_details .token_left_border {
     border-left: 0px solid #242428;
   }
+  .dark_theme .sticky_footer_menu{
+    background: #24242a;
+  }
 }
