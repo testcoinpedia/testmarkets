@@ -18195,6 +18195,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 16px;
     margin-top: 5px;
     color: #fff;
+     text-transform: capitalize;
   }
 
   .main_menu_header .navbar-nav .mobile_after_login_block h5 {
