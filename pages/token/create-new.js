@@ -10,6 +10,7 @@ import JsCookie from "js-cookie"
 import cookie from 'cookie'
 import "react-datetime/css/react-datetime.css"
 import {API_BASE_URL, x_api_key, app_coinpedia_url, website_url,config,graphqlApiKEY,separator} from '../../components/constants'; 
+import Select from 'react-select'
 import Popupmodal from '../../components/popupmodal'
   
  
@@ -40,7 +41,9 @@ export default function Create_token({config})
   const [tokenid , setToken_id] = useState("")
   const [meta_keywords, set_meta_keywords] = useState("")
   const [meta_description, set_meta_description] = useState("")
-
+  const [categories, set_categories] = useState([])
+  const [category_row_id, set_category_row_id] = useState("")
+  const [category_name, set_category_name] = useState("")
   const [err_symbol, setErrSymbol] = useState('') 
   const [err_token_name, setErrTokenName] = useState('')
   const [err_website_link, setErrWebsiteLink] = useState('')
@@ -76,7 +79,38 @@ export default function Create_token({config})
     setImgmodal(false)
   }
   
+  const getBusinessModels = () => 
+    { 
+        Axios.get(API_BASE_URL+"app/company_business_models", config).then(res => {
+        if (res.data.status) 
+        {
+              console.log(res.data.message)
+              var listData = res.data.message
+              var list = [];
+              for(const i of listData)
+              {
+                list.push({value: parseInt(i._id), label: i.business_name})  
+              }
+            set_categories(list)
+            
+        }
+      })
+    }
+ 
+    const handleChange = selectedOption => 
+    {
+       //console.log(selectedOption)
+        set_category_row_id(selectedOption.value)
+        set_category_name(selectedOption.label)
+    }
 
+  const onRemove = (selectedList, removedItem) => 
+  {
+    category_row_id.splice(category_row_id.indexOf(removedItem.id), 1)
+    business_models.splice(business_models.indexOf(removedItem), 1)
+    console.log(category_row_id)
+    CategoryOptionsList(business_models)
+  }
   const imageCropModalClose = () => 
   {
     document.getElementById("imageUploadForm").reset()
@@ -397,7 +431,8 @@ const createNewToken = () =>
       community_address : community_address,
       contract_addresses : contract_address,
       meta_keywords : meta_keywords,
-      meta_description : meta_description
+      meta_description : meta_description,
+      category_row_id:category_row_id,
     }  
 
     // console.log(reqObj)
@@ -702,7 +737,8 @@ const createNewToken = () =>
   } 
    
   useEffect(()=>
-  { 
+  {
+    getBusinessModels() 
     // if(localStorage.getItem("walletconnectedtype") === "1"){
     //   getAccount()
     //   getETHAccount() 
@@ -977,7 +1013,29 @@ exchange_link
                           </div>
                         </div>
                       </div>
-
+                      <div className="row">
+                        <div className="col-lg-8 col-md-12">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Select Category</label>
+                            </div>
+                            <div className="col-md-8">
+                              <div className="form-custom">
+                                <div className="form-group input_block_outline">
+                                <Select 
+                                  onChange={handleChange}
+                                  isSearchable={true}
+                                  options={categories}
+                                  placeholder={category_name?category_name:'Select main business category'}
+                                />
+                                </div>
+                                 <div className="error">{err_website_link}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+    
                       <div className="row">
                         <div className="col-lg-8 col-md-12">
                           <div className="row">
@@ -1072,7 +1130,7 @@ exchange_link
                           </div>
                         </div>
                       </div>
-
+                      
                       <div className="row">
                         <div className="col-lg-8 col-md-12">
                           <div className="row">

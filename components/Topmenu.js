@@ -6,7 +6,7 @@ import Axios from 'axios'
 import cookie from 'cookie'
 import JsCookie from "js-cookie" 
 import $ from 'jquery';
-import {API_BASE_URL, website_url, app_coinpedia_url, market_coinpedia_url, coinpedia_url, Logout, separator,logo, config, api_url, cookieDomainExtension} from '../components/constants'    
+import {API_BASE_URL, website_url, app_coinpedia_url, market_coinpedia_url, coinpedia_url, Logout, separator,logo, config, api_url, cookieDomainExtension,IMAGE_BASE_URL} from '../components/constants'    
 import Popupmodal from './popupmodal'  
 
 
@@ -17,6 +17,7 @@ export default function Topmenu()
   const [login_dropdown, set_login_dropdown] = useState(0)
   const [live_prices_list, set_live_prices_list] = useState({});
   const [light_dark_mode, set_light_dark_mode]=useState("") 
+  const [image_base_url] = useState(IMAGE_BASE_URL+"/profile/" ) 
   const check_in_array = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SCUSDT', 'XRPUSDT']
 
   useEffect(()=>
@@ -268,17 +269,103 @@ export default function Topmenu()
                   
                   <div className="col-md-12 ">
                     <div className="collapse navbar-collapse main_menu_header click_to_close" id="navbarSupportedContent">
-                      <div onClick={() => customToggle()} className="text-center close_navbar" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <img className="" src="/assets/img/close_btn.png"></img>
+                      <div className="mobile_menu_top_header">
+                        <div className="row">
+                          <div className="col-md-6 col-4">
+                            <button onClick={() => customToggle()} className="menu_back_btn"><img src="/assets/img/mobile-menu-back.svg" /> Back</button>
+                          </div>
+                          <div className="col-md-6 col-8">
+                          <ul>
+                              {
+                               login_dropdown == 1 
+                               ?
+                                <li><a href={app_coinpedia_url+"?active_watchlist_tab=1"}><img src="/assets/img/mb-save.svg"/></a></li>
+                                :
+                                <li><a href={app_coinpedia_url+"login?prev_url=/?active_watchlist_tab=1"}><img src="/assets/img/mb-save.svg"/></a></li>
+                              }
+                              {/* <li><img src="/assets/img/mobile-save.svg"/></li> */}
+                              <li><img src="/assets/img/mb-notification.svg" /></li>
+                              {
+                                light_dark_mode?
+                                light_dark_mode === "dark" ?
+                                 <li><img src="/assets/img/mb-light.svg"  onClick={()=>setDarkMode()}/></li>
+                                  :
+                                  light_dark_mode === "light" ?
+                                  //<div id="light_dark_mode_div" className="top_menu_skin sun" ><img id="light_dark_mode_image" src="/assets/img/top_menu_sun.svg" /></div>
+                                  <li><img src="/assets/img/mb-dark.svg"  onClick={()=>setDarkMode()}/></li>
+                                  :
+                                  null
+                                :
+                                <li><img src="/assets/img/mb-dark.svg"  onClick={()=>setDarkMode()}/></li>
+                          }
+                           </ul>
+                          </div>
+                        </div>
                       </div>
-                      <ul className="nav navbar-nav">
-                        <li className="res_menu_list"><a href={coinpedia_url}>Home</a></li>
 
-                        <li className="res_menu_list"><a href={coinpedia_url + "news/"}>News</a></li>
+                      <ul className="nav navbar-nav">
+                      {
+                              login_dropdown == 1 
+                              ?
+                              <li class="dropdown mobile_after_login_block">
+                          <a class="nav-link " data-toggle="dropdown" href="#">
+                            <div className="media">
+                              <div className="media-left">
+                                <img src={JsCookie.get('user_profile_image')?image_base_url+JsCookie.get('user_profile_image'):image_base_url +"default.png"} className="user_icon" />
+                              </div>
+                              <div className="media-body">
+                                <h4>{JsCookie.get('user_full_name')}</h4>
+                                <h5>{JsCookie.get('user_username')}</h5>
+                              </div>
+                              <div className="media-right">
+                              {/* <span class="caret"></span> */}
+                              <img src="/assets/img/caret_view.svg" className="caret_view" />
+                              </div>
+                            </div>
+                            
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a href={app_coinpedia_url}><img src="/assets/img/mobile-menu-portfolio.svg" /> Portfolio</a></li>
+                            <li><a href={app_coinpedia_url+"profile"}><img src="/assets/img/mobile-menu-user-profile.svg" /> Manage User Profile</a></li>
+                            <li><a href={app_coinpedia_url+"referrals"}><img src="/assets/img/mobile-menu-referral.svg" /> Referral List</a></li>
+                            <li className="menu_company_list"><a href={app_coinpedia_url+"company/profile"}>Company</a></li>
+                            <li><a href={app_coinpedia_url+"company/profile"}><img src="/assets/img/mobile-menu-company-profile.svg" /> Company Profile</a></li>
+                            <li><a href={market_coinpedia_url+"token"}><img src="/assets/img/mobile-menu-manage-tokens.svg" /> Manage Tokens</a></li>
+                            <li><a href={market_coinpedia_url+"token/create-new"}><img src="/assets/img/mobile-menu-list-token.svg" /> List a Token</a></li>
+                            <li><a href={app_coinpedia_url+"profile/my-nft-collection"}><img src="/assets/img/mobile-menu-nft-collections.svg" /> My NFT Collection</a></li>
+                          </ul>
+                        </li>
+                        :
+                        <li class="dropdown mobile_login_block">
+                          <a class="nav-link " data-toggle="dropdown" href="#">
+                            <img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180324/footer-logo.svg" className="login_icon" /> Login / Create Account
+                            {/* <span class="caret"></span> */}<img src="/assets/img/caret_view.svg" className="caret_view" />
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a href={app_coinpedia_url+"login"}><img src="/assets/img/mb-manual-login.svg" /> Login</a></li>
+                            <li><a href={app_coinpedia_url+"register"}><img src="/assets/img/mb-user-profile.svg" /> Register</a></li>
+                          </ul>
+                        </li>
+                      }
+
+                        {/* <li class="dropdown mobile_login_block">
+                          <a class="nav-link " data-toggle="dropdown" href="#">
+                            <img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180324/footer-logo.svg" className="login_icon" /> Login / Create Account
+                            <span class="caret"></span>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a href="#"><img src="/assets/img/mobile-menu-login.svg" /> Login</a></li>
+                            <li><a href="#"><img src="/assets/img/mobile-menu-create.svg" /> Register</a></li>
+                          </ul>
+                        </li> */}
+
+                        <li className="res_menu_list"><a href={coinpedia_url}><img src="/assets/img/mb-home.svg" className="mobile_menu_icons" /> Home</a></li>
+
+                        <li className="res_menu_list"><a href={coinpedia_url + "news/"}><img src="/assets/img/mb-news.svg" className="mobile_menu_icons" /> News</a></li>
                         
                         <li className="nav-item dropdown primary_navbar" >
                           <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Information 
+                          <img src="/assets/img/mb-information.svg" className="mobile_menu_icons" /> Information <img src="/assets/img/caret_view.svg" className="caret_view" />
                           </a>
                           <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                             <ul>
@@ -296,7 +383,7 @@ export default function Topmenu()
                         
                         <li className="nav-item dropdown primary_navbar">
                           <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Markets
+                          <img src="/assets/img/mb-markets.svg" className="mobile_menu_icons" /> Markets <img src="/assets/img/caret_view.svg" className="caret_view" />
                           </a>
                           <div className="dropdown-menu " aria-labelledby="navbarDropdown">
                           <ul>
@@ -312,7 +399,7 @@ export default function Topmenu()
 
                         <li className="nav-item dropdown primary_navbar">
                           <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Products Review
+                          <img src="/assets/img/mb-product-review.svg" className="mobile_menu_icons" /> Products Review <img src="/assets/img/caret_view.svg" className="caret_view" />
                           </a>
                           <div className="dropdown-menu " aria-labelledby="navbarDropdown">
                             <ul>
@@ -327,7 +414,7 @@ export default function Topmenu()
                         
                         <li className="nav-item dropdown primary_navbar">
                           <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Academy 
+                          <img src="/assets/img/mb-academy.svg" className="mobile_menu_icons" /> Academy <img src="/assets/img/caret_view.svg" className="caret_view" />
                           </a>
                           
                           <div className="dropdown-menu " aria-labelledby="navbarDropdown">
@@ -341,7 +428,7 @@ export default function Topmenu()
                         
                         <li className="nav-item dropdown primary_navbar">
                           <a className="nav-link dropdown-toggle"  href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Find 
+                          <img src="/assets/img/mb-find.svg" className="mobile_menu_icons" /> Find <img src="/assets/img/caret_view.svg" className="caret_view" />
                           </a>
                           
                           <div className="dropdown-menu " aria-labelledby="navbarDropdown">
@@ -356,7 +443,7 @@ export default function Topmenu()
 
                         <li className="nav-item dropdown primary_navbar">
                           <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Contact 
+                          <img src="/assets/img/mb-menu-contact.svg" className="mobile_menu_icons" /> Contact <img src="/assets/img/caret_view.svg" className="caret_view" />
                           </a>
                           
                           <div className="dropdown-menu "  aria-labelledby="navbarDropdown">
@@ -370,7 +457,13 @@ export default function Topmenu()
                           </div>
                         </li>
 
-                        
+                        {
+                           login_dropdown == 1 
+                           ?
+                           <li className="res_menu_list"><a onClick={()=> logoutFunction()}><img src="/assets/img/mb-logout.svg" className="mobile_menu_icons" /> Logout</a></li>
+                            :
+                            ""
+                        }
  
                       </ul>
                       <ul className="nav navbar-nav navbar-right ml-auto ">

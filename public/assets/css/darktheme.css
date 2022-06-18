@@ -894,6 +894,37 @@
 .dark_theme .coin_ico_list {
   border-top: 1px solid #2c2c3e;
 }
+@media (max-width: 991px) {
+  .dark_theme .navbar_border_bottom .main_menu_header{
+    background: #17171A;
+  }
+  .dark_theme .main_menu_header .nav > li > a{
+    color: #7C7C86;
+  }
+  .dark_theme .main_menu_header .dropdown .dropdown-menu {
+    background: transparent;
+    box-shadow: unset;
+}
+.dark_theme .main_menu_header .result_hover{
+  border-left: 2px solid #58585A !important;
+}
+.dark_theme #navbarSupportedContent .dropdown-item, .dark_theme .main_menu_header .mobile_after_login_block .dropdown-menu li a, .dark_theme .main_menu_header .dropdown .dropdown-menu li a{
+  color: #7C7C86;
+}
+.dark_theme .main_menu_header .mobile_after_login_block{
+  background: #242435;
+}
+.dark_theme .main_menu_header .navbar-nav .mobile_after_login_block h5 , .dark_theme .main_menu_header .navbar-nav .mobile_login_block .dropdown-menu a{
+  color: #7C7C86;
+}
+.dark_theme .mobile_menu_top_header ul li{
+  background: #2B2B2D;
+}
+.dark_theme .mobile_menu_top_header {
+  border-bottom: 1px solid #58585A;
+}
+}
+
 
 @media (max-width: 768px) {
   .dark_theme .overview_ul li {

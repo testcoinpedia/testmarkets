@@ -12,7 +12,7 @@ import Popupmodal from '../../../components/popupmodal'
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Editor } from '@tinymce/tinymce-react';
-
+import Select from 'react-select'
  
 export default function UpdateToken({userAgent,config,token_id}) {  
 //  console.log(token_id)
@@ -38,7 +38,9 @@ export default function UpdateToken({userAgent,config,token_id}) {
   const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/") 
   const [meta_keywords, set_meta_keywords] = useState("")
   const [meta_description, set_meta_description] = useState("")
-
+  const [categories, set_categories] = useState([])
+  const [category_row_id, set_category_row_id] = useState("")
+  const [category_name, set_category_name] = useState("")
   const [err_symbol, setErrSymbol] = useState('') 
   const [err_token_name, setErrTokenName] = useState('')
   const [err_website_link, setErrWebsiteLink] = useState('')
@@ -77,7 +79,29 @@ export default function UpdateToken({userAgent,config,token_id}) {
     setImgmodal(false)
   }
   
-
+  const getBusinessModels = () => 
+    { 
+        Axios.get(API_BASE_URL+"app/company_business_models", config).then(res => {
+        if (res.data.status) 
+        {
+              var listData = res.data.message
+              var list = [];
+              for(const i of listData)
+              {
+                list.push({value: parseInt(i._id), label: i.business_name})  
+              }
+            set_categories(list)
+            
+        }
+      })
+    }
+ 
+    const handleChange = selectedOption => 
+    {
+       //console.log(selectedOption)
+        set_category_row_id(selectedOption.value)
+        set_category_name(selectedOption.label)
+    }
   const onCropComplete = (crops) => { 
     setCompletedCrop(crops)
   
@@ -349,7 +373,8 @@ const onLoad = useCallback((img) => {
       community_address: community_address, 
       contract_addresses: contract_address, 
       meta_keywords : meta_keywords,
-      meta_description : meta_description
+      meta_description : meta_description,
+      category_row_id:category_row_id,
     } 
 
     if(formValid)
@@ -413,7 +438,7 @@ const onLoad = useCallback((img) => {
     .then(response=>{
       if(response.data.status){ 
       
-        // console.log(response.data) 
+        console.log(response.data) 
         setContractAddress(response.data.message.contract_addresses)
         setErrContractAddress("")  
         setSymbol(response.data.message.symbol) 
@@ -433,6 +458,8 @@ const onLoad = useCallback((img) => {
           set_disply_token_image(image_base_url+"default.png")
         }
         
+        set_category_row_id(response.data.message.category_row_id)
+        set_category_name(response.data.message.category_name)
         seSourceCodeLink(response.data.message.source_code_link) 
         // setToken_id(response.data.message.token_id)
 
@@ -542,6 +569,7 @@ const onLoad = useCallback((img) => {
   useEffect(()=>
   {
     getTokenDetails()
+    getBusinessModels() 
   },[])
    
   const makeJobSchema=()=> 
@@ -801,6 +829,28 @@ const getTokensDetails = (type, address) =>{
                                   <input type="text" placeholder="Symbol" className="form-control" value={symbol}  readOnly/>
                                 </div>
                                 <div className="error">{err_symbol}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-lg-8 col-md-12">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Select Category</label>
+                            </div>
+                            <div className="col-md-8">
+                              <div className="form-custom">
+                                <div className="form-group input_block_outline">
+                                <Select 
+                                  onChange={handleChange}
+                                  isSearchable={true}
+                                  options={categories}
+                                  placeholder={category_name?category_name:'Select main business category'}
+                                />
+                                </div>
+                                 <div className="error">{err_website_link}</div>
                               </div>
                             </div>
                           </div>
