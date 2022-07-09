@@ -395,14 +395,13 @@ export async function getServerSideProps({req})
   if(userAgent.user_token)
   {
     
-      if(userAgent.user_email_status==1)
+      if(userAgent.user_email_status)
       {
           return { props: { userAgent: userAgent, config: config(user_token)}} 
       }
       else
       {
           return {
-            
               redirect: {
               destination: app_coinpedia_url+'verify-email',
               permanent: false,

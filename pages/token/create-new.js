@@ -1430,7 +1430,7 @@ export async function getServerSideProps({req})
     const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
     if(userAgent.user_token)
     {
-      if(userAgent.user_email_status==1)
+      if(userAgent.user_email_status)
       {
         return { props: { userAgent: userAgent, config: config(userAgent.user_token)}} 
       }

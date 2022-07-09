@@ -435,11 +435,11 @@
   background: #323232 !important;
 }
 .dark_theme .dropdown_wallet_header h6 {
-  border-top: 1px solid #323232;
+  border-bottom: 1px solid #323232;
   color: #fff;
 }
 .dark_theme .dropdown_wallet_header h6:first-child {
-  border-top: 1px solid #18191c;
+  /* border-top: 1px solid #18191c; */
 }
 .dark_theme .market_top_header .connect_wallet_header .connect_wallet {
   background: #2c2c2f;
@@ -922,6 +922,9 @@
 }
 .dark_theme .mobile_menu_top_header {
   border-bottom: 1px solid #58585A;
+}
+.dark_theme .main_menu_header .navbar-nav .mobile_login_block{
+  background: #242435;
 }
 }
 

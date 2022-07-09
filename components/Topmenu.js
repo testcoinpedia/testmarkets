@@ -175,19 +175,19 @@ export default function Topmenu()
                                   ?
                                   <div className="dropdown connect_wallet_header">
                                     <button  className="btn connect_wallet" type="button" id="1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <img src="/assets/img/connect-wallet-header.svg" className="login_img" /> {JsCookie.get('user_username')} <img src="/assets/img/caret-down.svg" className="caret_down" />
+                                      <img src="/assets/img/connectwallet-header.svg" className="login_img" /> {JsCookie.get('user_username')} <img src="/assets/img/caret-down.svg" className="caret_down" />
                                     </button>
-                                    <div className="dropdown-menu dropdown_wallet_header" aria-labelledby="1"> 
+                                    <div className="dropdown-menu dropdown_wallet_header side-menu-list" aria-labelledby="1"> 
                                       <h6>User</h6>
-                                      <a href={app_coinpedia_url} className="dropdown-item"><img src="/assets/img/menu-wallet.png" className="dark-menu-img" /><img src="/assets/img/menu-wallet.svg" className="light-menu-img" />Portfolio</a>
-                                      <a href={app_coinpedia_url+"profile"} className="dropdown-item"><img src="/assets/img/menu-user-profile.png"  className="dark-menu-img" /> <img src="/assets/img/menu-user-profile.svg" className="light-menu-img"/> Manage User Profile</a>
-                                      <a href={app_coinpedia_url+"referrals"} className="dropdown-item"><img src="/assets/img/menu-referrals.png" className="dark-menu-img" /> <img src="/assets/img/menu-referrals.svg" className="light-menu-img" /> Referral List</a>
+                                      <a href={app_coinpedia_url} className="dropdown-item"><img src="/assets/img/menu-wallet.svg"/>Portfolio</a>
+                                      <a href={app_coinpedia_url+"profile"} className="dropdown-item"><img src="/assets/img/menu-user-profile.svg"/> Manage User Profile</a>
+                                      <a href={app_coinpedia_url+"referrals"} className="dropdown-item"> <img src="/assets/img/menu-referrals.svg" /> Referral List</a>
 
                                       <h6>Company</h6>
-                                      <Link href={app_coinpedia_url+"company/profile"} ><a className="dropdown-item"><img src="/assets/img/menu-company.png" className="dark-menu-img" /> <img src="/assets/img/sidemenu-company.svg" className="light-menu-img"/> Company Profile</a></Link>
-                                      <a href={market_coinpedia_url+"token"}  className="dropdown-item"><img src="/assets/img/menu-token.png" className="dark-menu-img" /><img src="/assets/img/sidemenu-token.svg" className="light-menu-img" /> Manage Tokens</a>
+                                      <Link href={app_coinpedia_url+"company/profile"} ><a className="dropdown-item"> <img src="/assets/img/sidemenu-company.svg"/> Company Profile</a></Link>
+                                      <a href={market_coinpedia_url+"token"}  className="dropdown-item"><img src="/assets/img/sidemenu-token.svg" /> Manage Tokens</a>
                                       {/* <a href={market_coinpedia_url+"create-launchpad/maker"}  className="dropdown-item"><img src="/assets/img/menu-airdrop.png" /> Manage Launchpad/Airdrop</a> */}
-                                      <a href={market_coinpedia_url+"token/create-new"}  className="dropdown-item"><img src="/assets/img/menu-list-token.png" className="dark-menu-img" /><img src="/assets/img/sidemenu-list-token.svg" className="light-menu-img" /> List a Token</a>
+                                      <a href={market_coinpedia_url+"token/create-new"}  className="dropdown-item"><img src="/assets/img/sidemenu-list-token.svg" /> List a Token</a>
                                       <a href={app_coinpedia_url+"profile/my-nft-collection"}  className="dropdown-item"><img src="/assets/img/sidemenu-nft.svg" />My NFT Collection</a>
                                       
                                       {
@@ -216,7 +216,8 @@ export default function Topmenu()
                                         null
                                       }
                                       <h6>Other</h6>
-                                      <a className="dropdown-item" onClick={()=> logoutFunction()} style={{color: '#fe4b4b'}}><img src="/assets/img/menu-logout.png" className="dark-menu-img" /><img src="/assets/img/sidemenu-logout.svg" className="light-menu-img" /> Logout</a>
+                                      <Link href={app_coinpedia_url+"manage-events"} ><a className="dropdown-item"><img src="/assets/img/menu-company.svg" /> Manage Events</a></Link>
+                                      <a className="dropdown-item " onClick={()=> logoutFunction()} style={{color: '#fe4b4b'}}><img src="/assets/img/sidemenu-logout.svg" /> Logout</a>
                                       
                                     </div>
                                   </div>
@@ -271,9 +272,7 @@ export default function Topmenu()
                     <div className="collapse navbar-collapse main_menu_header click_to_close" id="navbarSupportedContent">
                       <div className="mobile_menu_top_header">
                         <div className="row">
-                          <div className="col-md-6 col-4">
-                            <button onClick={() => customToggle()} className="menu_back_btn"><img src="/assets/img/mobile-menu-back.svg" /> Back</button>
-                          </div>
+                          
                           <div className="col-md-6 col-8">
                           <ul>
                               {
@@ -299,6 +298,9 @@ export default function Topmenu()
                                 <li><img src="/assets/img/mb-dark.svg"  onClick={()=>setDarkMode()}/></li>
                           }
                            </ul>
+                          </div>
+                          <div className="col-md-6 col-4 text-right">
+                            <button onClick={() => customToggle()} className="menu_back_btn">Back <img src="/assets/img/mobile-menu-back.svg" /></button>
                           </div>
                         </div>
                       </div>
@@ -333,6 +335,8 @@ export default function Topmenu()
                             <li><a href={market_coinpedia_url+"token"}><img src="/assets/img/mobile-menu-manage-tokens.svg" /> Manage Tokens</a></li>
                             <li><a href={market_coinpedia_url+"token/create-new"}><img src="/assets/img/mobile-menu-list-token.svg" /> List a Token</a></li>
                             <li><a href={app_coinpedia_url+"profile/my-nft-collection"}><img src="/assets/img/mobile-menu-nft-collections.svg" /> My NFT Collection</a></li>
+                            <li className="menu_company_list">Other</li>
+                            <li><Link href={app_coinpedia_url+"manage-events"} ><a className="dropdown-item"><img src="/assets/img/menu-company.svg" /> Manage Events</a></Link></li>
                           </ul>
                         </li>
                         :
@@ -460,7 +464,7 @@ export default function Topmenu()
                         {
                            login_dropdown == 1 
                            ?
-                           <li className="res_menu_list"><a onClick={()=> logoutFunction()}><img src="/assets/img/mb-logout.svg" className="mobile_menu_icons" /> Logout</a></li>
+                           <li className="res_menu_list hide-desktop"><a onClick={()=> logoutFunction()}><img src="/assets/img/mb-logout.svg" className="mobile_menu_icons" /> Logout</a></li>
                             :
                             ""
                         }

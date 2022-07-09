@@ -1288,7 +1288,7 @@ export async function getServerSideProps({ query ,req})
 
     if(userAgent.user_token)
     {
-        if(userAgent.user_email_status==1)
+        if(userAgent.user_email_status)
         {
             return { props: { userAgent: userAgent, config: config(user_token), token_id: query.edit_token_id}} 
         }
