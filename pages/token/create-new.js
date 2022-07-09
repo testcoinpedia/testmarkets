@@ -1427,31 +1427,32 @@ exchange_link
 }
 export async function getServerSideProps({req}) 
 {
-    const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
-    if(userAgent.user_token)
-    {
-      if(userAgent.user_email_status)
-      {
-        return { props: { userAgent: userAgent, config: config(userAgent.user_token)}} 
-      }
-      else
-      {
-        return {
-            redirect: {
-            destination: app_coinpedia_url+'verify-email',
-            permanent: false,
-            }
-        }
-      }
-    }
-    else
-    {
-        return {
-            redirect: {
-            destination: app_coinpedia_url+'login',
-            permanent: false,
-            }
-        }
-    }
+     const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
+     return { props: { userAgent: userAgent, config: config(userAgent.user_token)}}
+    // if(userAgent.user_token)
+    // {
+    //   if(userAgent.user_email_status)
+    //   {
+    //     return { props: { userAgent: userAgent, config: config(userAgent.user_token)}} 
+    //   }
+    //   else
+    //   {
+    //     return {
+    //         redirect: {
+    //         destination: app_coinpedia_url+'verify-email',
+    //         permanent: false,
+    //         }
+    //     }
+    //   }
+    // }
+    // else
+    // {
+    //     return {
+    //         redirect: {
+    //         destination: app_coinpedia_url+'login',
+    //         permanent: false,
+    //         }
+    //     }
+    // }
 }
 

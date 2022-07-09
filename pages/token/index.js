@@ -2,19 +2,16 @@ import React , {useState, useEffect} from 'react';
 import Link from 'next/link' 
 import Head from 'next/head'
 import ReactPaginate from 'react-paginate';  
-import {x_api_key, API_BASE_URL, convertvalue, Logout, app_coinpedia_url, market_coinpedia_url ,config,IMAGE_BASE_URL,graphqlApiKEY} from '../../components/constants'; 
+import { API_BASE_URL, convertvalue, app_coinpedia_url, market_coinpedia_url ,config,IMAGE_BASE_URL,graphqlApiKEY} from '../../components/constants'; 
 import TableContentLoader from '../../components/loaders/tableLoader'
-import Web3 from 'web3'
-import moment from 'moment'
 import Axios from 'axios';
-import JsCookie from 'js-cookie'; 
 import cookie from 'cookie'
-import { useRouter } from 'next/router'
+
 
 
 export default function WalletTokensList({userAgent, config}) 
  {
-  const router = useRouter()
+  
   const [rejectreason, setRejectReason] = useState("")
   const [loader_status, set_loader_status]= useState(false)
   const [image_base_url]=useState(IMAGE_BASE_URL+"/tokens/")
@@ -28,7 +25,6 @@ export default function WalletTokensList({userAgent, config})
 
   const [filteredTokens, setfilteredTokens] = useState([])  
   const [searchTokens, setsearchTokens] = useState("")
-  const [searchApprovalStatus, setSearchApprovalStatus] = useState("")
   const [searchParam] = useState(["token_name", "symbol","token_id"])
   const [searchApprovalStatusParam] = useState(["approval_status"])
   const [watchlist, set_watchlist] = useState([])
@@ -390,65 +386,32 @@ export async function getServerSideProps({req})
 {
   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
   var user_token = userAgent.user_token 
+  return { props: { userAgent: userAgent, config: config(user_token)}}
+  // if(userAgent.user_token)
+  // {
+  //     if(userAgent.user_email_status)
+  //     {
+  //         return { props: { userAgent: userAgent, config: config(user_token)}} 
+  //     }
+  //     else
+  //     {
+  //         return {
+  //             redirect: {
+  //             destination: app_coinpedia_url+'verify-email',
+  //             permanent: false,
+  //             }
+  //         }
+  //     }
+  // }
+  // else
+  // {
+  //     return {
+  //         redirect: {
+  //         destination: app_coinpedia_url+'login',
+  //         permanent: false,
+  //         }
+  //     }
+  // }
+
  
-
-  if(userAgent.user_token)
-  {
-    
-      if(userAgent.user_email_status)
-      {
-          return { props: { userAgent: userAgent, config: config(user_token)}} 
-      }
-      else
-      {
-          return {
-              redirect: {
-              destination: app_coinpedia_url+'verify-email',
-              permanent: false,
-              }
-          }
-      }
-  }
-  else
-  {
-      return {
-          redirect: {
-          destination: app_coinpedia_url+'login',
-          permanent: false,
-          }
-      }
-  }
-
-  // if (!userAgent.user_token) 
-  // {
-  //   return {
-  //       redirect: {
-  //           destination: app_coinpedia_url+'login',
-  //           permanent: false,
-  //       }
-  //   }
-  // }
-  // else 
-  // {
-  //   if(parseInt(userAgent.user_email_status) == 1)
-  //   {
-  //       var config = {
-  //           headers: {
-  //               "X-API-KEY": x_api_key,
-  //               "token": userAgent.user_token
-  //           }
-  //       }
-
-  //       return { props: { userAgent: userAgent, config: config } }
-  //   }
-  //   else
-  //   {
-  //       return {
-  //           redirect: {
-  //               destination: '/verify-email',
-  //               permanent: false,
-  //           }
-  //       }
-  //   }
-  // }
 }

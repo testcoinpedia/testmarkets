@@ -336,7 +336,7 @@ export default function Topmenu()
                             <li><a href={market_coinpedia_url+"token/create-new"}><img src="/assets/img/mobile-menu-list-token.svg" /> List a Token</a></li>
                             <li><a href={app_coinpedia_url+"profile/my-nft-collection"}><img src="/assets/img/mobile-menu-nft-collections.svg" /> My NFT Collection</a></li>
                             <li className="menu_company_list">Other</li>
-                            <li><Link href={app_coinpedia_url+"manage-events"} ><a className="dropdown-item"><img src="/assets/img/menu-company.svg" /> Manage Events</a></Link></li>
+                            <li><a href={app_coinpedia_url+"manage-events"} className="dropdown-item"><img src="/assets/img/menu-company.svg" /> Manage Events</a></li>
                           </ul>
                         </li>
                         :

@@ -13,8 +13,11 @@ import WatchList from '../components/watchlist'
 // dummy
 
 
-export default function Companies({user_token, config})
+export default function Companies({user_token, config,userAgent})
 { 
+    console.log(userAgent)
+    console.log(user_token)
+    console.log(config)
     const [tokenStatus,set_tokenStatus] = useState("")
     const [tokens_list, set_tokens_list] = useState([]) 
     const [voting_ids, setvoting_ids] = useState([])  // commented
@@ -44,7 +47,6 @@ export default function Companies({user_token, config})
    
    useEffect(async ()=>
    {  
-      
       
       tokensList({selected : 0})
       voteIds()

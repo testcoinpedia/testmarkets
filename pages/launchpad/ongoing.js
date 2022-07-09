@@ -46,6 +46,7 @@ export default function OngoingLaunchPad({userAgent}) {
     const response = await  Axios.get(API_BASE_URL+"markets/launchpads/ongoing/"+current_pages+'/'+perPage, config(user_token))
     if(response.data)
       {
+        console.log(response)
           if(response.data.status == true)
           {  
             // console.log(response)
