@@ -10,8 +10,8 @@ import { API_BASE_URL,config, website_url, app_coinpedia_url, separator,IMAGE_BA
 import TableContentLoader from '../../components/loaders/tableLoader'
 import moment from 'moment'
  
-export default function UpcomingLaunchPad({userAgent}) { 
- 
+export default function UpcomingLaunchPad({userAgent}) 
+{ 
   const [user_token] = useState(userAgent.user_token)
   const [upcoming, setUpcoming] = useState([])
   const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")
@@ -30,11 +30,11 @@ export default function UpcomingLaunchPad({userAgent}) {
 
 
   useEffect(()=>{ 
-    GetAllUpcoming({selected:0});
+    GetAllUpcoming({selected:0})
   },[perPage])
 
-  const GetAllUpcoming = async (page)=>{ 
-
+  const GetAllUpcoming = async (page)=>
+  { 
     let current_pages = 0 
       if(page.selected) 
       {
@@ -67,6 +67,7 @@ export default function UpcomingLaunchPad({userAgent}) {
           }
       }
   } 
+
   const addToWatchlist = (param_token_id) =>
   {
     Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config(user_token))
@@ -102,7 +103,8 @@ export default function UpcomingLaunchPad({userAgent}) {
   }
 
  
-  const makeJobSchema=()=>{  
+  const makeJobSchema=()=>
+  {  
     return { 
         "@context":"http://schema.org/",
         "@type":"Organization",
@@ -111,7 +113,7 @@ export default function UpcomingLaunchPad({userAgent}) {
         "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
         "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
       }  
-}
+  }
 
   return(
     <>
