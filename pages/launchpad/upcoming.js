@@ -44,9 +44,9 @@ export default function UpcomingLaunchPad({userAgent})
     const response = await Axios.get(API_BASE_URL+"markets/launchpads/upcoming/"+current_pages+'/'+perPage, config(user_token))
     if(response.data)
     {
+        setapistatus(true)
         if(response.data.status == true)
         {  
-            setapistatus(true)
             setUpcoming(response.data.message) 
             set_watchlist(response.data.watchlist)
             set_tokenStatus(response.data.tokenStatus)
