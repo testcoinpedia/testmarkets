@@ -8,6 +8,7 @@ export default function Details({active_network,complete_url})
   const router = useRouter()
   const [active_tab, set_active_tab] = useState(active_network ? active_network : "")
  
+  console.log(active_network)
   useEffect(()=>{
 
   },[active_tab])

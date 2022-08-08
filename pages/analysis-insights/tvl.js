@@ -317,7 +317,7 @@ return (
                                 tvl_protocol_data.length>0 ?
                                 tvl_protocol_data.map((e, i) => 
                                     <tr key={i}>
-                                      <td>{++i}</td>
+                                      <td>{sl_no+i+1}</td>
                                       <td><span><img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}}src={e.exchange_image} alt="Protocols"/>{e.exchange_name}</span></td>
                                       <td>{e.category?e.category:"--"}</td>
                                       <td>{e.chains.map((item,idx)=>idx<3?item +", ":"")}</td>
