@@ -1,5 +1,5 @@
 import React , {useEffect,  useState} from 'react' 
-import {API_BASE_URL, convertvalue, config, graphqlApiKEY,website_url,separator} from '../../../components/constants'
+import {API_BASE_URL, convertvalue, config, graphqlApiKEY,url,separator} from '../../../components/constants'
 import CategoriesTab from '../../../components/categoriesTabs'
 import Search_Contract_Address from '../../../components/searchContractAddress'
 import AnalysisInsightsMenu from '../../../components/analysisInsightsmenu'
@@ -20,7 +20,7 @@ function TokenDetails({network})
 { 
     const router = useRouter()
     const get_path = router.route
-    const complete_url = website_url+get_path
+    const complete_url = url+get_path
     const newUrl = complete_url.slice(0, complete_url.lastIndexOf('['));
     console.log(newUrl)
     const [total_transaction_count, set_total_transaction_count] = useState("")

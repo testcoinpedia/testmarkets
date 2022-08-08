@@ -1,5 +1,5 @@
 import React , {useEffect,  useState} from 'react' 
-import { graphqlApiKEY,website_url} from '../../../components/constants'
+import { graphqlApiKEY,url} from '../../../components/constants'
 import { useRouter } from 'next/router'
 import CategoriesTab from '../../../components/categoriesTabs'
 import Search_Contract_Address from '../../../components/searchContractAddress'
@@ -16,7 +16,7 @@ export default function TokenDetails({network})
      
     const router = useRouter()
     const get_path = router.route
-    const complete_url = website_url+get_path
+    const complete_url = url+get_path
    const newUrl = complete_url.slice(0, complete_url.lastIndexOf('['));
     console.log(newUrl)
   

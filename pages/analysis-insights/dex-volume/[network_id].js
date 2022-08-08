@@ -852,6 +852,31 @@ return (
           ""     
         }
             <div className="row ">
+            <div className="col-md-6">
+                <div className="dex-section">
+                  <div className="row ">
+                    <div className="col-md-6">
+                    <p>DEX 30 days volume</p>
+                    </div>
+                    <div className="col-md-6">
+                    <p style={{ float:"right"}}>Source: <a target={"_blank"} href="https://graphql.bitquery.io/ide">Bitquery</a></p>
+                    </div>
+                  </div>
+                  <div className="text-center mt-2">
+                      <div style={{fontSize:"35px"}}>{dextrades_30day_volume ? "$ "+convertvalue(dextrades_30day_volume): "$ 00"}</div>
+                      <p style={{fontSize:"18px"}}>Volume last 30 days</p>
+                    <br/>
+                </div> 
+                
+                <div className='col-md-12 pull-right text-right'>
+                  <button onClick={() => change(9)}>
+                        <img src='/assets/img/info.png' style={{width:"24px", cursor:"pointer"}}/>
+                  </button>
+                </div>
+              </div>
+              </div>
+
+
               <div className="col-md-6">
                 <div className="dex-section">
                   <div className="row ">
@@ -875,31 +900,9 @@ return (
                     </div>
                 </div>
               </div>
-              <div className="col-md-6">
-                <div className="dex-section">
-                  <div className="row ">
-                    <div className="col-md-6">
-                    <p>DEX 30 days volume</p>
-                    </div>
-                    <div className="col-md-6">
-                    <p style={{ float:"right"}}>Source: <a target={"_blank"} href="https://graphql.bitquery.io/ide">Bitquery</a></p>
-                    </div>
-                  </div>
-                  <div className="text-center mt-2">
-                      <div style={{fontSize:"35px"}}>{dextrades_30day_volume ? "$ "+convertvalue(dextrades_30day_volume): "$ 00"}</div>
-                      <p style={{fontSize:"18px"}}>Volume last 30 days</p>
-                    <br/>
-                </div> 
-                
-                <div className='col-md-12 pull-right text-right'>
-                  <button onClick={() => change(9)}>
-                        <img src='/assets/img/info.png' style={{width:"24px", cursor:"pointer"}}/>
-                  </button>
-                </div>
-              </div>
-              </div>
+              
           </div> 
-          <div className="row mt-2">
+          <div className="row mt-4">
           <div className="col-md-6">
                 <div className="dex-section">
                   <div className="row">
@@ -910,7 +913,7 @@ return (
                     <p style={{ float:"right"}}>Source: <a target={"_blank"} href="https://graphql.bitquery.io/ide">Bitquery</a></p>
                     </div>
                   </div>
-                  <div className="text-center mt-4">
+                  <div className="text-center mt-2">
                       <div style={{fontSize:"35px"}}>{unique_traders ? separator(unique_traders): "NA"}</div>
                       <p style={{fontSize:"18px"}}>Total unique trading addresses</p>
                     <br/>
