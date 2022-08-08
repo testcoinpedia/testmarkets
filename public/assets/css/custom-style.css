@@ -29,6 +29,7 @@ html {
 }
 
 
+
 /* .modal-backdrop.show {
     opacity: 0 !important;
 } */
@@ -81,6 +82,8 @@ input[type="number"] {
 	background-color: transparent;
 }
 
+
+
 .dropdown-toggle::after {
 	display: none;
 }
@@ -94,6 +97,7 @@ input[type="number"] {
 	width: 33px;
 	cursor: pointer;
 }
+
 
 .flag_img {
 	vertical-align: middle;

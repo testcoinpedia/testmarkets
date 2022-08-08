@@ -40,9 +40,7 @@ function TokenDetails(props) {
   const [graphDate , set_graphDate] = useState(1)
   const [market_cap, set_market_cap] = useState(0) 
   const [token_max_supply , settoken_max_supply] = useState(0)  
-  const [search_contract_address, set_search_contract_address] = useState("")    
-  
-  const [liquidity, set_liquidity] = useState(0)      
+  const [search_contract_address, set_search_contract_address] = useState("")      
  
   const [connected_address , set_connected_address]=useState("")
  
@@ -1708,6 +1706,9 @@ const connectToEthWallet=()=>
       <div className=" market_details_insights">
         <div className="">
           <div className="container">
+          {/* <div className="breadcrumb_block">
+                    <Link href={"/"}><a>Home</a></Link><span> &#62; </span>{data.token_name}
+              </div> */}
             <div className="col-md-12">
               <div className="row ">
               <div className="col-md-7">
@@ -1835,13 +1836,7 @@ const connectToEthWallet=()=>
                                 <div className="wallets__details">
                                   <div className="wallets__info">Circulating Supply</div>
                                   <div className="wallets__number h5">NA</div>
-                                  {/* <div className="wallets__number h5">{circulating_supply ? separator(circulating_supply) : "-"}</div> */}
-                                  {/* <div className="circulating_progress">
-                                    <div className="progress">
-                                      <div className="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={{width:"60%"}}></div>
-                                    </div>
-                                    <p className="progress_bar_status">75%</p>
-                                  </div> */}
+                                
                                 </div>
                               </li>
                               <li>
@@ -2185,9 +2180,9 @@ const connectToEthWallet=()=>
   )
 } 
 
-export async function getServerSideProps({ resolvedUrl }) {  
-  const token_address = resolvedUrl.substring(5)   
-    const query = `
+export async function getServerSideProps({ query }) {  
+  const token_address = query.eth   
+    const query1 = `
     query
     { 
       ethereum(network: ethereum) {
@@ -2219,7 +2214,7 @@ export async function getServerSideProps({ resolvedUrl }) {
     "X-API-KEY": graphqlApiKEY
     },
     body: JSON.stringify({
-      query: query, 
+      query: query1 , 
     })
     };
 
@@ -2255,3 +2250,5 @@ export async function getServerSideProps({ resolvedUrl }) {
 } 
   
 export default TokenDetails
+
+// address(address: {is: "`+token_address+`"}){

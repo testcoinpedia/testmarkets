@@ -4815,6 +4815,69 @@ body.dark .checkbox__input:checked + .checkbox__in .checkbox__text {
   font-weight: 600;
 }
 
+.graph-transactions-sort li
+{
+  display: inline-block;
+	font-size: 15px;
+}
+
+.dex-section
+{
+	  position: relative;
+    -webkit-box-flex: 0;
+    margin: 0;
+    border-radius: 6px;
+    background: #e6eeff;
+    box-shadow: 0 8px 25px rgb(0 0 0 / 7%);
+    padding: 12px;
+}
+
+.dex-table-data
+{
+  border-radius: 6px;
+    background: #e6eeff;
+    box-shadow: 0 8px 25px rgb(0 0 0 / 7%);
+    padding: 15px;
+}
+.dex-side-menu {
+	background: #ffefef;
+  padding: 15px;
+  height: 100%;
+}
+
+
+
+
+.dex-24h-pichart
+{
+  background: #e6eeff;
+  border-radius: 6px;
+    background: #e6eeff;
+    box-shadow: 0 8px 25px rgb(0 0 0 / 7%);
+    padding: 15px;
+}
+
+
+.recharts-legend-wrapper
+{
+  width: 100% !important;
+}
+
+.recharts-wrapper
+{
+  width: 100% !important;
+  /* position: static !important;
+   height: auto;
+  left: 5px;
+  bottom: 5px; */
+}
+
+div .recharts-surface
+{
+  width: 100% !important;
+} */
+
+
 .notifications__item.disabled .notifications__title {
   color: #808191;
 }
@@ -8980,6 +9043,59 @@ body.dark .actions .select.open {
 
 .bg-green-opacity {
   background: rgba(79, 191, 103, 0.15);
+}
+
+
+.dex-table {
+  scrollbar-width: auto;
+  scrollbar-color: #8e8990 #fdf7f7;
+  height: 450px;
+  overflow-y: scroll;
+}
+
+/* Chrome, Edge, and Safari */
+.dex-table::-webkit-scrollbar {
+  width: 16px;
+}
+
+.dex-table::-webkit-scrollbar-track {
+  background: #f7fafd;
+}
+
+.dex-table::-webkit-scrollbar-thumb {
+  background-color: #8e8990;
+  border-radius: 5px;
+  border: 3px solid #ffffff;
+}
+
+.dex-rank  {
+  width: 45px;
+}
+
+
+.dex-donot-pichart thead tr th {
+  font-size: 13px !important;
+}
+
+
+.donot-pi-chart-section 
+{
+  min-height: 450px;
+}
+
+
+
+
+.dex-donot-pichart {
+  border-radius: 6px;
+  box-shadow: 0 8px 9px rgb(0 0 0 / 7%);
+  padding: 15px;
+  border: 1px solid #ebebebc2;
+  
+}
+
+.dex-donot-pichart tr td {
+  font-size: 12px !important;
 }
 
 .bg-green-gradient {
@@ -17666,6 +17782,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   .details__container {
     padding: 24px;
+  }
+  .graph-transactions-sort li{
+    display: inline-block;
   }
   .details__top {
     display: block;

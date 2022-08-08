@@ -6,7 +6,7 @@ import Axios from 'axios';
 import Head from 'next/head';
 import cookie from 'cookie'
 import ReactPaginate from 'react-paginate'  
-import {IMAGE_BASE_URL, API_BASE_URL, config, separator, website_url, app_coinpedia_url, market_coinpedia_url} from '../../components/constants' 
+import {IMAGE_BASE_URL, API_BASE_URL, config, separator, website_url, app_coinpedia_url, market_coinpedia_url, coinpedia_url} from '../../components/constants' 
 import TableContentLoader from '../../components/loaders/tableLoader'
 import moment from 'moment'
  
@@ -16,7 +16,6 @@ export default function OngoingLaunchPad({userAgent}) {
   const [ended, setended] = useState([])
   const [apistatus, setapistatus] = useState(false)
   const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")
-  const [tokenStatus,set_tokenStatus] = useState("")
   const [watchlist, set_watchlist] = useState([])
  
    const [perPage, set_perPage] = useState(100)
@@ -48,7 +47,6 @@ export default function OngoingLaunchPad({userAgent}) {
           {  
             setapistatus(true)
             setended(response.data.message)
-            set_tokenStatus(response.data.tokenStatus)
             set_watchlist(response.data.watchlist) 
             setCount(response.data.count)
             setPageCount(Math.ceil(response.data.count/perPage))
@@ -148,6 +146,10 @@ export default function OngoingLaunchPad({userAgent}) {
           <div className=" launchpad">
             <div className="container">
               <div className="col-md-12">
+              <div className="breadcrumb_block">
+              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
+              <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span> Completed Launchpads
+               </div>
                 <div className="row launchpad_list">
                   <div className="col-md-8 col-7">
                     <h1 className="page_title">Previous Listed Launchpads</h1>
@@ -233,7 +235,7 @@ export default function OngoingLaunchPad({userAgent}) {
                             <tr key={i}>
                               <td className="mobile_hide">
                               {
-                                       tokenStatus ?
+                                       user_token ?
                                        <>
                                        {
                                          watchlist.includes(e.token_row_id) ?
@@ -249,9 +251,9 @@ export default function OngoingLaunchPad({userAgent}) {
                               <td className="mobile_hide">{sl_no+i+1}</td>
                               <td className="mobile_td_fixed">
                                 <a href={"/"+e.token_id}>
-                                  <div class="media">
-                                    <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" />
-                                    <div class="media-body">
+                                  <div className="media">
+                                    <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="Logo" />
+                                    <div className="media-body">
                                       <h5 className="launchpad_token_title">{e.token_name} <span>{e.symbol}</span></h5>
                                     </div>
                                   </div>

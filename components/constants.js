@@ -12,7 +12,7 @@ export const favicon =  '/assets/img/favicon.png'
 export const API_BASE_URL ='https://markets-nodejs-api-l9lg8.ondigitalocean.app/'
 
 // Local Links
-// export const website_url = 'http://192.168.1.100:4500/' 
+// export const website_url = 'http://192.168.1.100:4500' 
 // export const app_coinpedia_url="http://192.168.1.100:4400/"
 // export const coinpedia_url="http://192.168.1.100:81/cpnews/"
 // export const market_coinpedia_url = 'http://192.168.1.100:4500/'
@@ -85,6 +85,62 @@ export const getDomainName = (link)=>
     return null
   }
   
+}
+
+
+export const roundNumericValue=(value) =>
+{
+  if(value)
+  {
+    if(parseFloat(value) >= 0.1)
+    {
+      return "$ "+((parseFloat(value)).toFixed(2))
+    }
+    else if((parseFloat(value) < 0.1) && (parseFloat(value) >= 0.01))
+    {
+      return "$ "+(parseFloat(value)).toFixed(3)
+    }
+    else if((parseFloat(value) < 0.01) && (parseFloat(value) >= 0.001))
+    {
+      return "$ "+(parseFloat(value)).toFixed(4)
+    }
+    else if((parseFloat(value) < 0.001) && (parseFloat(value) > 0.0001))
+    {
+      return "$ "+(parseFloat(value)).toFixed(5)
+    }
+    else if((parseFloat(value) < 0.0001) && (parseFloat(value) > 0.00001))
+    {
+      return "$ "+(parseFloat(value)).toFixed(6)
+    }
+    else if((parseFloat(value) < 0.00001) && (parseFloat(value) > 0.000001))
+    {
+      return "$ "+(parseFloat(value)).toFixed(7)
+    }
+    else if((parseFloat(value) < 0.000001) && (parseFloat(value) > 0.0000001))
+    {
+      return "$ "+(parseFloat(value)).toFixed(8)
+    }
+    else if((parseFloat(value) < 0.0000001) && (parseFloat(value) > 0.00000001))
+    {
+      return "$ "+(parseFloat(value)).toFixed(9)
+    }
+    else if((parseFloat(value) < 0.00000001) && (parseFloat(value) > 0.000000001))
+    {
+      return "$ "+(parseFloat(value)).toFixed(11)
+    }
+    else if((parseFloat(value) < 0.000000001) && (parseFloat(value) > 0.0000000001))
+    {
+      return "$ "+(parseFloat(value)).toFixed(12)
+    }
+    else
+    {
+      return "$ "+((parseFloat(value)).toFixed(13))
+    }
+  }
+  else
+  {
+    return "-"
+  }
 }
 
 export const createValidURL = (link)=>

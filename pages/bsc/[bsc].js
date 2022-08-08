@@ -1730,6 +1730,9 @@ const connectToEthWallet=()=>
         <div className="">
           <div className="container">
             <div className="col-md-12">
+            {/* <div className="breadcrumb_block">
+                    <Link href={"/"}><a>Home</a></Link><span> &#62; </span>{data.token_name}
+              </div> */}
               <div className="row ">
                 <div className="col-md-7">
                   <ul className="token_detail_ext_links">
@@ -2256,9 +2259,9 @@ const connectToEthWallet=()=>
   )
 } 
 
-export async function getServerSideProps({ resolvedUrl }) {  
-  const token_address = resolvedUrl.substring(5)   
-    const query = `
+export async function getServerSideProps({ query }) {  
+  const token_address = query.bsc  
+    const query1 = `
     query
     { 
       ethereum(network: bsc) {
@@ -2290,7 +2293,7 @@ export async function getServerSideProps({ resolvedUrl }) {
     "X-API-KEY": graphqlApiKEY
     },
     body: JSON.stringify({
-      query: query, 
+      query: query1, 
     })
     };
 

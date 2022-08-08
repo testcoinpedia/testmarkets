@@ -2,10 +2,11 @@ import React, {useEffect, useState} from 'react'
 import Link from 'next/link' 
 import cookie from "cookie"
 import ReactPaginate from 'react-paginate'  
-import { API_BASE_URL, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY, count_live_price, Logout} from '../components/constants' 
+import { API_BASE_URL, roundNumericValue, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY, count_live_price, Logout} from '../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
 import Search_Contract_Address from '../components/searchContractAddress'
+import CategoriesTab from '../components/categoriesTabs'
 import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
 import WatchList from '../components/watchlist'
@@ -13,12 +14,8 @@ import WatchList from '../components/watchlist'
 // dummy
 
 
-export default function Companies({user_token, config,userAgent})
+export default function Companies({user_token, config, userAgent})
 { 
-    console.log(userAgent)
-    console.log(user_token)
-    console.log(config)
-    const [tokenStatus,set_tokenStatus] = useState("")
     const [tokens_list, set_tokens_list] = useState([]) 
     const [voting_ids, setvoting_ids] = useState([])  // commented
     const [watchlist, set_watchlist] = useState([])
@@ -45,13 +42,12 @@ export default function Companies({user_token, config,userAgent})
    
     
    
-   useEffect(async ()=>
-   {  
-      
-      tokensList({selected : 0})
-      voteIds()
-      watchListIds()
-   },[per_page_count,watch_list_status]) 
+    useEffect(async ()=>
+    {  
+        tokensList({selected : 0})
+        voteIds()
+        watchListIds()
+    },[per_page_count, watch_list_status]) 
 
    const tokensList = async (page) =>
    {  
@@ -69,7 +65,6 @@ export default function Companies({user_token, config,userAgent})
          {     
             set_loader_status(true)
             set_tokens_list(res.data.message)
-            set_tokenStatus(res.data.tokenStatus)
             setPageCount(Math.ceil(res.data.count/per_page_count))
             set_sl_no(current_pages)
             setCurrentPage(page.selected)
@@ -88,30 +83,29 @@ export default function Companies({user_token, config,userAgent})
          } 
       }
    }
-   const voteIds = () =>
+
+    const voteIds = () =>
     {
         Axios.get(API_BASE_URL+"markets/tokens/voting_ids", config).then(res=>
         { 
-       
-        if(res.data.status)
-        {
-          setvoting_ids(res.data.voting_ids)
-            // console.log(res.data.voting_ids)
-        }
+            if(res.data.status)
+            {
+                setvoting_ids(res.data.voting_ids)
+            }
         })
     }
+
     const watchListIds = () =>
     {
         Axios.get(API_BASE_URL+"markets/tokens/watchlist_ids", config).then(res=>
         { 
-       
-        if(res.data.status)
-        {
-          set_watchlist(res.data.message)
-           
-        }
+            if(res.data.status)
+            {
+            set_watchlist(res.data.message)
+            }
         })
     }
+    
     const ModalVote=(token_id,status,_id,item)=> 
     { 
       // console.log(item)   
@@ -310,51 +304,9 @@ return (
         
           <div className="container">
             <div className="col-md-12">
-              <div className="categories categories_list_display">
-                <div className="categories__container">
-                  <div className="row">
-                    <div className="markets_list_quick_links">
-                      <ul>
-                        <li>
-                          <Link href="/">
-                            <a className="categories__item active_category">
-                              <div className="categories__text">All</div>
-                            </a>
-                          </Link> 
-                        </li>
-                        <li data-toggle="modal" data-target="#comingSoon">
-                        
-                            <a className="categories__item">
-                              <div className="categories__text">Gainers & Losers</div>
-                            </a>
-                        
-                        </li>
-                        <li data-toggle="modal" data-target="#comingSoon">
-                          {/* <Link href="#"> */}
-                            <a className="categories__item ">
-                              <div className="categories__text">Stable Coins</div>
-                            </a>
-                          {/* </Link> */}
-                        </li>
-                        <li data-toggle="modal" data-target="#comingSoon">
-                          {/* <Link href="#"> */}
-                            <a className="categories__item ">
-                              <div className="categories__text">Trending Coins</div>
-                            </a>
-                          {/* </Link> */}
-                        </li>
-                        <li data-toggle="modal" data-target="#comingSoon">
-                          {/* <Link href="#"> */}
-                            <a className="categories__item ">
-                              <div className="categories__text">NFT Marketplace</div>
-                            </a>
-                          {/* </Link> */}
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {
+                <CategoriesTab /> 
+            }
 
               {/* <div className="">
               <div className="row">
@@ -372,7 +324,7 @@ return (
                     <ul className="category_list">
                       <li className={all_tab_status?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
                       {
-                        tokenStatus?
+                        user_token?
                         <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
                         :
                         <li>
@@ -436,7 +388,7 @@ return (
                              <tr key={i}>
                                      <td>
                                      {
-                                       tokenStatus ?
+                                       user_token ?
                                        <>
                                        {
                                          watchlist.includes(e._id) ?
@@ -450,7 +402,6 @@ return (
                                      }
                                      
                                      </td>
-                                     
                                      <td className="mobile_hide_table_col">
                                       {sl_no+i+1}
                                      </td>
@@ -459,7 +410,7 @@ return (
                                          <a>
                                           <div className="media">
                                             <div className="media-left">
-                                              <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                              <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
                                             </div>
                                             <div className="media-body">
                                               <h4 className="media-heading">{e.token_name} <span>{(e.symbol).toUpperCase()}</span></h4>
@@ -476,9 +427,9 @@ return (
                                      <td className="market_list_price"> 
                                        <Link href={"/"+e.token_id}>
                                          <a>
-                                         <span className="block_price">{e.price?"$":null}{e.price?count_live_price(e.price):"-"}</span>
+                                         <span className="block_price">{roundNumericValue(e.price)}</span>
                                            {/* <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(9)):"-"}</span> */}
-                                           
+                                          {/* <br/> {e.price} <br/> */}
                                            {e.price_updated_on ? moment(e.price_updated_on).fromNow():null} 
                                          </a>
                                          </Link>
@@ -536,7 +487,7 @@ return (
                                      
                                      <td  className="mobile_hide_table_col">
                                        {
-                                         tokenStatus ?
+                                         user_token ?
                                          <>
                                          {
                                            voting_ids.includes(e._id) ?
@@ -672,21 +623,6 @@ return (
               </div> 
             </div>
           </div> 
-      <div className="coming_soon_modal">
-        <div className="modal" id="comingSoon">
-          <div className="modal-dialog modal-sm">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h4 className="modal-title coming_soon_title">Coming Soon !!</h4>
-                <button type="button" className="close" data-dismiss="modal">&times;</button>
-              </div>
-              <div className="modal-body">
-                <p className="coming_soon_subtext">This feature will be available soon</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 </>
 )

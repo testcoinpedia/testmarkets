@@ -9,7 +9,7 @@ import Head from 'next/head'
 import JsCookie from "js-cookie" 
 import cookie from 'cookie'
 import "react-datetime/css/react-datetime.css"
-import {API_BASE_URL, x_api_key, app_coinpedia_url, website_url,config,graphqlApiKEY,separator} from '../../components/constants'; 
+import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,  market_coinpedia_url,website_url,config,graphqlApiKEY,separator} from '../../components/constants'; 
 import Select from 'react-select'
 import Popupmodal from '../../components/popupmodal'
   
@@ -21,80 +21,80 @@ import { Editor } from '@tinymce/tinymce-react';
  
 export default function Create_token({config}) 
 { 
-  const editorRef = useRef(null)
-  const router = useRouter()
-  const [wallet_address, setWalletAddress] = useState('')
-  const [contract_address, setContractAddress] = useState([{network_type: "0", contract_address: ""}])
-  const [live_price, setLivePrice] = useState("")
-  const [market_cap, set_market_cap] = useState("") 
-  const [err_contract_address, setErrContractAddress] = useState("")
-   
-  const [symbol, setSymbol] = useState('')  
-  const [token_name, setTokenName] = useState('')
-  const [website_link, setWebsiteLink] = useState('')
-  const [whitepaper, setWhitepaper] = useState('')
-  const [token_max_supply, setTokenMaxSupply] = useState('')
-  const [circulating_supply, setCirculatingSupply] = useState('') 
-  const [token_description, setTokenDescription] = useState('')
-  const [token_image, setTokenImage] = useState('')
-  const [source_code_link, seSourceCodeLink] = useState('')
-  const [tokenid , setToken_id] = useState("")
-  const [meta_keywords, set_meta_keywords] = useState("")
-  const [meta_description, set_meta_description] = useState("")
-  const [categories, set_categories] = useState([])
-  const [category_row_id, set_category_row_id] = useState("")
-  const [category_name, set_category_name] = useState("")
-  const [err_symbol, setErrSymbol] = useState('') 
-  const [err_token_name, setErrTokenName] = useState('')
-  const [err_website_link, setErrWebsiteLink] = useState('')
-  const [err_whitepaper, setErrWhitepaper] = useState('')
-  const [err_token_max_supply, setErrTokenMaxSupply] = useState('')
-  const [err_market_cap, setErr_market_cap] = useState('') 
-  const [err_token_description, setErrTokenDescription] = useState('')
-  const [err_token_image, setErrTokenImage] = useState('')
+    const editorRef = useRef(null)
+    const router = useRouter()
+    const [wallet_address, setWalletAddress] = useState('')
+    const [contract_address, setContractAddress] = useState([{network_type: "0", contract_address: ""}])
+    const [live_price, setLivePrice] = useState("")
+    const [market_cap, set_market_cap] = useState("") 
+    const [err_contract_address, setErrContractAddress] = useState("")
+    const [loader, set_loader] = useState("")
+    
+    const [symbol, setSymbol] = useState('')  
+    const [token_name, setTokenName] = useState('')
+    const [website_link, setWebsiteLink] = useState('')
+    const [whitepaper, setWhitepaper] = useState('')
+    const [token_max_supply, setTokenMaxSupply] = useState('')
+    const [circulating_supply, setCirculatingSupply] = useState('') 
+    const [token_description, setTokenDescription] = useState('')
+    const [token_image, setTokenImage] = useState('')
+    const [source_code_link, seSourceCodeLink] = useState('')
+    const [tokenid , setToken_id] = useState("")
+    const [meta_keywords, set_meta_keywords] = useState("")
+    const [meta_description, set_meta_description] = useState("")
+    const [categories, set_categories] = useState([])
+    const [category_row_id, set_category_row_id] = useState("")
+    const [category_name, set_category_name] = useState("")
+    const [err_symbol, setErrSymbol] = useState('') 
+    const [err_token_name, setErrTokenName] = useState('')
+    const [err_website_link, setErrWebsiteLink] = useState('')
+    const [err_whitepaper, setErrWhitepaper] = useState('')
+    const [err_token_max_supply, setErrTokenMaxSupply] = useState('')
+    const [err_market_cap, setErr_market_cap] = useState('') 
+    const [err_token_description, setErrTokenDescription] = useState('')
+    const [err_token_image, setErrTokenImage] = useState('')
 
-  const [err_wallet_network, setErrWalletNetwork] = useState(false)
-  const [err_wallet_connection, setErrWalletConnection] = useState(false)
-  const [alert_message, setAlertMessage] = useState([])
+    const [err_wallet_network, setErrWalletNetwork] = useState(false)
+    const [err_wallet_connection, setErrWalletConnection] = useState(false)
+    const [alert_message, setAlertMessage] = useState([])
 
-  const [explorer, setExplorersList] = useState([""])
-  const [exchange_link, setExchangesList] = useState([""])
-  const [community_address, setCommunitysList] = useState([""])   
+    const [explorer, setExplorersList] = useState([""])
+    const [exchange_link, setExchangesList] = useState([""])
+    const [community_address, setCommunitysList] = useState([""])   
 
-   const [imgmodal, setImgmodal] = useState(false) 
-   const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
-   const [showNav, setShowNav] = useState(false) 
-   const [upImg, setUpImg] = useState();
-   const imgRef = useRef(null);
-   const previewCanvasRef = useRef(null);
-   const [crop, setCrop] = useState({ unit: 'px', width: 50, height: 50, aspect: 1 / 1});
-   const [completedCrop, setCompletedCrop] = useState(null)
-   const [blobFile, set_blobFile] = useState()
+    const [imgmodal, setImgmodal] = useState(false) 
+    const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
+    const [showNav, setShowNav] = useState(false) 
+    const [upImg, setUpImg] = useState();
+    const imgRef = useRef(null);
+    const previewCanvasRef = useRef(null);
+    const [crop, setCrop] = useState({ unit: 'px', width: 50, height: 50, aspect: 1 / 1});
+    const [completedCrop, setCompletedCrop] = useState(null)
+    const [blobFile, set_blobFile] = useState()
   
-  const oncCropComplete=()=>
-  {  
-    document.getElementById("imageUploadForm").reset()
-    setTokenImage(blobFile)
-    // convertBlobtoBase64(blobFile)
-    setImgmodal(false)
-  }
+    const oncCropComplete=()=>
+    {  
+        document.getElementById("imageUploadForm").reset()
+        setTokenImage(blobFile)
+        setImgmodal(false)
+    }
   
-  const getBusinessModels = () => 
+    const getBusinessModels = () => 
     { 
-        Axios.get(API_BASE_URL+"app/company_business_models", config).then(res => {
-        if (res.data.status) 
+        Axios.get(API_BASE_URL+"app/company_business_models", config).then(res => 
         {
-              console.log(res.data.message)
-              var listData = res.data.message
-              var list = [];
-              for(const i of listData)
-              {
-                list.push({value: parseInt(i._id), label: i.business_name})  
-              }
-            set_categories(list)
-            
-        }
-      })
+            if (res.data.status) 
+            {
+                console.log(res.data.message)
+                var listData = res.data.message
+                var list = [];
+                for(const i of listData)
+                {
+                    list.push({value: parseInt(i._id), label: i.business_name})  
+                }
+                set_categories(list)
+            }
+        })
     }
  
     const handleChange = selectedOption => 
@@ -104,117 +104,107 @@ export default function Create_token({config})
         set_category_name(selectedOption.label)
     }
 
-  const onRemove = (selectedList, removedItem) => 
-  {
-    category_row_id.splice(category_row_id.indexOf(removedItem.id), 1)
-    business_models.splice(business_models.indexOf(removedItem), 1)
-    console.log(category_row_id)
-    CategoryOptionsList(business_models)
-  }
-  const imageCropModalClose = () => 
-  {
-    document.getElementById("imageUploadForm").reset()
-    setImgmodal(false)
-  }
+    const imageCropModalClose = () => 
+    {
+        document.getElementById("imageUploadForm").reset()
+        setImgmodal(false)
+    }
 
-  const onCropComplete = (crops) => 
-  {  
-      setCompletedCrop(crops)
-  
-      const image = imgRef.current;
-      const canvas = document.createElement('canvas')
-      const crop = crops;
-  
-      const scaleX = image.naturalWidth / image.width;
-      const scaleY = image.naturalHeight / image.height;
-      const ctx = canvas.getContext('2d');
-      const pixelRatio = window.devicePixelRatio;
-  
-      canvas.width = crop.width * pixelRatio;
-      canvas.height = crop.height * pixelRatio;
-  
-      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-      ctx.imageSmoothingQuality = 'high';
-  
-      ctx.drawImage(
-        image,
-        crop.x * scaleX,
-        crop.y * scaleY,
-        crop.width * scaleX,
-        crop.height * scaleY,
-        0,
-        0,
-        crop.width,
-        crop.height
-      );
-      
-      return new Promise((resolve, reject) => 
-      {
-        canvas.toBlob(blob => {
-          if (!blob) { 
-            return;
-          }
-          blob.name = 'newFile.jpeg';
-          window.URL.revokeObjectURL(fileUrl);
-          const fileUrl = window.URL.createObjectURL(blob);
-          var reader = new FileReader();
-          reader.readAsDataURL(blob);
-          reader.onloadend = function() 
-          {
-              //  console.log(reader.result)
-              set_blobFile(reader.result)
-          }
-          resolve(fileUrl);
-        }, 'image/jpeg');
-      });
-
-  };  
+    const onCropComplete = (crops) => 
+    {  
+        setCompletedCrop(crops)
+    
+        const image = imgRef.current
+        const canvas = document.createElement('canvas')
+        const crop = crops
+    
+        const scaleX = image.naturalWidth / image.width
+        const scaleY = image.naturalHeight / image.height
+        const ctx = canvas.getContext('2d')
+        const pixelRatio = window.devicePixelRatio
+    
+        canvas.width = crop.width * pixelRatio
+        canvas.height = crop.height * pixelRatio
+    
+        ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
+        ctx.imageSmoothingQuality = 'high'
+    
+        ctx.drawImage(
+            image,
+            crop.x * scaleX,
+            crop.y * scaleY,
+            crop.width * scaleX,
+            crop.height * scaleY,
+            0,
+            0,
+            crop.width,
+            crop.height
+        )
+        
+        return new Promise((resolve, reject) => 
+        {
+            canvas.toBlob(blob => 
+            {
+                if (!blob) {  return }
+                blob.name = 'newFile.jpeg'
+                window.URL.revokeObjectURL(fileUrl)
+                const fileUrl = window.URL.createObjectURL(blob)
+                var reader = new FileReader()
+                reader.readAsDataURL(blob)
+                reader.onloadend = function()  { set_blobFile(reader.result) }
+                resolve(fileUrl)
+            }, 'image/jpeg')
+        })
+    }
   
   
-const onSelectFile = (e) => 
-{ 
-  if(e.target.files && e.target.files.length > 0)
-  {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => setUpImg(reader.result));
-    reader.readAsDataURL(e.target.files[0]);
-    setImgmodal(true)
-  }
-}
+    const onSelectFile = (e) => 
+    { 
+        if(e.target.files && e.target.files.length > 0)
+        {
+            const reader = new FileReader();
+            reader.addEventListener('load', () => setUpImg(reader.result));
+            reader.readAsDataURL(e.target.files[0]);
+            setImgmodal(true)
+        }
+    }
 
 
 
-const onLoad = useCallback((img) => {
-  imgRef.current = img;
-}, []);
+    const onLoad = useCallback((img) => 
+    {
+        imgRef.current = img
+    }, [])
   
-const clearform = () =>
-{   
-  setContractAddress([{network_type: "0", contract_address: ""}])
-  setSymbol("")
-  setTokenName("")
-  setWebsiteLink("")
-  setWhitepaper("")
-  setTokenMaxSupply("")
-  set_market_cap("")
-  setTokenDescription("")
-  setTokenImage("")
-  seSourceCodeLink("")
-  setExplorersList("")
-  setExchangesList("")
-  setCommunitysList("")
-
-}
+    const clearform = () =>
+    {   
+        setContractAddress([{network_type: "0", contract_address: ""}])
+        setSymbol("")
+        setTokenName("")
+        setWebsiteLink("")
+        setWhitepaper("")
+        setTokenMaxSupply("")
+        set_market_cap("")
+        setTokenDescription("")
+        setTokenImage("")
+        set_category_name("")
+        seSourceCodeLink("")
+        setExplorersList("")
+        setExchangesList("")
+        setCommunitysList("")
+    }
 
 const createNewToken = () =>
 {   
     let formValid = true
-    if(contract_address.length === 2){ 
+    if(contract_address.length === 2)
+    { 
       let list = err_contract_address
       list = ""
       setErrContractAddress(list)
     }
-    else{
+    else
+    {
       let list = err_contract_address
       list = ""
       setErrContractAddress(list)    
@@ -343,23 +333,6 @@ const createNewToken = () =>
         formValid = false
     }
     
-
-    // if(whitepaper === '')
-    // {
-    //     setErrWhitepaper('The whitepaper field is required.')
-    //     formValid = false
-    // }
-    // else if(whitepaper.length < 2)
-    // {
-    //     setErrWhitepaper('The whitepaper must be at least 2 characters.')
-    //     formValid = false
-    // }
-    // else if(whitepaper.length > 100)
-    // {
-    //     setErrWhitepaper('The whitepaper must be less than 100 characters in length.')
-    //     formValid = false
-    // }
-
    let communities_address = []
 
     if(community_address.length > 0){ 
@@ -413,7 +386,7 @@ const createNewToken = () =>
     {
       return false
     }
-    
+    set_loader(true)
     const reqObj = {
       wallet_address : wallet_address, 
       symbol : symbol, 
@@ -438,6 +411,7 @@ const createNewToken = () =>
     // console.log(reqObj)
     Axios.post(API_BASE_URL+"markets/listing_tokens/create_new", reqObj, config).then(response=>
     { 
+      set_loader(false)
       // console.log(response)
       if(response.data.status)
       { 
@@ -582,54 +556,60 @@ const createNewToken = () =>
       })
       .catch(console.error);
   }
-  const getTotalMaxSupply=(id,decimal,networktype)=>{
-    if(networktype==1){
-     // https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0x57d90b64a1a57749b0f932f1a3395792e12e7055&apikey=YourApiKeyToken
-      Axios.get("https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=E9DBMPJU7N6FK7ZZDK86YR2EZ4K4YTHZJ1")
-      .then(response=>{
-            if(response.status){ 
-              console.log(response) 
-              setTokenMaxSupply(response.data.result/10**decimal) 
-            }
-      })
-    }
-    else{
-      Axios.get("https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2")
-        .then(response=>{
-              if(response.status){ 
+
+    const getTotalMaxSupply=(id,decimal,networktype)=>
+    {
+        if(networktype==1)
+        {
+            // https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0x57d90b64a1a57749b0f932f1a3395792e12e7055&apikey=YourApiKeyToken
+            Axios.get("https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=E9DBMPJU7N6FK7ZZDK86YR2EZ4K4YTHZJ1").then(response=>
+            {
+                if(response.status)
+                { 
                 console.log(response) 
                 setTokenMaxSupply(response.data.result/10**decimal) 
-              }
-        })
+                }
+            })
+        }
+        else
+        {
+            Axios.get("https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress="+id+"&apikey=GV79YU5Y66VI43RM7GCBUE52P5UMA3HAA2").then(response=>
+            {
+                if(response.status)
+                { 
+                console.log(response) 
+                setTokenMaxSupply(response.data.result/10**decimal) 
+                }
+            })
+        }
     }
-   }
-   const getMarketCap =async(id, decval, network_type)=> {  
+
+    const getMarketCap =async(id, decval, network_type)=> 
+    {  
+        let mainnetUrl = ""
+        if(network_type === "1" )
+        {
+            mainnetUrl = 'https://mainnet.infura.io/v3/5fd436e2291c47fe9b20a17372ad8057'
+        }
+        else
+        {
+            mainnetUrl = "https://bsc-dataseed.binance.org/";
+        }
    
-    console.log("gfbkj")
-    let mainnetUrl = ""
-    if(network_type === "1" ){
-      mainnetUrl = 'https://mainnet.infura.io/v3/5fd436e2291c47fe9b20a17372ad8057'
+        const provider = new ethers.providers.JsonRpcProvider(mainnetUrl); 
+        const tokenAbi = ["function totalSupply() view returns (uint256)"];
+        const tokenContract = new ethers.Contract(id, tokenAbi, provider);
+        const supply = await tokenContract.totalSupply() / (10 ** decval);  
+        getTokenUsdPrice(id,network_type)
+        set_market_cap(supply * live_price)
     }
-    else{
-      mainnetUrl = "https://bsc-dataseed.binance.org/";
-    }
-   
-   
-      const provider = new ethers.providers.JsonRpcProvider(mainnetUrl); 
-      const tokenAbi = ["function totalSupply() view returns (uint256)"];
-      const tokenContract = new ethers.Contract(id, tokenAbi, provider);
-      const supply = await tokenContract.totalSupply() / (10 ** decval);  
-      getTokenUsdPrice(id,network_type)
-      set_market_cap(supply * live_price)  
-      // await console.log(supply * live_price)
-  }
 
 
-  const closeNRedirect = () =>
-  {
-    setAlertMessage('')
-    router.push('/token/')
-  }
+    const closeNRedirect = () =>
+    {
+        setAlertMessage('')
+        router.push('/token/')
+    }
   
   // const getAccount = () =>
   // {
@@ -882,6 +862,13 @@ const createNewToken = () =>
               <div> 
                 <div className="token_form">
                   <div className=" token_steps">
+                  <div className="col-md-12">
+                  <div className="breadcrumb_block">
+                    <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
+                    <Link href={market_coinpedia_url}><a >Live Market</a></Link> <span> &#62; </span> 
+                      <Link href="/token/"><a>Tokens</a></Link><span> &#62; </span>Create Token
+                  </div>
+                  </div>
                   <div className="row">
                     <div className="col-lg-9 col-md-9 col-8">
                     <h1>Create Token</h1>
@@ -911,7 +898,7 @@ exchange_link
                           <li>Exchange <img src={"/assets/img/"+(exchange_link[0] ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
                           <li>Explorer <img src={"/assets/img/"+(explorer[0] ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
                           <li>Community <img src={"/assets/img/"+(community_address[0] ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
-                          <li>About Token <img src={"/assets/img/"+(token_description ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
+                          <li>About Token <img src={"/assets/img/"+(token_description.length > 10 ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
                         </ul>
                       </div>
                     </div>
@@ -1026,7 +1013,7 @@ exchange_link
                                   onChange={handleChange}
                                   isSearchable={true}
                                   options={categories}
-                                  placeholder={category_name?category_name:'Select main business category'}
+                                  placeholder={category_name?category_name:'Select category'}
                                 />
                                 </div>
                                  <div className="error">{err_website_link}</div>
@@ -1381,7 +1368,13 @@ exchange_link
                             <div className="col-md-4"></div>
                             <div className="col-md-8">
                               <div className="text-left review_upload_token mt-3">
-                                <button className="dsaf" onClick={() =>{createNewToken()}}>Review and Upload</button> 
+                                <button className="dsaf" onClick={() =>{createNewToken()}}>
+                                 {loader ? (
+                                      <div className="loader"><span className="spinner-border spinner-border-sm "></span>Review and Upload</div>
+                                      ) : (
+                                          <>Review and Upload</>
+                                      )}
+                                </button> 
                               </div>
                             </div>
                           </div>

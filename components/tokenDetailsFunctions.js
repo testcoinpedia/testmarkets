@@ -45,6 +45,27 @@ const fromNToDate = (datetime,customstartdate,customenddate)=>
       from_date = from_date / 1000
       to_date = to_date / 1000
     }
+    else if (datetime === 7) {
+      // 6 months
+      from_date = new Date();
+      from_date = from_date.setDate(from_date.getDate() - 182);
+      from_date = Date.parse((new Date(from_date).toString())) / 1000;
+      to_date = Date.parse((new Date()).toString()) / 1000;
+    } 
+    else if (datetime === 8) {
+      // 3 year
+      from_date = new Date();
+      from_date = from_date.setDate(from_date.getDate() - 1095);
+      from_date = Date.parse((new Date(from_date).toString())) / 1000;
+      to_date = Date.parse((new Date()).toString()) / 1000;
+    } 
+    else if (datetime === 9) {
+      // 5 year
+      from_date = new Date();
+      from_date = from_date.setDate(from_date.getDate() - 1825);
+      from_date = Date.parse((new Date(from_date).toString())) / 1000;
+      to_date = Date.parse((new Date()).toString()) / 1000;
+    } 
 
     const dateSince = new Date(from_date * 1000);
     const fromDate = dateSince.toISOString();

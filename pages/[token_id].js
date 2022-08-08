@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 import Link from 'next/link' 
 import Head from 'next/head'
 import Error from './404'
-import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, IMAGE_BASE_URL, 
+import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, coinpedia_url,market_coinpedia_url, IMAGE_BASE_URL, 
   graphqlApiKEY, count_live_price, Logout, DomainName} from '../components/constants'
 import { live_price_graphql } from '../components/token_details/graphql'
 import { live_price_coingecko } from '../components/token_details/coingecko'
@@ -852,15 +852,6 @@ const getexchangevalue = async (pool_token_address,networks)=>
   } 
 
 
-
-
-
-
-
-
-
-
-
   const getGraphData=async(value)=> 
   {   
     await set_graph_data_date("")
@@ -996,6 +987,10 @@ const getexchangevalue = async (pool_token_address,networks)=>
       <div className="market_token_details">
           <div className="container">
             <div className="col-md-12">
+            <div className="breadcrumb_block">
+            <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
+            <Link href={market_coinpedia_url}><a >Live Market</a></Link> <span> &#62; </span>{data.token_name}
+              </div>
               <div className="row">
                 <div className="col-lg-6 col-md-12 order-md-2">
                   <div className="row">
@@ -1006,7 +1001,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
                     
                       <ul className="token_share_vote"> 
                         {
-                          tokenStatus 
+                          user_token 
                           ?
                           <>
                             {
@@ -1158,12 +1153,12 @@ const getexchangevalue = async (pool_token_address,networks)=>
                     <div className="row">
                       <div className="col-md-6">
                         <div className="media">
-                          <img src={data.token_image ? image_base_url+data.token_image : image_base_url+"default.png"} className="token_img" alt="logo" width="100%" height="100%" />
+                          <img src={data.token_image ? image_base_url+data.token_image : image_base_url+"default.png"} onError={(e) =>e.target.src = "/assets/img/default_token.png"} className="token_img" alt="logo" width="100%" height="100%" />
                           <div className="media-body">
                             <h4 className="media-heading">{data.token_name ? data.token_name : "-"} 
                               {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
                               {
-                                tokenStatus ?
+                                user_token ?
                                 <>
                                   {
                                   watchlist == true ?
@@ -1356,11 +1351,12 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                     }
                                   </li> 
                                   :
-                                  <li className="coin_individual_list">
-                                    <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" > <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Explorer Not Avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /></a></div>
-                                    </div>
-                                  </li>
+                                  // <li className="coin_individual_list">
+                                  //   <div className="quick_block_links">
+                                  //     <div className="widgets__select links_direct" > <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Explorer Not Avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /></a></div>
+                                  //   </div>
+                                  // </li>
+                                  null
                                 }
 
                                 {
@@ -1372,11 +1368,12 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                     </div>
                                   </li>
                                   :
-                                  <li className="coin_individual_list">
-                                  <div className="quick_block_links">
-                                    <div className="widgets__select links_direct"><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("White paper is not avaliable")}} ><img src="/assets/img/whitepaper.svg" className="coin_cat_img" /> White paper </a></div>
-                                  </div>
-                                </li>
+                                  // <li className="coin_individual_list">
+                                  //   <div className="quick_block_links">
+                                  //     <div className="widgets__select links_direct"><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("White paper is not avaliable")}} ><img src="/assets/img/whitepaper.svg" className="coin_cat_img" /> White paper </a></div>
+                                  //   </div>
+                                  // </li>
+                                  null
                                 }
                                 {
                                   data.community_address.length > 0 && data.community_address[0] !="" ?
@@ -1419,11 +1416,12 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                     }
                                   </li> 
                                   :
-                                  <li className="coin_individual_list">
-                                    <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Community address is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Community <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> </a></div>
-                                    </div>
-                                  </li>
+                                  // <li className="coin_individual_list">
+                                  //   <div className="quick_block_links">
+                                  //     <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Community address is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Community <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> </a></div>
+                                  //   </div>
+                                  // </li>
+                                  null
                                 }
 
                                 </ul>
@@ -1431,13 +1429,14 @@ const getexchangevalue = async (pool_token_address,networks)=>
                               <ul className="coin_quick_details">
                               {
                                 data.website_link==""?
-                                <>
-                                  <li className="coin_individual_list">
-                                    <div className="quick_block_links">
-                                      <div className="widgets__select links_direct"> <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Website link is not avaliable")}} ><img src="/assets/img/website.svg" className="coin_cat_img" />Website</a></div>
-                                    </div>
-                                  </li>
-                                </>
+                                // <>
+                                //   <li className="coin_individual_list">
+                                //     <div className="quick_block_links">
+                                //       <div className="widgets__select links_direct"> <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Website link is not avaliable")}} ><img src="/assets/img/website.svg" className="coin_cat_img" />Website</a></div>
+                                //     </div>
+                                //   </li>
+                                // </>
+                                null
                                 :
                                 <li className="coin_individual_list">
                                   <div className="quick_block_links">
@@ -1455,11 +1454,12 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                   </div>
                                 </li>
                                 :
-                                <li className="coin_individual_list">
-                                  <div className="quick_block_links">
-                                    <div className="widgets__select links_direct"> <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Source code is not avaliable")}} ><img src="/assets/img/source_code.svg" className="coin_cat_img" /> Source Code </a></div>
-                                  </div>
-                                </li>
+                                // <li className="coin_individual_list">
+                                //   <div className="quick_block_links">
+                                //     <div className="widgets__select links_direct"> <a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Source code is not avaliable")}} ><img src="/assets/img/source_code.svg" className="coin_cat_img" /> Source Code </a></div>
+                                //   </div>
+                                // </li>
+                                null
                                 }
                               
                               {
@@ -1503,11 +1503,12 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                     }
                                   </li> 
                                   :
-                                  <li className="coin_individual_list">
-                                    <div className="quick_block_links">
-                                      <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Exchanges is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Exchanges<img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /></a></div>
-                                    </div>
-                                  </li>
+                                  // <li className="coin_individual_list">
+                                  //   <div className="quick_block_links">
+                                  //     <div className="widgets__select links_direct" ><a className="" data-toggle="modal" data-target="#linksData" onClick={()=> {set_no_data_link("Exchanges is not avaliable")}} ><img src="/assets/img/explorer.svg" className="coin_cat_img" />Exchanges<img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /></a></div>
+                                  //   </div>
+                                  // </li>
+                                  null
                                   :
                                   null
                                 }

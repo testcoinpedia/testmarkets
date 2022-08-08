@@ -6,7 +6,7 @@ import Axios from 'axios';
 import Head from 'next/head';
 import cookie from 'cookie'
 import moment from 'moment'
-import {API_BASE_URL,config,separator,website_url, app_coinpedia_url,IMAGE_BASE_URL,market_coinpedia_url} from '../../components/constants' 
+import {API_BASE_URL,config,separator,website_url, app_coinpedia_url,IMAGE_BASE_URL,market_coinpedia_url,coinpedia_url} from '../../components/constants' 
 
  
 export default function LaunchPad({userAgent}) 
@@ -18,7 +18,6 @@ export default function LaunchPad({userAgent})
   const [upcoming , set_upcoming] = useState([])
   const [ended , set_ended] = useState([])
   const [apistatus, setapistatus] = useState(false)
-  const [tokenStatus,set_tokenStatus] = useState("")
   const [watchlist, set_watchlist] = useState([])
   useEffect(()=>{ 
    // GetAllPromotions() 
@@ -38,7 +37,6 @@ export default function LaunchPad({userAgent})
           set_ongoing(res.data.message.ongoing)
           set_upcoming(res.data.message.upcoming)
           set_ended(res.data.message.ended)
-          set_tokenStatus(res.data.tokenStatus)
           set_watchlist(res.data.watchlist)
         }
     })
@@ -125,6 +123,10 @@ export default function LaunchPad({userAgent})
           <div className=" launchpad">
             <div className="container">
               <div className="col-md-12">
+              <div className="breadcrumb_block">
+              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
+              <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span>Overview Launchpads
+               </div>
                 <div className="row launchpad_list">
                   <div className="col-md-8 col-7">
                     <h1 className="page_title">List of Complete Launchpad Calendar.</h1>
@@ -177,7 +179,7 @@ export default function LaunchPad({userAgent})
                               <td>
                                 <Link href={"/"+e.token_id}>
                                   <a>
-                                    <h5 className="launchpad_title"><img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" className="" /> {e.token_name} <span>{e.symbol}</span></h5>
+                                    <h5 className="launchpad_title"><img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="Logo" className="" /> {e.token_name} <span>{e.symbol}</span></h5>
                                     
                                   </a>
                                 </Link>
@@ -247,7 +249,7 @@ export default function LaunchPad({userAgent})
                               <td>
                                 <Link href={"/"+e.token_id}>
                                   <a>
-                                    <h5 className="launchpad_title"><img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" className="" /> {e.token_name} <span>{e.symbol}</span></h5>
+                                    <h5 className="launchpad_title"><img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="Logo" className="" /> {e.token_name} <span>{e.symbol}</span></h5>
                                     
                                   </a>
                                 </Link>
@@ -343,7 +345,7 @@ export default function LaunchPad({userAgent})
                         <tr key={i}>
                           <td className="mobile_hide" >
                           {
-                                       tokenStatus ?
+                                       user_token ?
                                        <>
                                        {
                                          watchlist.includes(e.token_row_id) ?
@@ -359,9 +361,9 @@ export default function LaunchPad({userAgent})
                           <td className="mobile_hide">{i+1}</td>
                           <td className="mobile_td_fixed">
                             <a href={"/"+e.token_id}>
-                              <div class="media">
-                                <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="Logo" />
-                                <div class="media-body">
+                              <div className="media">
+                                <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="Logo" />
+                                <div className="media-body">
                                   <h5 className="launchpad_token_title">{e.token_name} <span>{e.symbol}</span></h5>
                                 </div>
                               </div>

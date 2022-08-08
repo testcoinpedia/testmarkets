@@ -15,6 +15,11 @@ export default function Details()
     const [err_searchBy, setErrsearchBy] = useState("")
     
     
+    const clearform = () =>
+    {
+      set_search_contract_address("")
+      setSearchBy("")
+    }
     const getTokenData = async ()=>
     { 
         setvalidContractAddress("")
@@ -92,37 +97,33 @@ export default function Details()
         // console.log("result", result)
         if(result.data.ethereum)
         {
-          if(result.data.ethereum.address[0].smartContract)
-          {
-            const apiRes = await Axios.get(API_BASE_URL+"markets/tokens/check_contract_address/"+search_contract_address, config(""))
-            if(apiRes.data.status)
+            if(result.data.ethereum.address[0].smartContract)
             {
-                await router.push(website_url+apiRes.data.message.token_id)
-                // console.log("API success", apiRes.data.message) 
+                const apiRes = await Axios.get(API_BASE_URL+"markets/tokens/check_contract_address/"+search_contract_address, config(""))
+                if(apiRes.data.status)
+                {
+                    await router.push(website_url+apiRes.data.message.token_id)
+                    clearform()
+                }
+                else
+                {
+                    if(result.data.ethereum.address[0].smartContract.currency)
+                    {
+                        if(parseInt(searchBy) === 1)
+                        { 
+                            window.location.href = website_url+'eth/'+search_contract_address 
+                        }
+                        else 
+                        { 
+                            window.location.href = website_url+'bsc/'+search_contract_address
+                        }
+                    }
+                }
             }
             else
             {
-                if(result.data.ethereum.address[0].smartContract.currency){
-                if(parseInt(searchBy) === 1)
-                { 
-                    // console.log("ethereum",ethereum)
-                     window.location.href = website_url+'eth/'+search_contract_address
-                    //router.push(website_url+'eth/'+search_contract_address)
-                    
-                }
-                else 
-                { 
-                    // console.log("bsc",ethereum)
-                     window.location.href = website_url+'bsc/'+search_contract_address
-                    // await router.push(website_url+'bsc/'+search_contract_address)
-                }
+                setErrsearchBy("Invalid Contract Address or Network Type.")
             }
-            }
-          }
-          else
-          {
-            setErrsearchBy("Invalid Contract Address or Network Type.")
-          }
         }
         else
         {

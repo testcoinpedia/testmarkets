@@ -2,7 +2,7 @@ import React , {useState, useEffect} from 'react';
 import Link from 'next/link' 
 import Head from 'next/head'
 import ReactPaginate from 'react-paginate';  
-import { API_BASE_URL, convertvalue, app_coinpedia_url, market_coinpedia_url ,config,IMAGE_BASE_URL,graphqlApiKEY} from '../../components/constants'; 
+import { API_BASE_URL, convertvalue, app_coinpedia_url, market_coinpedia_url ,coinpedia_url,config,IMAGE_BASE_URL,graphqlApiKEY} from '../../components/constants'; 
 import TableContentLoader from '../../components/loaders/tableLoader'
 import Axios from 'axios';
 import cookie from 'cookie'
@@ -28,7 +28,6 @@ export default function WalletTokensList({userAgent, config})
   const [searchParam] = useState(["token_name", "symbol","token_id"])
   const [searchApprovalStatusParam] = useState(["approval_status"])
   const [watchlist, set_watchlist] = useState([])
-  const [tokenStatus,set_tokenStatus] = useState("")
   const [sl_no, set_sl_no]=useState(0)
  
     useEffect(()=>
@@ -51,7 +50,6 @@ export default function WalletTokensList({userAgent, config})
           await setPageCount(Math.ceil(res.data.message.length / perPage))
           await getTokensCurrentList(res.data.message, 0)
           
-          await set_tokenStatus(res.data.tokenStatus)
       }
         
     }
@@ -149,6 +147,12 @@ const getTokensCurrentList=(items, offset)=>
       </Head>
       <div className="container token-list-pd-rm">
         <div className="prices transaction_table_block token-pg-height">
+        <div className="col-md-12">
+        <div className="breadcrumb_block">
+        <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
+        <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span> Tokens
+        </div>
+        </div>
           <div className="col-md-12">
             <div className="row">
               <div className="col-md-6 col-lg-6 col-sm-7 col-12">
@@ -238,9 +242,9 @@ const getTokensCurrentList=(items, offset)=>
                         <td>{sl_no+i+1}</td>
                         <td>
                           <div className="media">
-                            <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} alt="token" className="rounded-circle"  />
+                            <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="token" className="rounded-circle"  />
                             <div className="media-body">
-                              <h4 class="media-heading">{e.token_name} <span>{e.symbol}</span></h4>
+                              <h4 className="media-heading">{e.token_name} <span>{e.symbol}</span></h4>
                             </div>
                           </div>
                         </td>

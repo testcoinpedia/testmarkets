@@ -2,7 +2,226 @@ import React from 'react';
 import {  graphqlApiKEY } from '../constants'
 import { graphQlURL } from '../tokenDetailsFunctions' 
 import Axios from 'axios'
-import { ethers } from 'ethers';
+import { ethers } from 'ethers'
+
+export const graphql_url = "https://graphql.bitquery.io/"
+export const graphql_api_key = "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
+
+export const dex_trades_volume = (network_type, from_date, present_date) =>
+{ 
+    var network = "ethereum"
+    var baseCurrency = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+    var quoteCurrency = "0xdac17f958d2ee523a2206206994597c13d831ec7"
+    
+    if(network_type == 2)
+    {
+      network = "bsc"
+      baseCurrency = "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+      quoteCurrency = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+    }
+
+    const query =  `query {
+      ethereum(network: ` + network + `) {
+          dexTrades(
+            options: {desc: "tradeAmount"}
+            date: {since:"` + from_date + `", till: "` + present_date + `"}
+            baseCurrency: {is: "` + baseCurrency + `"}
+            quoteCurrency: {is: "` + quoteCurrency + `"}
+            
+          ) {
+            count
+            tradeAmount(in:USD)
+            
+      
+          }
+        }
+      }
+      ` 
+
+      return {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": graphql_api_key
+      },
+      body:JSON.stringify({ query })
+    }
+}
+export const dex_trades_volume_change = (dex_trades_volume,dex_trade_change) =>
+{ 
+ 
+    return ((dex_trades_volume-dex_trade_change)/(dex_trades_volume))
+}
+export const getactivedexTrades24h = (network_type, from_date, present_date) =>
+{ 
+
+
+  var network = "ethereum"
+  var baseCurrency = "0xdac17f958d2ee523a2206206994597c13d831ec7"
+  
+  if(network_type == 2)
+  {
+    network = "bsc"
+    baseCurrency = "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+  }
+
+  const query =  `query {
+    ethereum(network: `+network+`){
+      transactions (date: {since: "` + present_date + `"}){
+        date {date}
+          trades: count
+          senders: count(uniq:receivers)
+          recievers: count(uniq:senders)
+      }
+    }
+  }
+    ` 
+
+    return query 
+
+
+    
+}
+export const getAlldexTrades = (network_type, from_date, present_date) =>
+{ 
+
+
+  var network = "ethereum"
+  var baseCurrency = "0xdac17f958d2ee523a2206206994597c13d831ec7"
+  
+  if(network_type == 2)
+  {
+    network = "bsc"
+    baseCurrency = "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+  }
+
+  const query =  `query {
+    ethereum(network: `+network+`) {
+        dexTrades(
+          options: {desc: "tradeAmount"}
+          date: {since: "` + from_date + `", before: "` + present_date + `"}
+          baseCurrency: {is: "` + baseCurrency + `"}
+        ) {
+          trades: count
+          tradeAmount(in:USD)
+          exchange {
+            fullName
+          }
+        }
+      }
+    }
+    ` 
+
+    return query 
+
+
+    // var network = "ethereum"
+    // var baseCurrency = "0xdac17f958d2ee523a2206206994597c13d831ec7"
+   
+    
+    // if(network_type == 2)
+    // {
+    //   network = "bsc"
+    //   baseCurrency = "0xe9e7cea3dedca5984780bafc599bd69add087d56"
+  
+    // }
+
+    // const query =  `query {
+    //   ethereum(network: bsc) {
+    //       dexTrades(
+    //         options: {desc: "tradeAmount"}
+    //         date: {since: "` + from_date + `", before: "` + present_date + `"}
+    //         baseCurrency: {is: "` + baseCurrency + `"}
+    //       ) {
+    //         exchange {
+    //           fullName
+    //         }
+    //         trades: count
+    //         amount: baseAmount
+    //         tradeAmount(in: USD)
+    //       }
+    //     }
+    //   }
+    //   ` 
+
+    //   return {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "X-API-KEY": graphql_api_key
+    //   },
+    //   body:JSON.stringify({ query })
+    // }
+}
+
+export const dex_trades_aggregator_volume = (network_type, from_date, present_date) =>
+{ 
+    var network = "ethereum"
+    if(network_type == 2)
+    {
+      network = "bsc"
+     
+    }
+
+    const query =  `query {
+      ethereum(network:  ` + network + `) {
+        dexTrades(
+          options: {desc: "tradeAmount"}
+          date: {since: "` + from_date + `", till: "` + present_date + `"}
+        ) {
+          trades: count
+          tradeAmount(in: USD)
+          currencies: count(uniq: buy_currency)
+          contracts: count(uniq: smart_contracts)
+          date {
+            date(format: "%y-%m-%d")
+          }
+        }
+      }
+    }
+      ` 
+      return {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": graphql_api_key
+      },
+      body:JSON.stringify({ query })
+    }
+}
+export const dexMonthWiseData = (network_type, from_date, present_date) =>
+{
+  var network = "ethereum"
+  var baseCurrency = "0xdac17f958d2ee523a2206206994597c13d831ec7"
+  
+  if(network_type == 2)
+  {
+    network = "bsc"
+    baseCurrency = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+  }
+
+  const query =  `query {
+    ethereum(network: ` + network + `) {
+        dexTrades(
+          options: {asc: ["exchange.fullName", "timeInterval.month"]}
+          date: {since:"` + from_date + `", till: "` + present_date + `"}
+          baseCurrency: {is: "` + baseCurrency + `"}
+        ) {
+          exchange: exchange {
+            fullName
+          }
+          timeInterval {
+            month(format: "%Y-%m-%d")
+          }
+          tradeAmount(in: USD)
+        }
+      }
+    }
+    ` 
+
+    return query 
+}
+
 
 export const live_price_graphql= async (id,networks)=> 
 { 
@@ -413,7 +632,76 @@ if (volume24hQueryRun.data.data.ethereum != null && volume24hQueryRun.data.data.
        return resObj
 }
 
+export const getTokenUsdPrice=async(network,dateFrom,dateTo)=> {
+  var dexTrades={}
+  let query =""
+  if(network==1)
+  {
+     query = `
+    ethereum(network: bsc) {
+      dexTrades(
+        options: {desc: "tradeAmount"}
+        date: {since: `+ '"' +dateFrom+ '"' + `, till: `+ '"' +dateTo+ '"' + `}
+        baseCurrency: {is: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2}
+      ) {
+        exchange {
+          fullName
+        }
+        trades: count
+        amount: baseAmount
+        tradeAmount(in: USD)
+      }
+    } 
+   ` ;
+  }
+  else
+  {
+     query = `
+    ethereum(network: ethereum) {
+      dexTrades(
+        options: {desc: "tradeAmount"}
+        date: {since: `+ '"' +dateFrom+ '"' + `, till: `+ '"' +dateTo+ '"' + `}
+        baseCurrency: {is: 0xdac17f958d2ee523a2206206994597c13d831ec7}
+      ) {
+        exchange {
+          fullName
+        }
+        trades: count
+        amount: baseAmount
+        tradeAmount(in: USD)
+      }
+    } 
+   ` ;
 
+  }
+ 
+  
+        
+  const url = "https://graphql.bitquery.io/";
+  const opts = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-KEY": graphqlApiKEY
+    },
+    body: JSON.stringify({
+      query
+    })
+  };
+  await fetch(url, opts)
+    .then(res => res.json())
+    .then(result => {
+      console.log(result)
+      if (result.data.ethereum.dexTrades != null) { 
+          dexTrades.push(result.data.ethereum.dexTrades)
+          
+     }  
+     return dexTrades
+    })
+    .catch(console.error);
+}
+
+ 
 
 
   

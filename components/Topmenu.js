@@ -309,8 +309,8 @@ export default function Topmenu()
                       {
                               login_dropdown == 1 
                               ?
-                              <li class="dropdown mobile_after_login_block">
-                          <a class="nav-link " data-toggle="dropdown" href="#">
+                              <li className="dropdown mobile_after_login_block">
+                          <a className="nav-link " data-toggle="dropdown" href="#">
                             <div className="media">
                               <div className="media-left">
                                 <img src={JsCookie.get('user_profile_image')?image_base_url+JsCookie.get('user_profile_image'):image_base_url +"default.png"} className="user_icon" />
@@ -320,13 +320,13 @@ export default function Topmenu()
                                 <h5>{JsCookie.get('user_username')}</h5>
                               </div>
                               <div className="media-right">
-                              {/* <span class="caret"></span> */}
+                              {/* <span className="caret"></span> */}
                               <img src="/assets/img/caret_view.svg" className="caret_view" />
                               </div>
                             </div>
                             
                           </a>
-                          <ul class="dropdown-menu">
+                          <ul className="dropdown-menu">
                             <li><a href={app_coinpedia_url}><img src="/assets/img/mobile-menu-portfolio.svg" /> Portfolio</a></li>
                             <li><a href={app_coinpedia_url+"profile"}><img src="/assets/img/mobile-menu-user-profile.svg" /> Manage User Profile</a></li>
                             <li><a href={app_coinpedia_url+"referrals"}><img src="/assets/img/mobile-menu-referral.svg" /> Referral List</a></li>
@@ -340,24 +340,24 @@ export default function Topmenu()
                           </ul>
                         </li>
                         :
-                        <li class="dropdown mobile_login_block">
-                          <a class="nav-link " data-toggle="dropdown" href="#">
+                        <li className="dropdown mobile_login_block">
+                          <a className="nav-link " data-toggle="dropdown" href="#">
                             <img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180324/footer-logo.svg" className="login_icon" /> Login / Create Account
-                            {/* <span class="caret"></span> */}<img src="/assets/img/caret_view.svg" className="caret_view" />
+                            {/* <span className="caret"></span> */}<img src="/assets/img/caret_view.svg" className="caret_view" />
                           </a>
-                          <ul class="dropdown-menu">
+                          <ul className="dropdown-menu">
                             <li><a href={app_coinpedia_url+"login"}><img src="/assets/img/mb-manual-login.svg" /> Login</a></li>
                             <li><a href={app_coinpedia_url+"register"}><img src="/assets/img/mb-user-profile.svg" /> Register</a></li>
                           </ul>
                         </li>
                       }
 
-                        {/* <li class="dropdown mobile_login_block">
-                          <a class="nav-link " data-toggle="dropdown" href="#">
+                        {/* <li className="dropdown mobile_login_block">
+                          <a className="nav-link " data-toggle="dropdown" href="#">
                             <img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180324/footer-logo.svg" className="login_icon" /> Login / Create Account
-                            <span class="caret"></span>
+                            <span className="caret"></span>
                           </a>
-                          <ul class="dropdown-menu">
+                          <ul className="dropdown-menu">
                             <li><a href="#"><img src="/assets/img/mobile-menu-login.svg" /> Login</a></li>
                             <li><a href="#"><img src="/assets/img/mobile-menu-create.svg" /> Register</a></li>
                           </ul>

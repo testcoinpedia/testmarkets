@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import cookie from 'cookie'
 import "react-datetime/css/react-datetime.css"
-import {x_api_key, API_BASE_URL, app_coinpedia_url,config,website_url,graphqlApiKEY,IMAGE_BASE_URL} from '../../../components/constants'
+import {x_api_key, API_BASE_URL, app_coinpedia_url,config,website_url,graphqlApiKEY,IMAGE_BASE_URL,coinpedia_url,market_coinpedia_url} from '../../../components/constants'
 import Popupmodal from '../../../components/popupmodal' 
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -41,6 +41,7 @@ export default function UpdateToken({userAgent,config,token_id}) {
   const [categories, set_categories] = useState([])
   const [category_row_id, set_category_row_id] = useState("")
   const [category_name, set_category_name] = useState("")
+  const [loader, set_loader] = useState("")
   const [err_symbol, setErrSymbol] = useState('') 
   const [err_token_name, setErrTokenName] = useState('')
   const [err_website_link, setErrWebsiteLink] = useState('')
@@ -355,7 +356,7 @@ const onLoad = useCallback((img) => {
         setErrTokenDescription('The coin description must be less than 5000 characters in length.')
         formValid = false
     }  
-
+    set_loader(true)
     const reqObj = {
       wallet_address: wallet_address,
       symbol: symbol, 
@@ -381,6 +382,7 @@ const onLoad = useCallback((img) => {
     { 
       
       Axios.post(API_BASE_URL+"markets/listing_tokens/update_token_details/", reqObj, config).then(response=> { 
+        set_loader(false)
         // console.log(response)
         if(response.data.status)
         { 
@@ -709,6 +711,10 @@ const getTokensDetails = (type, address) =>{
           <div className="container">
             <div className="for_padding">
               <div className=" token_steps">
+               <div className="breadcrumb_block">
+              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
+              <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span> Edit Token
+               </div>
                 <div className="row">
                   <div className="col-lg-9 col-md-9 col-8">
                   <h1>Edit Token</h1>
@@ -1205,7 +1211,13 @@ const getTokensDetails = (type, address) =>{
                             <div className="col-md-4"></div>
                             <div className="col-md-8">
                               <div className="text-left review_upload_token mt-3">
-                                 <button className="dsaf" onClick={() =>{createNewToken()}}>Review and Update</button> 
+                                 <button className="dsaf" onClick={() =>{createNewToken()}}>
+                                    {loader ? (
+                                      <div className="loader"><span className="spinner-border spinner-border-sm "></span>Review and Update</div>
+                                      ) : (
+                                          <>Review and Update</>
+                                      )}
+                                  </button> 
                               </div>
                             </div>
                           </div>

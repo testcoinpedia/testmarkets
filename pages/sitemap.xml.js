@@ -26,14 +26,35 @@ export const getServerSideProps = async ({ res }) => {
       </url>
       
       <url>
-        <loc>https://markets.coinpedia.org/gainers-and-losers</loc>
+        <loc>https://markets.coinpedia.org/gainers-and-losers/</loc>
         <lastmod>${new Date().toISOString()}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
       </url>
 
       <url>
-        <loc>https://markets.coinpedia.org/launchpad</loc>
+        <loc>https://markets.coinpedia.org/launchpad/</loc>
+        <lastmod>${new Date().toISOString()}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+      </url>
+
+      <url>
+        <loc>https://markets.coinpedia.org/launchpad/ended/</loc>
+        <lastmod>${new Date().toISOString()}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+      </url>
+
+      <url>
+        <loc>https://markets.coinpedia.org/launchpad/ongoing/</loc>
+        <lastmod>${new Date().toISOString()}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+      </url>
+
+      <url>
+        <loc>https://markets.coinpedia.org/launchpad/upcoming/</loc>
         <lastmod>${new Date().toISOString()}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
@@ -43,7 +64,7 @@ export const getServerSideProps = async ({ res }) => {
         .map((url) => {
           return `
             <url>
-              <loc>${baseUrl}/${url.token_id}</loc>
+              <loc>${baseUrl+"/"+url.token_id+"/"}</loc>
               <lastmod>${new Date().toISOString()}</lastmod>
               <changefreq>monthly</changefreq>
               <priority>1.0</priority>

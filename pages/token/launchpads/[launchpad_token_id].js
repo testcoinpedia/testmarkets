@@ -2,7 +2,7 @@ import React , {useState, useEffect,useRef} from 'react';
 import Axios from 'axios';
 import Link from 'next/link' 
 import Head from 'next/head';
-import {x_api_key, API_BASE_URL,separator, app_coinpedia_url, website_url,config} from '../../../components/constants'
+import {x_api_key, API_BASE_URL,separator, app_coinpedia_url, coinpedia_url,market_coinpedia_url, website_url,config} from '../../../components/constants'
 import Popupmodal from '../../../components/popupmodal' 
 import { useRouter } from 'next/router'
 import moment from 'moment' 
@@ -47,7 +47,7 @@ var object =  {
   
 
   const editorRef = useRef(null) 
-
+  const [loader, set_loader] = useState("")
   const [validError, setValidError] = useState("")
   const [alert_message, setAlertMessage] = useState('')
   const [element,set_element]=useState([])
@@ -218,33 +218,24 @@ var object =  {
     })
   }
 
-  const acceptPaymentType = ()=>
-  {
-   
-      // setModalData({icon: "", title: "", content: ""})
-      Axios.get("https://markets-nodejs-api-l9lg8.ondigitalocean.app/app/payment_type", config(user_token))
-    // Axios.get(API_BASE_URL+"app/payment_type", config)
-    .then(res=>
+    const acceptPaymentType = ()=>
     {
-      // console.log(res)
-        if(res.data.status)
+        Axios.get("https://markets-nodejs-api-l9lg8.ondigitalocean.app/app/payment_type", config(user_token)).then(res=>
         {
-          set_payment_types(res.data.message)
-         
-         
-          
-        }
-    })
-
-  }
+            if(res.data.status)
+            {
+            set_payment_types(res.data.message)
+            }
+        })
+    }
   
   const createLaunchpad = () =>
   {   
     set_edit_launchpad_object([])
     set_edit_launchpad_row_id("")
     set_launch_pad_type([])
-    setStartDate()
-    setEndDate()
+    setStartDate(new Date())
+    setEndDate(new Date())
     set_tokens_sold("")
     set_access_type([])
     set_soft_cap("")
@@ -257,6 +248,7 @@ var object =  {
     set_accept_payment_type([])
     document.getElementById("myForm").reset() 
   }
+
   const OnSubmitData = ()=>
   {
     
@@ -418,6 +410,7 @@ var object =  {
     }
 
     setValidError("") 
+    set_loader(true)
     const reqObj = {
       token_id : launchpad_token_id,
       launchpad_row_id:edit_launchpad_row_id, 
@@ -435,19 +428,18 @@ var object =  {
       how_to_participate:how_to_participate
 
     } 
-    // console.log("reqObj", reqObj)/
-   
+    
     Axios.post(API_BASE_URL+'markets/listing_tokens/update_launch_pad', reqObj, config(user_token)).then(res=>
     { 
-        // console.log(res.data)
+      set_loader(false)
         if(res.data.status)
         { 
-          setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message}) 
-          getTokenDetails()
-          if(edit_launchpad_row_id=="")
-          {
-            createLaunchpad()
-          }
+            setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message}) 
+            getTokenDetails()
+            if(edit_launchpad_row_id=="")
+            {
+                createLaunchpad()
+            }
         }
         else
         { 
@@ -504,29 +496,27 @@ var object =  {
 
   }
  
-  const makeJobSchema=()=>{  
-    return { 
-        "@context":"http://schema.org/",
-        "@type":"Organization",
-        "name":"Create or Edit Launchpad",
-        "url":"https://markets.coinpedia.org",
-        "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
-        "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
-      }  
-} 
+    const makeJobSchema=()=>{  
+        return { 
+            "@context":"http://schema.org/",
+            "@type":"Organization",
+            "name":"Create or Edit Launchpad",
+            "url":"https://markets.coinpedia.org",
+            "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
+            "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
+        }  
+    } 
 
 
-const onSelect =(selectedList, selectedItem)=> {  
-  // console.log(selectedItem)
-  accept_payment_type_ids.push(selectedItem._id)
-  accept_payment_type.push(selectedItem) 
-  // console.log(accept_payment_type_ids) 
-}
+    const onSelect =(selectedList, selectedItem)=> {  
+        accept_payment_type_ids.push(selectedItem._id)
+        accept_payment_type.push(selectedItem) 
+    }
 
-const onRemove = (selectedList, removedItem) => {
-  accept_payment_type_ids.splice(accept_payment_type_ids.indexOf(removedItem._id), 1)
-  accept_payment_type.splice(accept_payment_type.indexOf(removedItem), 1)
-}
+    const onRemove = (selectedList, removedItem) => {
+        accept_payment_type_ids.splice(accept_payment_type_ids.indexOf(removedItem._id), 1)
+        accept_payment_type.splice(accept_payment_type.indexOf(removedItem), 1)
+    }
 
 
  
@@ -567,6 +557,12 @@ const onRemove = (selectedList, removedItem) => {
         <div>
           <div className="container">
             <div className="col-md-12">
+              <div className="breadcrumb_block">
+              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
+              <Link href={market_coinpedia_url}><a >Live Market</a></Link> <span> &#62; </span>
+              <Link href="/token/"><a>Tokens</a></Link><span> &#62; </span>Launchpad
+                  </div>
+                 
               <div className="row">
                 <div className="col-lg-5 col-md-12">
                   <div className="main_create_form">
@@ -677,8 +673,8 @@ const onRemove = (selectedList, removedItem) => {
                           <label htmlFor="email">Tokens For sale<span className="label_star">*</span></label>
                         </div>
                         <div className="col-md-7 mb-4">
-                          <div class="input-group">
-                            <div class="input-group-append">
+                          <div className="input-group">
+                            <div className="input-group-append">
                             <select  name="launch_pad_type" className="form-control select_launchpad_type" value={launch_pad_type} onChange={(e)=>set_launch_pad_type(e.target.value)}>
                                     <option value="">Type</option>
                                     <option value="1">ICO</option>
@@ -715,7 +711,7 @@ const onRemove = (selectedList, removedItem) => {
                       </div>
                       <div className="col-md-7 mb-4">
                         <div className="form-group input_block_outline">
-                           {/* <input type="date"  class="form-control" value={start_date} onChange={(e) => setStartDate(e.target.value)} /> */}
+                           {/* <input type="date"  className="form-control" value={start_date} onChange={(e) => setStartDate(e.target.value)} /> */}
                            <Datetime inputProps={ inputProps }  dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid }   name="end_date_n_time" value={start_date} onChange={(e) => setStartDate(e)}/>
                         </div>
                         <div className="error">{err_start_date}</div>
@@ -728,7 +724,7 @@ const onRemove = (selectedList, removedItem) => {
                       </div>
                       <div className="col-md-7 mb-4">
                         <div className="form-group input_block_outline">
-                          {/* <input type="date"  class="form-control" value={end_date} onChange={(e) => setEndDate(e.target.value)} /> */}
+                          {/* <input type="date"  className="form-control" value={end_date} onChange={(e) => setEndDate(e.target.value)} /> */}
                           <Datetime inputProps={ inputProps2 }  dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid2 }  name="end_date_n_time" value={end_date} onChange={(e) => setEndDate(e)}/>
                         </div>
                         <div className="error">{err_end_date}</div>
@@ -852,9 +848,21 @@ const onRemove = (selectedList, removedItem) => {
                             <div className="review_upload_token create-launchpad-submit-button mt-3">
                             {
                               !edit_launchpad_row_id ? 
-                              <button type="button" onClick={()=> OnSubmitData()}>Create Launch pad</button>
+                                <button type="button" onClick={()=> OnSubmitData()}>
+                                  {loader ? (
+                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Create Launch pad</div>
+                                        ) : (
+                                            <>Create Launch pad</>
+                                        )}
+                                </button>
                               :
-                              <button type="button" onClick={()=> OnSubmitData()}>Update Launch pad</button>
+                              <button type="button" onClick={()=> OnSubmitData()}>
+                                {loader ? (
+                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Update Launch pad</div>
+                                        ) : (
+                                            <>Update Launch pad</>
+                                        )}
+                              </button>
                             }
                             
                           </div> 

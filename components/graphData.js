@@ -6,58 +6,51 @@ import Datetime from "react-datetime"
 import "react-datetime/css/react-datetime.css" 
 import JsCookie from "js-cookie"   
 import moment from 'moment'
-import {count_live_price,graphqlApiKEY, headers,createValidURL, IMAGE_BASE_URL} from '../components/constants'
+import { count_live_price, graphqlApiKEY, headers, createValidURL, IMAGE_BASE_URL} from '../components/constants'
 import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
 import Popupmodal from '../components/popupmodal'
 
-
-export default function Details({reqData,graph_data_date}) 
+export default function Details({reqData, graph_data_date}) 
 {   
-    
     const [api_from_type, set_api_from_type] = useState(reqData.api_from_type)
     const [customDate, setCustomDate] = useState(false)
     const [graphDate , set_graphDate] = useState(1) 
-    const [light_dark_mode, set_light_dark_mode]=useState(JsCookie.get('light_dark_mode')) 
+    const [light_dark_mode, set_light_dark_mode] = useState(JsCookie.get('light_dark_mode')) 
     const [Err_api_from_id, setErr_api_from_id] = useState()
     const [token_row_id, set_token_row_id] = useState(reqData.token_row_id)
     const [coingecko, set_coingecko] = useState("")
     const [modal_data, setModalData] = useState({ icon: "", title: "", description: "" })
   
-useEffect(()=>
-{ 
- if(reqData.api_from_type===0)
-    {
-        getGraphData(graph_data_date, reqData.contract_addresses[0].contract_address, reqData.contract_addresses[0].network_type)
-    }
-    else
-    {
-        coingeckoGraph(graph_data_date,reqData.api_from_id)
-    }
-
-    if(JsCookie.get('light_dark_mode') === "dark")
+    useEffect(()=>
     { 
-      set_light_dark_mode("dark")
-     
-    }
-},[light_dark_mode])
+        if(reqData.api_from_type===0)
+        {
+            getGraphData(graph_data_date, reqData.contract_addresses[0].contract_address, reqData.contract_addresses[0].network_type)
+        }
+        else
+        {
+            coingeckoGraph(graph_data_date, reqData.api_from_id)
+        }
+
+        if(JsCookie.get('light_dark_mode') === "dark")
+        { 
+            set_light_dark_mode("dark")
+        }
+    },[light_dark_mode])
 
     const getGraphData=(datetime, id, networks)=> 
-    {   
-      
-      // console.log("Graph from graphqldata")  
-      let query =""
-      if(datetime === "") 
-      { 
-        datetime = graphDate;
-      } 
-      set_graphDate(datetime)
-      
-      var from_n_to_date = fromNToDate(datetime)
-      let fromDate= from_n_to_date.fromDate
-      let toDate= from_n_to_date.toDate 
-      // console.log("fromDate",fromDate)
-      // console.log(graphDate)
-
+    {    
+        let query =""
+        if(datetime === "") 
+        { 
+          datetime = graphDate;
+        } 
+        set_graphDate(datetime)
+        
+        var from_n_to_date = fromNToDate(datetime)
+        let fromDate= from_n_to_date.fromDate
+        let toDate= from_n_to_date.toDate 
+        
         if(parseInt(networks) === 1)
         {
           if(id === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
@@ -191,107 +184,115 @@ useEffect(()=>
     
         
         const opts = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-API-KEY": graphqlApiKEY
-          },
-          body: JSON.stringify({
-            query
-          })
-        };
-        fetch(graphQlURL, opts)
-          .then(res => res.json())
-          .then(result => { 
-            
-            if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) { 
-            var prices= [];
-            var arr = result.data.ethereum.dexTrades; 
-            for (let index = 0; index < arr.length; index++) {
-              if (arr[index] !== undefined) {
-                var rate = 0 
-                rate = arr[index].tradeAmountInUsd / arr[index].buyAmount; 
-                 
-                var date = new Date(arr[index].timeInterval.hour)
-                var val = []
-                val[0] = date.getTime()
-                val[1] = rate; 
-    
-    
-                prices.push(val)
-                //console.log(prices)
-              }
-            }  
-        if(light_dark_mode=="dark"){
-          // console.log("dark")
-        Highcharts.chart('container', {
-          chart: {
-            backgroundColor: {
-                stops: [
-                    [0, 'rgb(23, 23, 26)'],
-                    [1, 'rgb(23, 23, 26)']
-                ]
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-API-KEY": graphqlApiKEY
             },
-        },
-          title: {
-              text: ''
-          },
-          xAxis: {
-              type: 'datetime',
-              lineColor: '#f7931a',
-              dashStyle: 'Dash',
-          },
-          yAxis: {
-              title: {
-                  text: ('USD Prices')
-              },
-              dashStyle: 'Dash',
-          },
-          colors: ['#f7931a'],
-          legend: {
-              enabled: false
-          },
-          tooltip: {
-                    formatter: function () {
-                        var point = this.points[0];
-                        return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
-                        '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
-                    },
-      shared: true
-         },
-          plotOptions: {
-              area: {
+            body: JSON.stringify({ query })
+        }
+
+        fetch(graphQlURL, opts) .then(res => res.json()) .then(result => 
+        { 
+            
+            if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
+            { 
+                var prices= [];
+                var arr = result.data.ethereum.dexTrades; 
+                for (let index = 0; index < arr.length; index++) 
+                {
+                    if (arr[index] !== undefined) 
+                    {
+                        var rate = 0 
+                        rate = arr[index].tradeAmountInUsd / arr[index].buyAmount; 
+                        
+                        var date = new Date(arr[index].timeInterval.hour)
+                        var val = []
+                        val[0] = date.getTime()
+                        val[1] = rate; 
+            
+            
+                        prices.push(val)
+                        //console.log(prices)
+                    }
+                }  
+                if(light_dark_mode=="dark"){
+          // console.log("dark")
+        Highcharts.chart('container', 
+        {
+            chart: {
+                backgroundColor: 
+                {
+                    stops: [
+                        [0, 'rgb(23, 23, 26)'],
+                        [1, 'rgb(23, 23, 26)']
+                    ]
+                },
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                title: {
+                text: ('Time')
+                },
+                type: 'datetime',
+                lineColor: '#f7931a',
+                dashStyle: 'Dash',
+            },
+            yAxis: {
+                title: {
+                    text: ('USD Prices')
+                },
+                dashStyle: 'Dash',
+            },
+            colors: ['#f7931a'],
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                formatter: function () 
+                {
+                    var point = this.points[0];
+                    return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
+                    '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
+                },
+            shared: true
+            },
+            plotOptions: {
+              area: 
+                {
                   fillColor: {
-                      linearGradient: {
-                          x1: 0,
-                          y1: 0,
-                          x2: 0,
-                          y2: 1
-                      },
-                      stops: [
-                        [0, 'rgb(23 23 26 / 1%)'],
-                        [1, 'rgb(23 23 26 / 1%)']
-                      ]
-                  },
-                  marker: {
-                      radius: 1
-                  },
-                  lineWidth: 3,
-                  states: {
-                      hover: {
-                          lineWidth: 3
-                      }
-                  },
-                  threshold: null
-              }
-          },
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, 'rgb(23 23 26 / 1%)'],
+                            [1, 'rgb(23 23 26 / 1%)']
+                        ]
+                    },
+                    marker: {
+                        radius: 1
+                    },
+                    lineWidth: 3,
+                    states: {
+                        hover: {
+                            lineWidth: 3
+                        }
+                    },
+                    threshold: null
+                }
+            },
     
-          series: [{
-              type: 'area',
-              name: '',
-              data: prices
-          }]
-      });
+            series: [{
+                type: 'area',
+                name: '',
+                data: prices
+            }]
+        });
 
         }
         else{
@@ -304,6 +305,9 @@ useEffect(()=>
               text: ''
           },
           xAxis: {
+            title: {
+                text: ('Time')
+                },
               type: 'datetime',
               lineColor: '#f7931a',
               dashStyle: 'Dash',
@@ -324,7 +328,7 @@ useEffect(()=>
                         return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
                         '<strong>Price :</strong> '+ ('$ ') + count_live_price(Highcharts.numberFormat(point.y, 10)) + '';  
                     },
-      shared: true
+          shared: true
          },
           plotOptions: {
               area: {
@@ -350,15 +354,15 @@ useEffect(()=>
                       }
                   },
                   threshold: null
-              }
-          },
+                }
+            },
     
-          series: [{
+            series: [{
               type: 'area',
               name: '',
               data: prices
-          }]
-      });
+            }]
+        });
          
         }
              
@@ -407,6 +411,9 @@ useEffect(()=>
                     text: ''
                 },
                 xAxis: {
+                    title: {
+                        text: ('Time')
+                        },
                     type: 'datetime',
                     lineColor: '#f7931a',
                     dashStyle: 'Dash',
@@ -427,7 +434,7 @@ useEffect(()=>
                               return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
                               '<strong>Price :</strong> '+ ('$ ') + Highcharts.numberFormat(point.y, 10) + '';  
                           },
-            shared: true
+                shared: true
                },
                 plotOptions: {
                     area: {
@@ -473,6 +480,9 @@ useEffect(()=>
                     text: ''
                 },
                 xAxis: {
+                    title: {
+                        text: ('Time')
+                        },
                     type: 'datetime',
                     lineColor: '#f7931a',
                     dashStyle: 'Dash',
@@ -484,9 +494,7 @@ useEffect(()=>
                     dashStyle: 'Dash',
                 },
                 colors: ['#f7931a'],
-                legend: {
-                    enabled: false
-                },
+                legend: { enabled: false },
                 tooltip: {
                           formatter: function () {
                               var point = this.points[0];
