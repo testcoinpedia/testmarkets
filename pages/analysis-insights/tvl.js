@@ -3,12 +3,14 @@ import {API_BASE_URL,convertvalue,config} from '../../components/constants'
 import CategoriesTab from '../../components/categoriesTabs'
 import Search_Contract_Address from '../../components/searchContractAddress'
 import AnalysisInsightsMenu from '../../components/analysisInsightsmenu'
+import TableContentLoader from '../../components/loaders/tableLoader'
 import ReactPaginate from 'react-paginate'
 import Axios from 'axios'
 import Head from 'next/head'
 import cookie from "cookie"
 import Highcharts from 'highcharts';
-
+import moment from 'moment'
+import Link from 'next/link' 
  
 function TokenDetails(props) 
 { 
@@ -17,7 +19,7 @@ function TokenDetails(props)
   const [tvl_protocol_data, set_tvl_protocol_data]= useState([])
   const [gecko_chain_data] =useState(["ethereum","binancecoin","tron","solana"])
   const [currentPage, setCurrentPage] = useState(0)
-  const [per_page_count, set_per_page_count] = useState(100)
+  const [per_page_count, set_per_page_count] = useState(20)
   const [pageCount, setPageCount] = useState(0)
   const [sl_no, set_sl_no]=useState(0)
   const [firstcount, setfirstcount] = useState(1)
@@ -25,7 +27,8 @@ function TokenDetails(props)
   const [count, setCount]=useState(0)
   const [chain, set_chain] = useState("")
   const [chains, set_chains] = useState(["Ethereum","Binance","Tron","Avalanche","Solana","Polygon","Cronos","Fantom","Arbitrum","Optimism"])
-
+  const [search_title, set_search_title] = useState("")  
+  const [loader_status, set_loader_status]=useState(false)  
  
   
 
@@ -48,30 +51,46 @@ function TokenDetails(props)
 }
 const getTVLProtocols = async(page) =>
   {
+   
     let current_pages = 0 
     if(page.selected) 
     {
       current_pages = ((page.selected) * per_page_count) 
-    } 
-  
-    const res_data =await Axios.get(API_BASE_URL+"markets/tvl_exchanges/list/"+current_pages+'/'+per_page_count+"?chains="+chain,config(""))
-    console.log("res_data",res_data)
-    set_tvl_protocol_data(res_data.data.message)
-    setPageCount(Math.ceil(res_data.data.count/per_page_count))
-    set_sl_no(current_pages)
-    setCurrentPage(page.selected)
-    setfirstcount(current_pages+1)
-    setCount(res_data.data.count)
-    const presentPage = page.selected+1
-    const totalcompany = res_data.data.count
-    var sadf = presentPage*per_page_count
-    if((presentPage*per_page_count) > totalcompany)
-    {
-      sadf = totalcompany
     }
-    const final_count=sadf
-    setfinalcount(final_count)
-    // dexTradesGraph(0)
+    const configreq=config("")
+    console.log(configreq)
+    const reqConfig = {
+      headers: configreq.headers,
+      params: {
+        chains: chain,
+        search: search_title
+        
+      }
+  }
+    const res_data =await Axios.get(API_BASE_URL+"markets/tvl_exchanges/list/"+current_pages+'/'+per_page_count,reqConfig)
+    console.log("res_data",res_data)
+    if(res_data.data.status == true)
+    {
+      set_loader_status(true)
+      set_tvl_protocol_data(res_data.data.message)
+      setPageCount(Math.ceil(res_data.data.count/per_page_count))
+      set_sl_no(current_pages)
+      setCurrentPage(page.selected)
+      setfirstcount(current_pages+1)
+      setCount(res_data.data.count)
+      const presentPage = page.selected+1
+      const totalcompany = res_data.data.count
+      var sadf = presentPage*per_page_count
+      if((presentPage*per_page_count) > totalcompany)
+      {
+        sadf = totalcompany
+      }
+      const final_count=sadf
+      setfinalcount(final_count)
+      //dexTradesGraph()
+    }
+    
+    
     
     
     
@@ -79,17 +98,11 @@ const getTVLProtocols = async(page) =>
 
 
 
-  const dexTradesGraph = async (chain) =>
+const dexTradesGraph = async () =>
     { 
-      let res_data
-      if(chain==0)
-      {
-         res_data = await Axios.get("https://api.llama.fi/charts")
-      }
-      else{
-         res_data = await Axios.get("https://api.llama.fi/charts/"+chain)
-      }
       
+      let res_data = await Axios.get("https://api.llama.fi/charts/"+chain)
+      console.log(res_data)
       var prices= [];
       var arr = res_data.data 
          for (let index = 0; index < arr.length; index++) 
@@ -99,12 +112,18 @@ const getTVLProtocols = async(page) =>
                   var rate = 0 
                   rate = arr[index]
                   var val = []
-                  val[0] =new Date(rate.date*1000)
-                  val[1] =rate.totalLiquidityUSD
-                  prices.push(val)
+                  if(rate.date>1610323200)
+                  {
+                    val[0] =new Date(rate.date*1000)
+                    val[1] =rate.totalLiquidityUSD
+                    await prices.push(val)
+                    console.log(prices)
+
+                  }
+                  
               
             }
-            console.log(prices)
+           
             Highcharts.chart('container', {
                 chart: {
                     zoomType: 'x'
@@ -177,8 +196,8 @@ const getTVLProtocols = async(page) =>
  
 useEffect(()=>
 {  
-   getTVLProtocols({selected : 0})
-},[chain]) 
+  getTVLProtocols({selected : 0})
+},[chain,search_title]) 
  
   
 useEffect(()=>
@@ -235,7 +254,7 @@ return (
                       <ul>
                         <li>
                             <a className={chain==""?"categories__item active_category":"categories__item"} onClick={()=>set_chain("")}>
-                                <div className="categories__text">All Chains</div>
+                              <div className="categories__text">All Chains</div>
                             </a>
                             {
                             chains ? 
@@ -276,7 +295,7 @@ return (
                       <br/>
                       <div className='col-md-12 p-0'>
                       <div className='col-md-8 p-0 text-left'>
-                        <p>Source : <br/><a target={"_blank"} href="https://graphql.bitquery.io/ide">GraphQl Bitquery</a></p>
+                        <p>Source :  <a target={"_blank"} href="https://defillama.com/">DefiLlama</a></p>
                       </div>
                       <div className='col-md-6'>
                         
@@ -292,35 +311,85 @@ return (
           </div>
           <div className="row mt-4">
           <div className="col-md-12">
-              <div className="dex-table-data">
-                  <h6 className="mb-3">Ranked 🥇DEXs by Total value Locked In</h6>
-                  <div className="dex-table">
+              <div className="dex-donot-pichart">
+                <div className="row">
+                  <div className="col-md-8">
+                    <h6 className="mb-3">Total value Locked ({count})</h6>
+                  </div>
+                    <div className="col-md-4">
+                      <div className="input-group search_filter">
+                        <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search By Exchange Name" />
+                          <div className="input-group-prepend ">
+                            <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
+                          </div>
+                      </div> 
+                    </div>
+                </div>
+                
+                  <div className="market_page_data">
                   <div className="table-responsive">
                     <table className="table table-borderless">
                             <thead>
                                 <tr>
-                                  <th style={{width:"20px"}}>Rank</th>
-                                  <th style={{maxWidth:"250px", width:"250px"}}>Name</th>
-                                  <th>Category</th>
+                                  <th className="mobile_hide_table_col" style={{width:"20px"}}>Sl no</th>
+                                  <th className="">Name</th>
+                                  <th >Category<br/><small>(Symbol)</small></th>
                                   <th>Chains</th>
-                                  <th>1hr %</th>
                                   <th>24hr %</th>
                                   <th>7d %</th>
-                                  
-                                  <th>TVL</th>
+                                  <th className="table_token">TVL</th>
                                   <th>Mcap/TVL</th>
                                 </tr>
                             </thead>
                             
                             <tbody>
+                            {
+                            loader_status ?
+                           <>
+                           
                               {
                                 tvl_protocol_data.length>0 ?
                                 tvl_protocol_data.map((e, i) => 
                                     <tr key={i}>
                                       <td>{sl_no+i+1}</td>
-                                      <td><span><img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}}src={e.exchange_image} alt="Protocols"/>{e.exchange_name}</span></td>
-                                      <td>{e.category?e.category:"--"}</td>
-                                      <td>{e.chains.map((item,idx)=>idx<3?item +", ":"")}</td>
+                                      <td>
+                                      <Link href={"/"+e.token_id}>
+                                         <a>
+                                          <div className="media">
+                                            <div className="media-left">
+                                            <img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} src={e.exchange_image} alt="Protocols"/>
+                                            </div>
+                                            <div className="media-body">
+                                              <h4 className="media-heading"> {e.exchange_name} </h4>
+                                            </div>
+                                          </div> 
+                                         </a>
+                                       </Link>
+                                        {/* <span>
+                                          <img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} src={e.exchange_image} alt="Protocols"/>
+                                          {e.exchange_name}
+                                        </span> */}
+                                        
+                                      </td>
+                                      <td >{e.category?e.category:"--"}<br/><small><span>({(e.symbol).toUpperCase()})</span></small>
+                    
+                                      </td>
+                                      <td>{e.chains.map((item,idx)=>chain==""?
+                                      idx<3?
+                                      <img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} src={"/assets/img/Chains/"+item.toLowerCase()+".webp"} alt="Chain" title={item}/>
+                                      :
+                                      ""
+                                      :
+                                      item==chain?
+                                      <img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} src={"/assets/img/Chains/"+item.toLowerCase()+".webp"} alt="Chain" title={item}/>
+                                      :
+                                      "")}{
+                                        chain=="" && e.chains.length>3?
+                                        "+" + e.chains.length
+                                        :
+                                        ""
+                                      }
+                                      </td>
                                       {/* <td>
                                           {
                                             e.chains ? 
@@ -331,25 +400,54 @@ return (
                                             "--"
                                           }
                                       </td> */}
-                                      <td>{e.change_1h?e.change_1h.toFixed(2)+"%":"--"}</td>
-                                      <td>{e.change_1d?e.change_1d.toFixed(2)+"%":"--"}</td>
-                                      <td>{e.change_7d?e.change_7d.toFixed(2)+"%":"--"}</td>
-                                     
-                                      <td>{e.tvl?convertvalue(e.tvl):"--"}</td>
-                                      <td>{e.mcap && e.tvl?(e.mcap/e.tvl).toFixed(5):"--"}</td>
-                                    </tr>
+                                      <td>
+                                      {
+                                         e.change_1d?
+                                         e.change_1d>0?
+                                        <h6 className="values_growth"><span className="green">{e.change_1d.toFixed(2)+"%"}</span></h6>
+                                        :
+                                        <h6 className="values_growth"><span className="red">{e.change_1d.toFixed(2)+"%"}</span></h6>
+                                        :
+                                        "--"
+                                        }</td>
+                                      <td>{
+                                        e.change_7d?e.change_7d>0?
+                                        <h6 className="values_growth"><span className="green">{e.change_7d.toFixed(2)+"%"}</span></h6>
+                                        :
+                                        <h6 className="values_growth"><span className="red">{e.change_7d.toFixed(2)+"%"}</span></h6>
+                                        :
+                                        "--"}</td>
+                                      <td className="market_list_price"><a>
+                                      <span className="block_price">
+                                      {
+                                        chain=="" && e.tvl?
+                                        convertvalue(e.tvl)
+                                        :
+                                        chain?
+                                       (e.chain_tvls?convertvalue(e.chain_tvls[chain]):"--")
+                                       :
+                                        "--"
+                                       }</span> 
+                                        {e.tvl?e.updated_date_n_time ? moment(e.updated_date_n_time).fromNow():null:null}</a></td>
+                                        <td>{e.mcap && e.tvl?(e.mcap/e.tvl).toFixed(5):"--"}</td>
+                                      </tr>
                                 )
                                 :
-                                ""
-                              }
+                             <tr >
+                               <td className="text-center" colSpan="4">
+                                   Sorry, No related data found.
+                               </td>
+                             </tr>
+                           }
+                             </>
+                             :
+                             <TableContentLoader row="10" col="8" />  
+                          }
                           </tbody>
                         </table>
                       </div>
                   </div> 
                   {
-                    
-                   
-                 
                     <div className="col-md-12">
                       <div className="pagination_block">
                         <div className="row">
@@ -396,7 +494,7 @@ return (
       
       
          
-              {/* <figure className="highcharts-figure">
+              <figure className="highcharts-figure">
                     <div
                       id="container"
                       style={{ height: 250, overflow: "hidden" }}
@@ -406,9 +504,9 @@ return (
                       aria-hidden="false"
                     >  
                     </div>
-           </figure> */}
+           </figure>
              
-           <p>Source: <a target={"_blank"} href="https://defillama.com/">DefiLlama</a><br/><a target={"_blank"} href="https://graphql.bitquery.io/ide">GraphQl Bitquery</a></p>
+           {/* <p>Source: <a target={"_blank"} href="https://defillama.com/">DefiLlama</a><br/><a target={"_blank"} href="https://graphql.bitquery.io/ide">GraphQl Bitquery</a></p> */}
          
      
         </div> 

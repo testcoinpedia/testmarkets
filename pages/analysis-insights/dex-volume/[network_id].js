@@ -820,12 +820,16 @@ return (
         { 
             highchart_status?
             <div className="mt-4">
-            <h6 className="mb-3">1 Year DEX volume</h6>
+           
             <div className="row">
               <div className="col-md-12" style={{minHeight:"500px"}}> 
             
                 <figure class="highcharts-figure">
+                  <div className="dex-donot-pichart">
+                    <h6 className="mb-3">1 Year DEX volume</h6>
                     <div id="container"></div>
+                  </div>
+                    
                 </figure>
                 {/* <ResponsiveContainer width="100%" height="100%">
                   <BarChart
@@ -851,7 +855,7 @@ return (
           :
           ""     
         }
-            <div className="row mt-2">
+            <div className="row mt-4">
             <div className="col-md-6">
                 <div className="dex-section">
                   <div className="row ">

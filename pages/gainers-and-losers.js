@@ -171,10 +171,19 @@ export default function GainersLosers({user_token, config, userAgent})
 
                 <div className="prices transaction_table_block">
                     <div className="row">
-                        <div className="col-md-6 col-7">
+                        <div className="col-md-6 mb-3 col-7">
                             <ul className="category_list">
                                 <li className={all_tab_status == 0?"active_tab":null}><a onClick={()=>set_all_tab_status(0)}>Gainers</a></li>
                                 <li className={all_tab_status == 1?"active_tab":null}><a onClick={()=>set_all_tab_status(1)}>Losers</a></li>
+                                {
+                                    user_token?
+                                    <li ><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                                    :
+                                    <li>
+                                    <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>
+                                    </li>
+                                }
+                            
                             </ul>
                         </div>
                     </div>
@@ -281,7 +290,8 @@ export default function GainersLosers({user_token, config, userAgent})
                                                 <td>
                                                     <div className="media">
                                                         <div className="media-left">
-                                                            <p className="market_price"><img src="/assets/img/market_up.png" style={{width: '14px'}}/>{e.usd_24h_change+"%"}</p>
+                                                        <p className="market_price"><span className="green">{e.usd_24h_change.toFixed(2)+"%"}</span></p>
+                                                            {/* <p className="market_price">{e.usd_24h_change+"%"}</p> */}
                                                         </div>
                                                     </div> 
                                                 </td>
@@ -370,7 +380,7 @@ export default function GainersLosers({user_token, config, userAgent})
                                                     <td>
                                                         <div className="media">
                                                             <div className="media-left">
-                                                                <p className="market_price"><img src="/assets/img/market_down.png" style={{width: '14px'}}/>{e.usd_24h_change+"%"}</p>
+                                                            <p className="market_price"><span className="red">{e.usd_24h_change.toFixed(2)+"%"}</span></p>
                                                             </div>
                                                         </div> 
                                                     </td> 

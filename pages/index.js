@@ -5,7 +5,7 @@ import ReactPaginate from 'react-paginate'
 import { API_BASE_URL, roundNumericValue, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY, count_live_price, Logout} from '../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
-import Search_Contract_Address from '../components/searchContractAddress'
+import SearchContractAddress from '../components/searchContractAddress'
 import CategoriesTab from '../components/categoriesTabs'
 import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
@@ -39,7 +39,9 @@ export default function Companies({user_token, config, userAgent})
     const [voting_message, set_voting_message] = useState("")
     const [all_tab_status, set_all_tab_status] = useState(true)
     const [watchlist_tab_status, set_watchlist_tab_status] = useState("")
-   
+    const [search_title, set_search_title] = useState("")    
+    const [validSearchContract, setvalidContractAddress] = useState("")
+    const [err_searchBy, setErrsearchBy] = useState("")
     
    
     useEffect(async ()=>
@@ -47,7 +49,7 @@ export default function Companies({user_token, config, userAgent})
         tokensList({selected : 0})
         voteIds()
         watchListIds()
-    },[per_page_count, watch_list_status]) 
+    },[per_page_count, watch_list_status,search_title]) 
 
    const tokensList = async (page) =>
    {  
@@ -57,7 +59,7 @@ export default function Companies({user_token, config, userAgent})
          current_pages = ((page.selected) * per_page_count) 
       } 
 
-      const res = await Axios.get(API_BASE_URL+"markets/tokens/list/"+current_pages+'/'+per_page_count, config)
+      const res = await Axios.get(API_BASE_URL+"markets/tokens/list/"+current_pages+'/'+per_page_count+"?search="+search_title, config)
       // console.log("company_list", res)
       if(res.data)
       {
@@ -293,7 +295,7 @@ return (
                 <div className="col-md-1 col-lg-2"></div>
                 <div className="col-md-5 col-lg-4">
                     {
-                      <Search_Contract_Address /> 
+                      <SearchContractAddress /> 
                     }
                 </div>
               </div>
@@ -303,11 +305,29 @@ return (
         {/* ................ */}
         
           <div className="container">
-            <div className="col-md-12">
+          <div className="col-md-12">
+          <div className="row">
+          <div className="col-md-9">
             {
                 <CategoriesTab /> 
             }
-
+            </div>
+            <div className="col-md-3">
+           <div>
+              <div className="input-group search_filter">
+                <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
+                  <div className="input-group-prepend ">
+                    <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
+                  </div>
+              </div> 
+              {/* <div className="error">  {err_searchBy}</div>
+              {validSearchContract && <div className="error">{validSearchContract}</div>} */}
+         </div>
+            </div> 
+          </div>
+            
+          
+            
               {/* <div className="">
               <div className="row">
                 <div className="col-lg-4 col-sm-6 col-12">
@@ -362,18 +382,17 @@ return (
                      <div className="table-responsive">
                        <table className="table table-borderless">
                          <thead>
-                             <tr>
-                               <th className="" style={{minWidth: '34px'}}></th>
-                               <th className="mobile_hide_table_col">#</th>
-                               <th className="">Name</th>
-                               <th className="table_token">Live Price</th>
-                               <th className="table_token mobile_hide_table_col">Type</th>
-                               <th className="table_max_supply mobile_hide_table_col">Max Supply</th> 
-                               <th className="mobile_hide_table_col table_circulating_supply">Market Cap</th>  
-                               <th className="table_circulating_supply mobile_hide_table_col">Votes</th>  
-                               <th className="table_circulating_supply mobile_hide_table_col">Action</th>  
-                              
-                             </tr>
+                            <tr>
+                                <th className="" style={{minWidth: '34px'}}></th>
+                                <th className="mobile_hide_table_col">#</th>
+                                <th className="">Name</th>
+                                <th className="table_token">Live Price</th>
+                                <th className="table_token mobile_hide_table_col">Type</th>
+                                <th className="table_max_supply mobile_hide_table_col">Max Supply</th> 
+                                <th className="mobile_hide_table_col table_circulating_supply">Market Cap</th>  
+                                <th className="table_circulating_supply mobile_hide_table_col">Votes</th>  
+                                <th className="table_circulating_supply mobile_hide_table_col">Action</th>  
+                            </tr>
                          </thead>
                          
    
