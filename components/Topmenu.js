@@ -423,9 +423,9 @@ export default function Topmenu()
                           
                           <div className="dropdown-menu " aria-labelledby="navbarDropdown">
                             <ul>
-                              <li><a href={coinpedia_url+"crypto-beginners/"}  className="dropdown-item">Beginners Guide</a></li>
-                              <li><a href={coinpedia_url+"crypto-traders/"}  className="dropdown-item">Trading Guide</a></li>
-                              <li><a href={coinpedia_url+"blockchain-developers-guide/"}  className="dropdown-item">Developers Guide</a></li>
+                              <li><a href={coinpedia_url+"beginners-guide/"}  className="dropdown-item">Beginners Guide</a></li>
+                              <li><a href={coinpedia_url+"traders/"}  className="dropdown-item">Trading Guide</a></li>
+//                               <li><a href={coinpedia_url+"blockchain-developers-guide/"}  className="dropdown-item">Developers Guide</a></li>
                             </ul>
                           </div>
                         </li>
