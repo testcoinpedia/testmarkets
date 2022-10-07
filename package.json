@@ -38,7 +38,7 @@
     "react-content-loader": "^6.0.3",
     "react-date-range": "^1.4.0",
     "react-datetime": "^3.1.1",
-    "react-dom": "17.0.2",
+    "react-dom": "16.9.0",
     "react-highcharts": "^16.1.0",
     "react-image-crop": "^8.6.12",
     "react-owl-carousel": "^2.3.3",
