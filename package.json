@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start"
   },
+  
   "dependencies": {
     "@analytics/google-analytics": "^0.5.3",
     "@tinymce/tinymce-react": "^3.12.6",
