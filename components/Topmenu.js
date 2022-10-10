@@ -373,13 +373,13 @@ export default function Topmenu()
                           </a>
                           <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                             <ul>
-                              <li><a href={coinpedia_url+"stocks-shares/"}  className="dropdown-item">Stocks &amp; Shares</a></li> 
-                              <li><a href={coinpedia_url+"press-release/"}  className="dropdown-item">Press Release</a></li>
-                              <li><a href={coinpedia_url+"guest-post/"}  className="dropdown-item">Guest Post</a></li>
-                              <li><a href="https://coinpedia.org/sponsored/"  className="dropdown-item">Sponsored</a></li>
-                              <li><a href={coinpedia_url+"top-10/"}  className="dropdown-item">Top 10's</a></li> 
-                              <li><a href={coinpedia_url+"cryptocurrency-regulation/"}  className="dropdown-item">Cryptocurrency regulation</a></li>
-                              <li><a href={coinpedia_url+"interesting-crypto-stories/"}  className="dropdown-item">Interesting Crypto Stories</a></li>
+                              <li><a href={coinpedia_url+"stocks-shares/"} className="dropdown-item">Stocks &amp; Shares</a></li> 
+                              <li><a href={coinpedia_url+"press-release/"} className="dropdown-item">Press Release</a></li>
+                              <li><a href={coinpedia_url+"guest-post/"} className="dropdown-item">Guest Post</a></li>
+                              <li><a href={coinpedia_url+"sponsored/"} className="dropdown-item">Sponsored</a></li>
+                              <li><a href={coinpedia_url+"top-10/"} className="dropdown-item">Top 10's</a></li> 
+                              <li><a href={coinpedia_url+"cryptocurrency-regulation/"} className="dropdown-item">Cryptocurrency regulation</a></li>
+                              <li><a href={coinpedia_url+"interesting-crypto-stories/"} className="dropdown-item">Interesting Crypto Stories</a></li>
                             </ul>
                             
                           </div>
