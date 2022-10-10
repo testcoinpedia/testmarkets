@@ -2,15 +2,15 @@ import JsCookie from "js-cookie"
 
 
 // Live links
-export const website_url = 'https://markets.coinpedia.org/' 
-export const app_coinpedia_url="https://app.coinpedia.org/"
-export const coinpedia_url="https://coinpedia.org/"
-export const market_coinpedia_url =  'https://markets.coinpedia.org/' 
+export const website_url = 'https://testmarkets.coinpedia.org/' 
+export const app_coinpedia_url="https://testapp.coinpedia.org/"
+export const coinpedia_url="https://test.coinpedia.org/"
+export const market_coinpedia_url =  'https://testmarkets.coinpedia.org/' 
 export const cookieDomainExtension = '.coinpedia.org'
 export const logo =  '/assets/img/logo.png'
 export const favicon =  '/assets/img/favicon.png'
-export const url = 'https://markets.coinpedia.org'
-export const API_BASE_URL ='https://markets-nodejs-api-l9lg8.ondigitalocean.app/'
+export const url = 'https://testmarkets.coinpedia.org'
+export const API_BASE_URL ='https://shark-app-q5yj6.ondigitalocean.app/'
 
 
 // Local Links
