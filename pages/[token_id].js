@@ -1,5 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react'  
-import { ethers } from 'ethers'
+import React, {useState, useRef, useEffect} from 'react' 
 import Link from 'next/link' 
 import Head from 'next/head'
 import Error from './404'
@@ -8,17 +7,18 @@ import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTri
 import { live_price_graphql } from '../components/token_details/graphql'
 import { live_price_coingecko } from '../components/token_details/coingecko'
 import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
-import moment from 'moment'
-import Highcharts from 'highcharts'    
+import moment from 'moment'   
 import ReactPaginate from 'react-paginate'
 import cookie from "cookie"
 import JsCookie from "js-cookie" 
 import Axios from 'axios'
-import Datetime from "react-datetime"
-import "react-datetime/css/react-datetime.css" 
+// import Datetime from "react-datetime"
+// import "react-datetime/css/react-datetime.css" 
 import Popupmodal from '../components/popupmodal'
 import Search_Contract_Address from '../components/searchContractAddress'
-import Graph_Data from '../components/graphData'
+// import Graph_Data from '../components/graphData'
+// import dynamic from 'next/dynamic';
+
 
 let inputProps = {
   className: 'market-details-date-search my_input', 
@@ -34,7 +34,8 @@ let inputProps2 = {
 
 export default function tokenDetailsFunction({errorCode, data, token_id, userAgent, config, tokenStatus}) 
 {   
-  // console.log("data",data)
+
+  
   if(errorCode) {return <Error/> }
   const communityRef = useRef(null)
   const explorerRef = useRef(null)
@@ -69,6 +70,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
 
   const [decimal,setdecimal]=useState(0)
   
+  const [category_list, set_category_list] = useState(false)
   const [community_links, set_community_links] = useState(false)
   const [explorer_links, set_explorer_links] = useState(false)
   const [handleModalConnections, setHandleModalConnections] = useState(false)
@@ -639,6 +641,7 @@ const getexchangedata= async (id,networks)=> {
               response1.map(async (e)=>{
                      if(item.pair.address==e.currency.address){
                       createObj['pair_one_value']=e.value
+                      console.log("res", res)
                       var res =await livePrice(item.pair.address,networks)
                         createObj['pair_one_live_price']=res
                         pair_one_value_in_usd = e.value*res
@@ -1013,7 +1016,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
                           </>
                           :
                           <li  style={{cursor:"pointer"}} >
-                              <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a onClick={()=> Logout()}>
+                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+data.token_id}><a onClick={()=> Logout()}>
                               <img src="/assets/img/coin_vote.svg" /> Vote <span>{votes}</span>
                               </a></Link>
                           </li>
@@ -1168,7 +1171,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                   }
                                 </>
                                 :
-                                <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a onClick={()=> Logout()}>
+                                <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+data.token_id}><a onClick={()=> Logout()}>
                                 <img src="/assets/img/watchlist_normal.svg" />
                                 </a></Link>
                               }
@@ -1512,7 +1515,32 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                   :
                                   null
                                 }
-                              
+                                {
+                                  ((data.category_row_id_array)&&(data.category_row_id_array.length > 0)) ?
+                                  <li className="coin_individual_list">
+                                    <div className="quick_block_links">
+                                      <div className="widgets__select links_direct" onClick={()=> {set_category_list(!category_list)}}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Category <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /></a></div>
+                                    </div> 
+                                    { 
+                                      category_list
+                                      ? 
+                                      <div className="dropdown_block badge_dropdown_block">
+                                        <ul>
+                                          {
+                                            data.category_row_id_array.map((e, i)=>
+                                            // <li key={i}>{e.business_name}</li>   
+                                            <Link href={"/?active_category_tab="+e._id}><a><li key={i}>{e.business_name}</li></a></Link>
+                                            )
+                                          }
+                                        </ul>
+                                      </div>
+                                      :
+                                      null
+                                    }
+                                  </li> 
+                                  :
+                                  null
+                                }
                               </ul>
                             </div>
                           </div>
@@ -1659,7 +1687,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
                             </li>
                           </ul>
                         </div>
-                        {
+                        {/* {
                           graph_status?
                           <div className="col-md-6 col-sm-6 col-5">
                             <div className="exchange_pair ">
@@ -1691,20 +1719,22 @@ const getexchangevalue = async (pool_token_address,networks)=>
                               </li>
                             </ul>
                           </div>
-                        }     
+                        }      */}
                       </div>
                     </div>
 
                     <div className="token_details_tabs">
                       <div className="tab-content">
                         <div id="overview" className="tab-pane fade show in active">
-                          {
+                          {/* {
                             graph_data_date ?
                             <Graph_Data reqData={data} graph_data_date={graph_data_date} />
                             :
                             ""
-                          }
+                          } */}
                         </div>
+
+                      
                         <div id="home" className="tab-pane fade">
                           <div className="table-responsive">
                             <table className="table table-borderless">
@@ -2196,7 +2226,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
                   <div className="col-md-1" />
                   <div className="col-md-10">
                     <div className="input-group">
-                      <input type="text" id="referral-link" className="form-control" defaultValue={website_url+data.token_id} readOnly />
+                      <input type="text" id="referral-link" className="form-control" defaultValue={market_coinpedia_url+data.token_id} readOnly />
                       <div className="input-group-prepend">
                         <span className="input-group-text" id="myTooltip" onClick={()=>myReferrlaLink()}>
                           <img src="/assets/img/copy-file.png" className="copy_link" width="100%" height="100%" />
@@ -2205,10 +2235,10 @@ const getexchangevalue = async (pool_token_address,networks)=>
                     </div>
                     <h6>Share with </h6>
                     <p className="share_social">
-                      <a href={"https://www.facebook.com/sharer/sharer.php?u="+website_url+data.token_id} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
-                      <a href={"https://www.linkedin.com/shareArticle?mini=true&url="+website_url+data.token_id} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
-                      <a href={"http://twitter.com/share?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
-                      <a href={"https://wa.me/?text="+website_url+data.token_id} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
+                      <a href={"https://www.facebook.com/sharer/sharer.php?u="+market_coinpedia_url+data.token_id} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
+                      <a href={"https://www.linkedin.com/shareArticle?mini=true&url="+market_coinpedia_url+data.token_id} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
+                      <a href={"http://twitter.com/share?text="+market_coinpedia_url+data.token_id} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
+                      <a href={"https://wa.me/?text="+market_coinpedia_url+data.token_id} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
                     </p>
                   </div>
                 </div>

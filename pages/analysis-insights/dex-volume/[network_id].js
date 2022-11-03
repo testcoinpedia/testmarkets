@@ -1,11 +1,10 @@
 import React , {useEffect,  useState,useRef} from 'react' 
 import {graphqlApiKEY, roundNumericValue, convertvalue, separator} from '../../../components/constants'
-import { dex_trades_volume, graphql_url, graphql_api_key, dexMonthWiseData,getAlldexTrades,dex_trades_volume_change,getactivedexTrades24h} from '../../../components/token_details/graphql'
+import { dex_trades_volume, graphql_url, graphql_api_key, dexMonthWiseData,dexDailyWiseData,getAlldexTrades,dex_trades_volume_change,getactivedexTrades24h,dexMonthWiseGroupedbyData} from '../../../components/token_details/graphql'
 import CategoriesTab from '../../../components/categoriesTabs'
 import Search_Contract_Address from '../../../components/searchContractAddress'
 import AnalysisInsightsMenu from '../../../components/analysisInsightsmenu'
 import Popupmodal from '../../../components/dextradespopupmodal'
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,PieChart, Pie,  } from 'recharts'
 import Axios from 'axios'
 import Head from 'next/head'
 import cookie from "cookie"
@@ -19,7 +18,10 @@ function TokenDetails({network_id})
 { 
   const [dex_row_id, set_dex_row_id]=useState("")
   const [tab, set_tab]= useState(network_id == "ethereum" ? 1 :network_id == "bsc" ? 2 : 0)  
-  const [highchart_status , set_highcharts_status]=useState(false)
+  const [highchart_status , set_highchart_status]=useState(false)
+  const [monthly_dex_highchart_status , set_monthly_dex_highchart_status]=useState(false)
+  const [monthly_grouped_by_highchart_status , set_monthly_grouped_by_highchart_status]=useState(false)
+  const [daily_highchart_status , set_daily_highchart_status]=useState(false)
   const [all_dex_trades, set_all_dextrades]= useState([])
   const [dex_trades, set_dex_trades]= useState([])
   const [all_dextrades_7days, set_all_dextrades_7days]= useState([])
@@ -42,7 +44,7 @@ function TokenDetails({network_id})
   '#D3B484','#B3B3B3','#E10B64','#E92828','#78B4A4','#604F00','#0060E9','#FF7DE3','#20c997','#6f42c1'])
   const change = async (row_id) =>
     { 
-     // console.log("row_id",row_id)
+    
         await set_dex_row_id("") 
         
         await set_dex_row_id(row_id) 
@@ -191,7 +193,6 @@ function TokenDetails({network_id})
     set_pi_chart_24h_values(pi_chart_24h_value)
     set_pi_chart_24h_names(pi_chart_24h_names)
     set_dex_trades(ordered_dex_trades)  
-    console.log(ordered_dex_trades)
   }
  
 
@@ -242,6 +243,7 @@ function TokenDetails({network_id})
           set_dextrades_24h_volume(result.data.ethereum.dexTrades[0].tradeAmount)
           change24h=dex_trades_volume_change(dextrades_volume,result.data.ethereum.dexTrades[0].tradeAmount)
           set_dextrades_24h_change_volume(change24h)
+          console.log("change24h",change24h)
         }
       }  
     }).catch(console.error)
@@ -299,6 +301,7 @@ function TokenDetails({network_id})
         
         if(result.data.ethereum.dexTrades[0].tradeAmount)
         {
+          console.log("volume",result.data.ethereum.dexTrades[0].tradeAmount)
           set_dextrades_volume(result.data.ethereum.dexTrades[0].tradeAmount)
           getdexTrades24h(result.data.ethereum.dexTrades[0].tradeAmount)
           getdexTrades7days(result.data.ethereum.dexTrades[0].tradeAmount)
@@ -325,6 +328,7 @@ function TokenDetails({network_id})
       {
         if(result.data.ethereum.dexTrades[0].tradeAmount)
         {
+          console.log("7 days",result.data.ethereum.dexTrades[0].tradeAmount)
           set_dextrades_7days_volume(result.data.ethereum.dexTrades[0].tradeAmount)
           change7days=dex_trades_volume_change(dextrades_volume,result.data.ethereum.dexTrades[0].tradeAmount)
           set_dextrades_7day_change_volume(change7days)
@@ -367,7 +371,8 @@ function TokenDetails({network_id})
 
     const exchangesMonthWiseList= async ()=> 
     {
-       set_highcharts_status(false)
+     
+      set_monthly_dex_highchart_status(false)
         const present_date = ((new Date()).toISOString())
         const from_date = ((new Date(Date.now() - 365*24 * 60 * 60 * 1000)).toISOString())
         const query = dexMonthWiseData(tab, from_date, present_date)
@@ -379,7 +384,6 @@ function TokenDetails({network_id})
             }
         })
 
-        //console.log("bar chart",response_array)
         let exchange_array = []
         let month_array = []
         if(response_array.data)
@@ -389,7 +393,8 @@ function TokenDetails({network_id})
               if(response_array.data.data.ethereum.dexTrades != null)
               {
                 var res_data = response_array.data.data.ethereum.dexTrades
-                set_highcharts_status(true)
+                
+                set_monthly_dex_highchart_status(true)
                 for(let x of res_data) 
                 {  
                     var date_conv = moment(x.timeInterval.month).format('MMM, YYYY')
@@ -425,10 +430,7 @@ function TokenDetails({network_id})
                    
                     await final_result_array.push(result_data)
                 }
-                //console.log(final_result_array)
-                set_exchanges_list(final_result_array)
-                set_exchange_names(month_array)
-                
+                set_exchanges_list(final_result_array)  
                 Highcharts.setOptions({
                     lang: {
                       numericSymbols: ['K', ' M', 'B', 'T']
@@ -440,7 +442,7 @@ function TokenDetails({network_id})
                         type: 'column'
                     },
                     title: {
-                        text: '1 year Dex Volume'
+                        text: 'Monthly Dex Volume'
                     },
                     xAxis: {
                         categories: month_array
@@ -461,11 +463,12 @@ function TokenDetails({network_id})
                         backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || 'white',
                         borderColor: '#CCC',
                         borderWidth: 1,
-                        shadow: false
+                        shadow: false,
                     },
                     tooltip: {
-                        headerFormat: '<b>{point.x}</b><br/>',
-                        pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+                      valuePrefix: '$',
+                      shared: true,
+                      valueSuffix: ' '
                     },
                     plotOptions: {
                         column: {
@@ -474,6 +477,437 @@ function TokenDetails({network_id})
                     },
                     series: final_result_array
                 });
+               
+             
+              } 
+            }
+        }
+    }
+
+    const weeklyWiseList= async ()=> 
+    {
+        const present_date = ((new Date()).toISOString())
+        const from_date = ((new Date(Date.now() - 365*24 * 60 * 60 * 1000)).toISOString())
+        const query = dexMonthWiseData(tab, from_date, present_date)
+
+        const response_array =  await Axios.post(graphql_url, JSON.stringify({ query }), {
+            headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": graphql_api_key
+            }
+        })
+
+        let exchange_array = []
+        let month_array = []
+        if(response_array.data)
+        {
+            if(response_array.data.data.ethereum)
+            {
+              if(response_array.data.data.ethereum.dexTrades != null)
+              {
+                var res_data = response_array.data.data.ethereum.dexTrades
+                
+                console.log(res_data) 
+                for(let x of res_data) 
+                {  
+                    var date_conv = moment(x.timeInterval.month).format('MMM, YYYY')
+                    if(!month_array.includes(date_conv))
+                    {
+                        await month_array.push(date_conv)
+                    }
+                    
+               
+                    var abc = x.exchange.fullName.replace(/([<>])/g, '_')
+                    if(!exchange_array.includes(abc))
+                    {
+                        await exchange_array.push(abc)
+                    }
+                }
+                
+
+                let final_result_array = []
+                for(let u of exchange_array) 
+                {
+                    var v_text = []
+
+                    
+                    for(let x of res_data) 
+                    { 
+                      
+                        if(u == x.exchange.fullName.replace(/([<>])/g, '_'))
+                        {
+                            v_text.push(x.tradeAmount)
+                            
+                        }
+                       
+                    }
+                    
+                    var result_data = {}
+                    
+                    result_data['name'] = u
+                    result_data['data'] = v_text
+                   
+                    await final_result_array.push(result_data)
+                }
+               
+                set_exchanges_list(final_result_array)  
+                Highcharts.setOptions({
+                  lang: {
+                    numericSymbols: ['K', ' M', 'B', 'T']
+                  }
+                })
+
+                Highcharts.chart('weeklyareachart', {
+                  chart: {
+                    type: 'area'
+                  },
+                  xAxis: {
+                    categories: month_array
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Dex Volume'
+                    },
+                },
+                title: {
+                  text: 'Weekly Dex Volume'
+                 },
+                 legend: {
+                  align: 'right',
+                  x: -30,
+                  layout: 'vertical',
+                  verticalAlign: 'top',
+                  y: 25,
+                  floating: false,
+                  backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || 'white',
+                  borderColor: '#CCC',
+                  borderWidth: 1,
+                  shadow: false,
+              },
+                 tooltip: {
+                  valuePrefix: '$',
+                  shared: true,
+                  valueSuffix: ''
+                },
+                plotOptions: {
+                  column: {
+                      stacking: 'normal'
+                  }
+               },
+                  series: final_result_array
+                });
+               
+
+                Highcharts.chart('weeklypercentagechart', {
+                  chart: {
+                    type: 'area'
+                  },
+                  title: {
+                    text: 'Marlet Share Weekly Dex Volume'
+                  },
+                  accessibility: {
+                    point: {
+                      valueDescriptionFormat: '{index}. {point.category}, {point.y:,.0f} millions, {point.percentage:.1f}%.'
+                    }
+                  },
+                  xAxis: {
+                    categories:month_array,
+                    tickmarkPlacement: 'on',
+                    title: {
+                      enabled: false
+                    }
+                  },
+                  yAxis: {
+                    labels: {
+                      format: '{value}%'
+                    },
+                    title: {
+                      enabled: false
+                    }
+                  },
+                  legend: {
+                    align: 'right',
+                    x: -30,
+                    layout: 'vertical',
+                    verticalAlign: 'top',
+                    y: 25,
+                    floating: false,
+                    backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || 'white',
+                    borderColor: '#CCC',
+                    borderWidth: 1,
+                    shadow: false,
+                },
+                   tooltip: {
+                    valuePrefix: '$',
+                    shared: true,
+                    valueSuffix: ''
+                  },
+                  plotOptions: {
+                    area: {
+                      stacking: 'percent',
+                      lineColor: '#ffffff',
+                      lineWidth: 1,
+                      marker: {
+                        lineWidth: 1,
+                        lineColor: '#ffffff'
+                      }
+                    }
+                  },
+                  series:final_result_array
+                });
+             
+              } 
+            }
+        }
+    }
+
+    const exchangesMonthWiseGroupedByList= async ()=> 
+    {
+     set_monthly_grouped_by_highchart_status(false)
+       var final_result_array = []
+       var exchange_array = []
+       var present_date=""
+       var from_date=""
+       let query=""
+       let response_array=""
+       for(var i=0;i<4;i++)
+       {
+        if(i==0)
+        {
+           present_date = "2019-12-30"
+           from_date = "2019-01-01"
+            
+        }
+        else if(i==1)
+        {
+          present_date = "2020-12-30"
+          from_date = "2020-01-01"
+           
+        }
+        else if(i==2)
+        {
+          present_date = "2021-12-30"
+          from_date = "2021-01-01"
+           
+        }
+        else if(i==3)
+        {
+          present_date = "2022-12-01"
+          from_date = "2022-01-01"
+          
+        }
+        else{
+          break
+        }
+      
+        query = dexMonthWiseGroupedbyData(tab, from_date, present_date)
+        response_array =  await Axios.post(graphql_url, JSON.stringify({ query }), {
+               headers: {
+               "Content-Type": "application/json",
+               "X-API-KEY": graphql_api_key
+               }
+           })
+       
+        
+        if(response_array.data)
+        {
+            if(response_array.data.data.ethereum)
+            {
+              if(response_array.data.data.ethereum.dexTrades != null)
+              {
+                var res_data = response_array.data.data.ethereum.dexTrades
+                set_monthly_grouped_by_highchart_status(true)
+                 const uniques = res_data.map(item =>moment(item.timeInterval.month).format('YYYY')).filter((value, index, self) => self.indexOf(value) === index)
+               
+                 await exchange_array.push(uniques)
+                
+                var v_text = []
+                  for(let u of exchange_array) 
+                {
+                    var v_text = []
+                   for(let x of res_data) 
+                    { 
+                        if(u == moment(x.timeInterval.month).format('YYYY'))
+                        {
+                            v_text.push(x.tradeAmount)
+                        }
+                    }
+                    var result_data = {}
+                    
+                    result_data['name'] = u
+                    result_data['data'] = v_text
+                    if(result_data.data !="")
+                    {
+                      await final_result_array.push(result_data)
+                    }
+                  }
+           }
+        } 
+          }
+          }
+          set_exchanges_list(final_result_array) 
+                 Highcharts.setOptions({
+                  lang: {
+                    numericSymbols: ['K', ' M', 'B', 'T']
+                  }
+                })
+          Highcharts.chart('groupedbymonth-container', {
+
+            chart: {
+              type: 'column'
+            },
+          
+            title: {
+              text: 'Monthly DEX volume grouped by year'
+            },
+          
+            xAxis: {
+              categories: ["1","2","3","4","5","6","7","8","9","10","11","12"]
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  text: 'Dex Volume'
+              },
+          },
+          
+          legend: {
+            align: 'right',
+            x: -30,
+            layout: 'vertical',
+            verticalAlign: 'top',
+            y: 25,
+            floating: false,
+            backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false,
+        },
+        tooltip: {
+          valuePrefix: '$',
+          shared: true,
+          valueSuffix: ' '
+        },
+          
+            plotOptions: {
+              column: {
+                stacking: ''
+              }
+            },
+          
+            series: final_result_array
+          });
+    }
+
+
+    const dailyDexVolumeChart = async ()=> 
+    {
+      set_daily_highchart_status(false)
+        const present_date = ((new Date()).toISOString())
+        const from_date = ((new Date(Date.now() - 30*24 * 60 * 60 * 1000)).toISOString())
+        const query = dexDailyWiseData(tab, from_date, present_date)
+
+        const response_array =  await Axios.post(graphql_url, JSON.stringify({ query }), {
+            headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": graphql_api_key
+            }
+        })
+        let exchange_array = []
+        let month_array = []
+        if(response_array.data)
+        {
+            if(response_array.data.data.ethereum)
+            {
+              if(response_array.data.data.ethereum.dexTrades != null)
+              {
+                var res_data = response_array.data.data.ethereum.dexTrades
+               set_daily_highchart_status(true)
+                for(let x of res_data) 
+                {  
+                   
+                    var date_conv = moment(x.timeInterval.day).format('D ,MMM')
+                    if(!month_array.includes(date_conv))
+                    {
+                        await month_array.push(date_conv)
+                    }
+                    var abc = x.exchange.fullName.replace(/([<>])/g, '_')
+                    if(!exchange_array.includes(abc))
+                    {
+                        await exchange_array.push(abc)
+                    }
+                }
+
+                let final_result_array = []
+                for(let u of exchange_array) 
+                {
+                    var v_text = []
+
+                    
+                    for(let x of res_data) 
+                    { 
+                        if(u == x.exchange.fullName.replace(/([<>])/g, '_'))
+                        {
+                            v_text.push(parseFloat(x.tradeAmount.toFixed(2)))
+                        }
+                    }
+                    var result_data = {}
+                    
+                    result_data['name'] = u
+                    result_data['data'] = v_text
+                   
+                    await final_result_array.push(result_data)
+                }
+                set_exchanges_list(final_result_array)
+                set_exchange_names(month_array)
+                
+                Highcharts.setOptions({
+                    lang: {
+                      numericSymbols: ['K', ' M', 'B', 'T']
+                    }
+                  })
+
+                  Highcharts.chart('areachart-container', {
+                    chart: {
+                      type: 'column'
+                    },
+                    xAxis: {
+                      categories: month_array
+                  },
+                  yAxis: {
+                      min: 0,
+                      title: {
+                          text: 'Dex Volume'
+                      },
+                  },
+                  title: {
+                    text: 'Daily Dex Volume'
+                   },
+                   legend: {
+                    align: 'right',
+                    x: -30,
+                    layout: 'vertical',
+                    verticalAlign: 'top',
+                    y: 25,
+                    floating: false,
+                    backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || 'white',
+                    borderColor: '#CCC',
+                    borderWidth: 1,
+                    shadow: false,
+                },
+                   tooltip: {
+                    valuePrefix: '$',
+                    shared: true,
+                    valueSuffix: ''
+                  },
+                  plotOptions: {
+                    column: {
+                        stacking: 'normal'
+                    }
+                 },
+                    series: final_result_array
+                  });
               } 
             }
         }
@@ -487,6 +921,9 @@ useEffect(()=>
   getdexTrades1year()
   getactivedexTrades()
   exchangesMonthWiseList()
+  dailyDexVolumeChart()
+  weeklyWiseList()
+  exchangesMonthWiseGroupedByList()
  },[network_id])
 
  
@@ -574,7 +1011,7 @@ return (
                     <div className="text-center mt-2">
                       <div style={{fontSize:"35px"}}>{dextrades_24h_volume ? "$ "+convertvalue(dextrades_24h_volume): "$ 00"}</div>
                       <p style={{fontSize:"18px"}}>Volume last 24 hours</p>
-                    <br/>
+                
                     </div>
                     
                     <div className='col-md-12 pull-right text-right'>
@@ -599,7 +1036,6 @@ return (
                   <div className="text-center mt-2">
                       <div style={{fontSize:"35px"}}>{dextrades_7days_volume ? "$ "+convertvalue(dextrades_7days_volume): "$ 00"}</div>
                       <p style={{fontSize:"18px"}}>Volume last 7 days</p>
-                    <br/>
                 </div> 
                 
                 <div className='col-md-12 pull-right text-right'>
@@ -640,7 +1076,6 @@ return (
                   <div className="text-center mt-2">
                       <div style={{fontSize:"35px"}}>{dextrades_24h_change_volume ? dextrades_24h_change_volume.toFixed(2)+"%": "NA"}</div>
                       <p style={{fontSize:"18px"}}>Changes 24 hours</p>
-                    <br/>
                  </div>
 
                   <div className='col-md-12 pull-right text-right'>
@@ -665,7 +1100,6 @@ return (
                   <div className="text-center mt-2">
                       <div style={{fontSize:"35px"}}>{dextrades_7day_change_volume ? dextrades_7day_change_volume.toFixed(2)+"%": "NA"}</div>
                       <p style={{fontSize:"18px"}}>Change last 7 days</p>
-                    <br/>
                   </div>
 
                   
@@ -808,54 +1242,196 @@ return (
                 </div> 
               </div>  
               <div className="col-md-6">
-            
-            
+                <div className="dex-section">
+                  <div className="row ">
+                    <div className="col-md-6">
+                    <p>DEX 30 days volume</p>
+                    </div>
+                    <div className="col-md-6">
+                    <p style={{ float:"right"}}>Source: <a target={"_blank"} href="https://graphql.bitquery.io/ide">Bitquery</a></p>
+                    </div>
+                  </div>
+                  <div className="text-center mt-2">
+                      <div style={{fontSize:"35px", lineHeight: '1'}}>{dextrades_30day_volume ? "$ "+convertvalue(dextrades_30day_volume): "$ 00"}</div>
+                      <p style={{fontSize:"18px"}}>Volume last 30 days</p>
+                </div> 
+                
+                <div className='col-md-12 pull-right text-right'>
+                  <button onClick={() => change(9)}>
+                        <img src='/assets/img/info.png' style={{width:"24px", cursor:"pointer"}}/>
+                  </button>
+                </div>
+              </div>
+                <div className="dex-section mt-2">
+                  <div className="row ">
+                    <div className="col-md-6">
+                    <p>DEX 12 Months volume</p>
+                    </div>
+                    <div className="col-md-6">
+                    <p style={{ float:"right"}}>Source: <a target={"_blank"} href="https://graphql.bitquery.io/ide">Bitquery</a></p>
+                    </div>
+                  </div>
+                    <div className="text-center mt-2">
+                      <div style={{fontSize:"35px", lineHeight: '1'}}>{dextrades_12months_volume ? "$ "+convertvalue(dextrades_12months_volume): "$ 00"}</div>
+                      <p style={{fontSize:"18px"}}>Volume last 12 Months</p>
+                    </div>
+                    
+                    <div className='col-md-12 pull-right text-right'>
+                    <button onClick={() => change(8)}>
+                      <img src='/assets/img/info.png' style={{width:"24px", cursor:"pointer"}}/>
+                      </button>
+                    </div>
+                </div>
+                <div className="dex-section mt-2">
+                  <div className="row">
+                    <div className="col-md-6">
+                    <p>Today's Number of DEX traders</p>
+                    </div>
+                    <div className="col-md-6">
+                    <p style={{ float:"right"}}>Source: <a target={"_blank"} href="https://graphql.bitquery.io/ide">Bitquery</a></p>
+                    </div>
+                  </div>
+                  <div className="text-center mt-2">
+                      <div style={{fontSize:"35px", lineHeight: '1'}}>{unique_traders ? separator(unique_traders): "NA"}</div>
+                      <p style={{fontSize:"18px"}}>Total unique trading addresses</p>
+                </div> 
+                
+                <div className='col-md-12 pull-right text-right'>
+                  <button onClick={() => change(10)}>
+                        <img src='/assets/img/info.png' style={{width:"24px", cursor:"pointer"}}/>
+                  </button>
+                </div>
+              </div>  
+              </div>
+        </div>
+       <div>
+        </div> 
+        {
+          monthly_dex_highchart_status || monthly_grouped_by_highchart_status?
+         <> <div className='row'>
+          <div className="col-md-12 mt-4">
+          <div className="dex-side-menu">
+            <h5>Monthly 📆</h5></div>
+            </div>
+            </div>
+            {
+              monthly_dex_highchart_status?
+              <div className="mt-4">
+             
+              <div className="row">
+                <div className="col-md-12" style={{minHeight:"500px"}}> 
+              
+                  <figure class="highcharts-figure">
+                    <div className="dex-donot-pichart">
+                      
+                      <div id="container"></div>
+                    </div>
+                      
+                  </figure>
+                  
+                </div>  
+              </div>
+            </div>
+            :
+            null
+            }
+            {
+              monthly_grouped_by_highchart_status?
+              <div className="mt-0">
+              <div className="row">
+                <div className="col-md-12" style={{minHeight:"500px"}}> 
+                  <figure class="highcharts-figure">
+                    <div className="dex-donot-pichart">
+                      <div id="groupedbymonth-container"></div>
+                    </div>
+                  </figure>
+                </div>  
+               </div>
+              </div>
+              :
+              null
+            }
+         </>
+          :
+        null
+        }
+        
+        {
+          
+         <> <div className='row'>
+          <div className="col-md-12 mt-4">
+          <div className="dex-side-menu">
+            <h5>Weekly 📆</h5></div>
+            </div>
+            </div>
+            <div className="mt-4">
+             
+              <div className="row">
+                <div className="col-md-12" style={{minHeight:"500px"}}> 
+              
+                  <figure class="highcharts-figure">
+                    <div className="dex-donot-pichart">
+                      
+                      <div id="weeklyareachart"></div>
+                    </div>
+                      
+                  </figure>
+                  
+                </div>  
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="row">
+                <div className="col-md-12" style={{minHeight:"500px"}}> 
+              
+                  <figure class="highcharts-figure">
+                    <div className="dex-donot-pichart">
+                      
+                      <div id="weeklypercentagechart"></div>
+                    </div>
+                      
+                  </figure>
+                  
+                </div>  
               </div>
             </div>
             
             
-           
-      <div>
-        </div> 
-        { 
-            highchart_status?
+            
+         </>
+         
+        }
+
+
+        {
+          daily_highchart_status?
+          <><div className='row'>
+            <div className="col-md-12">
+          <div className="dex-side-menu">
+          <h5>Daily 📆</h5>
+          </div>
+          </div>
+          </div>
             <div className="mt-4">
            
             <div className="row">
               <div className="col-md-12" style={{minHeight:"500px"}}> 
-            
                 <figure class="highcharts-figure">
                   <div className="dex-donot-pichart">
-                    <h6 className="mb-3">1 Year DEX volume</h6>
-                    <div id="container"></div>
+                    {/* <h6 className="mb-3">Daily Dex Volume</h6> */}
+                    <div id="areachart-container"></div>
                   </div>
                     
                 </figure>
-                {/* <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    width={500}
-                    height={300}
-                    data={exchanges_list}
-                    >
-                    <CartesianGrid strokeDasharray="20 20" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    {
-                      exchange_names.map((item, i) =>
-                      <Bar dataKey={item.replace(/([<>])/g, '')} stackId="a" fill={exchange_colors[i]} />
-                      )
-                    }
-                  </BarChart>
-                </ResponsiveContainer> */}
               </div>  
             </div>
-          </div>  
+          </div> </> 
           :
-          ""     
+          null
         }
-            <div className="row mt-4">
+        
+         
+            {/* <div className="row mt-4">
             <div className="col-md-6">
                 <div className="dex-section">
                   <div className="row ">
@@ -905,8 +1481,8 @@ return (
                 </div>
               </div>
               
-          </div> 
-          <div className="row mt-4">
+          </div>  */}
+          {/* <div className="row mt-4">
           <div className="col-md-6">
                 <div className="dex-section">
                   <div className="row">
@@ -930,7 +1506,7 @@ return (
                 </div>
               </div>
               </div>
-          </div>         
+          </div>          */}
        
         </div>
       </div>

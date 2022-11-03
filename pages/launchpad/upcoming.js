@@ -164,7 +164,7 @@ export default function UpcomingLaunchPad({userAgent})
                         {/* <Link href="/launchpad/create-token"><a><button className="wallets__btn btn_blue">
                           <span className="btn__text"><img src="/assets/img/create-token-icon.png" />Create token</span>
                         </button></a></Link> */}
-                        <Link href={user_token ? "/token/create-new":app_coinpedia_url+"/login" }><a><button className="btn-gradient-primary">
+                        <Link href={user_token ? "/token/create-new":app_coinpedia_url+"login" }><a><button className="btn-gradient-primary">
                           <span className="btn__text">List your Token</span>
                         </button></a></Link>
                       </div>
@@ -189,7 +189,15 @@ export default function UpcomingLaunchPad({userAgent})
                   <div className="col-md-9 col-6">
                     <ul className="category_list">
                       <li className="active_tab">All</li>
-                      <li><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                      {
+                              user_token?
+                              <li><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                              :
+                              <li>
+                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/upcoming"}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>
+                              </li>
+                            }
+                      {/* <li><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li> */}
                       <li className="inactive"  data-toggle="modal" data-target="#comingSoon">DeFi</li>
                       <li className="inactive" data-toggle="modal" data-target="#comingSoon">NFT</li>
                       <li className="inactive" data-toggle="modal" data-target="#comingSoon">Metaverse</li>
@@ -252,7 +260,7 @@ export default function UpcomingLaunchPad({userAgent})
                               }
                             </>
                             :
-                            <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
+                            <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/upcoming"}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
                           }
                           </td>
                           <td className="mobile_hide">{sl_no+i+1}</td>

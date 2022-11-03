@@ -21,19 +21,20 @@ export default function GainersLosers({user_token, config, userAgent})
     const [all_tab_status, set_all_tab_status] = useState(0)
     const [top_gainers, set_top_gainers] = useState([])
     const [top_loosers, set_top_loosers] = useState([])
-
+    const [search_title, set_search_title] = useState("")  
+    
 
     useEffect(() => 
     { 
         topGainners()
         watchListIds()
-    }, [watch_list_status])
+    }, [search_title, watch_list_status])
 
 
     const topGainners=  async()=>
     {
         set_loader_status(false)
-        Axios.get(API_BASE_URL+"main/tokens/markets_insights", config).then(response => 
+        Axios.get(API_BASE_URL+"main/tokens/markets_insights/"+"?search="+search_title, config).then(response => 
         {
             set_loader_status(true)
             console.log("Gainers",response)   
@@ -171,7 +172,7 @@ export default function GainersLosers({user_token, config, userAgent})
 
                 <div className="prices transaction_table_block">
                     <div className="row">
-                        <div className="col-md-6 mb-3 col-7">
+                        <div className="col-md-9 mb-3 col-7">
                             <ul className="category_list">
                                 <li className={all_tab_status == 0?"active_tab":null}><a onClick={()=>set_all_tab_status(0)}>Gainers</a></li>
                                 <li className={all_tab_status == 1?"active_tab":null}><a onClick={()=>set_all_tab_status(1)}>Losers</a></li>
@@ -186,6 +187,23 @@ export default function GainersLosers({user_token, config, userAgent})
                             
                             </ul>
                         </div>
+                        <div className="col-md-3 mb-3 col-5 filter-category-section">
+                        <div className="row">
+                            
+                            <div className="col-md-12 ">
+                                <div className="input-group search_filter">
+                                    <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
+                                    <div className="input-group-prepend ">
+                                        <span className="input-group-text" ><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
+                                    </div>
+                                </div> 
+                            </div>
+                           
+                        </div>
+                         
+                        
+                       
+                        </div>     
                     </div>
                     {
                         watch_list_status?

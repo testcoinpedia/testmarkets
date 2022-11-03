@@ -10,16 +10,16 @@ import CategoriesTab from '../components/categoriesTabs'
 import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
 import WatchList from '../components/watchlist'
-
-// dummy
-
+import Select from 'react-select'
+import { useRouter } from 'next/router'
 
 export default function Companies({user_token, config, userAgent})
 { 
+    const router = useRouter()
+    const { active_category_tab } = router.query
     const [tokens_list, set_tokens_list] = useState([]) 
     const [voting_ids, setvoting_ids] = useState([])  // commented
     const [watchlist, set_watchlist] = useState([])
-    const [watch_list_status, set_watch_list_status] = useState(false)
     const [currentPage, setCurrentPage] = useState(0)
     const [per_page_count, set_per_page_count] = useState(100)
     const [pageCount, setPageCount] = useState(0)
@@ -30,61 +30,90 @@ export default function Companies({user_token, config, userAgent})
     const [image_base_url] = useState(IMAGE_BASE_URL + '/tokens/')
     const [count, setCount]=useState(0)
     const [voting_status, set_voting_status] = useState(false)
-    const [loader_status, set_loader_status]=useState(false)
+    const [loader_status, set_loader_status] = useState(false)
     const [handleModalVote, setHandleModalVote] = useState(false)
     const [total_votes, set_total_votes] = useState()
     const [token_id, set_Token_id] = useState("")
     const [vote_id, set_vote_id] = useState("")
     const [item, set_item] = useState("")
     const [voting_message, set_voting_message] = useState("")
-    const [all_tab_status, set_all_tab_status] = useState(true)
+    const [all_tab_status, set_all_tab_status] = useState((active_category_tab > 0) ? 0 : 1)
     const [watchlist_tab_status, set_watchlist_tab_status] = useState("")
-    const [search_title, set_search_title] = useState("")    
-    const [validSearchContract, setvalidContractAddress] = useState("")
-    const [err_searchBy, setErrsearchBy] = useState("")
+    const [search_title, set_search_title] = useState("")  
+
+    const [category_list, set_category_list] = useState([]) 
+    const [other_category_list, set_other_category_list] = useState([])
+    const [category_name, set_category_name] = useState("")
+    const [category_row_id, set_category_row_id] = useState((active_category_tab > 0) ? active_category_tab : "") 
     
-   
+    const [business_tab_status, set_business_tab_status] = useState((active_category_tab > 0) ? 2 :"")
+    
     useEffect(async ()=>
     {  
         tokensList({selected : 0})
         voteIds()
         watchListIds()
-    },[per_page_count, watch_list_status,search_title]) 
+        mainUniqueCategory()
+    },[per_page_count, search_title, category_row_id]) 
 
-   const tokensList = async (page) =>
-   {  
-      let current_pages = 0 
-      if(page.selected) 
-      {
-         current_pages = ((page.selected) * per_page_count) 
-      } 
 
-      const res = await Axios.get(API_BASE_URL+"markets/tokens/list/"+current_pages+'/'+per_page_count+"?search="+search_title, config)
-      // console.log("company_list", res)
-      if(res.data)
-      {
-         if(res.data.status === true)
-         {     
-            set_loader_status(true)
-            set_tokens_list(res.data.message)
-            setPageCount(Math.ceil(res.data.count/per_page_count))
-            set_sl_no(current_pages)
-            setCurrentPage(page.selected)
-            setfirstcount(current_pages+1)
-            setCount(res.data.count)
-            //setfinalcount(parseInt(current_pages)+parseInt(per_page_count))
-            const presentPage = page.selected+1
-            const totalcompany = res.data.count
-            var sadf = presentPage*per_page_count
-            if((presentPage*per_page_count) > totalcompany)
-            {
-            sadf = totalcompany
-            }
-            const final_count=sadf
-            setfinalcount(final_count)
-         } 
-      }
-   }
+    const mainUniqueCategory = () =>
+    {  
+        Axios.get(API_BASE_URL+"markets/tokens/unique_categories", config).then(res=>
+        { 
+            if(res.data)
+            {      
+                set_category_list(res.data.message)
+                otherUniqueCategory(res.data.other_array)
+            } 
+        })
+    }
+
+    const otherUniqueCategory = (res) =>
+    {  
+        var listData = res
+        var list = []
+        for(const i of listData)
+        {
+            list.push({value: parseInt(i.category_row_id), label: i.category_name})  
+        }
+        set_other_category_list(list)
+    }
+
+    const tokensList = async (page) =>
+    {  
+        let current_pages = 0 
+        if(page.selected) 
+        {
+            current_pages = ((page.selected) * per_page_count) 
+        } 
+
+        const res = await Axios.get(API_BASE_URL+"markets/tokens/list/"+current_pages+'/'+per_page_count+"?search="+search_title+"&category_row_id="+category_row_id, config)
+        if(res.data)
+        {
+            if(res.data.status === true)
+            {    
+                console.log("res",res) 
+                set_loader_status(true)
+                set_tokens_list(res.data.message)
+                setPageCount(Math.ceil(res.data.count/per_page_count))
+                set_sl_no(current_pages)
+                setCurrentPage(page.selected)
+                setfirstcount(current_pages+1)
+                setCount(res.data.count)
+                //setfinalcount(parseInt(current_pages)+parseInt(per_page_count))
+                const presentPage = page.selected+1
+                const totalcompany = res.data.count
+                var sadf = presentPage*per_page_count
+                if((presentPage*per_page_count) > totalcompany)
+                {
+                sadf = totalcompany
+                }
+                const final_count=sadf
+                setfinalcount(final_count)
+            } 
+        }
+    }
 
     const voteIds = () =>
     {
@@ -109,14 +138,12 @@ export default function Companies({user_token, config, userAgent})
     }
     
     const ModalVote=(token_id,status,_id,item)=> 
-    { 
-      // console.log(item)   
-      setHandleModalVote(!handleModalVote) 
-      set_voting_status(status)
-      set_Token_id(token_id)
-      set_vote_id(_id)
-      set_item(item)
-      
+    {  
+        setHandleModalVote(!handleModalVote) 
+        set_voting_status(status)
+        set_Token_id(token_id)
+        set_vote_id(_id)
+        set_item(item)
     }
   
     const vote = (param) =>
@@ -127,7 +154,6 @@ export default function Companies({user_token, config, userAgent})
         Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+token_id, config)
         .then(res=>
         { 
-          // console.log(res)
           if(res.data.status === true) 
           {
             
@@ -136,7 +162,6 @@ export default function Companies({user_token, config, userAgent})
               return obj._id === vote_id
             })
             var testObj = result ? result[0] : "" 
-            // console.log("testObj",testObj)
             var test_total_votes = testObj.total_votes+1
             testObj['total_votes'] = test_total_votes
             testList[item] = testObj
@@ -152,7 +177,6 @@ export default function Companies({user_token, config, userAgent})
         Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+token_id, config)
         .then(res=>
         { 
-          // console.log(res)
           if(res.data.status === true) 
           {
             var testList = tokens_list
@@ -164,7 +188,6 @@ export default function Companies({user_token, config, userAgent})
             test_total_votes = testObj.total_votes-1
             testObj['total_votes'] = test_total_votes
             testList[item] = testObj
-            // console.log(testObj)
             set_tokens_list(testList)
             voting_ids.splice(voting_ids.indexOf(vote_id), 1) 
             set_voting_message(res.data.message)
@@ -179,74 +202,64 @@ export default function Companies({user_token, config, userAgent})
       Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config)
       .then(res=>
       { 
-        // console.log("add", res.data)
         if(res.data.status)
         {
           var sdawatchlist = watchlist
           set_watchlist([])
           sdawatchlist.push(param_token_id)
           set_watchlist(sdawatchlist)
-          // console.log("watchlist", watchlist)
         }
       })
     }
     
     const removeFromWatchlist = (param_token_id) =>
     {
-      Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config)
-      .then(res=>
+      Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config).then(res=>
       {
-        // console.log("remove", res.data)
         if(res.data.status)
         {
           var sdawatchlist = watchlist
           set_watchlist([])
           sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
           set_watchlist(sdawatchlist)
-          // console.log("watchlist", watchlist)
         }
       })
     }
-
-   // watchlist api STARTS HERE
-   const getWatchlist = () =>
-   {
-      Axios.get(API_BASE_URL+"markets/token_watchlist/list/", config).then(res=>
-      { 
-         set_api_loader_status(true)
-         if(res.data.status)
-         {
-         set_watchlist(res.data.message)
-         }
-      })
-   }
-   // watchlist api ENDS HERE
+        
+    const set_all_tab_active=()=>
+    {  
+        set_watchlist_tab_status("")
+        set_all_tab_status(1)
+        set_category_row_id("")
+        set_category_name("")
+        set_search_title("")
+        tokensList({selected : 0})
+    }  
     
-   const set_all_tab_active=()=>
-  {  
-    set_watch_list_status(false)
-    set_watchlist_tab_status("")
-    set_all_tab_status(true)
-  }  
-  
-  const set_watch_list=()=>
-  {  
-    set_watch_list_status(true)
-    set_watchlist_tab_status(2)
-    set_all_tab_status(false)
-  } 
+    const set_tab_list=(id)=>
+    {  
+        set_business_tab_status(2)
+        set_all_tab_status(0)
+        set_category_row_id(id)
+    } 
 
-  const makeJobSchema=()=>
-  {  
-      return { 
-         "@context":"http://schema.org/",
-         "@type":"Organization",
-         "name":"Coinpedia",
-         "url":"https://pro.coinpedia.org",
-         "logo":"http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
-         "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
-       } 
-   }
+    const handleChange = (selectedOption) => 
+    {
+        set_category_row_id(selectedOption.value)
+        set_category_name(selectedOption.label)
+    } 
+
+    const makeJobSchema=()=>
+    {  
+        return { 
+            "@context":"http://schema.org/",
+            "@type":"Organization",
+            "name":"Coinpedia",
+            "url":"https://pro.coinpedia.org",
+            "logo":"http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
+            "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
+        } 
+    }
    
    
  
@@ -313,16 +326,14 @@ return (
             }
             </div>
             <div className="col-md-3">
-           <div>
-              <div className="input-group search_filter">
+              {/* <div className="input-group search_filter">
                 <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
                   <div className="input-group-prepend ">
                     <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                   </div>
-              </div> 
+              </div>  */}
               {/* <div className="error">  {err_searchBy}</div>
               {validSearchContract && <div className="error">{validSearchContract}</div>} */}
-         </div>
             </div> 
           </div>
             
@@ -340,45 +351,70 @@ return (
 
               <div className="prices transaction_table_block">
                 <div className="row">
-                  <div className="col-md-6 col-7">
-                    <ul className="category_list">
-                      <li className={all_tab_status?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
-                      {
-                        user_token?
-                        <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
-                        :
-                        <li>
-                        <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>
-                        </li>
-                      }
-                    </ul>
-                  </div>
-                  {
-                     !watch_list_status?
-                      <div className="col-md-6 col-5">
-                    <ul className="filter_rows">
-                      <li>
-                        Show rows
-                        <select onChange={(e)=>set_per_page_count(e.target.value)} >
-                          <option value={100}>100</option>
-                          <option value={50}>50</option>
-                          <option value={20}>20</option>
-                        </select>
-                      </li>
-                    </ul>
-                  </div>
-                  :
-                  null
-
-
-                  }
+                  <div className="col-md-12 col-7">
+                  <div className="row">
+                         <div className="col-md-6 col-7">
+                          <ul className="category_list">
+                            <li className={all_tab_status===1?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
+                            {
+                              user_token?
+                              <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                              :
+                              <li>
+                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>
+                              </li>
+                            }
+                            {
+                              category_list.map((e,i)=>
+                              <li class={parseInt(category_row_id)===parseInt(e.category_row_id) && business_tab_status===2?"active_tab":null}><a onClick={()=>set_tab_list(e.category_row_id)}>{e.category_name}</a></li>
+                              // <li>
+                              // <Link href={market_coinpedia_url+"category/"+e.category_id}><a>{e.category_name}</a></Link>
+                              // </li>
+                              )
+                           }
+                          </ul>
+                        </div>
+                       <div className="col-md-6 col-5 filter-category-section">
+                        <div className="row">
+                            <div className="col-md-4 ">
+                                <Select
+                                onChange={handleChange}
+                                options={other_category_list}
+                                placeholder={category_name?category_name:'Select  Category'}
+                                value={category_name}
+                                /> 
+                            </div>
+                            <div className="col-md-5 ">
+                                <div className="input-group search_filter">
+                                    <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
+                                    <div className="input-group-prepend ">
+                                        <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
+                                    </div>
+                                </div> 
+                            </div>
+                            <div className="col-md-3">
+                                <ul className="filter_rows">
+                                    <li>{count>100?
+                                        <select className="show-num" onChange={(e)=>set_per_page_count(e.target.value)} >
+                                        <option value="" disabled>Show Rows</option>
+                                        <option value={100}>100</option>
+                                        <option value={50}>50</option>
+                                        <option value={20}>20</option>
+                                        </select>:null}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                         
+                        
+                       
+                        </div>     
+                 </div>   
+                </div>
+                   
                   
                 </div>
-                {
-                     watch_list_status?
-                    <WatchList config={config} user_token={user_token}/> 
-                    :
-                     <div className="market_page_data">
+                <div className="market_page_data">
                      <div className="table-responsive">
                        <table className="table table-borderless">
                          <thead>
@@ -389,6 +425,7 @@ return (
                                 <th className="table_token">Live Price</th>
                                 <th className="table_token mobile_hide_table_col">Type</th>
                                 <th className="table_max_supply mobile_hide_table_col">Max Supply</th> 
+                                <th className="table_token mobile_hide_table_col">24hr %</th>
                                 <th className="mobile_hide_table_col table_circulating_supply">Market Cap</th>  
                                 <th className="table_circulating_supply mobile_hide_table_col">Votes</th>  
                                 <th className="table_circulating_supply mobile_hide_table_col">Action</th>  
@@ -484,6 +521,19 @@ return (
                                        </Link>
                                     </td>
                
+                                    <td className="mobile_hide_table_col">
+                                       <Link href={"/"+e.token_id}><a>
+                                        {
+                                        e.usd_24h_change?e.usd_24h_change>0?
+                                        <h6 className="values_growth"><span className="green">{e.usd_24h_change.toFixed(2)+"%"}</span></h6>
+                                        :
+                                        <h6 className="values_growth"><span className="red">{e.usd_24h_change.toFixed(2)+"%"}</span></h6>
+                                        :
+                                        "--"
+                                        }
+                                       </a></Link>
+                                     </td>
+
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/"+e.token_id}><a>
                                          {e.market_cap ?"$"+separator(e.market_cap.toFixed(2)) : "-"}
@@ -523,28 +573,23 @@ return (
                              ) 
                              :
                              <tr >
-                               <td className="text-center" colSpan="4">
+                               <td className="text-center" colSpan="12">
                                    Sorry, No related data found.
                                </td>
                              </tr>
                            }
                              </>
                              :
-                             <TableContentLoader row="10" col="9" />  
+                             <TableContentLoader row="10" col="10" />  
                           }
                            
                          </tbody>
                        </table>
                      </div>
                    </div> 
-                }
                 
 
-                  {
-                    
-                     !watch_list_status?
-                  
-                    <div className="col-md-12">
+                <div className="col-md-12">
                       <div className="pagination_block">
                         <div className="row">
                           <div className="col-lg-3 col-md-3  col-sm-3 col-12">
@@ -578,10 +623,6 @@ return (
                         </div>
                       </div>
                     </div>
-                  :
-                  null
-                 
-                } 
 
 
 

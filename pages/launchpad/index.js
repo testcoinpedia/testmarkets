@@ -134,7 +134,7 @@ export default function LaunchPad({userAgent})
                   </div>
                   <div className="col-md-4 col-5">
                     <div className="launchpad-toke-button">
-                      <Link href={user_token ? "/token/create-new":app_coinpedia_url+"/login"}><a>
+                      <Link href={user_token ? "/token/create-new":app_coinpedia_url+"login"}><a>
                         <button className="btn-gradient-primary">
                           <span className="btn__text">List your Token</span>
                         </button></a></Link>
@@ -355,7 +355,7 @@ export default function LaunchPad({userAgent})
                                          }
                                        </>
                                        :
-                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
                                      }
                           </td>
                           <td className="mobile_hide">{i+1}</td>

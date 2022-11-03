@@ -29,7 +29,7 @@ return (
             <p className="">Dex Users</p>
             <p className="">Other Metrics</p> */}
 
-            <h6 className="mt-4">Chain Overview</h6>
+            {/* <h6 className="mt-4">Chain Overview</h6>
             <Link href={"/analysis-insights/transactions/ethereum"}>
                 <a className=" ">
                     <p className="">Transactions</p>
@@ -39,7 +39,7 @@ return (
                 <a className=" ">
                     <p className="">GasUsed</p>
                 </a>
-            </Link>
+            </Link> */}
           </div>
         </div>
     )

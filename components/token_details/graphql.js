@@ -222,6 +222,69 @@ export const dexMonthWiseData = (network_type, from_date, present_date) =>
     return query 
 }
 
+export const dexMonthWiseGroupedbyData = (network_type, from_date, present_date) =>
+{
+  var network = "ethereum"
+  var baseCurrency = "0xdac17f958d2ee523a2206206994597c13d831ec7"
+  
+  if(network_type == 2)
+  {
+    network = "bsc"
+    baseCurrency = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+  }
+
+  const query =  `query {
+    ethereum(network: ` + network + `) {
+        dexTrades(
+          options: {asc: ["timeInterval.month"]}
+          date: {since:"` + from_date + `", till: "` + present_date + `"}
+          baseCurrency: {is: "` + baseCurrency + `"}
+        ) {
+          timeInterval {
+            month(format: "%Y-%m-%d")
+          }
+          tradeAmount(in: USD)
+        }
+      }
+    }
+    ` 
+
+    return query 
+}
+export const dexDailyWiseData = (network_type, from_date, present_date) =>
+{
+  var network = "ethereum"
+  var baseCurrency = "0xdac17f958d2ee523a2206206994597c13d831ec7"
+  
+  if(network_type == 2)
+  {
+    network = "bsc"
+    baseCurrency = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+  }
+
+  const query =  `query {
+    ethereum(network: ` + network + `) {
+        dexTrades(
+          options: {asc: ["exchange.fullName", "timeInterval.day"]}
+          date: {since:"` + from_date + `", till: "` + present_date + `"}
+          baseCurrency: {is: "` + baseCurrency + `"}
+        ) {
+          exchange: exchange {
+            fullName
+          }
+          timeInterval {
+            day(format: "%Y-%m-%d")
+            month
+          }
+          tradeAmount(in: USD)
+        }
+      }
+    }
+    ` 
+
+    return query 
+}
+
 
 export const live_price_graphql= async (id,networks)=> 
 { 

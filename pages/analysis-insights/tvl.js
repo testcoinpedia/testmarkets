@@ -11,9 +11,13 @@ import cookie from "cookie"
 import Highcharts from 'highcharts';
 import moment from 'moment'
 import Link from 'next/link' 
+import Select from 'react-select'
+import { useRouter } from 'next/router'
  
 function TokenDetails(props) 
 { 
+  const router = useRouter()
+  const { active_category_tab } = router.query
   const [tab, set_tab]= useState(0)  
   const [tvl_chain_data, set_tvl_chain_data]= useState([])
   const [tvl_protocol_data, set_tvl_protocol_data]= useState([])
@@ -29,7 +33,8 @@ function TokenDetails(props)
   const [chains, set_chains] = useState(["Ethereum","Binance","Tron","Avalanche","Solana","Polygon","Cronos","Fantom","Arbitrum","Optimism"])
   const [search_title, set_search_title] = useState("")  
   const [loader_status, set_loader_status]=useState(false)  
- 
+  const [other_category_list, set_other_category_list] = useState([])
+  const [category, set_category] = useState("")
   
 
   const getcurrentTVLChains = async() =>
@@ -47,26 +52,62 @@ function TokenDetails(props)
        }
      }
       set_tvl_chain_data(chainArray)
-     
-}
-const getTVLProtocols = async(page) =>
-  {
-   
-    let current_pages = 0 
-    if(page.selected) 
-    {
-      current_pages = ((page.selected) * per_page_count) 
-    }
-    const configreq=config("")
-    console.log(configreq)
-    const reqConfig = {
-      headers: configreq.headers,
-      params: {
-        chains: chain,
-        search: search_title
-        
-      }
   }
+
+ 
+const mainUniqueCategory = () =>
+    {  
+      const configreq=config("")
+      // console.log(configreq)
+      const reqConfig = {
+      headers: configreq.headers,
+    }
+        Axios.get(API_BASE_URL+"markets/tvl_exchanges/most_used_categories",reqConfig).then(res=>
+        { 
+          console.log("res",res)
+            if(res.data)
+            {      
+              otherUniqueCategory(res.data.message)
+            } 
+        })
+    }
+
+    const otherUniqueCategory = (res) =>
+    {  
+        var listData = res
+        var list = []
+        for(const i of listData)
+        {
+            list.push({value: parseInt(i), label: (i)})  
+        }
+        set_other_category_list(list)
+    }
+
+    const handleChange = (selectedOption) => 
+        {  
+            console.log(selectedOption)
+            set_category(selectedOption.label)
+        } 
+
+    const getTVLProtocols = async(page) =>
+      {
+      
+        let current_pages = 0 
+        if(page.selected) 
+        {
+          current_pages = ((page.selected) * per_page_count) 
+        }
+        const configreq=config("")
+        console.log(configreq)
+        const reqConfig = {
+          headers: configreq.headers,
+          params: {
+            chains: chain,
+            search: search_title,
+            category:category
+            
+          }
+      }
     const res_data =await Axios.get(API_BASE_URL+"markets/tvl_exchanges/list/"+current_pages+'/'+per_page_count,reqConfig)
     console.log("res_data",res_data)
     if(res_data.data.status == true)
@@ -87,7 +128,7 @@ const getTVLProtocols = async(page) =>
       }
       const final_count=sadf
       setfinalcount(final_count)
-      //dexTradesGraph()
+      // dexTradesGraph()
     }
     
     
@@ -98,109 +139,113 @@ const getTVLProtocols = async(page) =>
 
 
 
-const dexTradesGraph = async () =>
-    { 
+// const dexTradesGraph = async () =>
+//     { 
       
-      let res_data = await Axios.get("https://api.llama.fi/charts/"+chain)
-      console.log(res_data)
-      var prices= [];
-      var arr = res_data.data 
-         for (let index = 0; index < arr.length; index++) 
-         {
-            if (arr[index] !== undefined)
-            {
-                  var rate = 0 
-                  rate = arr[index]
-                  var val = []
-                  if(rate.date>1610323200)
-                  {
-                    val[0] =new Date(rate.date*1000)
-                    val[1] =rate.totalLiquidityUSD
-                    await prices.push(val)
-                    console.log(prices)
+//       let res_data = await Axios.get("https://api.llama.fi/charts/"+chain)
+//       console.log(res_data)
+//       var prices= [];
+//       var arr = res_data.data 
+//          for (let index = 0; index < arr.length; index++) 
+//          {
+//           if (arr[index] !== undefined)
+//           {
+//             if (arr[index] >600)
+//             {
+//                   var rate = 0 
+//                   rate = arr[index]
+//                   var val = []
+//                   //console.log(new Date(1610323200*1000))
+//                   if(rate.date)
+//                   {
+//                     val[0] =new Date(rate.date*1000)
+//                     val[1] =rate.totalLiquidityUSD
+//                     await prices.push(val)
+//                     console.log(prices)
 
-                  }
-                  
+//                   }
+//             }    
               
-            }
+//           }
            
-            Highcharts.chart('container', {
-                chart: {
-                    zoomType: 'x'
-                },
-                title: {
-                    text: ''
-                },
-                xAxis: {
-                    title: {
-                        text: ('Time')
-                        },
-                    type: 'datetime',
-                    lineColor: '#f7931a',
-                    dashStyle: 'Dash',
-                },
-                yAxis: {
-                    title: {
-                        text: ('USD Prices')
-                    },
-                    dashStyle: 'Dash',
-                },
-                colors: ['#f7931a'],
-                legend: { enabled: false },
-                tooltip: {
-                          formatter: function () {
-                              var point = this.points[0];
-                              return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
-                              '<strong>Price :</strong> '+ ('$ ') + Highcharts.numberFormat(point.y, 10) + '';  
-                          },
-            shared: true
-               },
-               plotOptions: {
-                area: {
-                    fillColor: {
-                        linearGradient: {
-                            x1: 0,
-                            y1: 0,
-                            x2: 0,
-                            y2: 1
-                        },
-                        stops: [
-                            [0, 'rgb(255 248 241 / 59%)'],
-                            [1, 'rgb(255 255 255 / 59%)']
-                        ]
-                    },
-                    marker: {
-                        radius: 1
-                    },
-                    lineWidth: 3,
-                    states: {
-                        hover: {
-                            lineWidth: 3
-                        }
-                    },
-                    threshold: null
-                }
-            },
+//             Highcharts.chart('container', {
+//                 chart: {
+//                     zoomType: 'x'
+//                 },
+//                 title: {
+//                     text: ''
+//                 },
+//                 xAxis: {
+//                     title: {
+//                         text: ('Time')
+//                         },
+//                     type: 'datetime',
+//                     lineColor: '#f7931a',
+//                     dashStyle: 'Dash',
+//                 },
+//                 yAxis: {
+//                     title: {
+//                         text: ('USD Prices')
+//                     },
+//                     dashStyle: 'Dash',
+//                 },
+//                 colors: ['#f7931a'],
+//                 legend: { enabled: false },
+//                 tooltip: {
+//                           formatter: function () {
+//                               var point = this.points[0];
+//                               return '<b>' + point.series.name + '</b><br>' + Highcharts.dateFormat('%a %e %b %Y, %H:%M:%S', this.x) + '<br>' +
+//                               '<strong>Price :</strong> '+ ('$ ') + Highcharts.numberFormat(point.y, 10) + '';  
+//                           },
+//             shared: true
+//                },
+//                plotOptions: {
+//                 area: {
+//                     fillColor: {
+//                         linearGradient: {
+//                             x1: 0,
+//                             y1: 0,
+//                             x2: 0,
+//                             y2: 1
+//                         },
+//                         stops: [
+//                             [0, 'rgb(255 248 241 / 59%)'],
+//                             [1, 'rgb(255 255 255 / 59%)']
+//                         ]
+//                     },
+//                     marker: {
+//                         radius: 1
+//                     },
+//                     lineWidth: 3,
+//                     states: {
+//                         hover: {
+//                             lineWidth: 3
+//                         }
+//                     },
+//                     threshold: null
+//                 }
+//             },
               
-                series: [{
-                    type: 'area',
-                    name: '',
-                    data: prices
-                }]
-             })
-        }
+//                 series: [{
+//                     type: 'area',
+//                     name: '',
+//                     data: prices
+//                 }]
+//              })
+//         }
          
          
-    }
+//     }
 
  
 useEffect(()=>
 {  
   getTVLProtocols({selected : 0})
-},[chain,search_title]) 
+  mainUniqueCategory()
+},[per_page_count,chain,search_title,category]) 
  
   
-useEffect(()=>
+useEffect(()=> 
 {  
  // mostchains()
   getcurrentTVLChains()
@@ -313,16 +358,36 @@ return (
           <div className="col-md-12">
               <div className="dex-donot-pichart">
                 <div className="row">
-                  <div className="col-md-8">
-                    <h6 className="mb-3">Total value Locked ({count})</h6>
+                  <div className="col-md-4">
+                    <h6 className="mt-2">TVL Rankings ({count})</h6>
                   </div>
-                    <div className="col-md-4">
-                      <div className="input-group search_filter">
-                        <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search By Exchange Name" />
+                    <div className="col-md-3">
+                        <Select
+                        onChange={handleChange}
+                        options={other_category_list}
+                        placeholder={category?category:'Select  Category'}
+                        value={category}
+                        /> 
+                    </div>
+                    <div className="col-md-3">
+                      <div className="input-group search_filter  mb-3">
+                        <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Exchange" />
                           <div className="input-group-prepend ">
                             <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                           </div>
                       </div> 
+                    </div>
+                    <div className="col-md-2">
+                        <ul className="filter_rows">
+                            <li>
+                                <select className="show-num" onChange={(e)=>set_per_page_count(e.target.value)}>
+                                <option value="" disabled>Show Rows</option>
+                                <option value={100}>100</option>
+                                <option value={50}>50</option>
+                                <option value={20}>20</option>
+                                </select>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 
@@ -353,7 +418,7 @@ return (
                                     <tr key={i}>
                                       <td>{sl_no+i+1}</td>
                                       <td>
-                                      <Link href={"/"+e.token_id}>
+                                   
                                          <a>
                                           <div className="media">
                                             <div className="media-left">
@@ -364,7 +429,7 @@ return (
                                             </div>
                                           </div> 
                                          </a>
-                                       </Link>
+                                   
                                         {/* <span>
                                           <img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} src={e.exchange_image} alt="Protocols"/>
                                           {e.exchange_name}
@@ -494,7 +559,7 @@ return (
       
       
          
-              <figure className="highcharts-figure">
+              {/* <figure className="highcharts-figure">
                     <div
                       id="container"
                       style={{ height: 250, overflow: "hidden" }}
@@ -504,7 +569,7 @@ return (
                       aria-hidden="false"
                     >  
                     </div>
-           </figure>
+           </figure> */}
              
            {/* <p>Source: <a target={"_blank"} href="https://defillama.com/">DefiLlama</a><br/><a target={"_blank"} href="https://graphql.bitquery.io/ide">GraphQl Bitquery</a></p> */}
          

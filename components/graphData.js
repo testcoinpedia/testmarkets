@@ -6,12 +6,14 @@ import Datetime from "react-datetime"
 import "react-datetime/css/react-datetime.css" 
 import JsCookie from "js-cookie"   
 import moment from 'moment'
-import { count_live_price, graphqlApiKEY, headers, createValidURL, IMAGE_BASE_URL} from '../components/constants'
+import { count_live_price, graphqlApiKEY} from '../components/constants'
 import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
-import Popupmodal from '../components/popupmodal'
+import dynamic from 'next/dynamic';
+
 
 export default function Details({reqData, graph_data_date}) 
 {   
+  
     const [api_from_type, set_api_from_type] = useState(reqData.api_from_type)
     const [customDate, setCustomDate] = useState(false)
     const [graphDate , set_graphDate] = useState(1) 
@@ -599,6 +601,7 @@ export default function Details({reqData, graph_data_date})
       }
 
     </div>
+   
     </>
 
     )

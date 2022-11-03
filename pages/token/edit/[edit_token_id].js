@@ -6,6 +6,7 @@ import Web3 from 'web3'
 import { useRouter } from 'next/router' 
 import Head from 'next/head'
 import cookie from 'cookie'
+import dynamic from 'next/dynamic'
 import "react-datetime/css/react-datetime.css"
 import {x_api_key, API_BASE_URL, app_coinpedia_url,config,website_url,graphqlApiKEY,IMAGE_BASE_URL,coinpedia_url,market_coinpedia_url} from '../../../components/constants'
 import Popupmodal from '../../../components/popupmodal' 
@@ -14,12 +15,17 @@ import 'react-image-crop/dist/ReactCrop.css';
 import { Editor } from '@tinymce/tinymce-react';
 import Select from 'react-select'
  
-export default function UpdateToken({userAgent,config,token_id}) {  
-//  console.log(token_id)
+export default function UpdateToken({userAgent, config, token_id}) 
+{  
+  const Multiselect = dynamic( () => import('multiselect-react-dropdown').then(module => module.Multiselect),
+    {
+      ssr: false
+    }
+  )
   const editorRef = useRef(null);
   const router = useRouter()
    
-//  console.log(token_id)
+  
   const [wallet_address, setWalletAddress] = useState('') 
   const [contract_address, setContractAddress] = useState([{network_type: "0", contract_address: ""}])
   const [err_contract_address, setErrContractAddress] = useState("")
@@ -38,9 +44,13 @@ export default function UpdateToken({userAgent,config,token_id}) {
   const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/") 
   const [meta_keywords, set_meta_keywords] = useState("")
   const [meta_description, set_meta_description] = useState("")
+  // const [category_row_id, set_category_row_id] = useState("")
+  // const [category_name, set_category_name] = useState("")
+
   const [categories, set_categories] = useState([])
-  const [category_row_id, set_category_row_id] = useState("")
-  const [category_name, set_category_name] = useState("")
+  const [category_name, set_category_name]= useState([])
+  const [category_name_ids, set_category_name_ids]= useState([])  
+
   const [loader, set_loader] = useState("")
   const [err_symbol, setErrSymbol] = useState('') 
   const [err_token_name, setErrTokenName] = useState('')
@@ -49,7 +59,7 @@ export default function UpdateToken({userAgent,config,token_id}) {
   const [err_token_max_supply, setErrTokenMaxSupply] = useState('')
   const [err_market_cap, setErrmarket_cap] = useState('') 
   const [err_token_description, setErrTokenDescription] = useState('')
-  const [err_token_image, setErrTokenImage] = useState('')
+  const [err_token_image, setErrTokenImage] = useState('')  
 
   const [err_wallet_network, setErrWalletNetwork] = useState(false)
   const [err_wallet_connection, setErrWalletConnection] = useState(false)
@@ -69,6 +79,16 @@ export default function UpdateToken({userAgent,config,token_id}) {
   const [blobFile, set_blobFile] = useState()  
   const [validImg, setValidImg] = useState("")
   
+  const onSelect =(selectedList, selectedItem)=> { 
+    category_name_ids.push(selectedItem._id)
+    category_name.push(selectedItem)  
+  }
+ 
+  const onRemove = (selectedList, removedItem) => {
+    category_name_ids.splice(category_name_ids.indexOf(removedItem._id), 1)
+    category_name.splice(category_name.indexOf(removedItem), 1)
+  }
+
   const oncCropComplete=()=>{  
     document.getElementById("imageUploadForm").reset()
     setTokenImage(blobFile)
@@ -81,28 +101,22 @@ export default function UpdateToken({userAgent,config,token_id}) {
   }
   
   const getBusinessModels = () => 
-    { 
-        Axios.get(API_BASE_URL+"app/company_business_models", config).then(res => {
-        if (res.data.status) 
-        {
-              var listData = res.data.message
-              var list = [];
-              for(const i of listData)
-              {
-                list.push({value: parseInt(i._id), label: i.business_name})  
-              }
-            set_categories(list)
-            
-        }
-      })
-    }
- 
-    const handleChange = selectedOption => 
+  { 
+    Axios.get(API_BASE_URL+"app/company_business_models", config).then(res => 
     {
-       //console.log(selectedOption)
-        set_category_row_id(selectedOption.value)
-        set_category_name(selectedOption.label)
-    }
+      if (res.data.status) 
+      {
+        set_categories(res.data.message)
+      }
+    })
+  }
+ 
+    // const handleChange = selectedOption => 
+    // {
+    //    //console.log(selectedOption)
+    //     set_category_row_id(selectedOption.value)
+    //     set_category_name(selectedOption.label)
+    // }
   const onCropComplete = (crops) => { 
     setCompletedCrop(crops)
   
@@ -375,7 +389,7 @@ const onLoad = useCallback((img) => {
       contract_addresses: contract_address, 
       meta_keywords : meta_keywords,
       meta_description : meta_description,
-      category_row_id:category_row_id,
+      category_row_id:category_name_ids
     } 
 
     if(formValid)
@@ -452,29 +466,33 @@ const onLoad = useCallback((img) => {
         setTokenDescription(response.data.message.token_description)
         set_meta_keywords(response.data.message.meta_keywords)
         set_meta_description(response.data.message.meta_description)
+        set_category_name(response.data.message.category_row_id_array)
+        set_category_name_ids(response.data.message.category_row_id)
+
+
         if(response.data.message.token_image)
         {
           set_disply_token_image(image_base_url+response.data.message.token_image)
         }
-        else{
+        else
+        {
           set_disply_token_image(image_base_url+"default.png")
         }
         
-        set_category_row_id(response.data.message.category_row_id)
-        set_category_name(response.data.message.category_name)
+        // set_category_row_id(response.data.message.category_row_id)
+        // set_category_name(response.data.message.category_name)
         seSourceCodeLink(response.data.message.source_code_link) 
-        // setToken_id(response.data.message.token_id)
 
         if(response.data.message.explorer)
         {
-          if(response.data.message.explorer.length < 1){
+          if(response.data.message.explorer.length < 1)
+          {
             setExplorersList([""])
           }
           else
-         {
-          setExplorersList(response.data.message.explorer)
-         }
-         
+          {
+            setExplorersList(response.data.message.explorer)
+          }
         }
         
 
@@ -849,12 +867,13 @@ const getTokensDetails = (type, address) =>{
                             <div className="col-md-8">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                <Select 
-                                  onChange={handleChange}
-                                  isSearchable={true}
-                                  options={categories}
-                                  placeholder={category_name?category_name:'Select main business category'}
-                                />
+                                <Multiselect  className="form-control" placeholder="Select Event Tags"
+                                    selectedValues={category_name}
+                                    options={categories} // Options to display in the dropdown
+                                    onSelect={onSelect} // Function will trigger on select event
+                                    onRemove={onRemove} // Function will trigger on remove event
+                                    displayValue="business_name" // Property name to display in the dropdown options
+                                /> 
                                 </div>
                                  <div className="error">{err_website_link}</div>
                               </div>

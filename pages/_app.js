@@ -4,6 +4,8 @@ import App from 'next/app';
 import Topmenu from '../components/Topmenu'
 import Footer from '../components/Footer'
 import {favicon} from '../components/constants'
+
+
 class MyApp extends App{ 
 
   componentDidMount(){    
@@ -27,7 +29,8 @@ class MyApp extends App{
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
           {/* <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" /> */}
           {/* <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;300;400;600&display=swap" rel="stylesheet" /> */}
-          <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600&display=swap" rel="stylesheet"></link>
+          {/* <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600&display=swap" rel="stylesheet"></link> */}
+          <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"></link>
           
           <link rel="stylesheet" href="/assets/css/bootstrap.min.css" crossOrigin="anonymous"/>
           <link rel="stylesheet" media="all" href="/assets/css/app.css" />
@@ -56,6 +59,8 @@ class MyApp extends App{
           <script src="/assets/js/jquery.min.js"></script>
           <script src="/assets/js/popper.min.js" crossOrigin="anonymous"></script>
           <script src="/assets/js/bootstrap.min.js" crossOrigin="anonymous"></script>
+          <script src="/static/datafeeds/udf/dist/bundle.js" />
+          
           <Footer /> 
    
       </> 

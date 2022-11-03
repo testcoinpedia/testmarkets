@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import JsCookie from "js-cookie" 
 import cookie from 'cookie'
+import dynamic from 'next/dynamic'
 import "react-datetime/css/react-datetime.css"
 import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,  market_coinpedia_url,website_url,config,graphqlApiKEY,separator} from '../../components/constants'; 
 import Select from 'react-select'
@@ -21,6 +22,11 @@ import { Editor } from '@tinymce/tinymce-react';
  
 export default function Create_token({config}) 
 { 
+    const Multiselect = dynamic( () => import('multiselect-react-dropdown').then(module => module.Multiselect),
+        {
+        ssr: false
+        }
+    )
     const editorRef = useRef(null)
     const router = useRouter()
     const [wallet_address, setWalletAddress] = useState('')
@@ -42,9 +48,6 @@ export default function Create_token({config})
     const [tokenid , setToken_id] = useState("")
     const [meta_keywords, set_meta_keywords] = useState("")
     const [meta_description, set_meta_description] = useState("")
-    const [categories, set_categories] = useState([])
-    const [category_row_id, set_category_row_id] = useState("")
-    const [category_name, set_category_name] = useState("")
     const [err_symbol, setErrSymbol] = useState('') 
     const [err_token_name, setErrTokenName] = useState('')
     const [err_website_link, setErrWebsiteLink] = useState('')
@@ -53,6 +56,9 @@ export default function Create_token({config})
     const [err_market_cap, setErr_market_cap] = useState('') 
     const [err_token_description, setErrTokenDescription] = useState('')
     const [err_token_image, setErrTokenImage] = useState('')
+    const [categories, set_categories] = useState([])
+    const [category_name, set_category_name]= useState([])
+    const [category_name_ids, set_category_name_ids]= useState([])  
 
     const [err_wallet_network, setErrWalletNetwork] = useState(false)
     const [err_wallet_connection, setErrWalletConnection] = useState(false)
@@ -72,6 +78,16 @@ export default function Create_token({config})
     const [completedCrop, setCompletedCrop] = useState(null)
     const [blobFile, set_blobFile] = useState()
   
+    const onSelect =(selectedList, selectedItem)=> { 
+        category_name_ids.push(selectedItem._id)
+        category_name.push(selectedItem)  
+    }
+    
+    const onRemove = (selectedList, removedItem) => {
+        category_name_ids.splice(category_name_ids.indexOf(removedItem._id), 1)
+        category_name.splice(category_name.indexOf(removedItem), 1)
+    }
+
     const oncCropComplete=()=>
     {  
         document.getElementById("imageUploadForm").reset()
@@ -85,25 +101,11 @@ export default function Create_token({config})
         {
             if (res.data.status) 
             {
-                console.log(res.data.message)
-                var listData = res.data.message
-                var list = [];
-                for(const i of listData)
-                {
-                    list.push({value: parseInt(i._id), label: i.business_name})  
-                }
-                set_categories(list)
+                set_categories(res.data.message)
             }
         })
     }
  
-    const handleChange = selectedOption => 
-    {
-       //console.log(selectedOption)
-        set_category_row_id(selectedOption.value)
-        set_category_name(selectedOption.label)
-    }
-
     const imageCropModalClose = () => 
     {
         document.getElementById("imageUploadForm").reset()
@@ -405,7 +407,7 @@ const createNewToken = () =>
       contract_addresses : contract_address,
       meta_keywords : meta_keywords,
       meta_description : meta_description,
-      category_row_id:category_row_id,
+      category_row_id:category_name_ids,
     }  
 
     // console.log(reqObj)
@@ -1009,12 +1011,13 @@ exchange_link
                             <div className="col-md-8">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                <Select 
-                                  onChange={handleChange}
-                                  isSearchable={true}
-                                  options={categories}
-                                  placeholder={category_name?category_name:'Select category'}
-                                />
+                                <Multiselect  className="form-control" placeholder="Select Event Tags"
+                                    selectedValues={category_name}
+                                    options={categories} // Options to display in the dropdown
+                                    onSelect={onSelect} // Function will trigger on select event
+                                    onRemove={onRemove} // Function will trigger on remove event
+                                    displayValue="business_name" // Property name to display in the dropdown options
+                                /> 
                                 </div>
                                  <div className="error">{err_website_link}</div>
                               </div>

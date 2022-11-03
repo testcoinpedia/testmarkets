@@ -28,7 +28,19 @@ html {
 	font-weight: 600;
 }
 
+.filter-category-section
+{
+	text-align: right;
+}
 
+.filter_rows li .show-num {
+    padding: 9px;
+}
+
+.filter_rows {
+	width: 100px;
+    display: inline-block;
+}
 
 /* .modal-backdrop.show {
     opacity: 0 !important;
