@@ -10,7 +10,7 @@ import JsCookie from "js-cookie"
 import cookie from 'cookie'
 import dynamic from 'next/dynamic'
 import "react-datetime/css/react-datetime.css"
-import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,  market_coinpedia_url,website_url,config,graphqlApiKEY,separator} from '../../components/constants'; 
+import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,  market_coinpedia_url,config,graphqlApiKEY,separator} from '../../components/constants'; 
 import Select from 'react-select'
 import Popupmodal from '../../components/popupmodal'
   
@@ -840,7 +840,7 @@ const createNewToken = () =>
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
         <meta property="og:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta property="og:url" content={website_url} />
+        <meta property="og:url" content={market_coinpedia_url} />
         <meta property="og:site_name" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
         <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
@@ -854,7 +854,7 @@ const createNewToken = () =>
         <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
         <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
         <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
-        <link rel="canonical" href={website_url} />
+        <link rel="canonical" href={market_coinpedia_url} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
       <div className="page">
