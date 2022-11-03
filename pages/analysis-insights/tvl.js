@@ -1,5 +1,5 @@
 import React , {useEffect,  useState} from 'react' 
-import {API_BASE_URL,convertvalue,config} from '../../components/constants'
+import {API_BASE_URL,convertvalue,config, IMAGE_BASE_URL} from '../../components/constants'
 import CategoriesTab from '../../components/categoriesTabs'
 import Search_Contract_Address from '../../components/searchContractAddress'
 import AnalysisInsightsMenu from '../../components/analysisInsightsmenu'
@@ -330,12 +330,13 @@ return (
                 </div>
               </div>
               <div className="row ">
+              
               {
                   tvl_chain_data.map((e,i)=>
                   i < 6?
                   <div className="col-md-3 mt-4">
                   <div className="dex-section">
-                      <p><span><img src={"/assets/img/Chains/"+e.gecko_id+".png"}  style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} alt="Network" /></span> {e.name} ({e.tokenSymbol}) </p>
+                      <p><span><img src={"/assets/img/Chains/"+e.gecko_id+".png"} style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} alt="Network" /></span> {e.name} ({e.tokenSymbol}) </p>
                       <h6>{e.tvl ? "$ "+convertvalue(e.tvl): "$ 00"}</h6>
                       <br/>
                       <div className='col-md-12 p-0'>
@@ -422,7 +423,7 @@ return (
                                          <a>
                                           <div className="media">
                                             <div className="media-left">
-                                            <img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} src={e.exchange_image} alt="Protocols"/>
+                                            <img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} src={e.exchange_image}  onError={(e) => e.target.src = IMAGE_BASE_URL+'/tokens/default.png'} alt="Protocols"/>
                                             </div>
                                             <div className="media-body">
                                               <h4 className="media-heading"> {e.exchange_name} </h4>
@@ -441,12 +442,12 @@ return (
                                       </td>
                                       <td>{e.chains.map((item,idx)=>chain==""?
                                       idx<3?
-                                      <img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} src={"/assets/img/Chains/"+item.toLowerCase()+".webp"} alt="Chain" title={item}/>
+                                      <img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} src={"/assets/img/Chains/"+item.toLowerCase()+".webp"}  onError={(e) => e.target.src = IMAGE_BASE_URL+'/tokens/default.png'} alt="Chain" title={item}/>
                                       :
                                       ""
                                       :
                                       item==chain?
-                                      <img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} src={"/assets/img/Chains/"+item.toLowerCase()+".webp"} alt="Chain" title={item}/>
+                                      <img style={{width: "30px", borderRadius:"50%", marginRight:"5px"}} src={"/assets/img/Chains/"+item.toLowerCase()+".webp"} alt="Chain"  onError={(e) => e.target.src = IMAGE_BASE_URL+'/tokens/default.png'} title={item}/>
                                       :
                                       "")}{
                                         chain=="" && e.chains.length>3?

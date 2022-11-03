@@ -6,14 +6,14 @@ import Axios from 'axios'
 import cookie from 'cookie'
 import JsCookie from "js-cookie"
 import $ from 'jquery';
-import { API_BASE_URL, website_url, events_coinpedia_url, app_coinpedia_url, market_coinpedia_url, coinpedia_url, Logout, separator, logo, config, api_url, cookieDomainExtension, IMAGE_BASE_URL } from '../components/constants'
+import { API_BASE_URL, events_coinpedia_url, app_coinpedia_url, market_coinpedia_url, coinpedia_url, Logout, separator, logo, config, api_url, cookieDomainExtension, IMAGE_BASE_URL } from '../components/constants'
 import Popupmodal from './popupmodal'
 
 
 
 export default function Topmenu() {
   const router = useRouter()
-  const [current_page_url] = useState(events_coinpedia_url+((router.pathname).substring(1)))
+  const [current_page_url] = useState(market_coinpedia_url+((router.pathname).substring(1)))
   const [login_dropdown, set_login_dropdown] = useState(0)
   const [live_prices_list, set_live_prices_list] = useState({});
   const [light_dark_mode, set_light_dark_mode] = useState("")
@@ -342,7 +342,7 @@ export default function Topmenu() {
                         </a>
                         <ul className="dropdown-menu">
                           <li><a href={app_coinpedia_url + "login"}><img src="/assets/img/mb-manual-login.svg" /> Login</a></li>
-                          <li><a href={app_coinpedia_url + "register"}><img src="/assets/img/mb-user-profile.svg" /> Register</a></li>
+                          <li><a href={app_coinpedia_url + "login"}><img src="/assets/img/mb-user-profile.svg" /> Register</a></li>
                         </ul>
                       </li>
                   }
