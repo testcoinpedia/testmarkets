@@ -274,7 +274,7 @@ return (
          <meta property="og:type" content="website" />
          <meta property="og:title" content="Cryptocurrency Market Live Insights | Coinpedia" />
          <meta property="og:description" content="Coinpedia company listing page offers quick view of all listed companies of Fintech, Blockchain and Finance category. Get Exchages, Wallets, Coins, Tools, Trading forms and more. " />
-         <meta property="og:url" content={website_url} />
+         <meta property="og:url" content={market_coinpedia_url} />
          <meta property="og:site_name" content="List of Fintech Companies | CoinPedia Pro Account. " />
          <meta property="og:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
          <meta property="og:image:secure_url" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
@@ -288,7 +288,7 @@ return (
          <meta name="twitter:description" content="Here's a list of the leading fintech companies in the country across the various sub-sectors.We are extending and updating the list regularly." />
          <meta name="twitter:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
 
-         <link rel="canonical" href={website_url}/>
+         <link rel="canonical" href={market_coinpedia_url}/>
          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
 
