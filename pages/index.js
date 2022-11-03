@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import Link from 'next/link' 
 import cookie from "cookie"
 import ReactPaginate from 'react-paginate'  
-import { API_BASE_URL, roundNumericValue, config, separator, website_url, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY, count_live_price, Logout} from '../components/constants' 
+import { API_BASE_URL, roundNumericValue, config, separator, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY, count_live_price, Logout} from '../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
 import SearchContractAddress from '../components/searchContractAddress'

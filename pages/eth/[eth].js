@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Highcharts from 'highcharts';
-import { website_url, graphqlApiKEY, API_BASE_URL, separator, config, coinpedia_url, market_coinpedia_url } from '../../components/constants'
+import { graphqlApiKEY, API_BASE_URL, separator, config, coinpedia_url, market_coinpedia_url } from '../../components/constants'
 import { ethers } from 'ethers';
 import Web3 from 'web3'
 import Switch from "react-switch";
@@ -1610,10 +1610,10 @@ function TokenDetails(props) {
   //       if(result.data.ethereum.address[0].smartContract){
   //         if(result.data.ethereum.address[0].smartContract.currency){ 
   //           if(searchBy === "0"){
-  //             window.location.replace(website_url+'eth/'+address) 
+  //             window.location.replace(market_coinpedia_url+'eth/'+address) 
   //           }
   //           else{
-  //             window.location.replace(website_url+'bsc/'+address) 
+  //             window.location.replace(market_coinpedia_url+'bsc/'+address) 
   //           } 
   //         }
   //         else{
@@ -1712,7 +1712,7 @@ function TokenDetails(props) {
                                   }
                                 </>
                                 :
-                                <Link href={app_coinpedia_url+"login?prev_url="+website_url+data.token_id}><a onClick={()=> Logout()}>
+                                <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+data.token_id}><a onClick={()=> Logout()}>
                                 <img src="/assets/img/watchlist_normal.svg" />
                                 </a></Link>
                               } */}
@@ -2123,17 +2123,17 @@ function TokenDetails(props) {
                         <div className="col-md-8">
                           <div className="input-group">
 
-                            <input type="text" id="referral-link" className="form-control" value={website_url + "eth/" + address} readOnly />
+                            <input type="text" id="referral-link" className="form-control" value={market_coinpedia_url + "eth/" + address} readOnly />
                             <div className="input-group-prepend">
                               <span className="input-group-text" id="myTooltip" onClick={() => myReferrlaLink()}><img src="/assets/img/copy-file.png" width="100%" height="100%" className="copy_link" /></span>
                             </div>
                           </div>
                           <h6>Share with </h6>
                           <p className="share_social">
-                            <a href={"https://www.facebook.com/sharer/sharer.php?u=" + website_url + "token/" + address} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
-                            <a href={"https://www.linkedin.com/shareArticle?mini=true&url=" + website_url + "token/" + address} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
-                            <a href={"http://twitter.com/share?text=" + website_url + "token/" + address} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
-                            <a href={"https://wa.me/?text=" + website_url + "token/" + address} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
+                            <a href={"https://www.facebook.com/sharer/sharer.php?u=" + market_coinpedia_url + "token/" + address} target="_blank"><img src="/assets/img/facebook.png" width="100%" height="100%" /></a>
+                            <a href={"https://www.linkedin.com/shareArticle?mini=true&url=" + market_coinpedia_url + "token/" + address} target="_blank"><img src="/assets/img/linkedin.png" width="100%" height="100%" /></a>
+                            <a href={"http://twitter.com/share?text=" + market_coinpedia_url + "token/" + address} target="_blank"><img src="/assets/img/twitter.png" width="100%" height="100%" /></a>
+                            <a href={"https://wa.me/?text=" + market_coinpedia_url + "token/" + address} target="_blank"><img src="/assets/img/whatsapp.png" width="100%" height="100%" /></a>
                           </p>
                         </div>
                       </div>

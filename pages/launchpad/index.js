@@ -6,7 +6,7 @@ import Axios from 'axios';
 import Head from 'next/head';
 import cookie from 'cookie'
 import moment from 'moment'
-import {API_BASE_URL,config,separator,website_url, app_coinpedia_url,IMAGE_BASE_URL,market_coinpedia_url,coinpedia_url} from '../../components/constants' 
+import {API_BASE_URL,config,separator, app_coinpedia_url,IMAGE_BASE_URL,market_coinpedia_url,coinpedia_url} from '../../components/constants' 
 
  
 export default function LaunchPad({userAgent}) 
@@ -80,7 +80,7 @@ export default function LaunchPad({userAgent})
         "@context":"http://schema.org/",
         "@type":"Organization",
         "name":"Launchpad",
-        "url":website_url,
+        "url":market_coinpedia_url,
         "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
         "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
       }  
@@ -98,7 +98,7 @@ export default function LaunchPad({userAgent})
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Up-To-Date List of Complete Launchpad Calendar" />
         <meta property="og:description" content="Stay updated with the List of Ongoing & Upcoming Launchpad on different blockchain platforms. Get plugged in with the upcoming  ICO, IDO’s and more. ICO and IDO calendar" />
-        <meta property="og:url" content={website_url+"launchpad"} />
+        <meta property="og:url" content={market_coinpedia_url+"launchpad"} />
         <meta property="og:site_name" content="Up-To-Date List of Complete Launchpad Calendar" />
         <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
@@ -115,7 +115,7 @@ export default function LaunchPad({userAgent})
         <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
         <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
 
-        <link rel="canonical" href={website_url+"launchpad"} />
+        <link rel="canonical" href={market_coinpedia_url+"launchpad"} />
 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>

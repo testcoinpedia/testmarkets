@@ -6,7 +6,7 @@ import Axios from 'axios';
 import Head from 'next/head';
 import cookie from 'cookie'
 import ReactPaginate from 'react-paginate' 
-import { API_BASE_URL,config, website_url, app_coinpedia_url, separator,IMAGE_BASE_URL,market_coinpedia_url, coinpedia_url} from '../../components/constants' 
+import { API_BASE_URL,config, app_coinpedia_url, separator,IMAGE_BASE_URL,market_coinpedia_url, coinpedia_url} from '../../components/constants' 
 import TableContentLoader from '../../components/loaders/tableLoader'
 import moment from 'moment'
  
@@ -107,7 +107,7 @@ export default function UpcomingLaunchPad({userAgent})
         "@context":"http://schema.org/",
         "@type":"Organization",
         "name":"Upcoming Launchpads",
-        "url":website_url,
+        "url":market_coinpedia_url,
         "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
         "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
       }  
@@ -125,7 +125,7 @@ export default function UpcomingLaunchPad({userAgent})
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Explore Upcoming Crypto Launchpads | Coinpedia Markets " />
         <meta property="og:description" content="Discover Upcoming Launchpad list. Explore and compare Top crypto launchpads. Have a glance on listed successful Launchpads." />
-        <meta property="og:url" content={website_url+"launchpad/upcoming"} />
+        <meta property="og:url" content={market_coinpedia_url+"launchpad/upcoming"} />
         <meta property="og:site_name" content="Explore Upcoming Crypto Launchpads | Coinpedia Markets " />
         <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
@@ -142,7 +142,7 @@ export default function UpcomingLaunchPad({userAgent})
         <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
         <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
 
-        <link rel="canonical" href={website_url+"launchpad/upcoming"} />
+        <link rel="canonical" href={market_coinpedia_url+"launchpad/upcoming"} />
 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>

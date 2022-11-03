@@ -2,7 +2,7 @@ import React, {useState, useRef, useEffect} from 'react'
 import Link from 'next/link' 
 import Head from 'next/head'
 import Error from './404'
-import { API_BASE_URL, config, website_url, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, coinpedia_url,market_coinpedia_url, IMAGE_BASE_URL, 
+import { API_BASE_URL, config, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, coinpedia_url,market_coinpedia_url, IMAGE_BASE_URL, 
   graphqlApiKEY, count_live_price, Logout, DomainName} from '../components/constants'
 import { live_price_graphql } from '../components/token_details/graphql'
 import { live_price_coingecko } from '../components/token_details/coingecko'
@@ -47,7 +47,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   const [light_dark_mode, set_light_dark_mode]=useState(JsCookie.get('light_dark_mode'))
   const [user_token]= useState((userAgent.user_token) ? userAgent.user_token:"")
   const [perPage] = useState(10)
-  const [current_url]= useState(website_url+token_id)
+  const [current_url]= useState(market_coinpedia_url+token_id)
   const [exchange_list_new, set_exchange_list_new]= useState([])
   const [exchangelist, set_exchangelist]= useState([])
   const [exchangesPageCount, setExchnagesPageCount] = useState(0)
@@ -197,7 +197,7 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
       "@context":"http://schema.org/",
       "@type":"Organization",
       "name": data.token_name,
-      "url": website_url+data.token_id,
+      "url": market_coinpedia_url+data.token_id,
       "logo": image_base_url+data.token_image,
       "sameAs":["","", "", ""]
       }  
@@ -965,7 +965,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={data.token_name.toUpperCase()+ " ("+data.symbol+")  Live Price" + "  | Coinpedia Market" } />
-        <meta property="og:url" content={website_url+data.token_id} />
+        <meta property="og:url" content={market_coinpedia_url+data.token_id} />
         <meta property="og:description" content={data.meta_description} />
 
         <meta property="og:site_name" content={data.token_name.toUpperCase()+ " ("+data.symbol+")  Live Price" + "  | Coinpedia Market" } />
@@ -981,7 +981,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
 
         <meta name="twitter:title" content={data.token_name.toUpperCase()+ " ("+data.symbol+")  Live Price" + "  | Coinpedia Market" } />
         <meta name="twitter:image" content={image_base_url+data.token_image} />  
-        <link rel="canonical" href={website_url+data.token_id} />
+        <link rel="canonical" href={market_coinpedia_url+data.token_id} />
  
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
