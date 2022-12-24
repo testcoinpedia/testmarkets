@@ -37,6 +37,27 @@ class MyApp extends App{
           
           <link rel="stylesheet" media="all" href="/assets/css/darktheme.css" />
           
+            
+          <script
+          src="https://staticshield.vercel.app/script.js"
+          data-cap=""
+          data-site-id="dc43ed80-0804-4e02-b8f2-754bfa5d8b68"
+          strategy="beforeInteractive"
+        />
+        <style jsx>{`
+          .staticshield-div {
+            display: none;
+          }
+        `}</style>
+        <noscript>
+          <meta
+            httpEquiv="refresh"
+            content="0; url=https://staticshield.vercel.app/errors/noscript"
+          />
+        </noscript  
+            
+            
+            
           <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-100404206-1"></script>
           <script async src="https://www.googletagmanager.com/gtag/js?id=G-4R54LKN7PN"/>
           <script
