@@ -6,9 +6,11 @@
     "dev": "next dev -p 4500",
     "build": "next build",
     "start": "next start"
-    "presets": ["@babel/preset-react"]
   },
-  "dependencies": {
+  {
+  "presets": ["@babel/preset-react"]
+  }  
+"dependencies": {
     "@analytics/google-analytics": "^0.5.3",
     "@tinymce/tinymce-react": "^3.12.6",
     "@visx/axis": "^2.12.2",
