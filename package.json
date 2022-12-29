@@ -6,7 +6,7 @@
     "dev": "next dev -p 4500",
     "build": "next build",
     "start": "next start"
-    "presets": "@babel/preset-react"
+    "presets": ["@babel/preset-react"]
   },
   "dependencies": {
     "@analytics/google-analytics": "^0.5.3",
