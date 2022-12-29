@@ -6,10 +6,7 @@
     "dev": "next dev -p 4500",
     "build": "next build",
     "start": "next start"
-  },
-  {
-  "presets": ["@babel/preset-react"]
-  }  
+  },  
 "dependencies": {
     "@analytics/google-analytics": "^0.5.3",
     "@tinymce/tinymce-react": "^3.12.6",
@@ -23,7 +20,6 @@
     "@visx/scale": "^2.2.2",
     "@visx/shape": "^2.12.2",
     "@visx/tooltip": "^2.10.0",
-    "@babel/parser": "7.1.2",
     "analytics": "^0.7.5",
     "axios": "^0.21.1",
     "cookie": "^0.4.1",
