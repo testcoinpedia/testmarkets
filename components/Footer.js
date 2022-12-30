@@ -11,7 +11,7 @@ export default function Footer (){
 
       <footer id="footer" className="site-footer dark-skin dark-widgetized-area">
          <div id="footer-widgets-container">
-            <div className="container">
+            <div className="container footer_container">
                <div className="footer-widget-area ">
                   <div className="row">
 
@@ -74,7 +74,7 @@ export default function Footer (){
                            <div className="about-author about-content-wrapper">
                               <div className="aboutme-widget-content">Coinpedia - Trusted Crypto Agency for News, Information, Exchange, PR, Blockchain Events, Crypto Wallet and Else related to Decentralized World.
                            </div>
-                           <div className="dcma_protected"><a href="//www.dmca.com/Protection/Status.aspx?ID=c32974f1-5754-4dc7-8646-ff88d4b0ee60" title="DMCA.com Protection Status" class="dmca-badge"> <img src ="https://images.dmca.com/Badges/dmca_protected_sml_120n.png?ID=c32974f1-5754-4dc7-8646-ff88d4b0ee60" alt="DMCA.com Protection Status" /></a> <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"> </script></div>
+                           {/* <div className="dcma_protected"><a href="//www.dmca.com/Protection/Status.aspx?ID=c32974f1-5754-4dc7-8646-ff88d4b0ee60" title="DMCA.com Protection Status" class="dmca-badge"> <img src ="https://images.dmca.com/Badges/dmca_protected_sml_120n.png?ID=c32974f1-5754-4dc7-8646-ff88d4b0ee60" alt="DMCA.com Protection Status" /></a> <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"> </script></div> */}
                            <div className="clearfix" />
                            </div>
                         <div className="clearfix" /></div>		
@@ -96,17 +96,17 @@ export default function Footer (){
          </div>
 
          <div className="sticky_footer_menu">
-            <ul>
-               <li className="footer_menu_items"><a href="https://coinpedia.org/"><img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180325/home.svg" /><span>Home</span></a></li>
-               <li className="footer_menu_items"><a href="https://markets.coinpedia.org/"><img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180327/market.svg" /><span>Market</span></a></li>
-               <li className="center_fixed_menu_img"><img src={favicon} /></li>
-               <li className="footer_menu_items"><a href="https://coinpedia.org/news/"><img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180329/news.svg" /><span>News</span></a></li>
-               <li className="footer_menu_items"><a href="https://app.coinpedia.org/"><img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180331/portfolio.svg" /><span>Portfolio</span></a></li>
+         <ul>
+               <li className="footer_menu_items"><a href="https://coinpedia.org/"><img src="https://image.coinpedia.org/wp-content/uploads/2022/11/09190500/footer_home.svg" alt="Home"  title="Home" /><span>Home</span></a></li>
+               <li className="footer_menu_items"><a href="https://coinpedia.org/crypto-live-news/"><img src="https://image.coinpedia.org/wp-content/uploads/2022/11/09190601/footer_news.svg" alt="News" title="News" /><span className="footer_live_span">Live </span><span>News</span></a></li>
+               <li className="center_fixed_menu_img"><img src="https://image.coinpedia.org/wp-content/uploads/2022/11/09190559/footer_logo.svg" alt="Icon" title="Icon" /></li>
+               <li className="footer_menu_items"><a href="https://markets.coinpedia.org/"><img src="https://image.coinpedia.org/wp-content/uploads/2022/11/09190558/footer_market.svg" alt="Market" title="Market" /><span>Market</span></a></li>
+               <li className="footer_menu_items"><a href="https://app.coinpedia.org/"><img src="https://image.coinpedia.org/wp-content/uploads/2022/11/09190600/footer_portfolio.svg" alt="Portfolio" title="Portfolio" /><span>Portfolio</span></a></li>
             </ul>
          </div>
 
          <div id="site-info" className="site-info site-info-layout-2 footer-bottom-bar">
-            <div className="container">
+            <div className="container footer_container">
                <div className="row">  
                   <div className="col-md-12">
                      <div className="copyright-text copyright-text-first">© Copyright 2022, All Rights Reserved &nbsp;|&nbsp; 

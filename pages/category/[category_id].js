@@ -30,25 +30,21 @@ export default function Companies({user_token, config, category_id, userAgent})
     const [image_base_url] = useState(IMAGE_BASE_URL + '/tokens/')
     const [count, setCount]=useState(0)
     const [voting_status, set_voting_status] = useState(false)
-    const [loader_status, set_loader_status]=useState(false)
+    const [loader_status, set_loader_status] = useState(false)
     const [handleModalVote, setHandleModalVote] = useState(false)
-    const [total_votes, set_total_votes] = useState()
     const [token_id, set_Token_id] = useState("")
     const [vote_id, set_vote_id] = useState("")
     const [item, set_item] = useState("")
     const [voting_message, set_voting_message] = useState("")
-    const [all_tab_status, set_all_tab_status] = useState((active_category_tab > 0) ? 0 : 1)
     const [watchlist_tab_status, set_watchlist_tab_status] = useState("")
     const [search_title, set_search_title] = useState("")  
 
     const [category_list, set_category_list] = useState([]) 
     const [other_category_list, set_other_category_list] = useState([])
     const [category_name, set_category_name] = useState("")
-    const [category_row_id, set_category_row_id] = useState((active_category_tab > 0) ? active_category_tab : "") 
+    // const [category_row_id, set_category_row_id] = useState((active_category_tab > 0) ? active_category_tab : "") 
     
-    const [business_tab_status, set_business_tab_status] = useState((active_category_tab > 0) ? 2 :"")
-    
-    console.log("category",category_id)
+    // const [category_tab_status, set_category_tab_status] = useState((active_category_tab > 0) ? 2 :"")
 
     useEffect(async ()=>
     {  
@@ -56,7 +52,7 @@ export default function Companies({user_token, config, category_id, userAgent})
         voteIds()
         watchListIds()
         mainUniqueCategory()
-    },[per_page_count, search_title, category_row_id]) 
+    },[per_page_count, search_title, category_id]) 
 
 
     const mainUniqueCategory = () =>
@@ -67,6 +63,12 @@ export default function Companies({user_token, config, category_id, userAgent})
             {      
                 set_category_list(res.data.message)
                 otherUniqueCategory(res.data.other_array)
+                
+                const get_category_name = (res.data.other_array).filter(word => word.category_id === category_id)
+                if(get_category_name[0])
+                set_category_name(get_category_name[0].category_name)
+                else
+                set_category_name("")
             } 
         })
     }
@@ -77,7 +79,7 @@ export default function Companies({user_token, config, category_id, userAgent})
         var list = []
         for(const i of listData)
         {
-            list.push({value: parseInt(i.category_id), label: i.category_name})  
+            list.push({value: i.category_id, label: i.category_name})  
         }
         set_other_category_list(list)
     }
@@ -146,7 +148,6 @@ export default function Companies({user_token, config, category_id, userAgent})
         set_Token_id(token_id)
         set_vote_id(_id)
         set_item(item)
-      
     }
   
     const vote = (param) =>
@@ -228,28 +229,11 @@ export default function Companies({user_token, config, category_id, userAgent})
         }
       })
     }
-        
-    const set_all_tab_active=()=>
-    {  
-        set_watchlist_tab_status("")
-        set_all_tab_status(1)
-        set_category_row_id("")
-        set_category_name("")
-        set_search_title("")
-        tokensList({selected : 0})
-    }  
-    
-    const set_tab_list=(id)=>
-    {  
-        set_business_tab_status(2)
-        set_all_tab_status(0)
-        set_category_row_id(id)
-    } 
 
     const handleChange = (selectedOption) => 
     {
-        set_category_row_id(selectedOption.value)
-        set_category_name(selectedOption.label)
+      router.push("/category/"+selectedOption.value)
+      // set_category_name(selectedOption.label)
     } 
 
     const makeJobSchema=()=>
@@ -309,10 +293,8 @@ return (
                   <p>Check the latest Price before you buy.</p>
                 </div>
                 <div className="col-md-1 col-lg-2"></div>
-                <div className="col-md-5 col-lg-4">
-                    {
-                      <SearchContractAddress /> 
-                    }
+                <div className="col-md-5 col-lg-4" >
+                  <SearchContractAddress /> 
                 </div>
               </div>
             </div>
@@ -323,21 +305,21 @@ return (
           <div className="container">
           <div className="col-md-12">
           <div className="row">
-          <div className="col-md-9">
+          <div className="col-md-12">
             {
-                <CategoriesTab /> 
+              <CategoriesTab /> 
             }
             </div>
-            <div className="col-md-3">
-              {/* <div className="input-group search_filter">
+            {/* <div className="col-md-3">
+              <div className="input-group search_filter">
                 <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
                   <div className="input-group-prepend ">
                     <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                   </div>
-              </div>  */}
-              {/* <div className="error">  {err_searchBy}</div>
-              {validSearchContract && <div className="error">{validSearchContract}</div>} */}
-            </div> 
+              </div> 
+              <div className="error">  {err_searchBy}</div>
+              {validSearchContract && <div className="error">{validSearchContract}</div>}
+            </div>  */}
           </div>
             
           
@@ -354,14 +336,17 @@ return (
 
               <div className="prices transaction_table_block">
                 <div className="row">
-                  <div className="col-md-12 col-7">
+                  <div className="col-md-12 col-12">
                   <div className="row">
-                         <div className="col-md-6 col-7">
+                         <div className="col-md-6 col-lg-8 col-12">
                           <ul className="category_list">
-                            <li className={all_tab_status===1?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
+                          {/* className={all_tab_status===1?"active_tab":null} */}
+                            <li >
+                            <Link href={market_coinpedia_url}><a>All</a></Link>
+                            </li>
                             {
                               user_token?
-                              <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                              <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist/?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
                               :
                               <li>
                               <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>
@@ -369,14 +354,17 @@ return (
                             }
                             {
                               category_list.map((e,i)=>
-                              <li class={parseInt(category_row_id)===parseInt(e.category_id) && business_tab_status===2?"active_tab":null}><a onClick={()=>set_tab_list(e.category_id)}>{e.category_name}</a></li>
+                              // <li class={parseInt(category_row_id)===parseInt(e.category_row_id) && business_tab_status===2?"active_tab":null}><a onClick={()=>set_tab_list(e.category_row_id)}>{e.category_name}</a></li>
+                              <li class={category_id===e.category_id?"active_tab":null}>
+                              <Link href={market_coinpedia_url+"category/"+e.category_id}><a>{e.category_name}</a></Link>
+                              </li>
                               )
                            }
                           </ul>
                         </div>
-                       <div className="col-md-6 col-5 filter-category-section">
+                       <div className="col-md-6 col-lg-4 col-12 filter-category-section">
                         <div className="row">
-                            <div className="col-md-4 ">
+                            <div className="col-md-6 col-sm-6 col-12">
                                 <Select
                                 onChange={handleChange}
                                 options={other_category_list}
@@ -384,7 +372,7 @@ return (
                                 value={category_name}
                                 /> 
                             </div>
-                            <div className="col-md-5 ">
+                            <div className="col-md-6 col-sm-6 col-12 ">
                                 <div className="input-group search_filter">
                                     <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
                                     <div className="input-group-prepend ">
@@ -392,7 +380,7 @@ return (
                                     </div>
                                 </div> 
                             </div>
-                            <div className="col-md-3">
+                            {/* <div className="col-md-3">
                                 <ul className="filter_rows">
                                     <li>{count>100?
                                         <select className="show-num" onChange={(e)=>set_per_page_count(e.target.value)} >
@@ -403,7 +391,7 @@ return (
                                         </select>:null}
                                     </li>
                                 </ul>
-                            </div>
+                            </div> */}
                         </div>
                          
                         
@@ -573,7 +561,7 @@ return (
                              ) 
                              :
                              <tr >
-                               <td className="text-center" colSpan="4">
+                               <td className="text-lg-center text-md-left" colSpan="12">
                                    Sorry, No related data found.
                                </td>
                              </tr>

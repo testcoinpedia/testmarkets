@@ -75,7 +75,7 @@ export default function Companies({user_token, config, userAgent})
         var list = []
         for(const i of listData)
         {
-            list.push({value: parseInt(i.category_row_id), label: i.category_name})  
+            list.push({value: i.category_id, label: i.category_name})  
         }
         set_other_category_list(list)
     }
@@ -245,8 +245,9 @@ export default function Companies({user_token, config, userAgent})
 
     const handleChange = (selectedOption) => 
     {
-        set_category_row_id(selectedOption.value)
-        set_category_name(selectedOption.label)
+      router.push("/category/"+selectedOption.value)
+      // set_category_row_id(selectedOption.value)
+      // set_category_name(selectedOption.label)
     } 
 
     const makeJobSchema=()=>
@@ -306,10 +307,8 @@ return (
                   <p>Check the latest Price before you buy.</p>
                 </div>
                 <div className="col-md-1 col-lg-2"></div>
-                <div className="col-md-5 col-lg-4">
-                    {
-                      <SearchContractAddress /> 
-                    }
+                <div className="col-md-5 col-lg-4" >
+                  <SearchContractAddress /> 
                 </div>
               </div>
             </div>
@@ -320,9 +319,9 @@ return (
           <div className="container">
           <div className="col-md-12">
           <div className="row">
-          <div className="col-md-9">
+          <div className="col-md-12">
             {
-                <CategoriesTab /> 
+              <CategoriesTab /> 
             }
             </div>
             <div className="col-md-3">
@@ -351,32 +350,32 @@ return (
 
               <div className="prices transaction_table_block">
                 <div className="row">
-                  <div className="col-md-12 col-7">
+                  <div className="col-md-12 col-12">
                   <div className="row">
-                         <div className="col-md-6 col-7">
+                         <div className="col-md-4 col-lg-6 col-12">
                           <ul className="category_list">
                             <li className={all_tab_status===1?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li>
                             {
                               user_token?
-                              <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                              <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist/?active_watchlist_tab=2"}><a><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
                               :
                               <li>
-                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>
+                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</a></Link>
                               </li>
                             }
                             {
                               category_list.map((e,i)=>
-                              <li class={parseInt(category_row_id)===parseInt(e.category_row_id) && business_tab_status===2?"active_tab":null}><a onClick={()=>set_tab_list(e.category_row_id)}>{e.category_name}</a></li>
-                              // <li>
-                              // <Link href={market_coinpedia_url+"category/"+e.category_id}><a>{e.category_name}</a></Link>
-                              // </li>
+                              // <li class={parseInt(category_row_id)===parseInt(e.category_row_id) && business_tab_status===2?"active_tab":null}><a onClick={()=>set_tab_list(e.category_row_id)}>{e.category_name}</a></li>
+                              <li>
+                              <Link href={market_coinpedia_url+"category/"+e.category_id}><a>{e.category_name}</a></Link>
+                              </li>
                               )
                            }
                           </ul>
                         </div>
-                       <div className="col-md-6 col-5 filter-category-section">
+                       <div className="col-md-8 col-lg-6 col-12 filter-category-section">
                         <div className="row">
-                            <div className="col-md-4 ">
+                            <div className="col-md-4 col-12 col-sm-6 ">
                                 <Select
                                 onChange={handleChange}
                                 options={other_category_list}
@@ -384,7 +383,7 @@ return (
                                 value={category_name}
                                 /> 
                             </div>
-                            <div className="col-md-5 ">
+                            <div className="col-md-5 col-12 col-sm-6">
                                 <div className="input-group search_filter">
                                     <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
                                     <div className="input-group-prepend ">
@@ -392,7 +391,7 @@ return (
                                     </div>
                                 </div> 
                             </div>
-                            <div className="col-md-3">
+                            <div className="col-md-3 col-6 ">
                                 <ul className="filter_rows">
                                     <li>{count>100?
                                         <select className="show-num" onChange={(e)=>set_per_page_count(e.target.value)} >
@@ -448,13 +447,13 @@ return (
                                        <>
                                        {
                                          watchlist.includes(e._id) ?
-                                         <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist" /></span>
+                                         <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img2/Color.svg" alt="Watchlist" /></span>
                                          :
-                                         <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></span>
+                                         <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img2/Star.svg" alt="Watchlist"/></span>
                                          }
                                        </>
                                        :
-                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/></a></Link>
                                      }
                                      
                                      </td>
@@ -573,7 +572,7 @@ return (
                              ) 
                              :
                              <tr >
-                               <td className="text-center" colSpan="12">
+                               <td className="text-lg-center text-md-left" colSpan="12">
                                    Sorry, No related data found.
                                </td>
                              </tr>

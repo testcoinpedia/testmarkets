@@ -19,7 +19,7 @@ return (
                   <li>
                     <Link  href={"/"}>
                       <a data-toggle="tab"  className={"nav-item nav-link categories__item "+(tab_status_connections === 1 ? "active_category":"")} onClick={()=>set_tab_status_connections(1)}>All</a>
-                      </Link>
+                    </Link>
                   </li>
                   <li>
                     <Link href={"/analysis-insights/dex-volume/ethereum"}>

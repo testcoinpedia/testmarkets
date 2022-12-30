@@ -188,7 +188,8 @@ function TokenDetails({network_id})
             }
         }
     }
-    
+    console.log("pi_chart_24h_names", pi_chart_24h_names)
+    console.log("pi_chart_24h_value", pi_chart_24h_value)
     let ordered_dex_trades=await orderByVolume(all_dex_trades)
     set_pi_chart_24h_values(pi_chart_24h_value)
     set_pi_chart_24h_names(pi_chart_24h_names)

@@ -219,7 +219,7 @@ export default function LaunchPad({userAgent})
                             )
                             :
                             <tr>
-                              <td colSpan="7"><h5 className="text-center no_data_found">No data found</h5></td>
+                              <td colSpan="7"><h5 className="text-lg-center text-md-left no_data_found">No data found</h5></td>
                             </tr>
                           :
                           null
@@ -349,13 +349,13 @@ export default function LaunchPad({userAgent})
                                        <>
                                        {
                                          watchlist.includes(e.token_row_id) ?
-                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist"/></span>
+                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img2/Color.svg" alt="Watchlist"/></span>
                                          :
-                                         <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></span>
+                                         <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img2/Star.svg" alt="Watchlist"/></span>
                                          }
                                        </>
                                        :
-                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad"}><a><img src="/assets/img2/Star.svg" alt="Watchlist"/></a></Link>
                                      }
                           </td>
                           <td className="mobile_hide">{i+1}</td>

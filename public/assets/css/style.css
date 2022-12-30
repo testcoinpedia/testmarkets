@@ -1,9 +1,63 @@
+@font-face {
+	font-family: "TTFirsNeue";
+	src: "/assets/fonts/TTFirsNeue-Regular.ttf" format("truetype");
+	font-weight: 200;
+	font-display: swap;
+  }
+  
+  @font-face {
+	font-family: "TTFirsNeue";
+	src: "/assets/fonts/TTFirsNeue-Medium.ttf" format("truetype");
+	font-weight: 300;
+	font-display: swap;
+  }
+  @font-face {
+	font-family: "TTFirsNeue";
+	src: "/assets/fonts/TTFirsNeue-DemiBold.ttf" format("truetype");
+	font-weight: 400;
+	font-display: swap;
+  }
+  @font-face {
+	font-family: "TTFirsNeue";
+	src: "/assets/fonts/TTFirsNeue-Bold.ttf" format("truetype");
+	font-weight: 500;
+	font-display: swap;
+  }
+  
+  @font-face {
+	font-family: "Ubuntu";
+	src: "/assets/fonts/Ubuntu-Light.ttf" format("truetype");
+	font-weight: 200;
+	font-display: swap;
+  }
+  
+  @font-face {
+	font-family: "Ubuntu";
+	src: "/assets/fonts/Ubuntu-Regular.ttf" format("truetype");
+	font-weight: 300;
+	font-display: swap;
+  }
+  
+  @font-face {
+	font-family: "Ubuntu";
+	src: "/assets/fonts/Ubuntu-Medium.ttf" format("truetype");
+	font-weight: 400;
+	font-display: swap;
+  }
+  
+  @font-face {
+	font-family: "Ubuntu";
+	src: "/assets/fonts/Ubuntu-Bold.ttf" format("truetype");
+	font-weight: 500;
+	font-display: swap;
+  }
+
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif,Mulish;
+  font-family: Ubuntu,TTFirsNeue;
 }
 
 a {

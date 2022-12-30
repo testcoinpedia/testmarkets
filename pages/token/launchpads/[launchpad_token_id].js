@@ -627,7 +627,7 @@ var object =  {
                         </div>
                       )                                       
                       :
-                      <div className="col-md-12 launchpad_list_content active_launchpad">
+                      <div className="col-md-12 launchpad_list_content active_launchpad text-lg-center text-md-left">
                           Sorry, No data found
                       </div>
                       }   

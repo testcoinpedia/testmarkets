@@ -500,7 +500,7 @@ return (
                                 )
                                 :
                              <tr >
-                               <td className="text-center" colSpan="4">
+                               <td className="text-lg-center text-md-left" colSpan="4">
                                    Sorry, No related data found.
                                </td>
                              </tr>

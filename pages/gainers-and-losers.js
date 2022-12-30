@@ -178,7 +178,7 @@ export default function GainersLosers({user_token, config, userAgent})
                                 <li className={all_tab_status == 1?"active_tab":null}><a onClick={()=>set_all_tab_status(1)}>Losers</a></li>
                                 {
                                     user_token?
-                                    <li ><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                                    <li ><Link href={app_coinpedia_url+"watchlist/?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
                                     :
                                     <li>
                                     <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>
@@ -317,7 +317,7 @@ export default function GainersLosers({user_token, config, userAgent})
                                             ) 
                                             :
                                             <tr>
-                                                <td className="text-center" colSpan="4"> Sorry, No related data found. </td>
+                                                <td className="text-lg-center text-md-left" colSpan="4"> Sorry, No related data found. </td>
                                             </tr>
                                             :
                                             all_tab_status == 1 ? 
@@ -406,7 +406,7 @@ export default function GainersLosers({user_token, config, userAgent})
                                             ) 
                                             :
                                             <tr>
-                                                <td className="text-center" colSpan="4"> Sorry, No related data found. </td>
+                                                <td className="text-lg-center text-md-left" colSpan="4"> Sorry, No related data found. </td>
                                             </tr>
                                             :
                                             null

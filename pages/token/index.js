@@ -155,13 +155,15 @@ const getTokensCurrentList=(items, offset)=>
         </div>
           <div className="col-md-12">
             <div className="row">
-              <div className="col-md-6 col-lg-6 col-sm-7 col-12">
+              <div className="col-md-6 col-lg-8 col-sm-7 col-12">
                 <div className="prices__title h5"><h1>Manage your Tokens ({token_counts})</h1>
                   <p className="token_form_sub_text">List of token displayed here</p>
                 </div>
               </div>
-              <div className="col-md-6 col-lg-6 col-sm-5 col-12">
+              <div className="col-md-6 col-lg-4 col-sm-5 col-12">                
                 <ul className="manage_token_filter_create_token">
+                  <div className="row">
+                    <div className="col-md-6">
                   <li>
                     <form id="formID">
                       <div className="input-group search_filter">
@@ -179,11 +181,16 @@ const getTokensCurrentList=(items, offset)=>
                       </div>
                     </form>
                   </li>
+                  </div>
+
+                  <div className="col-md-6">
                   <li>
                     <div className="quick_block_links main_page_coin_filter create_token_btn"> 
                       <Link href="/token/create-new"><a><img src="/assets/img/create-token.svg" />Create Token</a></Link>
                     </div>
                   </li>
+                  </div>
+                  </div>
                 </ul>
               </div>
             </div>
@@ -229,10 +236,10 @@ const getTokensCurrentList=(items, offset)=>
                             <>
                                {
                                    watchlist.includes(e._id) ?
-                                   <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist" /></span>
+                                   <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img2/Color.svg" alt="Watchlist" /></span>
                                    :
                                    e.approval_status == 1 && e.active_status == 1 ?
-                                   <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></span>
+                                   <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img2/Star.svg" alt="Watchlist"/></span>
                                    :
                                    ""
                                }

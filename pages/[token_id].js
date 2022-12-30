@@ -32,10 +32,8 @@ let inputProps2 = {
   readOnly:true
 } 
 
-export default function tokenDetailsFunction({errorCode, data, token_id, userAgent, config, tokenStatus}) 
+export default function tokenDetailsFunction({errorCode, data, token_id, userAgent, config, tokenStatus, search_by_category}) 
 {   
-
-  
   if(errorCode) {return <Error/> }
   const communityRef = useRef(null)
   const explorerRef = useRef(null)
@@ -116,7 +114,6 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
   const [launchpad_row_id, set_launchpad_row_id] = useState(data.launch_pads_data.length > 0 ? parseInt(data.launch_pads_data[0]._id) : "")
   const [launchpad_object, set_launchpad_object] = useState(data.launch_pads_data.length > 0 ? data.launch_pads_data[0] : "")
   
-  
   useEffect(async ()=>
   {  
     if(parseInt(api_from_type)===1)
@@ -127,17 +124,18 @@ export default function tokenDetailsFunction({errorCode, data, token_id, userAge
     {
       graphqldata()
     }
-
+    // categorySearchTokens()
     set_light_dark_mode(JsCookie.get('light_dark_mode'))
     document.addEventListener("click", handleClickOutside, false);
     return () => { document.removeEventListener("click", handleClickOutside, false) }
   
   },[])
 
+
   const coingeckoId= async()=> 
   {    
     var coingecko_data = await live_price_coingecko(data.api_from_id)
-    // console.log(coingecko_data)
+    
     set_mcap_to_tvl_ratio(coingecko_data.mcap_to_tvl_ratio)
     set_token_max_supply(coingecko_data.token_max_supply)
     set_price_change_24h(coingecko_data.price_change_24h)
@@ -995,7 +993,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
             <Link href={market_coinpedia_url}><a >Live Market</a></Link> <span> &#62; </span>{data.token_name}
               </div>
               <div className="row">
-                <div className="col-lg-6 col-md-12 order-md-2">
+                <div className="col-lg-12 col-xl-6 col-md-12 order-md-2">
                   <div className="row">
                     <div className="col-md-6 order-md-2">
                       {
@@ -1151,10 +1149,10 @@ const getexchangevalue = async (pool_token_address,networks)=>
                 </div>
 
 
-                <div className="col-lg-6 col-md-12  order-md-1">
+                <div className="col-lg-12 col-xl-6 col-md-12  order-md-1">
                   <div className="token_main_details">
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-7">
                         <div className="media">
                           <img src={data.token_image ? image_base_url+data.token_image : image_base_url+"default.png"} onError={(e) =>e.target.src = "/assets/img/default_token.png"} className="token_img" alt="logo" width="100%" height="100%" />
                           <div className="media-body">
@@ -1190,7 +1188,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
                         </div>
                       </div>
 
-                      <div className="col-md-6">
+                      <div className="col-md-5">
                         <div className="token_price_block">
                           <h5>
                             {live_price?"$":null} {live_price > 0 ? separator(parseFloat(live_price.toFixed(6))) : "NA"} 
@@ -1803,7 +1801,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                       } )
                                       :
                                       <tr>
-                                        <td colSpan="7"><h5 className="text-center no_data_found">No data found</h5></td>
+                                        <td colSpan="7"><h5 className="text-lg-center text-md-left no_data_found">No data found</h5></td>
                                       </tr>
                                     }
                                     </tbody>
@@ -1850,7 +1848,7 @@ const getexchangevalue = async (pool_token_address,networks)=>
                                   tokentransactionsData
                                   :
                                   <tr>
-                                    <td colSpan="5"><h5 className="text-center no_data_found">No data found</h5></td>
+                                    <td colSpan="5"><h5 className="text-lg-center text-md-left no_data_found">No data found</h5></td>
                                   </tr>
                                 } 
                               </tbody>
@@ -2287,13 +2285,14 @@ const getexchangevalue = async (pool_token_address,networks)=>
 export async function getServerSideProps({ query, req}) 
 { 
   const token_id = query.token_id
+  const search_by_category = query.search ? query.search : ""
   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
  
   const tokenQuery = await fetch(API_BASE_URL+"markets/tokens/individual_details/"+token_id, config(userAgent.user_token))
   const tokenQueryRun = await tokenQuery.json() 
   if(tokenQueryRun.status)
   {
-    return { props: {data:tokenQueryRun.message, errorCode:false, token_id:token_id, userAgent:userAgent, tokenStatus:tokenQueryRun.tokenStatus, config:config(userAgent.user_token)}}
+    return { props: {data:tokenQueryRun.message, errorCode:false, token_id:token_id, userAgent:userAgent, tokenStatus:tokenQueryRun.tokenStatus, config:config(userAgent.user_token), search_by_category:search_by_category}}
   }
   else
   {

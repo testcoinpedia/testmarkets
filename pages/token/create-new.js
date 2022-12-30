@@ -864,11 +864,13 @@ const createNewToken = () =>
               <div> 
                 <div className="token_form">
                   <div className=" token_steps">
+                    <div className="row">
                   <div className="col-md-12">
                   <div className="breadcrumb_block">
                     <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
                     <Link href={market_coinpedia_url}><a >Live Market</a></Link> <span> &#62; </span> 
                       <Link href="/token/"><a>Tokens</a></Link><span> &#62; </span>Create Token
+                  </div>
                   </div>
                   </div>
                   <div className="row">

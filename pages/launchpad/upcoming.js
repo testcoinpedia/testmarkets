@@ -191,10 +191,10 @@ export default function UpcomingLaunchPad({userAgent})
                       <li className="active_tab">All</li>
                       {
                               user_token?
-                              <li><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                              <li><Link href={app_coinpedia_url+"watchlist/?active_watchlist_tab=2"}><a><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
                               :
                               <li>
-                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/upcoming"}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>
+                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/upcoming"}><a onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</a></Link>
                               </li>
                             }
                       {/* <li><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li> */}
@@ -254,13 +254,13 @@ export default function UpcomingLaunchPad({userAgent})
                             <>
                             {
                               watchlist.includes(e.token_row_id) ?
-                              <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist"/></span>
+                              <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img2/Color.svg" alt="Watchlist"/></span>
                               :
-                              <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></span>
+                              <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img2/Star.svg" alt="Watchlist"/></span>
                               }
                             </>
                             :
-                            <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/upcoming"}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
+                            <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/upcoming"}><a onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/></a></Link>
                           }
                           </td>
                           <td className="mobile_hide">{sl_no+i+1}</td>
@@ -332,7 +332,7 @@ export default function UpcomingLaunchPad({userAgent})
                          {
                            apistatus ?
                             <tr key="1">
-                              <td className="text-center no_data_found" colSpan="8">
+                              <td className="text-lg-center text-md-left no_data_found" colSpan="8">
                                 Sorry, No related data found.
                               </td>
                             </tr>

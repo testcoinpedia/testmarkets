@@ -1,10 +1,11 @@
 /* eslint-disable */
-import React , {useState, useEffect} from 'react'
+import React , {useState, useEffect, useRef} from 'react'
 import Axios from 'axios'
-import {API_BASE_URL,graphqlApiKEY, market_coinpedia_url,config,createValidURL, IMAGE_BASE_URL,website_url} from '../components/constants'
+import {API_BASE_URL, graphqlApiKEY, market_coinpedia_url, config, createValidURL, IMAGE_BASE_URL, website_url} from '../components/constants'
 import { useRouter } from 'next/router'
 import Popupmodal from '../components/popupmodal'
 import Link from 'next/link'
+import JsCookie from "js-cookie" 
 
 export default function Details() 
 {   
@@ -23,9 +24,30 @@ export default function Details()
     const [searched_tokens_list, set_searched_tokens_list] = useState([])
     const [searched_categories_list, set_searched_categories_list] = useState([])
 
+    var data = []
+    if(JsCookie.get("category_search_tokens"))
+    {
+        data = JSON.parse(JsCookie.get("category_search_tokens"))
+    }
+    const [recent_search_list, set_recent_search_list] = useState(data)
+    
     const [categories_list, set_categories_list] = useState([])
     const [see_all_trending, set_see_all_trending] = useState(false)
     const [see_all_categories, set_see_all_categories] = useState(false)
+
+    const category_search_modal = useRef()
+    useEffect(() => {
+        let handler = (e) => {
+            if (!category_search_modal?.current?.contains(e.target)) {
+                set_search_container_status(false)
+            }
+        }
+        document.addEventListener("mousedown", handler)
+  
+        return () => {
+            document.removeEventListener("mousedown", handler)
+        }
+    }, [])
 
     const clearform = () =>
     {
@@ -183,6 +205,29 @@ export default function Details()
         }
     }
 
+    const searchByCategoryTokens = async (param)=>
+    {
+        var old_tokens = []
+        var old_conv = []
+
+        if(JsCookie.get("category_search_tokens"))
+        {
+            old_tokens = JsCookie.get("category_search_tokens")
+            old_conv = JSON.parse(old_tokens)
+        }
+
+        const check_token = (old_conv).find(list_data => list_data.token_id === param.token_id)
+        if(!check_token)
+        {
+            (old_conv).push(param)
+            recent_search_list.push(param)
+        }
+
+        const stringify_tokens = JSON.stringify(old_conv)
+        JsCookie.set("category_search_tokens",stringify_tokens)
+        router.push("/"+param.token_id)
+    }
+
 return (
     <div>
          {/* <div className="input-group-prepend markets_index">
@@ -213,8 +258,8 @@ return (
             
             {
                 search_container_status ?    
-                <div className="search_section" >
-                    <div className="input-group search_input">
+                <div className="search_section" ref={category_search_modal}>
+                    <div className="input-group search_input" >
                         <div className="input-group-prepend ">
                             <span className="input-group-text" ><img className="search-image" src="/assets/img/search_large.svg" alt="search-box" /></span>                 
                         </div>
@@ -235,16 +280,20 @@ return (
                                     <ul className="search-tokens">
                                     {
                                         trending_list.slice(0,6).map((e,i) =>
-                                            <li><Link href={market_coinpedia_url+e.token_id}><a>
-                                            <div className="media">
-                                                <div className="media-left">
-                                                    <img className="media-object token-img" src={image_base_url+"/"+e.token_image} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={"test"} />
-                                                </div>
-                                                <div className="media-body">
-                                                    <p className="media-heading">{e.symbol} <span>{e.token_name}</span></p>
-                                                </div>
-                                            </div>
-                                            </a></Link></li>
+                                            <li onClick={()=>searchByCategoryTokens(e)}>
+                                                {/* <Link href={market_coinpedia_url+e.token_id+"?search="+e._id}> */}
+                                                    <a>
+                                                    <div className="media">
+                                                        <div className="media-left">
+                                                            <img className="media-object token-img" src={image_base_url+"/"+e.token_image} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={"test"} />
+                                                        </div>
+                                                        <div className="media-body">
+                                                            <p className="media-heading">{e.symbol} <span>{e.token_name}</span></p>
+                                                        </div>
+                                                    </div>
+                                                    </a>
+                                                {/* </Link> */}
+                                            </li>
                                         )
                                     }
                                     </ul>
@@ -253,19 +302,27 @@ return (
                                 ""
                             }
 
-                            {/* <p className="mt-4">Recent searches</p>
-                            <div>
-                                <div className='recent-searches'>
-                                    <img className="media-object token-img" src={image_base_url+"/default.png"} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={"test"} />
-                                    <div className="coin-name">Solana</div>
-                                    <div className="coin-symbol">SQL</div>
+                            {
+                                recent_search_list && recent_search_list.length > 0 ?
+                                <>
+                                <p className="mt-4">Recent searches</p>
+                                <div>
+                                    {
+                                        recent_search_list.map((e,i) =>
+                                            <div className='recent-searches'>
+                                                <img className="media-object token-img" src={image_base_url+"/"+e.token_image} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={"test"} />
+                                                <div className="coin-name">{e.token_name}</div>
+                                                <div className="coin-symbol">{e.symbol}</div>
+                                            </div>
+                                        )
+                                    }
+                                    
                                 </div>
-                                <div className='recent-searches'>
-                                    <img className="media-object token-img" src={image_base_url+"/default.png"} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={"test"} />
-                                    <div className="coin-name">Solana</div>
-                                    <div className="coin-symbol">SQL</div>
-                                </div>
-                            </div> */}
+                                </>
+                                :
+                                null
+                            }
+                            
                         </>
                         :
                         result_showing_type === 2 ?
@@ -277,16 +334,20 @@ return (
                                 <ul className="search-tokens">
                                 {
                                     searched_tokens_list.slice(0,6).map((e,i) =>
-                                        <li><Link href={market_coinpedia_url+e.token_id}><a>
-                                        <div className="media">
-                                            <div className="media-left">
-                                                <img className="media-object token-img" src={image_base_url+"/"+e.token_image} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={"test"} />
-                                            </div>
-                                            <div className="media-body">
-                                                <p className="media-heading">{e.symbol} <span>{e.token_name}</span></p>
-                                            </div>
-                                        </div>
-                                        </a></Link></li>
+                                        <li onClick={()=>searchByCategoryTokens(e)}>
+                                            {/* <Link href={market_coinpedia_url+e.token_id}> */}
+                                                <a>
+                                                    <div className="media">
+                                                        <div className="media-left">
+                                                            <img className="media-object token-img" src={image_base_url+"/"+e.token_image} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={"test"} />
+                                                        </div>
+                                                        <div className="media-body">
+                                                            <p className="media-heading">{e.symbol} <span>{e.token_name}</span></p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            {/* </Link> */}
+                                        </li>
                                     )
                                 }
                                 </ul>
@@ -346,16 +407,20 @@ return (
                                 <ul className="search-tokens">
                                 {
                                     searched_tokens_list.map((e,i) =>
-                                        <li><Link href={market_coinpedia_url+e.token_id}><a>
-                                        <div className="media">
-                                            <div className="media-left">
-                                                <img className="media-object token-img" src={image_base_url+"/"+e.token_image} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={"test"} />
-                                            </div>
-                                            <div className="media-body">
-                                                <p className="media-heading">{e.symbol} <span>{e.token_name}</span></p>
-                                            </div>
-                                        </div>
-                                        </a></Link></li>
+                                        <li onClick={()=>searchByCategoryTokens(e)}>
+                                            {/* <Link href={market_coinpedia_url+e.token_id}> */}
+                                                <a>
+                                                    <div className="media">
+                                                        <div className="media-left">
+                                                            <img className="media-object token-img" src={image_base_url+"/"+e.token_image} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={"test"} />
+                                                        </div>
+                                                        <div className="media-body">
+                                                            <p className="media-heading">{e.symbol} <span>{e.token_name}</span></p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            {/* </Link> */}
+                                        </li>
                                     )
                                 }
                                 </ul>
@@ -521,7 +586,7 @@ return (
                 :
                 ""
             } 
-    </div>
+            </div>
     )
 }         
 
