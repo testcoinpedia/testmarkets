@@ -1,0 +1,321 @@
+/* Footer CSS properties */
+
+.footer-widget-area .normal-side .aboutme-widget .about-author {
+    padding: 0px;
+  }
+  
+  #footer .aboutme-widget-content {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 200;
+    font-family: "TTFirsNeue";
+  }
+  
+  #footer .normal-side h5 {
+    color: #fff;
+    font-size: 15px;
+    min-height: 15px;
+    font-weight: 400 !important;
+    font-family: "TTFirsNeue";
+    margin-bottom: 0 !important;
+  }
+  
+  /* #footer .normal-side h5:after {
+      content: "";
+      background: #fff;
+      width: 40px;
+      height: 2px;
+      position: absolute;
+      top: 25px;
+      left: 16px;
+    } */
+  
+  #footer .twitter_side .media img {
+    width: 15px;
+    margin-right: 10px;
+    margin-top: 5px;
+  }
+  
+  #footer .twitter_side .media p {
+    font-size: 13px !important;
+    color: #fff !important;
+    font-family: "TTFirsNeue";
+    font-weight: 200 !important;
+  }
+  
+  #footer .red_heart {
+    display: inline-block;
+    width: 15px;
+    margin-right: 4px;
+    margin-left: 0px;
+    vertical-align: sub;
+  }
+  
+  #footer .footer-menu {
+    float: right;
+  }
+  
+  #footer #site-info .social-icons {
+    float: right;
+  }
+  
+  #footer #site-info .social-icons li {
+    display: inline-block;
+    font-size: 12px;
+  }
+  
+  #footer #site-info .social-icons li img {
+    width: 13px;
+    margin: 0 5px;
+  }
+  
+  #footer .footer_logo {
+    width: 260px;
+  }
+  
+  #footer .social-icons li {
+    margin-bottom: 8px;
+  }
+  
+  #footer .social-icons {
+    margin-top: 35px;
+    margin-bottom: 35px;
+  }
+  
+  #footer .social-icons li {
+    display: inline-block;
+    margin-right: 7px;
+  }
+  
+  #footer .social-icons li img {
+    width: 28px;
+  }
+  
+  #footer .container-wrapper {
+    padding: 0;
+  }
+  
+  .dcma_protected {
+    margin-top: 30px;
+  }
+  
+  .sticky_footer_menu ul .footer_menu_items img {
+    display: block;
+    margin: 14px auto;
+    width: 18px;
+    margin-bottom: 0;
+  }
+  
+  .sticky_footer_menu ul .footer_menu_items a span {
+    color: #fff;
+    font-size: 11px;
+    font-family: TTFirsNeue;
+    font-weight: 300;
+  }
+  
+  .sticky_footer_menu {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    /* z-index: 999999; */
+    background: #16074a;
+    padding: 0 10px;
+  }
+  
+  .sticky_footer_menu ul {
+    text-align: center;
+  }
+  
+  .sticky_footer_menu ul li {
+    display: inline-block;
+    width: 20%;
+    text-align: center;
+    height: 67px;
+  }
+  
+  .center_fixed_menu_img img {
+    position: relative;
+    width: 60px;
+    top: 6px;
+    margin-left: 0;
+    vertical-align: bottom;
+  }
+  
+  #footer {
+    background: #15074d;
+    padding: 60px 0 0px;
+  }
+  
+  #footer .copyright-text {
+    color: #fff;
+    margin: 2px 5px 0;
+    font-size: 13px;
+    font-weight: 200;
+    float: left;
+    font-family: "TTFirsNeue";
+  }
+  
+  #footer #menu-footer-menu li {
+    display: inline-block;
+  }
+  
+  #footer #menu-footer-menu li a {
+    color: #fff;
+    margin: 0 10px;
+    font-size: 13px;
+    font-weight: 200;
+    font-family: "TTFirsNeue";
+  }
+  
+  #site-info {
+    background: #0f053a;
+    padding: 23px 0;
+    margin-top: 20px;
+  }
+  
+
+
+  /***************************************** Media Queries ***********************************************/
+
+
+  
+
+    @media (max-width: 1200px) {
+  
+
+        #footer #site-info .social-icons {
+          float: right;
+          width: 100%;
+          text-align: center;
+        }
+      
+        #footer .copyright-text {
+          float: none;
+          text-align: center;
+        }
+      
+        #footer .footer-menu {
+          float: unset;
+          text-align: center;
+        }
+      }
+
+      @media (min-width: 1200px) and (max-width: 1920px){
+        .footer_container {
+            padding-left: 30px;
+        }
+        }
+      
+    
+    @media (min-width: 768px) and (max-width: 991px){
+    .footer_container {
+        padding: 0 30px;
+    }
+    }
+
+    @media (max-width: 768px) {
+
+        #footer .aboutme-widget-content {
+            text-align: center;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            font-size: 13px;
+            font-weight: 200 !important;
+            max-width: 500px;
+        }
+        
+        #footer .social-icons li img {
+          width: 28px;
+        }
+        
+          #footer .social-icons {
+            text-align: center;
+          }
+
+
+          #site-info {
+            padding: 23px 0 90px;
+            text-align: center;
+          }
+        
+          #footer .copyright-text {
+            float: none;
+          }
+        
+          #footer .footer-menu {
+            float: none;
+          }
+        
+          #footer #site-info .social-icons {
+            float: none;
+          }
+        
+          #footer {
+            padding: 35px 0 0px;
+          }
+        
+          #footer .footer_logo {
+            margin: 0 auto;
+            width: 160px !important;
+          }
+        
+          .footer-widget-area {
+            padding-top: 30px;
+        }
+    }
+
+
+        @media (max-width: 991px) {
+
+            #footer .footer_logo {
+                width: 200px;
+              }
+
+              .footer-widget-area .normal-side .aboutme-widget .about-author {
+                text-align: center;
+              }
+
+        }
+
+        @media only screen and (max-width: 767px){
+
+
+             
+            #footer .social-icons{
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            #formID .search_filter select {
+                height: 34px;
+                font-size: 12px;
+            }
+
+            #footer .twitter_side .media p {
+                line-height: 1.5;
+            }
+
+
+
+
+        }
+
+
+    
+        @media (max-width: 299px) {
+
+            
+          
+            
+
+            .footer_live_span{
+                display:none;
+              }
+  
+          
+            
+          
+          }
+          
+    
+
