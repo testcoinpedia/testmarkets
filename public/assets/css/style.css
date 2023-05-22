@@ -27,28 +27,28 @@
   @font-face {
 	font-family: "Ubuntu";
 	src: "/assets/fonts/Ubuntu-Light.ttf" format("truetype");
-	font-weight: 200;
+	font-weight: 100;
 	font-display: swap;
   }
   
   @font-face {
 	font-family: "Ubuntu";
 	src: "/assets/fonts/Ubuntu-Regular.ttf" format("truetype");
-	font-weight: 300;
+	font-weight: 200;
 	font-display: swap;
   }
   
   @font-face {
 	font-family: "Ubuntu";
 	src: "/assets/fonts/Ubuntu-Medium.ttf" format("truetype");
-	font-weight: 400;
+	font-weight: 300;
 	font-display: swap;
   }
   
   @font-face {
 	font-family: "Ubuntu";
 	src: "/assets/fonts/Ubuntu-Bold.ttf" format("truetype");
-	font-weight: 500;
+	font-weight: 400;
 	font-display: swap;
   }
 
@@ -57,7 +57,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: Ubuntu,TTFirsNeue;
+  font-family: Ubuntu;
 }
 
 a {

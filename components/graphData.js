@@ -568,7 +568,7 @@ export default function Details({reqData, graph_data_date})
     <div className="chart_tabs"> 
      
       
-      
+{/*       
       {
         customDate
         ?
@@ -578,11 +578,11 @@ export default function Details({reqData, graph_data_date})
             <div className="row">
               <div className="col-md-5 col-5">
                 <div className="graph_date_table"><Datetime inputProps={ inputProps } onClick={()=> setCustomDate(true)} isValidDate={valid}  dateFormat="YYYY-MM-DD" timeFormat={false}  name="start_date" value={customstartdate}   onChange={(e)=> setCustomstartdate(e)} /></div>
-                {/* <input className="market-details-date-search" max={moment().format('YYYY-MM-DD')} value={customstartdate} onChange={(e)=> setCustomstartdate(e.target.value)} placeholder="Start date" type="date" /> */}
+                <input className="market-details-date-search" max={moment().format('YYYY-MM-DD')} value={customstartdate} onChange={(e)=> setCustomstartdate(e.target.value)} placeholder="Start date" type="date" />
               </div>
               <div className="col-md-5 col-5">
                 <div className="graph_date_table"><Datetime inputProps={ inputProps2 } onClick={()=> setCustomDate(true)} isValidDate={valid2}  dateFormat="YYYY-MM-DD" timeFormat={false}  name="end_date" value={customenddate}  onChange={(e)=> setCustomenddate(e)} /></div>
-                {/* <input className="market-details-date-search" max={moment().format('YYYY-MM-DD')} value={customenddate} onChange={(e)=> setCustomenddate(e.target.value)} placeholder="End date" type="date" /> */}
+                <input className="market-details-date-search" max={moment().format('YYYY-MM-DD')} value={customenddate} onChange={(e)=> setCustomenddate(e.target.value)} placeholder="End date" type="date" />
               </div>
               <div className="col-md-2 col-2">
                 {
@@ -598,7 +598,7 @@ export default function Details({reqData, graph_data_date})
         </div>
         :
         null
-      }
+      } */}
 
     </div>
    

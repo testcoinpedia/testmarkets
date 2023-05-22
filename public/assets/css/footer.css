@@ -8,7 +8,7 @@
     color: #fff;
     font-size: 13px;
     font-weight: 200;
-    font-family: "TTFirsNeue";
+    font-family: "Ubuntu";
   }
   
   #footer .normal-side h5 {
@@ -16,7 +16,7 @@
     font-size: 15px;
     min-height: 15px;
     font-weight: 400 !important;
-    font-family: "TTFirsNeue";
+    font-family: "Ubuntu";
     margin-bottom: 0 !important;
   }
   
@@ -39,7 +39,7 @@
   #footer .twitter_side .media p {
     font-size: 13px !important;
     color: #fff !important;
-    font-family: "TTFirsNeue";
+    font-family: "Ubuntu";
     font-weight: 200 !important;
   }
   
@@ -78,7 +78,7 @@
   }
   
   #footer .social-icons {
-    margin-top: 35px;
+    margin-top: 10px;
     margin-bottom: 35px;
   }
   
@@ -109,7 +109,7 @@
   .sticky_footer_menu ul .footer_menu_items a span {
     color: #fff;
     font-size: 11px;
-    font-family: TTFirsNeue;
+    font-family: "Ubuntu";
     font-weight: 300;
   }
   
@@ -117,7 +117,7 @@
     position: fixed;
     bottom: 0;
     width: 100%;
-    /* z-index: 999999; */
+    z-index: 99;
     background: #16074a;
     padding: 0 10px;
   }
@@ -152,7 +152,7 @@
     font-size: 13px;
     font-weight: 200;
     float: left;
-    font-family: "TTFirsNeue";
+    font-family: "Ubuntu";
   }
   
   #footer #menu-footer-menu li {
@@ -164,7 +164,7 @@
     margin: 0 10px;
     font-size: 13px;
     font-weight: 200;
-    font-family: "TTFirsNeue";
+    font-family: "Ubuntu";
   }
   
   #site-info {

@@ -5,7 +5,8 @@ import Axios from 'axios'
 import { ethers } from 'ethers'
 
 export const graphql_url = "https://graphql.bitquery.io/"
-export const graphql_api_key = "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
+// export const graphql_api_key = "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
+export const graphql_api_key = "BQYDhJL0RXOU29HIwyFK2M5Bb5OOy3pp"
 
 export const dex_trades_volume = (network_type, from_date, present_date) =>
 { 

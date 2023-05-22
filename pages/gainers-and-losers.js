@@ -14,9 +14,8 @@ import WatchList from '../components/watchlist'
 export default function GainersLosers({user_token, config, userAgent})
 {  
     const [watch_list_status, set_watch_list_status] = useState(false)
-    const [sl_no, set_sl_no]=useState(0)
     const [watchlist, set_watchlist] = useState([])
-    const [image_base_url] = useState(IMAGE_BASE_URL + '/tokens/')
+    const [image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
     const [loader_status, set_loader_status]=useState(true)
     const [all_tab_status, set_all_tab_status] = useState(0)
     const [top_gainers, set_top_gainers] = useState([])
@@ -27,80 +26,128 @@ export default function GainersLosers({user_token, config, userAgent})
     useEffect(() => 
     { 
         topGainners()
-        watchListIds()
+        topLosers()
+        
     }, [search_title, watch_list_status])
-
 
     const topGainners=  async()=>
     {
         set_loader_status(false)
-        Axios.get(API_BASE_URL+"main/tokens/markets_insights/"+"?search="+search_title, config).then(response => 
+        Axios.get(API_BASE_URL+"markets/cryptocurrency/gainers/40", config).then(response => 
         {
             set_loader_status(true)
-            console.log("Gainers",response)   
+            console.log("Gainers",response.data.message)   
             if(response.data.status === true)
             { 
-                var gainersArr = []
-                for(var i of response.data.message.order_by_gainer) 
-                {
-                    if(i.usd_24h_change > 0)
-                    {
-                        gainersArr.push(i)
-                    }
-                }
-                set_top_gainers(gainersArr)
-
-                var looserArr = []
-                for(var i of response.data.message.order_by_looser) 
-                {
-                    if(i.usd_24h_change < 0)
-                    {
-                        looserArr.push(i)
-                    }
-                }
-                set_top_loosers(looserArr)
+                set_top_gainers(response.data.message)
             }
         })
     }
 
-    const watchListIds = () =>
+    const topLosers=  async()=>
     {
-        Axios.get(API_BASE_URL+"markets/tokens/watchlist_ids", config).then(res=>
-        { 
-            if(res.data.status)
-            {
-                set_watchlist(res.data.message)
+        set_loader_status(false)
+        Axios.get(API_BASE_URL+"markets/cryptocurrency/losers/40", config).then(response => 
+        {
+            set_loader_status(true)
+            console.log("losers",response.data.message)   
+            if(response.data.status === true)
+            { 
+                set_top_loosers(response.data.message)
             }
         })
     }
 
-    const addToWatchlist = (param_token_id) =>
+    const addToWatchlist = async (param_token_id, param_type) =>
     {
-        Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config).then(res=>
-        { 
-            if(res.data.status)
-            {
-                var sdawatchlist = watchlist
-                set_watchlist([])
-                sdawatchlist.push(param_token_id)
-                set_watchlist(sdawatchlist)
-            }
-        })
+        const res = await Axios.get(API_BASE_URL+"markets/cryptocurrency/add_to_watchlist/"+param_token_id, config)
+        if(res.data.status)
+        {
+          if(param_type == 1)
+          {
+                //gainers
+                var list = []
+                for(const i of top_gainers)
+                {  
+                    if(i._id == param_token_id)
+                    { 
+                        i['watchlist_status'] = true
+                        list.push(i)
+                    }
+                    else
+                    {
+                        list.push(i)
+                    }
+                }
+                set_top_gainers(list)
+          }
+          else
+          {
+                //losers
+                var list = []
+                for(const i of top_loosers)
+                {  
+                    if(i._id == param_token_id)
+                    { 
+                        i['watchlist_status'] = true
+                        list.push(i)
+                    }
+                    else
+                    {
+                        list.push(i)
+                    }
+                }
+                set_top_loosers(list)
+          }
+        }
     }
     
-    const removeFromWatchlist = (param_token_id) =>
+    const removeFromWatchlist = (param_token_id, param_type) =>
     {
-        Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config).then(res=>
+      Axios.get(API_BASE_URL+"markets/cryptocurrency/remove_from_watchlist/"+param_token_id, config).then(res=>
+      {
+        if(res.data.status)
         {
-            if(res.data.status)
+            if(param_type == 1)
             {
-                var sdawatchlist = watchlist
-                set_watchlist([])
-                sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
-                set_watchlist(sdawatchlist)
+                  //gainers
+                  var list = []
+                  for(const i of top_gainers)
+                  {  
+                      if(i._id == param_token_id)
+                      { 
+                          i['watchlist_status'] = false
+                          list.push(i)
+                      }
+                      else
+                      {
+                          list.push(i)
+                      }
+                  }
+                  set_top_gainers(list)
             }
-        })
+            else
+            {
+                  //losers
+                  var list = []
+                  for(const i of top_loosers)
+                  {  
+                      if(i._id == param_token_id)
+                      { 
+                          i['watchlist_status'] = false
+                          list.push(i)
+                      }
+                      else
+                      {
+                          list.push(i)
+                      }
+                  }
+                  set_top_loosers(list)
+            }
+        }
+      })
     }
+    
 
     const makeJobSchema=()=>{  
         return { 
@@ -117,12 +164,12 @@ export default function GainersLosers({user_token, config, userAgent})
     
     <>
         <Head>
-        <title>Cryptocurrency Market Live Insights | Coinpedia </title>
+        <title>Today's Crypto Gainers & Losers | Coinpedia </title>
         <meta name="description" content="Coinpedia’s Market bring you with a list of top cryptocurrencies with real timeprices, including percentage change, charts, history, volume and more."/>
         <meta name="keywords" content="crypto market, crypto market tracker, Crypto tracker live, Cryptocurrency market, crypto market insights , Live crypto insights, crypto price alerts, Live crypto alerts." />
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Cryptocurrency Market Live Insights | Coinpedia" />
+        <meta property="og:title" content="Today's Crypto Gainers & Losers | Coinpedia" />
         <meta property="og:description" content="Coinpedia company listing page offers quick view of all listed companies of Fintech, Blockchain and Finance category. Get Exchages, Wallets, Coins, Tools, Trading forms and more. " />
         <meta property="og:url" content={market_coinpedia_url} />
         <meta property="og:site_name" content="List of Fintech Companies | CoinPedia Pro Account. " />
@@ -134,7 +181,7 @@ export default function GainersLosers({user_token, config, userAgent})
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@coinpedia" />
         <meta name="twitter:creator" content="@coinpedia" />
-        <meta name="twitter:title" content="Cryptocurrency Market Live Insights | Coinpedia" />
+        <meta name="twitter:title" content="Today's Crypto Gainers & Losers | Coinpedia" />
         <meta name="twitter:description" content="Here's a list of the leading fintech companies in the country across the various sub-sectors.We are extending and updating the list regularly." />
         <meta name="twitter:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
 
@@ -142,15 +189,15 @@ export default function GainersLosers({user_token, config, userAgent})
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
         </Head>
 
-        <div className="page new_markets_index min_height_page">
+        <div className="page new_markets_index min_height_page markets_new_design">
             <div className="market-page">
                 <div className="new_page_title_block">
                     <div className="container">
                         <div className="col-md-12">
                             <div className="row market_insights ">
-                                <div className="col-md-6 col-lg-6">
-                                    <h1 className="page_title">Cryptocurrency Market Insights</h1>
-                                    <p>Check the latest Price before you buy.</p>
+                            <div className="col-md-6 col-lg-6">
+                                <h1 className="page_title">Today's Crypto Gainers & Losers</h1>
+                                <p>Which crypto coins and tokens with volume (24h) {">"} US$50,000 have gained or lost the most in the last 24 hours?</p>
                                 </div>
                             <div className="col-md-1 col-lg-2"></div>
                             <div className="col-md-5 col-lg-4">
@@ -159,32 +206,28 @@ export default function GainersLosers({user_token, config, userAgent})
                                 }
                             </div>
                         </div>
+                            <div>
+                        <div class="all-categories-list">
+                            <CategoriesTab active_tab={2}/> 
+                    </div>
+                    </div>
                     </div>
                 </div>
             </div>
        
-         <div className="container">
+         <div className="container price-tracking-tbl">
             <div className="col-md-12">
-                {
+                {/* {
                    <CategoriesTab /> 
-                } 
+                }  */}
                            
 
                 <div className="prices transaction_table_block">
                     <div className="row">
                         <div className="col-md-9 mb-3 col-7">
-                            <ul className="category_list">
-                                <li className={all_tab_status == 0?"active_tab":null}><a onClick={()=>set_all_tab_status(0)}>Gainers</a></li>
-                                <li className={all_tab_status == 1?"active_tab":null}><a onClick={()=>set_all_tab_status(1)}>Losers</a></li>
-                                {
-                                    user_token?
-                                    <li ><Link href={app_coinpedia_url+"watchlist/?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
-                                    :
-                                    <li>
-                                    <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link>
-                                    </li>
-                                }
-                            
+                            <ul className="secondary_tabs">
+                                <li className={all_tab_status == 0?"secondary_tabs_active":null}><a onClick={()=>set_all_tab_status(0)}>Gainers</a></li>
+                                <li className={all_tab_status == 1?"secondary_tabs_active":null}><a onClick={()=>set_all_tab_status(1)}>Losers</a></li>
                             </ul>
                         </div>
                         <div className="col-md-3 mb-3 col-5 filter-category-section">
@@ -214,14 +257,17 @@ export default function GainersLosers({user_token, config, userAgent})
                                 <table className="table table-borderless">
                                     <thead>
                                         <tr>
-                                            <th className="" style={{minWidth: '34px'}}></th>
-                                            <th className="mobile_hide_table_col">#</th>
-                                            <th className="">Name</th>
-                                            <th className="table_token">Live Price</th>
-                                            <th className="table_token mobile_hide_table_col">Type</th>
-                                            <th className="table_max_supply mobile_hide_table_col">Max Supply</th> 
-                                            <th className="mobile_hide_table_col table_circulating_supply">Market Cap</th>  
-                                            <th className="table_max_supply mobile_hide_table_col">Change %</th>   
+
+                                        <th className="mobile_hide_table_col" style={{minWidth: '34px'}}></th>
+                                        <th className="mobile_hide_table_col"style={{minWidth: '34px'}}>Rank</th>
+                                        <th className="">Name</th>
+                                        <th className="">Price</th>
+                                        <th className="" style={{minWidth: 'unset'}}>24h</th>
+                                        <th className=" mobile_hide_table_col" style={{minWidth: 'unset'}}>7d</th>
+                                        <th className="mobile_hide_table_col table_circulating_supply">Market Cap</th> 
+                                        <th className=" mobile_hide_table_col">Volume(24H)</th>  
+                                        <th className="mobile_hide_table_col table_circulating_supply">Circulating Supply</th>  
+                                        <th className="mobile_hide_table_col">Last 7 Days</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -240,79 +286,76 @@ export default function GainersLosers({user_token, config, userAgent})
                                                     user_token ?
                                                     <>
                                                     {
-                                                        watchlist.includes(e.token_row_id) ?
-                                                        <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist" /></span>
+                                                        e.watchlist_status== true ?
+                                                        <span onClick={()=>removeFromWatchlist(e._id, 1)} ><img src=" /assets/img/wishlist_star_selected.svg" alt="Watchlist" width={17} height={17} /></span>
                                                         :
-                                                        <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></span>
-                                                    }
+                                                        <span onClick={()=>addToWatchlist(e._id, 1)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist" width={17} height={17} /></span>
+                                                        }
                                                     </>
                                                     :
-                                                    <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
+                                                    <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url} onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></Link>
                                                 }
                                                 </td>
-                                                <td className="mobile_hide_table_col"> {sl_no+i+1} </td>
+                                                <td className="mobile_hide_table_col"> {e.cmc_rank} </td>
                                                 <td>
                                                     <Link href={"/"+e.token_id}>
-                                                        <a>
                                                         <div className="media">
                                                             <div className="media-left">
-                                                                <img src={e.token_image?image_base_url+e.token_image:image_base_url+"default.png"} onError={(e) =>e.target.src = "/assets/img/default_token.png"} />
+                                                            <img src={image_base_url+(e.coinmarketcap_id ? e.coinmarketcap_id+".png" : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
                                                             </div>
                                                             <div className="media-body">
                                                                 <h4 className="media-heading">{e.token_name} <span>{(e.symbol).toUpperCase()}</span></h4>
                                                             </div>
                                                         </div> 
-                                                        </a>
+                                                   
                                                     </Link>
                                                 </td> 
                                                 <td className="market_list_price"> 
                                                     <Link href={"/"+e.token_id}>
-                                                        <a>
                                                         <span className="block_price">{roundNumericValue(e.price)}</span>
                                                         {e.price_updated_on ? moment(e.price_updated_on).fromNow():null} 
-                                                        </a>
                                                     </Link>
                                                 </td>
                                     
                                                 <td className="mobile_hide_table_col"> 
-                                                <Link href={"/"+e.token_id}>
-                                                    <a>
-                                                    {
-                                                        e.list_type==1?
-                                                        "Coin"
-                                                        :
-                                                        (e.contract_addresses) && ((e.contract_addresses).length > 0)
-                                                        ?
-                                                        parseInt(e.contract_addresses[0].network_type) === 1 ? "ERC20" : "BEP20" 
-                                                        :
-                                                        null
-                                                        
-                                                    } 
-                                                    </a>
-                        
+                                                    <Link href={"/"+e.token_id}>
+                                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
                                                     </Link>
                                                 </td>
-                                    
                                                 <td className="mobile_hide_table_col">
                                                     <Link href={"/"+e.token_id}>
-                                                        <a>
-                                                        {e.total_max_supply ? separator(e.total_max_supply) : "-"} 
-                                                        </a>
+                                                    {
+                                                        e.percent_change_7d?e.percent_change_7d>0?
+                                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
+                                                        :
+                                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                        :
+                                                        "--"
+                                                        }
+                                                        {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>1.05%</span></h6> */}
+                                                    </Link>
+                                                    </td>
+                                                <td className="mobile_hide_table_col">
+                                                    <Link href={"/"+e.token_id}>
+                                                    {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"}
+                                                    </Link>
+                                                </td>  
+
+                                                <td className="mobile_hide_table_col">
+                                                    <Link href={"/"+e.token_id}>
+                                                        {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"}
                                                     </Link>
                                                 </td>
                                                 <td className="mobile_hide_table_col">
-                                                    <Link href={"/"+e.token_id}><a>
-                                                        {e.market_cap ?"$"+separator(e.market_cap.toFixed(2)) : "-"}
-                                                    </a></Link>
+                                                    <Link href={"/"+e.token_id}>
+                                                    {e.circulating_supply ? separator((e.circulating_supply).toFixed(0)) +" "+(e.symbol).toUpperCase(): "-"} 
+                                                    </Link>
+                                                </td> 
+                                                
+                                                <td className="mobile_hide_table_col">
+                                                <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
                                                 </td>  
-                                                <td>
-                                                    <div className="media">
-                                                        <div className="media-left">
-                                                        <p className="market_price"><span className="green">{e.usd_24h_change.toFixed(2)+"%"}</span></p>
-                                                            {/* <p className="market_price">{e.usd_24h_change+"%"}</p> */}
-                                                        </div>
-                                                    </div> 
-                                                </td>
+                                               
                                             </tr> 
                                             ) 
                                             :
@@ -326,94 +369,90 @@ export default function GainersLosers({user_token, config, userAgent})
                                             top_loosers.map((e, i) => 
                                                 <tr key={i}>
                                                     <td>
+                                                    {
+                                                        user_token ?
+                                                        <>
                                                         {
-                                                            user_token ?
-                                                            <>
-                                                            {
-                                                                watchlist.includes(e.token_row_id) ?
-                                                                <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist" /></span>
-                                                                :
-                                                                <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></span>
-                                                            }
-                                                            </>
+                                                            e.watchlist_status== true ?
+                                                            <span onClick={()=>removeFromWatchlist(e._id, 2)} ><img src=" /assets/img/wishlist_star_selected.svg" alt="Watchlist" width={17} height={17} /></span>
                                                             :
-                                                            <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></a></Link>
-                                                        }
+                                                            <span onClick={()=>addToWatchlist(e._id, 2)} ><img src="/assets/img/wishlist_star.svg" alt="Watchlist" width={17} height={17} /></span>
+                                                            }
+                                                        </>
+                                                        :
+                                                        <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url} onClick={()=> Logout()}><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/></Link>
+                                                    }
                                                     </td>
-                                                    <td className="mobile_hide_table_col"> {sl_no+i+1} </td>
+                                                    <td className="mobile_hide_table_col"> {e.cmc_rank} </td>
                                                     <td>
                                                         <Link href={"/"+e.token_id}>
-                                                            <a>
                                                             <div className="media">
                                                                 <div className="media-left">
-                                                                    <img src={e.token_image?image_base_url+e.token_image:image_base_url+"default.png"} onError={(e) =>e.target.src = "/assets/img/default_token.png"} />
+                                                            <img src={image_base_url+(e.coinmarketcap_id ? e.coinmarketcap_id+".png" : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
                                                                 </div>
                                                                 <div className="media-body">
                                                                     <h4 className="media-heading">{e.token_name} <span>{(e.symbol).toUpperCase()}</span></h4>
                                                                 </div>
                                                             </div> 
-                                                            </a>
                                                         </Link>
                                                     </td> 
                                                     <td className="market_list_price"> 
                                                         <Link href={"/"+e.token_id}>
-                                                            <a>
                                                             <span className="block_price">{roundNumericValue(e.price)}</span>
-                                                            {e.price_updated_on ? moment(e.price_updated_on).fromNow():null} 
-                                                            </a>
+                                                            {e.price_updated_on ? moment(e.price_updated_on).fromNow():null}
                                                         </Link>
                                                     </td>
                                         
                                                     <td className="mobile_hide_table_col"> 
                                                         <Link href={"/"+e.token_id}>
-                                                            <a>
-                                                            {
-                                                                e.list_type==1?
-                                                                "Coin"
-                                                                :
-                                                                (e.contract_addresses) && ((e.contract_addresses).length > 0)
-                                                                ?
-                                                                parseInt(e.contract_addresses[0].network_type) === 1 ? "ERC20" : "BEP20" 
-                                                                :
-                                                                null
-                                                            } 
-                                                            </a>
-                                                        </Link>
-                                                    </td>
-                                        
-                                                    <td className="mobile_hide_table_col">
-                                                        <Link href={"/"+e.token_id}>
-                                                            <a>
-                                                            {e.total_max_supply ? separator(e.total_max_supply) : "-"} 
-                                                            </a>
+                                                            <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
                                                         </Link>
                                                     </td>
                                                     <td className="mobile_hide_table_col">
+                                                    <Link href={"/"+e.token_id}>
+                                                    {
+                                                        e.percent_change_7d?e.percent_change_7d>0?
+                                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
+                                                        :
+                                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                        :
+                                                        "--"
+                                                        }
+                                                        {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>1.05%</span></h6> */}
+                                                    </Link>
+                                                    </td>
+                                                    <td className="mobile_hide_table_col">
                                                         <Link href={"/"+e.token_id}>
-                                                            <a>
-                                                            {e.market_cap ? "$"+separator(e.market_cap.toFixed(2)) : "-"}
-                                                            </a>
+                                                        {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"}
                                                         </Link>
                                                     </td>  
-                                                    <td>
-                                                        <div className="media">
-                                                            <div className="media-left">
-                                                            <p className="market_price"><span className="red">{e.usd_24h_change.toFixed(2)+"%"}</span></p>
-                                                            </div>
-                                                        </div> 
-                                                    </td> 
+
+                                                    <td className="mobile_hide_table_col">
+                                                        <Link href={"/"+e.token_id}>
+                                                        {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"}
+                                                        </Link>
+                                                    </td>
+                                                    <td className="mobile_hide_table_col">
+                                                        <Link href={"/"+e.token_id}>
+                                                            {e.circulating_supply ? separator((e.circulating_supply).toFixed(0)) +" "+(e.symbol).toUpperCase(): "-"} 
+                                                        </Link>
+                                                    </td>  
+                                                    <td className="mobile_hide_table_col">
+                                                        <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
+                                                        </td> 
+                                                    
                                                 </tr> 
                                             ) 
                                             :
                                             <tr>
-                                                <td className="text-lg-center text-md-left" colSpan="4"> Sorry, No related data found. </td>
+                                                <td className="text-lg-center text-md-left" colSpan="10"> Sorry, No related data found. </td>
                                             </tr>
                                             :
                                             null
                                         }
                                         </>
                                         :
-                                        <TableContentLoader row="10" col="8" />  
+                                        <TableContentLoader row="10" col="10" />  
                                     }
                                     </tbody>
                                 </table>

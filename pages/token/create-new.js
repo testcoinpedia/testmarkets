@@ -9,13 +9,13 @@ import Head from 'next/head'
 import JsCookie from "js-cookie" 
 import cookie from 'cookie'
 import dynamic from 'next/dynamic'
-import "react-datetime/css/react-datetime.css"
+// import "react-datetime/css/react-datetime.css"
 import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,  market_coinpedia_url,config,graphqlApiKEY,separator} from '../../components/constants'; 
 import Select from 'react-select'
 import Popupmodal from '../../components/popupmodal'
   
  
-import ReactCrop from 'react-image-crop';
+import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
 import { Editor } from '@tinymce/tinymce-react';
@@ -75,9 +75,11 @@ export default function Create_token({config})
     const imgRef = useRef(null);
     const previewCanvasRef = useRef(null);
     const [crop, setCrop] = useState({ unit: 'px', width: 50, height: 50, aspect: 1 / 1});
+
     const [completedCrop, setCompletedCrop] = useState(null)
     const [blobFile, set_blobFile] = useState()
-  
+    const [with_contract_address, set_with_contract_address] = useState(true)
+
     const onSelect =(selectedList, selectedItem)=> { 
         category_name_ids.push(selectedItem._id)
         category_name.push(selectedItem)  
@@ -149,7 +151,7 @@ export default function Create_token({config})
             {
                 if (!blob) {  return }
                 blob.name = 'newFile.jpeg'
-                window.URL.revokeObjectURL(fileUrl)
+                // window.URL.revokeObjectURL(fileUrl)
                 const fileUrl = window.URL.createObjectURL(blob)
                 var reader = new FileReader()
                 reader.readAsDataURL(blob)
@@ -172,6 +174,24 @@ export default function Create_token({config})
     }
 
 
+    function onImageLoad(e) {
+      imgRef.current = e.currentTarget
+      const width = 50
+      const height = 50
+      const crop = centerCrop(makeAspectCrop(
+          {
+              unit: '%',
+              width: 50,
+          },
+          1 / 1,
+          width,
+          height,
+      ),
+          width,
+          height,
+      )
+      setCrop({ unit: 'px', width: 50, height: 50, aspect: 1 / 1 })
+  }
 
     const onLoad = useCallback((img) => 
     {
@@ -238,6 +258,8 @@ const createNewToken = () =>
       formValid = false
     }   
 
+    if(with_contract_address === true)
+    {
     if(contract_address.length === 2)
     {   
       let list = err_contract_address
@@ -308,6 +330,7 @@ const createNewToken = () =>
           list = ""   
         } 
         setErrContractAddress(list)  
+      }
     }  
 
     if(website_link)
@@ -370,17 +393,17 @@ const createNewToken = () =>
 
    if(token_description === '')
     {
-      setErrTokenDescription('The Coin Description field is required.')
+      setErrTokenDescription('The Description field is required.')
       formValid = false
     }
     else if(token_description.length <= 10)
     {
-        setErrTokenDescription('The Coin Description must be atleast 4 characters.')
+        setErrTokenDescription('The Description must be atleast 4 characters.')
         formValid = false
     }
     else if(token_description.length > 5000)
     {
-        setErrTokenDescription('The Coin Description must be less than 5000 characters in length.')
+        setErrTokenDescription('The Description must be less than 5000 characters in length.')
         formValid = false
     } 
  
@@ -390,6 +413,7 @@ const createNewToken = () =>
     }
     set_loader(true)
     const reqObj = {
+      list_type : with_contract_address === false ? 3 : 2,
       wallet_address : wallet_address, 
       symbol : symbol, 
       token_name : token_name,
@@ -404,7 +428,7 @@ const createNewToken = () =>
       explorer : explorer,
       exchange_link : exchange_link,
       community_address : community_address,
-      contract_addresses : contract_address,
+      contract_addresses : with_contract_address === false ? [] : contract_address,
       meta_keywords : meta_keywords,
       meta_description : meta_description,
       category_row_id:category_name_ids,
@@ -568,8 +592,8 @@ const createNewToken = () =>
             {
                 if(response.status)
                 { 
-                console.log(response) 
-                setTokenMaxSupply(response.data.result/10**decimal) 
+                  console.log(response) 
+                  setTokenMaxSupply(response.data.result/10**decimal) 
                 }
             })
         }
@@ -579,8 +603,8 @@ const createNewToken = () =>
             {
                 if(response.status)
                 { 
-                console.log(response) 
-                setTokenMaxSupply(response.data.result/10**decimal) 
+                  console.log(response) 
+                  setTokenMaxSupply(response.data.result/10**decimal) 
                 }
             })
         }
@@ -601,8 +625,10 @@ const createNewToken = () =>
         const provider = new ethers.providers.JsonRpcProvider(mainnetUrl); 
         const tokenAbi = ["function totalSupply() view returns (uint256)"];
         const tokenContract = new ethers.Contract(id, tokenAbi, provider);
+        
         const supply = await tokenContract.totalSupply() / (10 ** decval);  
         getTokenUsdPrice(id,network_type)
+        console.log("supply", live_price)
         set_market_cap(supply * live_price)
     }
 
@@ -726,7 +752,16 @@ const createNewToken = () =>
     //   getETHAccount() 
     // }
   },[]) 
-     
+  
+  useEffect(()=>
+  {
+    setSymbol("")
+    setTokenName("")
+    setTokenMaxSupply("")
+    set_market_cap("")
+    setContractAddress([{network_type: "0", contract_address: ""}])
+  },[with_contract_address])
+
   const makeJobSchema=()=> 
   {  
     return { 
@@ -811,7 +846,7 @@ const createNewToken = () =>
               setTokenName(result.data.ethereum.address[0].smartContract.currency.name) 
               getTotalMaxSupply(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
               
-              getMarketCap(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
+              // getMarketCap(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
             } 
             else { 
               setErrContractAddress("Invalid contract address or network type.")
@@ -867,9 +902,9 @@ const createNewToken = () =>
                     <div className="row">
                   <div className="col-md-12">
                   <div className="breadcrumb_block">
-                    <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
-                    <Link href={market_coinpedia_url}><a >Live Market</a></Link> <span> &#62; </span> 
-                      <Link href="/token/"><a>Tokens</a></Link><span> &#62; </span>Create Token
+                    <Link href={coinpedia_url}>Home</Link> <span> &#62; </span> 
+                    <Link href={market_coinpedia_url}>Live Market</Link> <span> &#62; </span> 
+                      <Link href="/token/">Tokens</Link><span> &#62; </span>Create Token
                   </div>
                   </div>
                   </div>
@@ -880,7 +915,7 @@ const createNewToken = () =>
                     </div>
                     <div className="col-lg-3 col-md-3 col-4">
                     <div className="quick_block_links main_page_coin_filter create_token_btn">
-                      <Link href="/token"><a><i className="la la-arrow-left"></i>Go Back</a></Link>
+                      <Link href="/token"><i className="la la-arrow-left"></i>Go Back</Link>
                       {/* <div class="text-right" onClick={() => router.back()}><a class="btn btn-primary"><i className="la la-arrow-left"></i>Go Back</a></div> */}
                     </div>
                     </div>
@@ -908,6 +943,24 @@ exchange_link
                     </div>
                     <div className="col-lg-9 col-md-8">
                       <div className="row">
+                        <div className="col-lg-8 col-md-12">
+                          <div className="row">
+                            <div className="col-md-4">
+                            </div>
+                            <div className="col-md-8">
+                              <div className="input-appearance">
+                                <label ><input type="radio" value={with_contract_address} checked={with_contract_address === true} onChange={()=>set_with_contract_address(true)} style={{appearance:'auto'}} />With Contract Address</label> &nbsp;
+                                <label ><input type="radio" value={with_contract_address} checked={with_contract_address === false} onChange={()=>set_with_contract_address(false)} style={{appearance:'auto'}} />Without Contract Address</label>
+                                <br></br>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <br></br>
+                      {
+                          with_contract_address === true ?
+                          <div className="row">
                       { 
                         contract_address.length > 0
                         ?
@@ -967,6 +1020,10 @@ exchange_link
                         null
                         }
                       </div>
+                      :
+                      null
+                  }
+                
 
                       <div className="row">
                         <div className="col-lg-8 col-md-12">
@@ -978,7 +1035,12 @@ exchange_link
                             <div className="form-custom"> 
                             
                             <div className="form-group input_block_outline">
+                            {
+                              with_contract_address === true ?
                               <input type="text" className="form-control" placeholder="Token Name" value={token_name} readOnly />
+                              :
+                              <input type="text" className="form-control" placeholder="Token Name" value={token_name} onChange={(e)=>setTokenName(e.target.value)}/>
+                            }
                             </div>
                             <div className="error">{err_token_name}</div>
                           </div>
@@ -996,7 +1058,13 @@ exchange_link
                             <div className="col-md-8">
                               <div className="form-custom"> 
                                 <div className="form-group input_block_outline">
-                                  <input type="text" className="form-control" placeholder="Symbol" value={symbol}  readOnly/>
+                                {
+                                    with_contract_address === true ?
+                                    <input type="text" className="form-control" placeholder="Symbol" value={symbol}  readOnly/>
+                                    :
+                                    <input type="text" className="form-control" placeholder="Symbol" value={symbol}  onChange={(e)=>setSymbol(e.target.value)}/>
+                                }
+                                  
                                 </div>
                                 <div className="error">{err_symbol}</div>
                               </div>
@@ -1075,7 +1143,13 @@ exchange_link
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
                                   <div className="input-group">
-                                    <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
+                                  {
+                                      with_contract_address === true ?
+                                      <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
+                                      :
+                                      <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)}/>
+                                  }
+                                    
                                     <div className="input-group-prepend">
                                       <span className="input-group-text">{symbol}</span>
                                     </div>
@@ -1096,7 +1170,12 @@ exchange_link
                             <div className="col-md-8">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                  <input type="number" placeholder="Market Cap"  className="form-control" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)} readOnly/> 
+                                {
+                                    with_contract_address === true ?
+                                    <input type="number" placeholder="Market Cap"  className="form-control" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)} readOnly/>
+                                    :
+                                    <input type="number" placeholder="Market Cap"  className="form-control" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)}/>
+                                }
                                 </div>
                                 <div className="error">{err_market_cap}</div>
                               </div>
@@ -1403,12 +1482,19 @@ exchange_link
                 <button type="button" className="close" data-dismiss="modal"  onClick={()=>imageCropModalClose()}>&times;</button>
                 <h6 className="mb-3">Select Token Logo</h6>
                 <ReactCrop
-                  src={upImg}
-                  onImageLoaded={onLoad}
+                  // src={upImg}
+                  // onImageLoaded={onLoad}
                   crop={crop}
                   onChange={(c) => setCrop(c)}
                   onComplete={(c) => onCropComplete(c)}
-                /> 
+                  aspect={1 / 1} ><img
+                  alt="Crop me"
+                  src={upImg}
+                  onLoad={onImageLoad}
+                  style={{ width: "100%" }}
+              />
+          </ReactCrop>
+
                 <div className="text-center review_upload_token mt-2">
                   <button  className="dsaf" onClick={() =>{oncCropComplete()}}>Set Token Logo</button> 
                 </div>

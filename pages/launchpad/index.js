@@ -8,7 +8,6 @@ import cookie from 'cookie'
 import moment from 'moment'
 import {API_BASE_URL,config,separator, app_coinpedia_url,IMAGE_BASE_URL,market_coinpedia_url,coinpedia_url} from '../../components/constants' 
 
- 
 export default function LaunchPad({userAgent}) 
 { 
 
@@ -124,8 +123,8 @@ export default function LaunchPad({userAgent})
             <div className="container">
               <div className="col-md-12">
               <div className="breadcrumb_block">
-              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
-              <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span>Overview Launchpads
+              <Link href={coinpedia_url}>Home</Link> <span> &#62; </span> 
+              <Link href={market_coinpedia_url}>Live Market</Link><span> &#62; </span>Overview Launchpads
                </div>
                 <div className="row launchpad_list">
                   <div className="col-md-8 col-7">
@@ -134,10 +133,10 @@ export default function LaunchPad({userAgent})
                   </div>
                   <div className="col-md-4 col-5">
                     <div className="launchpad-toke-button">
-                      <Link href={user_token ? "/token/create-new":app_coinpedia_url+"login"}><a>
+                      <Link href={user_token ? "/token/create-new":app_coinpedia_url+"login"}>
                         <button className="btn-gradient-primary">
                           <span className="btn__text">List your Token</span>
-                        </button></a></Link>
+                        </button></Link>
                       {/* <Link href="/"><a><button className="btn-gradient-primary">
                         <span className="btn__text"><img src="/assets/img/weekly-updates.png" className="weekly_updates" />Get Weekly Updates</span>
                       </button></a></Link> */}
@@ -148,10 +147,10 @@ export default function LaunchPad({userAgent})
                 <div className="row">
                   <div className="tabs_for_navigation">
                     <ul className="nav nav-tabs">
-                      <li><Link href="/launchpad"><a className="active"><span>Overview</span></a></Link></li>
-                      <li><Link href="/launchpad/ongoing"><a><span>Ongoing</span></a></Link></li>
-                      <li><Link href="/launchpad/upcoming"><a><span>Upcoming</span></a></Link></li>
-                      <li><Link href="/launchpad/ended"><a><span>Completed</span></a></Link></li>
+                      <li><Link href="/launchpad" className="active"><span>Overview</span></Link></li>
+                      <li><Link href="/launchpad/ongoing"><span>Ongoing</span></Link></li>
+                      <li><Link href="/launchpad/upcoming"><span>Upcoming</span></Link></li>
+                      <li><Link href="/launchpad/ended"><span>Completed</span></Link></li>
                     </ul>
                   </div>
                 </div>
@@ -159,7 +158,7 @@ export default function LaunchPad({userAgent})
                 <div className="row">
                   <div className="col-md-6">
                     <div className="ongoing_launchpad">
-                      <h4><span>🔥 Ongoing</span> <Link href="/launchpad/ongoing"><a>More <span className="right_caret">›</span></a></Link></h4> 
+                      <h4><span>🔥 Ongoing</span> <Link href="/launchpad/ongoing">More <span className="right_caret"></span></Link></h4> 
                     
 
                   <div className="table-responsive">
@@ -178,16 +177,12 @@ export default function LaunchPad({userAgent})
                               </td>
                               <td>
                                 <Link href={"/"+e.token_id}>
-                                  <a>
                                     <h5 className="launchpad_title"><img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="Logo" className="" /> {e.token_name} <span>{e.symbol}</span></h5>
-                                    
-                                  </a>
                                 </Link>
                               </td>
                                 {/* {moment(e.start_date, 'd m  Y')} */}
                               <td>
                                 <Link href={"/"+e.token_id}>
-                                  <a>
                                     <h5>
                                       {
                                         e.network_type.length > 0 
@@ -209,7 +204,7 @@ export default function LaunchPad({userAgent})
                                         "-"
                                       } 
                                       <span> ({e.launch_pad_type === 1 ? "ICO" : e.launch_pad_type === 2 ? "IDO" : e.launch_pad_type === 3 ? "IEO" : "-"})</span></h5>
-                                  </a>
+                                  
                                 </Link>
                               </td>
                               
@@ -231,7 +226,7 @@ export default function LaunchPad({userAgent})
                 </div>
                 <div className="col-md-6"> 
                   <div className="upcoming_launchpad">
-                    <h4><span>📅 Upcoming </span> <Link href="/launchpad/upcoming"><a>More <span className="right_caret">›</span></a></Link></h4> 
+                    <h4><span>📅 Upcoming </span> <Link href="/launchpad/upcoming">More <span className="right_caret">›</span></Link></h4> 
                     <div className="table-responsive">
                       <table className="launchpad_table_overview">
                         <tbody>
@@ -248,16 +243,13 @@ export default function LaunchPad({userAgent})
                               </td>
                               <td>
                                 <Link href={"/"+e.token_id}>
-                                  <a>
                                     <h5 className="launchpad_title"><img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="Logo" className="" /> {e.token_name} <span>{e.symbol}</span></h5>
                                     
-                                  </a>
                                 </Link>
                               </td>
                                 {/* {moment(e.start_date, 'd m  Y')} */}
                               <td>
                                 <Link href={"/"+e.token_id}>
-                                  <a>
                                     <h5>
                                       {
                                         e.network_type.length > 0 
@@ -279,7 +271,6 @@ export default function LaunchPad({userAgent})
                                         "-"
                                       } 
                                       <span> ({e.launch_pad_type === 1 ? "ICO" : e.launch_pad_type === 2 ? "IDO" : e.launch_pad_type === 3 ? "IEO" : "-"})</span></h5>
-                                  </a>
                                 </Link>
                               </td>
                               
@@ -311,7 +302,7 @@ export default function LaunchPad({userAgent})
                     </div>
                   </div>
                   <div className="col-md-5 col-4 col-sm-4">
-                    <h6 className="view_all_launchpad"><Link href="/launchpad/ended"><a>View All</a></Link></h6>
+                    <h6 className="view_all_launchpad"><Link href="/launchpad/ended">View All</Link></h6>
                   </div>
                 </div>
                 
@@ -355,7 +346,7 @@ export default function LaunchPad({userAgent})
                                          }
                                        </>
                                        :
-                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad"}><a><img src="/assets/img2/Star.svg" alt="Watchlist"/></a></Link>
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad"}><img src="/assets/img2/Star.svg" alt="Watchlist"/></Link>
                                      }
                           </td>
                           <td className="mobile_hide">{i+1}</td>

@@ -4,6 +4,8 @@ import {website_url,app_coinpedia_url,coinpedia_url,logo,favicon} from '../compo
 
 export default function Footer (){
 
+   const today = new Date();
+
    return(
       <>
 
@@ -19,6 +21,24 @@ export default function Footer (){
                         <div className="container-wrapper footer_logo">
                            <img src={logo} alt="cp-logo" />
                         </div>
+                        
+                     </div>
+
+                     <div className="col-md-4 normal-side">
+                        <h5>Cp-Organization</h5>
+                        <div id="author-bio-widget-4" className="container-wrapper widget aboutme-widget">
+                           <div className="about-author about-content-wrapper">
+                              <div className="aboutme-widget-content">Coinpedia - Trusted Crypto Agency for News, Information, Exchange, PR, Blockchain Events, Crypto Wallet and Else related to Decentralized World.
+                           </div>
+                           {/* <div className="dcma_protected"><a href="//www.dmca.com/Protection/Status.aspx?ID=c32974f1-5754-4dc7-8646-ff88d4b0ee60" title="DMCA.com Protection Status" class="dmca-badge"> <img src ="https://images.dmca.com/Badges/dmca_protected_sml_120n.png?ID=c32974f1-5754-4dc7-8646-ff88d4b0ee60" alt="DMCA.com Protection Status" /></a> <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"> </script></div> */}
+                           <div className="clearfix" />
+                           </div>
+                        <div className="clearfix" /></div>		
+                     </div>
+
+                     <div className="col-md-4 normal-side twitter_side">
+                        <h5>Follow Us</h5>	
+
                         <ul className="social-icons">
                            <li className="social-icons-item">
                               <a className="social-link rss-social-icon" rel="external noopener nofollow" target="_blank" href="https://coinpedia.org/feed/">
@@ -67,29 +87,6 @@ export default function Footer (){
                            </li>
                         </ul>
                      </div>
-
-                     <div className="col-md-4 normal-side">
-                        <h5>Cp-Organization</h5>
-                        <div id="author-bio-widget-4" className="container-wrapper widget aboutme-widget">
-                           <div className="about-author about-content-wrapper">
-                              <div className="aboutme-widget-content">Coinpedia - Trusted Crypto Agency for News, Information, Exchange, PR, Blockchain Events, Crypto Wallet and Else related to Decentralized World.
-                           </div>
-                           {/* <div className="dcma_protected"><a href="//www.dmca.com/Protection/Status.aspx?ID=c32974f1-5754-4dc7-8646-ff88d4b0ee60" title="DMCA.com Protection Status" class="dmca-badge"> <img src ="https://images.dmca.com/Badges/dmca_protected_sml_120n.png?ID=c32974f1-5754-4dc7-8646-ff88d4b0ee60" alt="DMCA.com Protection Status" /></a> <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"> </script></div> */}
-                           <div className="clearfix" />
-                           </div>
-                        <div className="clearfix" /></div>		
-                     </div>
-
-                     <div className="col-md-4 normal-side twitter_side">
-                        <h5>Follow Us</h5>	
-
-                        <div className="media">
-                           <img src="/assets/img/twitter.svg" alt="twitter" />
-                           <div className="media-body">
-                              <p>The Fourth Quarter Could Turn Bearish This Time! Everything You Need to Know! #crypto #CryptoNews https://t.co/2UKS27UZnE</p>
-                           </div>
-                        </div>	
-                     </div>
                   </div>
                </div>
             </div>
@@ -109,7 +106,7 @@ export default function Footer (){
             <div className="container footer_container">
                <div className="row">  
                   <div className="col-md-12">
-                     <div className="copyright-text copyright-text-first">© Copyright 2022, All Rights Reserved &nbsp;|&nbsp; 
+                     <div className="copyright-text copyright-text-first">© Copyright {today. getFullYear()}, All Rights Reserved &nbsp;|&nbsp; 
                         <img src="/assets/img/heart.svg" className="red_heart" /> 
                         <a href={coinpedia_url} target="_blank" rel="nofollow noopener">Coinpedia</a>
                      </div>  

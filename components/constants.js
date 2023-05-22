@@ -67,11 +67,16 @@ export const config=(user_token)=>
       }}
   }
 }
-export const graphqlApiKEY = "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
+// export const graphqlApiKEY = "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
+
+// export const graphqlApiKEY = "BQYXSU6x0V4fdfipsg3myrytbKPXFme7"
+
+export const graphqlApiKEY = "BQYDhJL0RXOU29HIwyFK2M5Bb5OOy3pp"
+
 
 export const strLenTrim=(title, length)=>
 {
-  return title.length > length ? (title).slice(0, length)+"..." : title
+  return title.length > length ? (title).slice(0, length)+".." : title
 }
 
 export const strTrim=(string)=>
@@ -112,49 +117,91 @@ export const roundNumericValue=(value) =>
 {
   if(value)
   {
-    if(parseFloat(value) >= 0.1)
+    if(value > 0 )
     {
-      return "$ "+((parseFloat(value)).toFixed(2))
-    }
-    else if((parseFloat(value) < 0.1) && (parseFloat(value) >= 0.01))
-    {
-      return "$ "+(parseFloat(value)).toFixed(3)
-    }
-    else if((parseFloat(value) < 0.01) && (parseFloat(value) >= 0.001))
-    {
-      return "$ "+(parseFloat(value)).toFixed(4)
-    }
-    else if((parseFloat(value) < 0.001) && (parseFloat(value) > 0.0001))
-    {
-      return "$ "+(parseFloat(value)).toFixed(5)
-    }
-    else if((parseFloat(value) < 0.0001) && (parseFloat(value) > 0.00001))
-    {
-      return "$ "+(parseFloat(value)).toFixed(6)
-    }
-    else if((parseFloat(value) < 0.00001) && (parseFloat(value) > 0.000001))
-    {
-      return "$ "+(parseFloat(value)).toFixed(7)
-    }
-    else if((parseFloat(value) < 0.000001) && (parseFloat(value) > 0.0000001))
-    {
-      return "$ "+(parseFloat(value)).toFixed(8)
-    }
-    else if((parseFloat(value) < 0.0000001) && (parseFloat(value) > 0.00000001))
-    {
-      return "$ "+(parseFloat(value)).toFixed(9)
-    }
-    else if((parseFloat(value) < 0.00000001) && (parseFloat(value) > 0.000000001))
-    {
-      return "$ "+(parseFloat(value)).toFixed(11)
-    }
-    else if((parseFloat(value) < 0.000000001) && (parseFloat(value) > 0.0000000001))
-    {
-      return "$ "+(parseFloat(value)).toFixed(12)
+        if(parseFloat(value) >= 0.1)
+        {
+          return "$ "+((parseFloat(value)).toFixed(2))
+        }
+        else if((parseFloat(value) < 0.1) && (parseFloat(value) >= 0.01))
+        {
+          return "$ "+(parseFloat(value)).toFixed(3)
+        }
+        else if((parseFloat(value) < 0.01) && (parseFloat(value) >= 0.001))
+        {
+          return "$ "+(parseFloat(value)).toFixed(4)
+        }
+        else if((parseFloat(value) < 0.001) && (parseFloat(value) > 0.0001))
+        {
+          return "$ "+(parseFloat(value)).toFixed(5)
+        }
+        else if((parseFloat(value) < 0.0001) && (parseFloat(value) > 0.00001))
+        {
+          return "$ "+(parseFloat(value)).toFixed(6)
+        }
+        else if((parseFloat(value) < 0.00001) && (parseFloat(value) > 0.000001))
+        {
+          return "$ "+(parseFloat(value)).toFixed(7)
+        }
+        else if((parseFloat(value) < 0.000001) && (parseFloat(value) > 0.0000001))
+        {
+          return "$ "+(parseFloat(value)).toFixed(8)
+        }
+        else if((parseFloat(value) < 0.0000001) && (parseFloat(value) > 0.00000001))
+        {
+          return "$ "+(parseFloat(value)).toFixed(9)
+        }
+        else if((parseFloat(value) < 0.00000001) && (parseFloat(value) > 0.000000001))
+        {
+          return "$ "+(parseFloat(value)).toFixed(11)
+        }
+        else if((parseFloat(value) < 0.000000001) && (parseFloat(value) > 0.0000000001))
+        {
+          return "$ "+(parseFloat(value)).toFixed(12)
+        }
+        else
+        {
+          return "$ "+((parseFloat(value)).toFixed(13))
+        }
     }
     else
-    {
-      return "$ "+((parseFloat(value)).toFixed(13))
+    { 
+      if(parseFloat(value) <= -0.1)
+      {
+        return "$ "+((parseFloat(value)).toFixed(2))
+      }
+      else if((parseFloat(value) > -0.1) && (parseFloat(value) <= -0.01))
+      {
+        return "$ "+(parseFloat(value)).toFixed(3)
+      }
+      else if((parseFloat(value) > -0.01) && (parseFloat(value) <= -0.001))
+      {
+        return "$ "+(parseFloat(value)).toFixed(4)
+      }
+      else if((parseFloat(value) > -0.001) && (parseFloat(value) <= -0.0001))
+      {
+        return "$ "+(parseFloat(value)).toFixed(5)
+      }
+      else if((parseFloat(value) > -0.0001) && (parseFloat(value) <= -0.00001))
+      {
+        return "$ "+(parseFloat(value)).toFixed(6)
+      }
+      else if((parseFloat(value) > -0.00001) && (parseFloat(value) <= -0.000001))
+      {
+        return "$ "+(parseFloat(value)).toFixed(7)
+      }
+      else if((parseFloat(value) > -0.000001) && (parseFloat(value) <= -0.0000001))
+      {
+        return "$ "+(parseFloat(value)).toFixed(8)
+      }
+      else if((parseFloat(value) > -0.0000001) && (parseFloat(value) <= -0.00000001))
+      {
+        return "$ "+(parseFloat(value)).toFixed(9)
+      }
+      else
+      {
+        return "$ "+((parseFloat(value)).toFixed(13))
+      }
     }
   }
   else

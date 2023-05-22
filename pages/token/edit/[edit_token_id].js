@@ -7,10 +7,11 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import cookie from 'cookie'
 import dynamic from 'next/dynamic'
-import "react-datetime/css/react-datetime.css"
+// import "react-datetime/css/react-datetime.css"
 import {x_api_key, API_BASE_URL, app_coinpedia_url,config,graphqlApiKEY,IMAGE_BASE_URL,coinpedia_url,market_coinpedia_url} from '../../../components/constants'
 import Popupmodal from '../../../components/popupmodal' 
-import ReactCrop from 'react-image-crop';
+import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
+
 import 'react-image-crop/dist/ReactCrop.css';
 import { Editor } from '@tinymce/tinymce-react';
 import Select from 'react-select'
@@ -46,7 +47,8 @@ export default function UpdateToken({userAgent, config, token_id})
   const [meta_description, set_meta_description] = useState("")
   // const [category_row_id, set_category_row_id] = useState("")
   // const [category_name, set_category_name] = useState("")
-
+  const [with_contract_address, set_with_contract_address] = useState(true)
+  const [list_type, set_list_type] = useState(2)
   const [categories, set_categories] = useState([])
   const [category_name, set_category_name]= useState([])
   const [category_name_ids, set_category_name_ids]= useState([])  
@@ -78,7 +80,7 @@ export default function UpdateToken({userAgent, config, token_id})
   const [completedCrop, setCompletedCrop] = useState(null); 
   const [blobFile, set_blobFile] = useState()  
   const [validImg, setValidImg] = useState("")
-  
+
   const onSelect =(selectedList, selectedItem)=> { 
     category_name_ids.push(selectedItem._id)
     category_name.push(selectedItem)  
@@ -154,7 +156,7 @@ export default function UpdateToken({userAgent, config, token_id})
             return;
           }
           blob.name = 'newFile.jpeg';
-          window.URL.revokeObjectURL(fileUrl);
+          // window.URL.revokeObjectURL(fileUrl);
           const fileUrl = window.URL.createObjectURL(blob);
           var reader = new FileReader();
           reader.readAsDataURL(blob);
@@ -181,9 +183,28 @@ export default function UpdateToken({userAgent, config, token_id})
   }
 }
 
-const onLoad = useCallback((img) => {
-  imgRef.current = img;
-}, []);
+function onImageLoad(e) {
+  imgRef.current = e.currentTarget
+  const width = 50
+  const height = 50
+  const crop = centerCrop(makeAspectCrop(
+      {
+          unit: '%',
+          width: 50,
+      },
+      1 / 1,
+      width,
+      height,
+  ),
+      width,
+      height,
+  )
+  setCrop({ unit: 'px', width: 50, height: 50, aspect: 1 / 1 })
+}
+
+// const onLoad = useCallback((img) => {
+//   imgRef.current = img;
+// }, []);
    
   const createNewToken = () =>
   { 
@@ -220,60 +241,17 @@ const onLoad = useCallback((img) => {
       formValid = false
     }
  
-    if(contract_address.length === 2)
-    {   
-      let list = err_contract_address
+    if(with_contract_address === true)
+    {
+      if(contract_address.length === 2)
+      {   
+        let list = err_contract_address
 
-      if(contract_address[0].network_type === "0" || contract_address[0].network_type === 0)
-      {  
-        list = "The Contract address network type field is required."
-        formValid = false
-      }     
-      else if(contract_address[0].contract_address === ""){   
-        list = "The Contract address field is required."
-        formValid = false
-      }
-      else if((contract_address[0].contract_address).length !== 42){  
-        list = "The Contract address field must be equal to 42 characters."
-        formValid = false
-      }
-      else if(contract_address[1].network_type === "0" || contract_address[1].network_type === 0){  
-        list = "The Contract address network type field is required." 
-        formValid = false  
-      }  
-      else if(contract_address[1].contract_address === ""){ 
-        list = "The Contract address field is required."
-        formValid = false   
-      }
-      else if((contract_address[1].contract_address).length !== 42){
-        list = "The Contract address field must be equal to 42 characters."
-        formValid = false
-      }  
-      // else if(contract_address[0].contract_address === contract_address[1].contract_address){
-      //   list = "Both Contract addresses must not be same."
-      //   formValid = false
-      // }  
-      else if(contract_address[0].network_type === contract_address[1].network_type){
-        list = "Both Contract addresses network type must not be same."
-        formValid = false
-      }   
-      else{
-        list = ""
-      }
-      setErrContractAddress(list)
-    } 
-    else if(contract_address.length === 1){
-      
-      let list = err_contract_address 
-
-        if(contract_address[0].network_type === "0" && contract_address[0].contract_address === ""){  
-          list = "The Contract address and network type field is required."
+        if(contract_address[0].network_type === "0" || contract_address[0].network_type === 0)
+        {  
+          list = "The Contract address network type field is required."
           formValid = false
-        }  
-        else if(contract_address[0].network_type === "0"){  
-          list = "The  network type field is required."
-          formValid = false
-        }  
+        }     
         else if(contract_address[0].contract_address === ""){   
           list = "The Contract address field is required."
           formValid = false
@@ -282,11 +260,58 @@ const onLoad = useCallback((img) => {
           list = "The Contract address field must be equal to 42 characters."
           formValid = false
         }
-        else{ 
-          list = ""   
-        } 
-        setErrContractAddress(list)  
-    }  
+        else if(contract_address[1].network_type === "0" || contract_address[1].network_type === 0){  
+          list = "The Contract address network type field is required." 
+          formValid = false  
+        }  
+        else if(contract_address[1].contract_address === ""){ 
+          list = "The Contract address field is required."
+          formValid = false   
+        }
+        else if((contract_address[1].contract_address).length !== 42){
+          list = "The Contract address field must be equal to 42 characters."
+          formValid = false
+        }  
+        // else if(contract_address[0].contract_address === contract_address[1].contract_address){
+        //   list = "Both Contract addresses must not be same."
+        //   formValid = false
+        // }  
+        else if(contract_address[0].network_type === contract_address[1].network_type){
+          list = "Both Contract addresses network type must not be same."
+          formValid = false
+        }   
+        else{
+          list = ""
+        }
+        setErrContractAddress(list)
+      } 
+      else if(contract_address.length === 1)
+      {
+        
+        let list = err_contract_address 
+
+          if(contract_address[0].network_type === "0" && contract_address[0].contract_address === ""){  
+            list = "The Contract address and network type field is required."
+            formValid = false
+          }  
+          else if(contract_address[0].network_type === "0"){  
+            list = "The  network type field is required."
+            formValid = false
+          }  
+          else if(contract_address[0].contract_address === ""){   
+            list = "The Contract address field is required."
+            formValid = false
+          }
+          else if((contract_address[0].contract_address).length !== 42){  
+            list = "The Contract address field must be equal to 42 characters."
+            formValid = false
+          }
+          else{ 
+            list = ""   
+          } 
+          setErrContractAddress(list)  
+      } 
+    }
 
     if(token_name === '')
     {
@@ -357,21 +382,22 @@ const onLoad = useCallback((img) => {
     
     if(token_description === '')
     {
-      setErrTokenDescription('The coin description field is required.')
+      setErrTokenDescription('The description field is required.')
       formValid = false
     }
     else if(token_description.length <= 10)
     {
-        setErrTokenDescription('The coin description must be at least 4 characters.')
+        setErrTokenDescription('The description must be at least 4 characters.')
         formValid = false
     }
     else if(token_description.length > 5000)
     {
-        setErrTokenDescription('The coin description must be less than 5000 characters in length.')
+        setErrTokenDescription('The description must be less than 5000 characters in length.')
         formValid = false
     }  
     set_loader(true)
     const reqObj = {
+      list_type : with_contract_address === false ? 3 : 2,
       wallet_address: wallet_address,
       symbol: symbol, 
       token_id: token_id,
@@ -379,14 +405,14 @@ const onLoad = useCallback((img) => {
       token_image: token_image,
       website_link: website_link,
       whitepaper: whitepaper,
-      token_max_supply: token_max_supply,
+      total_max_supply: token_max_supply,
       market_cap: market_cap, 
       token_description: token_description,
       source_code_link: source_code_link,
       explorer: explorer,
       exchange_link: exchange_link,
       community_address: community_address, 
-      contract_addresses: contract_address, 
+      contract_addresses: with_contract_address === false ? [] : contract_address,
       meta_keywords : meta_keywords,
       meta_description : meta_description,
       category_row_id:category_name_ids
@@ -422,9 +448,9 @@ const onLoad = useCallback((img) => {
             setErrTokenDescription(response.data.message.market_cap)
           }
           
-          if(response.data.message.token_max_supply)
+          if(response.data.message.total_max_supply)
           {  
-            setErrTokenMaxSupply(response.data.message.token_max_supply)
+            setErrTokenMaxSupply(response.data.message.total_max_supply)
           }
           
           if(response.data.message.market_cap)
@@ -455,7 +481,11 @@ const onLoad = useCallback((img) => {
       if(response.data.status){ 
       
         console.log(response.data) 
-        setContractAddress(response.data.message.contract_addresses)
+        if(response.data.message.list_type !== 3)
+          setContractAddress(response.data.message.contract_addresses)
+        else
+          setContractAddress([{network_type: "0", contract_address: ""}])
+        
         setErrContractAddress("")  
         setSymbol(response.data.message.symbol) 
         setTokenName(response.data.message.token_name)
@@ -468,7 +498,11 @@ const onLoad = useCallback((img) => {
         set_meta_description(response.data.message.meta_description)
         set_category_name(response.data.message.category_row_id_array)
         set_category_name_ids(response.data.message.category_row_id)
-
+        if(response.data.message.list_type == 3)
+        {
+          set_with_contract_address(false)
+        }
+        set_list_type(response.data.message.list_type)
 
         if(response.data.message.token_image)
         {
@@ -730,8 +764,8 @@ const getTokensDetails = (type, address) =>{
             <div className="for_padding">
               <div className=" token_steps">
                <div className="breadcrumb_block">
-              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
-              <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span> Edit Token
+              <Link href={coinpedia_url}>Home</Link> <span> &#62; </span> 
+              <Link href={market_coinpedia_url}>Live Market</Link><span> &#62; </span> Edit Token
                </div>
                 <div className="row">
                   <div className="col-lg-9 col-md-9 col-8">
@@ -740,7 +774,7 @@ const getTokensDetails = (type, address) =>{
                   </div>
                   <div className="col-lg-3 col-md-3 col-4">
                   <div className="quick_block_links main_page_coin_filter create_token_btn">
-                      <Link href="/token"><a ><i className="la la-arrow-left"></i>Go Back</a></Link>
+                      <Link href="/token"><i className="la la-arrow-left"></i>Go Back</Link>
                       {/* <div class="text-right" onClick={() => router.back()}><a class="btn btn-primary"><i className="la la-arrow-left"></i>Go Back</a></div> */}
                     </div>
                   </div>
@@ -761,67 +795,96 @@ const getTokensDetails = (type, address) =>{
                       </div>
                     </div>
                     <div className="col-lg-9 col-md-8">
-                      <div className="row">
-                      { 
-                        contract_address.length > 0
-                        ?
-                        contract_address.map((e, i)=>
-                        <div className="col-lg-8 col-md-12" key={i}>
-                          <div className="form-custom">
-                            <div className="row">
-                              <div className="col-md-4">
-                                <label htmlFor="email">Contract address<span className="label_star">*</span></label>
-                              </div>
-                              <div className="col-md-8">
-                                <div className="input_block_outline" style={{marginBottom: '0'}}>
-                                  <div className="input-group">
-                                    <div className="input-group-prepend">
-                                      <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address)} >
-                                            <option value="0">Type</option> 
-                                            <option value="1">ETH</option>
-                                            <option value="2">BSC</option>
-                                      </select>
-                                    </div>
-                                    
+                          <div className="row">
+                            <div className="col-lg-8 col-md-12">
+                              <div className="row">
+                                <div className="col-md-4">
+                                </div>
+                                <div className="col-md-8">
+                                  <div className="input-appearance">
                                     {
-                                      i === 0 && e.network_type !== "0"
-                                      ?
-                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, (item.target.value).toLowerCase())} />
-                                      :
-                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=>checkContractAddress(item, i)} />
-                                    }
-                                    </div>
-            
-                                    {
-                                      i== 1 ?
+                                      list_type == 3 ? 
                                       <>
-                                        <button className="addmore_ico create-token-res" style={{float: "right", marginBottom: "10px"}} onClick={()=> removeContractAddress(i)}><span>- Remove Contract address</span></button>
+                                      <label ><input type="radio" value={with_contract_address} checked={with_contract_address === true} onChange={()=>set_with_contract_address(true)} style={{appearance:'auto'}} />With Contract Address</label> &nbsp;
+                                      <label ><input type="radio" value={with_contract_address} checked={with_contract_address === false} onChange={()=>set_with_contract_address(false)} style={{appearance:'auto'}} />Without Contract Address</label> <br/>
                                       </>
-                                    :
-                                    null
-                                  } 
-                                </div>  
-                                <>
-                                  {
-                                    contract_address.length !== 2 ?
-                                    <>
-                                      <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.svg" /> Add More Contract addresses</span></button>
-                                    </>
-                                    :
-                                    null
-                                  }
-                                </>
-                                <div className="error">{err_contract_address}</div>
+                                      :
+                                      <>
+                                      <label ><input type="radio" value={with_contract_address} checked={with_contract_address === true} onChange={()=>set_with_contract_address(true)} style={{appearance:'auto'}} disabled />With Contract Address</label> &nbsp;
+                                      <label ><input type="radio" value={with_contract_address} checked={with_contract_address === false} onChange={()=>set_with_contract_address(false)} style={{appearance:'auto'}} disabled/>Without Contract Address</label> <br/>
+                                      </>
+                                    }
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
+                          <br/>
+                      {
+                        with_contract_address === true ?
+                        <div className="row">
+                        { 
+                         contract_address.length > 0
+                          ?
+                          contract_address.map((e, i)=>
+                          <div className="col-lg-8 col-md-12" key={i}>
+                            <div className="form-custom">
+                              <div className="row">
+                                <div className="col-md-4">
+                                  <label htmlFor="email">Contract address<span className="label_star">*</span></label>
+                                </div>
+                                <div className="col-md-8">
+                                  <div className="input_block_outline" style={{marginBottom: '0'}}>
+                                    <div className="input-group">
+                                      <div className="input-group-prepend">
+                                        <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address)} >
+                                              <option value="0">Type</option> 
+                                              <option value="1">ETH</option>
+                                              <option value="2">BSC</option>
+                                        </select>
+                                      </div>
+                                      
+                                      {
+                                        i === 0 && e.network_type !== "0"
+                                        ?
+                                        <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, (item.target.value).toLowerCase())} />
+                                        :
+                                        <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=>checkContractAddress(item, i)} />
+                                      }
+                                      </div>
+              
+                                      {
+                                        i== 1 ?
+                                        <>
+                                          <button className="addmore_ico create-token-res" style={{float: "right", marginBottom: "10px"}} onClick={()=> removeContractAddress(i)}><span>- Remove Contract address</span></button>
+                                        </>
+                                      :
+                                      null
+                                    } 
+                                  </div>  
+                                  <>
+                                    {
+                                      contract_address.length !== 2 ?
+                                      <>
+                                        <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.svg" /> Add More Contract addresses</span></button>
+                                      </>
+                                      :
+                                      null
+                                    }
+                                  </>
+                                  <div className="error">{err_contract_address}</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          )
+                          :
+                          null
+                          }
                         </div>
-                        )
                         :
                         null
-                        }
-                      </div>
-
+                      }
                       <div className="row">
                         <div className="col-lg-8 col-md-12">
                           <div className="row">
@@ -832,7 +895,13 @@ const getTokensDetails = (type, address) =>{
                             <div className="form-custom"> 
                             
                             <div className="form-group input_block_outline">
-                              <input type="text" placeholder="Token Name" className="form-control" value={token_name} readOnly />
+                              {
+                                with_contract_address === true ?
+                                <input type="text" placeholder="Token Name" className="form-control" value={token_name} readOnly />
+                                :
+                                <input type="text" placeholder="Token Name" className="form-control" value={token_name} onChange={(e)=>setTokenName(e.target.value)} />
+                              }
+                              
                             </div>
                             <div className="error">{err_token_name}</div>
                           </div>
@@ -850,7 +919,13 @@ const getTokensDetails = (type, address) =>{
                             <div className="col-md-8">
                               <div className="form-custom"> 
                                 <div className="form-group input_block_outline">
-                                  <input type="text" placeholder="Symbol" className="form-control" value={symbol}  readOnly/>
+                                  {
+                                    with_contract_address === true ?
+                                    <input type="text" placeholder="Symbol" className="form-control" value={symbol} readOnly/>
+                                    :
+                                    <input type="text" placeholder="Symbol" className="form-control" value={symbol} onChange={(e)=>setSymbol(e.target.value)}/>
+                                  }
+                                  
                                 </div>
                                 <div className="error">{err_symbol}</div>
                               </div>
@@ -929,7 +1004,13 @@ const getTokensDetails = (type, address) =>{
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
                                   <div className="input-group">
-                                    <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
+                                    {
+                                      with_contract_address === true ?
+                                      <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
+                                      :
+                                      <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)}/>
+                                    }
+                                    
                                     <div className="input-group-prepend">
                                       <span className="input-group-text">{symbol}</span>
                                     </div>
@@ -950,7 +1031,12 @@ const getTokensDetails = (type, address) =>{
                             <div className="col-md-8">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                  <input type="number" placeholder="Market Cap" value={market_cap} className="form-control" onChange={(e)=>set_market_cap(e.target.value)} readOnly/> 
+                                  {
+                                    with_contract_address === true ?
+                                    <input type="number" placeholder="Market Cap" value={market_cap} className="form-control" onChange={(e)=>setmarket_cap(e.target.value)} readOnly/> 
+                                    :
+                                    <input type="number" placeholder="Market Cap" value={market_cap} className="form-control" onChange={(e)=>setmarket_cap(e.target.value)} /> 
+                                  }
                                 </div>
                                 <div className="error">{err_market_cap}</div>
                               </div>
@@ -1268,12 +1354,17 @@ const getTokensDetails = (type, address) =>{
                 <button type="button" className="close" data-dismiss="modal"  onClick={()=>imageCropModalClose()}>&times;</button>
                 <h6 className="mb-3">Select Token Logo</h6>
                 <ReactCrop
-                  src={upImg}
-                  onImageLoaded={onLoad}
                   crop={crop}
                   onChange={(c) => setCrop(c)}
                   onComplete={(c) => onCropComplete(c)}
-                /> 
+                  aspect={1 / 1} ><img
+                  alt="Crop me"
+                  src={upImg}
+                  onLoad={onImageLoad}
+                  style={{ width: "100%" }}
+              />
+          </ReactCrop>
+
                 <div className="text-center review_upload_token mt-2">
                   <button  className="dsaf" onClick={() =>{oncCropComplete()}}>Set Token Logo</button> 
                 </div>

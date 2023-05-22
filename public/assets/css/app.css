@@ -1014,7 +1014,7 @@ h6 {
 .category_list li {
   font-size: 15px;
   display: inline-block;
-  padding: 3px 10px;
+  padding: 3px 7px;
   margin-bottom: 0px;
   border-radius: 5px;
   color: #58667e;
@@ -3385,7 +3385,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: 12px;
     min-width: 140px;
     max-height: 47px;
-    font-family: 'TTFirsNeue';
+    font-family: 'Ubuntu';
     -webkit-font-smoothing: antialiased;
 }
 
@@ -3821,7 +3821,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .token_form .tox .tox-tbtn--bespoke .tox-tbtn__select-label {
   color: #251c49;
-  font-weight: 500;
+  font-weight: 400;
+  font-family: "Ubuntu" !important;
+}
+
+p{
+  font-family: "Ubuntu" !important;
 }
 
 .token_form .tox .tox-statusbar a,
@@ -6014,13 +6019,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 0px;
 }
 
-
 .search_section .search-result {
   padding: 20px;
   height: 519px;
   overflow-y: scroll;
 }
-
 
 .search-see-more {
   font-size: 14px;
@@ -6035,9 +6038,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-bottom: 5px;
   color: #555589;
 }
-
-
-
 
 .market_token_details .search_filter {
   margin-top: 19px;
@@ -6102,6 +6102,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-left: 5px;
   width: 28px;
 }
+
+
 
 .how_do_you_feel {
   margin-bottom: 25px;
@@ -7145,6 +7147,10 @@ screen and (max-height: 300px) {
     left: 0;
   }
 }
+/* 
+font-family: 'Space Grotesk';
+  font-weight: 500 !important; */
+
 
 @media only screen and (max-width: 1023px) {
   .page__content {
@@ -7156,6 +7162,7 @@ screen and (max-height: 300px) {
     transition: transform 0.2s, -webkit-transform 0.2s;
   }
 
+ 
   .page__head {
     margin-top: 0;
   }
@@ -7506,23 +7513,7 @@ screen and (max-height: 300px) {
   }
 }
 
-@media (min-width: 991px) {
-  .hide-desktop {
-    display: none;
-  }
 
-  .close_navbar {
-    display: none;
-  }
-
-  .mobile_after_login_block,
-  .mobile_login_block,
-  .mobile_menu_top_header,
-  .mobile_menu_icons,
-  .caret_view {
-    display: none;
-  }
-}
 
 @media (max-width: 991px) {
   .overview_ul li {

@@ -151,8 +151,8 @@ export default function UpcomingLaunchPad({userAgent})
               <div className="container">
               <div className="col-md-12">
               <div className="breadcrumb_block">
-              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
-              <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span> Upcoming Launchpads
+              <Link href={coinpedia_url}>Home </Link> <span> &#62; </span> 
+              <Link href={market_coinpedia_url}>Live Market </Link><span> &#62; </span> Upcoming Launchpads
                </div> 
               <div className="row launchpad_list">
                 <div className="col-md-8 col-7">
@@ -164,9 +164,9 @@ export default function UpcomingLaunchPad({userAgent})
                         {/* <Link href="/launchpad/create-token"><a><button className="wallets__btn btn_blue">
                           <span className="btn__text"><img src="/assets/img/create-token-icon.png" />Create token</span>
                         </button></a></Link> */}
-                        <Link href={user_token ? "/token/create-new":app_coinpedia_url+"login" }><a><button className="btn-gradient-primary">
+                        <Link href={user_token ? "/token/create-new":app_coinpedia_url+"login" }><button className="btn-gradient-primary">
                           <span className="btn__text">List your Token</span>
-                        </button></a></Link>
+                        </button> </Link>
                       </div>
                 </div> 
               </div>
@@ -174,10 +174,10 @@ export default function UpcomingLaunchPad({userAgent})
               <div className="row">
                 <div className="tabs_for_navigation">
                   <ul className="nav nav-tabs">
-                    <li><Link href="/launchpad"><a><span>Overview</span></a></Link></li>
-                    <li><Link href="/launchpad/ongoing"><a><span>Ongoing</span></a></Link></li>
-                    <li><Link href="/launchpad/upcoming"><a className="active"><span>Upcoming</span></a></Link></li>
-                    <li><Link href="/launchpad/ended"><a><span>Completed</span></a></Link></li>
+                    <li><Link href="/launchpad"> <span>Overview</span> </Link></li>
+                    <li><Link href="/launchpad/ongoing"> <span>Ongoing</span> </Link></li>
+                    <li><Link href="/launchpad/upcoming" className="active"><span>Upcoming</span> </Link></li>
+                    <li><Link href="/launchpad/ended"> <span>Completed</span> </Link></li>
                   </ul>
                 </div>
               </div>
@@ -191,10 +191,10 @@ export default function UpcomingLaunchPad({userAgent})
                       <li className="active_tab">All</li>
                       {
                               user_token?
-                              <li><Link href={app_coinpedia_url+"watchlist/?active_watchlist_tab=2"}><a><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                              <li><Link href="/watchlist"> <img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist </Link></li>
                               :
                               <li>
-                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/upcoming"}><a onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</a></Link>
+                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/upcoming"} onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist </Link>
                               </li>
                             }
                       {/* <li><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li> */}
