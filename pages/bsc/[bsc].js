@@ -1666,8 +1666,8 @@ function TokenDetails(props) {
           <div className="container">
             <div className="col-md-12">
               <div className="breadcrumb_block">
-                <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span>
-                <Link href={market_coinpedia_url}><a >Live Market</a></Link> <span> &#62; </span>{metadata.smartContract.currency.name}
+                <Link href={coinpedia_url}>Home</Link> <span> &#62; </span>
+                <Link href={market_coinpedia_url}>Live Market</Link> <span> &#62; </span>{metadata.smartContract.currency.name}
               </div>
               <div className="row">
                 <div className="col-lg-6 col-md-12 order-md-2">

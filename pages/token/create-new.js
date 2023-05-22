@@ -9,13 +9,13 @@ import Head from 'next/head'
 import JsCookie from "js-cookie" 
 import cookie from 'cookie'
 import dynamic from 'next/dynamic'
-import "react-datetime/css/react-datetime.css"
+// import "react-datetime/css/react-datetime.css"
 import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,  market_coinpedia_url,config,graphqlApiKEY,separator} from '../../components/constants'; 
 import Select from 'react-select'
 import Popupmodal from '../../components/popupmodal'
   
  
-import ReactCrop from 'react-image-crop';
+import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
 import { Editor } from '@tinymce/tinymce-react';
@@ -75,6 +75,7 @@ export default function Create_token({config})
     const imgRef = useRef(null);
     const previewCanvasRef = useRef(null);
     const [crop, setCrop] = useState({ unit: 'px', width: 50, height: 50, aspect: 1 / 1});
+
     const [completedCrop, setCompletedCrop] = useState(null)
     const [blobFile, set_blobFile] = useState()
     const [with_contract_address, set_with_contract_address] = useState(true)
@@ -150,7 +151,7 @@ export default function Create_token({config})
             {
                 if (!blob) {  return }
                 blob.name = 'newFile.jpeg'
-                window.URL.revokeObjectURL(fileUrl)
+                // window.URL.revokeObjectURL(fileUrl)
                 const fileUrl = window.URL.createObjectURL(blob)
                 var reader = new FileReader()
                 reader.readAsDataURL(blob)
@@ -173,6 +174,24 @@ export default function Create_token({config})
     }
 
 
+    function onImageLoad(e) {
+      imgRef.current = e.currentTarget
+      const width = 50
+      const height = 50
+      const crop = centerCrop(makeAspectCrop(
+          {
+              unit: '%',
+              width: 50,
+          },
+          1 / 1,
+          width,
+          height,
+      ),
+          width,
+          height,
+      )
+      setCrop({ unit: 'px', width: 50, height: 50, aspect: 1 / 1 })
+  }
 
     const onLoad = useCallback((img) => 
     {
@@ -827,7 +846,7 @@ const createNewToken = () =>
               setTokenName(result.data.ethereum.address[0].smartContract.currency.name) 
               getTotalMaxSupply(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
               
-              getMarketCap(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
+              // getMarketCap(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
             } 
             else { 
               setErrContractAddress("Invalid contract address or network type.")
@@ -881,13 +900,13 @@ const createNewToken = () =>
                 <div className="token_form">
                   <div className=" token_steps">
                     <div className="row">
-                  <div className="col-md-12">
+                  {/* <div className="col-md-12">
                   <div className="breadcrumb_block">
-                    <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
-                    <Link href={market_coinpedia_url}><a >Live Market</a></Link> <span> &#62; </span> 
-                      <Link href="/token/"><a>Tokens</a></Link><span> &#62; </span>Create Token
+                    <Link href={coinpedia_url}>Home</Link> <span> &#62; </span> 
+                    <Link href={market_coinpedia_url}>Live Market</Link> <span> &#62; </span> 
+                      <Link href="/token/">Tokens</Link><span> &#62; </span>Create Token
                   </div>
-                  </div>
+                  </div> */}
                   </div>
                   <div className="row">
                     <div className="col-lg-9 col-md-9 col-8">
@@ -895,8 +914,8 @@ const createNewToken = () =>
                     <p className="token_form_sub_text">Enter all these fields to create token</p>
                     </div>
                     <div className="col-lg-3 col-md-3 col-4">
-                    <div className="quick_block_links main_page_coin_filter create_token_btn">
-                      <Link href="/token"><a><i className="la la-arrow-left"></i>Go Back</a></Link>
+                    <div className="quick_block_links main_page_coin_filter create_token_btn ">
+                      <Link href="/token" className='button_transition_grey'><i className="la la-arrow-left"></i>Go Back</Link>
                       {/* <div class="text-right" onClick={() => router.back()}><a class="btn btn-primary"><i className="la la-arrow-left"></i>Go Back</a></div> */}
                     </div>
                     </div>
@@ -908,7 +927,7 @@ community_address
 explorer
 exchange_link 
 */}
-
+ <div className='create_token_details'>
                   <div className="row">
                     <div className="col-lg-3 col-md-4">
                       <div className="token_steps_list">
@@ -922,16 +941,17 @@ exchange_link
                         </ul>
                       </div>
                     </div>
+                   
                     <div className="col-lg-9 col-md-8">
                       <div className="row">
                         <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
                             </div>
-                            <div className="col-md-8">
+                            <div className="col-md-12 d-flex justify-content-center">
                               <div className="input-appearance">
-                                <label ><input type="radio" value={with_contract_address} checked={with_contract_address === true} onChange={()=>set_with_contract_address(true)} style={{appearance:'auto'}} />With Contract Address</label> &nbsp;
-                                <label ><input type="radio" value={with_contract_address} checked={with_contract_address === false} onChange={()=>set_with_contract_address(false)} style={{appearance:'auto'}} />Without Contract Address</label>
+                                <label ><input type="radio" value={with_contract_address} checked={with_contract_address === true} onChange={()=>set_with_contract_address(true)} style={{appearance:'auto'}} />&nbsp;&nbsp;With Contract Address</label> &nbsp;
+                                <label ><input type="radio" value={with_contract_address} checked={with_contract_address === false} onChange={()=>set_with_contract_address(false)} style={{appearance:'auto'}} />&nbsp;&nbsp;Without Contract Address</label>
                                 <br></br>
                               </div>
                             </div>
@@ -1060,9 +1080,10 @@ exchange_link
                               <label htmlFor="email">Select Category</label>
                             </div>
                             <div className="col-md-8">
+                              <div className='input_multiselector'>
                               <div className="form-custom">
-                                <div className="form-group input_block_outline">
-                                <Multiselect  className="form-control" placeholder="Select Event Tags"
+                                <div className="form-group input_block_outline ">
+                                <Multiselect   placeholder="Select Event Tags"
                                     selectedValues={category_name}
                                     options={categories} // Options to display in the dropdown
                                     onSelect={onSelect} // Function will trigger on select event
@@ -1073,6 +1094,7 @@ exchange_link
                                  <div className="error">{err_website_link}</div>
                               </div>
                             </div>
+                          </div>
                           </div>
                         </div>
                       </div>
@@ -1433,7 +1455,7 @@ exchange_link
                             <div className="col-md-4"></div>
                             <div className="col-md-8">
                               <div className="text-left review_upload_token mt-3">
-                                <button className="dsaf" onClick={() =>{createNewToken()}}>
+                                <button className="dsaf button_transition" onClick={() =>{createNewToken()}}>
                                  {loader ? (
                                       <div className="loader"><span className="spinner-border spinner-border-sm "></span>Review and Upload</div>
                                       ) : (
@@ -1447,6 +1469,7 @@ exchange_link
                       </div>
                     </div> 
                   </div>
+                </div>
                 </div>
                 </div>
               </div>
@@ -1463,12 +1486,19 @@ exchange_link
                 <button type="button" className="close" data-dismiss="modal"  onClick={()=>imageCropModalClose()}>&times;</button>
                 <h6 className="mb-3">Select Token Logo</h6>
                 <ReactCrop
-                  src={upImg}
-                  onImageLoaded={onLoad}
+                  // src={upImg}
+                  // onImageLoaded={onLoad}
                   crop={crop}
                   onChange={(c) => setCrop(c)}
                   onComplete={(c) => onCropComplete(c)}
-                /> 
+                  aspect={1 / 1} ><img
+                  alt="Crop me"
+                  src={upImg}
+                  onLoad={onImageLoad}
+                  style={{ width: "100%" }}
+              />
+          </ReactCrop>
+
                 <div className="text-center review_upload_token mt-2">
                   <button  className="dsaf" onClick={() =>{oncCropComplete()}}>Set Token Logo</button> 
                 </div>

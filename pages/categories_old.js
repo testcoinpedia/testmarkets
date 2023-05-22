@@ -10,13 +10,14 @@ import CategoriesTab from '../components/categoriesTabs'
 import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
 import WatchList from '../components/watchlist'
-import Select from 'react-select'
-import { useRouter } from 'next/router'
+// import Select from 'react-select'
+import { useRouter } from 'next/navigation'
 
 export default function Companies({user_token, config, userAgent})
 { 
     const router = useRouter()
-    const { active_category_tab } = router.query
+    // const { active_category_tab } = router.query
+    const active_category_tab =''
     const [tokens_list, set_tokens_list] = useState([]) 
     const [voting_ids, setvoting_ids] = useState([])  // commented
     const [watchlist, set_watchlist] = useState([])
@@ -27,7 +28,7 @@ export default function Companies({user_token, config, userAgent})
     const [firstcount, setfirstcount] = useState(1)
     const [finalcount, setfinalcount] = useState(per_page_count)
     const [selectedPage, setSelectedPage] = useState(0) 
-    const [image_base_url] = useState(IMAGE_BASE_URL + '/tokens/')
+    const [image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
     const [count, setCount]=useState(0)
     const [voting_status, set_voting_status] = useState(false)
     const [loader_status, set_loader_status] = useState(false)
@@ -48,7 +49,7 @@ export default function Companies({user_token, config, userAgent})
     
     const [business_tab_status, set_business_tab_status] = useState((active_category_tab > 0) ? 2 :"")
     
-    useEffect(async ()=>
+    useEffect(()=>
     {  
         tokensList({selected : 0})
         voteIds()
@@ -88,7 +89,7 @@ export default function Companies({user_token, config, userAgent})
             current_pages = ((page.selected) * per_page_count) 
         } 
 
-        const res = await Axios.get(API_BASE_URL+"markets/tokens/list/"+current_pages+'/'+per_page_count+"?search="+search_title+"&category_row_id="+category_row_id, config)
+        const res = await Axios.get(API_BASE_URL+"markets/cryptocurrency/list/"+current_pages+'/'+per_page_count+"?search="+search_title+"&category_row_id="+category_row_id, config)
         if(res.data)
         {
             if(res.data.status === true)
@@ -303,7 +304,8 @@ return (
             <div className="col-md-12">
               <div className="row market_insights ">
                 <div className="col-md-6 col-lg-6">
-                  <h1 className="page_title">Cryptocurrency Live Price</h1>
+                  <h1 className="page_title">Cryptocurrency Live Prices</h1>
+                  {/* by Market Cap */}
                   <p>Global market cap today: $ 1.38 trillion <img src="/assets/img/markets/high-value.png" alt="high value"/><span class="color-green">10.02%</span> in 24 hrs.</p>
                 </div>
                 <div className="col-md-1 col-lg-2"></div>
@@ -311,256 +313,10 @@ return (
                   <SearchContractAddress /> 
                 </div>
               </div>
-              <div className="row">
-                <div className="col-md-12">
-                  <ul className="trending-tokens">
-                    <li><img src="/assets/img/markets/trending.png" alt="trending"/> Trending Coin:</li>
-                    <li><img src="/assets/img/markets/bitcoin.png" alt="bitcoin"/> Bitcoin (BTC) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="color-green">03.56%</span></li>
-                    <li><img src="/assets/img/markets/arbitrum.png" alt="arbitrum"/> Arbitrum (ARB) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="color-green">04.06%</span></li>
-                    <li><img src="/assets/img/markets/shiba.png" alt="shiba"/> Shiba (INU) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="color-green">0.98%</span></li>
-                    <li><img src="/assets/img/markets/ethereum.png" alt="ethereum"/> Ethereum (ETH) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="color-green">03.84%</span></li>
-                    <li><img src="/assets/img/markets/dogecoin.png" alt="dogecoin"/> Dogecoin (DOGE) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="color-green">0.98%</span></li>
-                    <li data-toggle="modal" data-target="#trending-modal"><h6>More...</h6></li>
-                  </ul>
-
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <div class="all-categories-list">
-                  {
-                    <CategoriesTab /> 
-                  }
-                
-                </div>
-
-                <div className="row">
-                  <div className="col-md-12 col-lg-6">
-                    <div className="gainers-loosers">
-                      <div className="row">
-                        <div className="col-md-7">
-                            <h2>Todays Gainers and Losers</h2>
-                        </div>
-                        <div className="col-md-5">
-                          <ul class="nav nav-tabs">
-                            <li><a data-toggle="tab" href="#gainers" class="active">Gainers</a></li>
-                            <li><a data-toggle="tab" href="#losers">Losers</a></li>
-                          </ul>
-                        </div>
-
-                      </div>
-                      <div className="row">
-                        <div className="col-md-12">
-                         <div class="tab-content">
-                            <div id="gainers" class="tab-pane fade in active show">
-                                <table class="table">
-                                  <thead>
-                                    <tr>
-                                      <th>Rank</th>
-                                      <th>Name</th>
-                                      <th>Price</th>
-                                      <th>24h</th>
-                                      <th class="text-right">24h Volume</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr>
-                                      <td>23</td>
-                                      <td><img src="/assets/img/markets/gala.png" alt="gala" /> Gala <span>GALA</span></td>
-                                      <td>$ 0.043</td>
-                                      <td className="text-green">7.68%</td>
-                                      <td class="text-right">$156,749,287</td>
-                                    </tr>
-                                    <tr>
-                                      <td>45</td>
-                                      <td><img src="/assets/img/markets/ldo.png" alt="ldo" /> Lido DAO Token <span>LDO</span> </td>
-                                      <td>$ 2.36</td>
-                                      <td className="text-green">6.11%</td>
-                                      <td class="text-right"> $2,388,804,583.54</td>
-                                    </tr>
-                                    <tr>
-                                      <td>105</td>
-                                      <td><img src="/assets/img/markets/nexo.png" alt="nexo" /> Nexo <span>NEXO</span></td>
-                                      <td>$ 0.70</td>
-                                      <td className="text-green">2.012%</td>
-                                      <td class="text-right">$660,093,874.81</td>
-                                    </tr>
-                                    <tr>
-                                      <td>10254</td>
-                                      <td><img src="/assets/img/markets/stg.png" alt="stg" /> StargateToken <span>STG</span></td>
-                                      <td>$ 0.83</td>
-                                      <td className="text-green">6.95%</td>
-                                      <td class="text-right">$881,627,054.38</td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                                <a href={app_coinpedia_url+"gainers-and-losers/?active_category=3"} className="view-more-pg">View More <img src="/assets/img/markets/more.png" alt="view more" /></a>
-                            </div>
-                            <div id="losers" class="tab-pane fade">
-                            <div id="gainers" class="tab-pane fade in active show">
-                                <table class="table">
-                                  <thead>
-                                    <tr>
-                                      <th>Rank</th>
-                                      <th>Name</th>
-                                      <th>Price</th>
-                                      <th>24h</th>
-                                      <th class="text-right">24h Volume</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr>
-                                      <td>23</td>
-                                      <td><img src="/assets/img/markets/gala.png" alt="gala" /> Gala <span>GALA</span></td>
-                                      <td>$ 0.043</td>
-                                      <td className="text-red">7.68%</td>
-                                      <td class="text-right">$156,749,287</td>
-                                    </tr>
-                                    <tr>
-                                      <td>45</td>
-                                      <td><img src="/assets/img/markets/ldo.png" alt="ldo" /> Lido DAO Token <span>LDO</span> </td>
-                                      <td>$ 2.36</td>
-                                      <td className="text-red">6.11%</td>
-                                      <td class="text-right">$2,388,804,583.54</td>
-                                    </tr>
-                                    <tr>
-                                      <td>105</td>
-                                      <td><img src="/assets/img/markets/nexo.png" alt="nexo" /> Nexo <span>NEXO</span></td>
-                                      <td>$ 0.70</td>
-                                      <td className="text-red">2.012%</td>
-                                      <td class="text-right">$660,093,874.81</td>
-                                    </tr>
-                                    <tr>
-                                      <td>10254</td>
-                                      <td><img src="/assets/img/markets/stg.png" alt="stg" /> StargateToken <span>STG</span></td>
-                                      <td>$ 0.83</td>
-                                      <td className="text-red">6.95%</td>
-                                      <td class="text-right">$881,627,054.38</td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                                <a href="#" className="view-more-pg">View More <img src="/assets/img/markets/more.png" alt="view more" /></a>
-                            </div>
-                            </div>
-                          </div>
-
-                        </div>
-
-                      </div>
-                    </div>
-
-                  </div>
-                  <div className="col-md-12 col-lg-6">
-
-                    <div className="gainers-loosers top-categories">
-                        <div className="row">
-                          <div className="col-md-12">
-                              <h2>Top Categories</h2>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col-md-12">
-                            <div class="tab-pane">
-                                  <table class="table">
-                                    <thead>
-                                      <tr>
-                                      
-                                        <th>Name</th>
-                                        <th>Dominance</th>
-                                        <th className="text-right">Gainer / Looser Number</th>
-                                      
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <td> DeFi</td>
-                                        <td className="text-green">11.77%</td>  
-                                        <td>
-                                            <table>
-                                              <tbody>
-                                                  <tr>
-                                                    <td><span>147(79%)</span></td>
-                                                    <td className="gain-lose-progress">
-                                                      <div class="progress">
-                                                          <div class="progress-bar" style={{width:'79%'}}></div>
-                                                      </div>
-                                                    </td>
-                                                    <td><span>38(21%)</span></td>
-                                                </tr>
-                                              </tbody>
-                                            </table>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                        <td> Jobs</td>
-                                        <td className="text-green">56.23%</td>
-                                        <td>
-                                            <table>
-                                              <tbody>
-                                                  <tr>
-                                                    <td><span>3(100%)</span></td>
-                                                    <td className="gain-lose-progress">
-                                                      <div class="progress">
-                                                          <div class="progress-bar" style={{width:'100%'}}></div>
-                                                      </div>
-                                                    </td>
-                                                    <td><span>0(0%)</span></td>
-                                                </tr>
-                                              </tbody>
-                                            </table>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                        <td> BNB Chain Ecosystem</td>
-                                        <td className="text-green">16.96%</td>
-                                        <td>
-                                            <table>
-                                              <tbody>
-                                                  <tr>
-                                                    <td><span>147(60%)</span></td>
-                                                    <td className="gain-lose-progress">
-                                                      <div class="progress">
-                                                          <div class="progress-bar" style={{width:'60%'}}></div>
-                                                      </div>
-                                                    </td>
-                                                    <td><span>68(40%)</span></td>
-                                                </tr>
-                                              </tbody>
-                                            </table>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                        <td> NFT</td>
-                                        <td className="text-green">0.55%</td>
-                                        <td>
-                                            <table>
-                                              <tbody>
-                                                  <tr>
-                                                    <td><span>147(59%)</span></td>
-                                                    <td className="gain-lose-progress">
-                                                      <div class="progress">
-                                                          <div class="progress-bar" style={{width:'59%'}}></div>
-                                                      </div>
-                                                    </td>
-                                                    <td><span>38(41%)</span></td>
-                                                </tr>
-                                              </tbody>
-                                            </table>
-                                          </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                  <a href="#" className="view-more-pg">View More <img src="/assets/img/markets/more.png" alt="view more" /></a>
-                              </div>
-                          </div>
-
-                        </div>
-                      </div>
-
-                  </div>
-
-                </div>
-
+            <div>
+            <div class="all-categories-list">
+            <CategoriesTab active_tab={3}/> 
+            </div>
               </div>
             </div>
           </div>
@@ -570,95 +326,64 @@ return (
           <div className="container price-tracking-tbl">
           <div className="col-md-12">
           <div className="row">
-          {/* <div className="col-md-12">
-            {
-              <CategoriesTab /> 
-            }
-            </div> */}
-            <div className="col-md-12">
-              <h2>Price Tracking</h2>
-            </div>
+         
             <div className="col-md-3">
-              {/* <div className="input-group search_filter">
-                <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
-                  <div className="input-group-prepend ">
-                    <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
-                  </div>
-              </div>  */}
-              {/* <div className="error">  {err_searchBy}</div>
-              {validSearchContract && <div className="error">{validSearchContract}</div>} */}
             </div> 
           </div>
-            
-          
-            
-              {/* <div className="">
-              <div className="row">
-                <div className="col-lg-4 col-sm-6 col-12">
-                  <p className="companies_found">{total_tokens_count} Tokens Found</p>
-                </div>
-              </div>
-              </div> */}
-
-
-
+           
               <div className="prices transaction_table_block">
                 <div className="row">
                   <div className="col-md-12 col-12">
                   <div className="row">
-                         <div className="col-md-12 col-lg-6 col-12">
+                         <div className="col-md-12 col-lg-8 col-12">
                           <ul className="category_list">
-                            {/* <li className={all_tab_status===1?"active_tab":null}><a onClick={()=>set_all_tab_active()}>All</a></li> */}
                             {
                               user_token?
-                              <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist/?active_watchlist_tab=2"}><a><img src="/assets/img/markets/filled-star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                              <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist/?active_watchlist_tab=2"} ><img src="https://markets.coinpedia.org/assets/img2/Color.svg" alt="Watchlist"/> Watchlist</Link></li>
                               :
                               <li>
-                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/markets/star.svg" alt="Watchlist" width={17} height={17} /> Watchlist</a></Link>
+                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url} onClick={()=> Logout()}><img src="https://markets.coinpedia.org/assets/img2/Star.svg" alt="Watchlist" width={17} height={17} /> Watchlist</Link>
                               </li>
                             }
+                            <li>|</li>
+                            <li className={all_tab_status===1?"active_tab":null}><a onClick={()=>set_all_tab_active()}>Categories</a></li>
+                            
                             {
                               category_list.map((e,i)=>
                               // <li class={parseInt(category_row_id)===parseInt(e.category_row_id) && business_tab_status===2?"active_tab":null}><a onClick={()=>set_tab_list(e.category_row_id)}>{e.category_name}</a></li>
                               <li>
-                              <Link href={market_coinpedia_url+"category/"+e.category_id}><a>{e.category_name}</a></Link>
+                              <Link href={market_coinpedia_url+"category/"+e.category_id}>{e.category_name}</Link>
                               </li>
                               )
                            }
                           </ul>
                         </div>
-                       <div className="col-md-12 col-lg-6 col-12 filter-category-section">
-                        <ul>
-                          <li>
-                            <Select
-                                  onChange={handleChange}
-                                  options={other_category_list}
-                                  placeholder={category_name?category_name:'Select  Category'}
-                                  value={category_name}
-                                  /> 
-                          </li>
-                          <li>
-                            <div className="input-group search_filter">
-                                <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
-                                  <div className="input-group-prepend ">
-                                      <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
-                                   </div>
-                              </div> 
-                          </li>
-                          <li>
+                       <div className="col-md-12 col-lg-4 col-12 filter-category-section">
+                  
+                      <div className="row">
+                        <div className="col-md-9 col-12 col-sm-6">
+                          <div className="input-group search_filter">
+                            <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
+                              <div className="input-group-prepend ">
+                                  <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
+                                </div>
+                          </div> 
+                         
+                          </div>
+
+                          <div className="col-md-3 col-6 ">
                             <ul className="filter_rows">
-                                    <li>{count>100?
-                                      <select className="show-num" onChange={(e)=>set_per_page_count(e.target.value)} >
-                                      <option value="" disabled>Show Rows</option>
-                                      <option value={100}>100</option>
-                                      <option value={50}>50</option>
-                                      <option value={20}>20</option>
-                                      </select>:null}
-                                    </li>
-                              </ul>
-                          </li>
-                        </ul>
-                      
+                                <li>{count>100?
+                                  <select className="show-num" onChange={(e)=>set_per_page_count(e.target.value)} >
+                                  <option value="" disabled>Show Rows</option>
+                                  <option value={100}>100</option>
+                                  <option value={50}>50</option>
+                                  <option value={20}>20</option>
+                                  </select>:null}
+                                </li>
+                            </ul>
+                          </div>
+                        </div>
                         </div>     
                  </div>   
                 </div>
@@ -670,8 +395,22 @@ return (
                        <table className="table table-borderless">
                          <thead>
                             <tr>
+
+
+                                <th className="" style={{minWidth: '34px'}}></th>
+                                <th className="mobile_hide_table_col" style={{minWidth: '34px'}}>#</th>
+                                <th className="">Name</th>
+                                <th className="">Price</th>
+                                <th className=" mobile_hide_table_col" style={{minWidth: 'unset'}}>1h</th>
+                                <th className="" style={{minWidth: 'unset'}}>24h</th>
+                                <th className=" mobile_hide_table_col" style={{minWidth: 'unset'}}>7d</th>
+                                <th className="mobile_hide_table_col table_circulating_supply">Market Cap</th> 
+                                <th className=" mobile_hide_table_col">Volume(24H)</th>  
+                                <th className="mobile_hide_table_col table_circulating_supply">Circulating Supply</th>  
+                                <th className="mobile_hide_table_col">Last 7 Days</th>
+
                                 {/* <th className="" style={{minWidth: '34px'}}></th> */}
-                                <th className="">Rank</th>
+                                {/* <th className="">Rank</th>
                                 <th className="">Name</th>
                                 <th className="table_token">Price</th>
                                 <th className="table_token mobile_hide_table_col">Type</th>
@@ -682,7 +421,7 @@ return (
                                 <th className="mobile_hide_table_col table_circulating_supply">Market Cap</th>  
                                 <th className="mobile_hide_table_col table_circulating_supply">Circulating Supply</th>  
                                 <th className="table_circulating_supply mobile_hide_table_col text-center">Votes</th>  
-                                <th className="table_circulating_supply mobile_hide_table_col text-center">Action</th>  
+                                <th className="table_circulating_supply mobile_hide_table_col text-center">Action</th>   */}
                             </tr>
                          </thead>
                          
@@ -698,35 +437,38 @@ return (
                              <tr key={i}>
                                  
                                      <td>
-                                     <span className="mobile_hide_table_col wishlist"> {sl_no+i+1}</span>
+                                     
                                      {
                                        user_token ?
                                        <>
                                        {
                                          watchlist.includes(e._id) ?
-                                         <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/markets/filled-star.svg" alt="Watchlist" width={17} height={17} /></span>
+                                        
+                                        //  /assets/img/markets/filled-star.svg
+                                        // /assets/img/markets/star.svg
+                                         <span onClick={()=>removeFromWatchlist(e._id)} ><img src=" https://markets.coinpedia.org/assets/img2/Color.svg" alt="Watchlist" width={17} height={17} /></span>
                                          :
-                                         <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/markets/star.svg" alt="Watchlist" width={17} height={17} /></span>
+                                         <span onClick={()=>addToWatchlist(e._id)} ><img src="https://markets.coinpedia.org/assets/img2/Star.svg" alt="Watchlist" width={17} height={17} /></span>
                                          }
                                        </>
                                        :
-                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><img src="/assets/img/markets/star.svg" alt="Watchlist" width={17} height={17} /></a></Link>
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url} onClick={()=> Logout()}><img src="https://markets.coinpedia.org/assets/img2/Star.svg" alt="Watchlist" width={17} height={17} /></Link>
                                      }
                                      
                                      </td>
-                                 
+                                    <td>
+                                        <span className="mobile_hide_table_col wishlist"> {sl_no+i+1}</span>
+                                    </td>
                                      <td>
-                                       <Link href={"/"+e.token_id}>
-                                         <a>
+                                       <Link href={"/"+e.token_id}> 
                                           <div className="media">
                                             <div className="media-left">
-                                              <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                              <img src={image_base_url+(e.coinmarketcap_id ? e.coinmarketcap_id+".png" : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
                                             </div>
                                             <div className="media-body">
                                               <h4 className="media-heading">{e.token_name} <span>{(e.symbol).toUpperCase()}</span></h4>
                                             </div>
-                                          </div> 
-                                         </a>
+                                          </div>  
                                        </Link>
                                      </td> 
                                      {/* <td>{e.price === null? "-":"$"+ Number(e.price).toFixed(2)}</td> */}
@@ -735,99 +477,80 @@ return (
                                      </td> */}
                
                                      <td className="market_list_price"> 
-                                       <Link href={"/"+e.token_id}>
-                                         <a>
+                                       <Link href={"/"+e.token_id}> 
                                          <span className="block_price">{roundNumericValue(e.price)}</span>
                                            {/* <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(9)):"-"}</span> */}
                                           {/* <br/> {e.price} <br/> */}
-                                           {e.price_updated_on ? moment(e.price_updated_on).fromNow():null} 
-                                         </a>
+                                           {e.updated_on ? moment(e.updated_on).fromNow():null}  
                                          </Link>
                                     </td>
                                     
-                                    <td className="mobile_hide_table_col"> 
-                                       <Link href={"/"+e.token_id}>
-                                        <a>
-                                          {
-                                            e.list_type==1?
-                                            "Coin"
-                                            :
-                                            (e.contract_addresses) && ((e.contract_addresses).length ===1)
-                                            ?
-                                            parseInt(e.contract_addresses[0].network_type) === 1 ? "ERC20" : "BEP20" 
-                                            // e.contract_addresses.map((ca)=>
-                                            //   parseInt(ca.network_type) === 1 ? "ERC20" : "BEP20" 
-                                            //)
-                                            :
-                                            (e.contract_addresses) && (e.contract_addresses).length === 2
-                                            ?
-                                            e.contract_addresses.map((ca,i)=>
-                                              i==0?
-                                              parseInt(ca.network_type) === 1? "ERC20"+","
-                                              :
-                                              "BEP20" +","
-                                              :
-                                              parseInt(ca.network_type) === 1? "ERC20"
-                                              :
-                                              "BEP20" 
-                                            )
-                                            :
-                                            null
-                                            
-                                          } 
-                                        </a>
-               
-                                         </Link>
-                                    </td>
                                     
-                                    <td className="mobile_hide_table_col">
-                                       <Link href={"/"+e.token_id}>
-                                         <a>
-                                           {e.total_max_supply ? separator(e.total_max_supply) : "-"} 
-                                         </a>
-                                       </Link>
-                                    </td>
 
                                     <td className="mobile_hide_table_col">
-                                       <Link href={"/"+e.token_id}><a>
-                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/> 0.05%</span></h6>
-                                        {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>1.05%</span></h6> */}
-                                       </a></Link>
-                                     </td>
-               
-                                    <td className="mobile_hide_table_col">
-                                       <Link href={"/"+e.token_id}><a>
-                                        {
-                                        e.usd_24h_change?e.usd_24h_change>0?
-                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/> {e.usd_24h_change.toFixed(2)+"%"}</span></h6>
+                                       <Link href={"/"+e.token_id}> 
+                                         {
+                                        e.percent_change_1h?e.percent_change_1h>0?
+                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_1h.toFixed(2)+"%"}</span></h6>
                                         :
-                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/> {e.usd_24h_change.toFixed(2)+"%"}</span></h6>
+                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_1h.toFixed(2)).replace('-', '')+"%"}</span></h6>
                                         :
                                         "--"
                                         }
-                                       </a></Link>
-                                     </td>
-
-                                     <td className="mobile_hide_table_col">
-                                       <Link href={"/"+e.token_id}><a>
-                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/> 1.05%</span></h6>
                                         {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>1.05%</span></h6> */}
-                                       </a></Link>
+                                        </Link>
+                                     </td>
+               
+                                    <td className="mobile_hide_table_col">
+                                       <Link href={"/"+e.token_id}> 
+                                       {
+                                        e.percent_change_24h?e.percent_change_24h>0?
+                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
+                                        :
+                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                        :
+                                        "--"
+                                        } </Link>
                                      </td>
 
                                      <td className="mobile_hide_table_col">
-                                       <Link href={"/"+e.token_id}><a>
-                                         {e.market_cap ?"$"+separator(e.market_cap.toFixed(2)) : "-"}
-                                       </a></Link>
+                                       <Link href={"/"+e.token_id}> 
+                                       {
+                                        e.percent_change_7d?e.percent_change_7d>0?
+                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
+                                        :
+                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                        :
+                                        "--"
+                                        }
+                                        {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>1.05%</span></h6> */}
+                                        </Link>
+                                     </td>
+
+                                     <td className="mobile_hide_table_col">
+                                       <Link href={"/"+e.token_id}> 
+                                       {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"}
+                                        </Link>
                                      </td>  
                                      
                                      <td className="mobile_hide_table_col">
-                                       <Link href={"/"+e.token_id}><a>
-                                       $530,362,726,695.00
-                                       </a></Link>
-                                     </td> 
+                                       <Link href={"/"+e.token_id}> 
+                                       {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"}
+                                        </Link>
+                                     </td>
+
+                                     <td className="mobile_hide_table_col">
+                                       <Link href={"/"+e.token_id}> 
+                                       {e.circulating_supply ? separator((e.circulating_supply).toFixed(0))+" "+(e.symbol).toUpperCase() : "-"}
+                                        </Link>
+                                     </td>
+
                                      
-                                       <td  className="mobile_hide_table_col text-center">
+                                      
+                                     <td className="mobile_hide_table_col">
+                                      <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} width="100%" height="100%"/>
+                                     </td> 
+                                       {/* <td  className="mobile_hide_table_col text-center">
                                        {
                                        e.total_votes == 0 ?
                                        voting_ids.includes(e._id) ? <span className="vote_value">1</span> : "--"
@@ -838,10 +561,10 @@ return (
                                          </a>
                                        </Link>
                                        }
-                                     </td>
+                                     </td> */}
                                      
                                      
-                                     <td  className="mobile_hide_table_col text-center">
+                                     {/* <td  className="mobile_hide_table_col text-center">
                                        {
                                          user_token ?
                                          <>
@@ -855,7 +578,7 @@ return (
                                          :
                                          <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><span className="market_list_price"><button data-toggle="tooltip" className="vote_btn">Vote</button></span></a></Link>
                                        }
-                                       </td> 
+                                       </td>  */}
                                </tr> 
                              ) 
                              :

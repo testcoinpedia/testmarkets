@@ -148,10 +148,10 @@ const getTokensCurrentList=(items, offset)=>
       <div className="container token-list-pd-rm">
         <div className="prices transaction_table_block token-pg-height">
         <div className="col-md-12">
-        <div className="breadcrumb_block">
-        <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
-        <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span> Tokens
-        </div>
+        {/* <div className="breadcrumb_block">
+        <Link href={coinpedia_url}>Home</Link> <span> &#62; </span> 
+        <Link href={market_coinpedia_url}>Live Market</Link><span> &#62; </span> Tokens
+        </div> */}
         </div>
           <div className="col-md-12">
             <div className="row">
@@ -186,7 +186,7 @@ const getTokensCurrentList=(items, offset)=>
                   <div className="col-md-6">
                   <li>
                     <div className="quick_block_links main_page_coin_filter create_token_btn"> 
-                      <Link href="/token/create-new"><a><img src="/assets/img/create-token.svg" />Create Token</a></Link>
+                      <Link href="/token/create-new"><img src="/assets/img/create-token.svg" />Create Token</Link>
                     </div>
                   </li>
                   </div>
@@ -213,7 +213,7 @@ const getTokensCurrentList=(items, offset)=>
               <table className="table table-borderless">
                 <thead>
                       <tr>
-                          <th></th>
+                          {/* <th></th> */}
                           <th>#</th>
                           <th className="manage_token_name">Token</th>
                           <th>Max Supply</th>
@@ -230,27 +230,29 @@ const getTokensCurrentList=(items, offset)=>
                   currentPageArray.length > 0 ?
                   currentPageArray.map((e, i)=>
                    <tr key={i}>
-                        <td>
+                        {/* <td>
                         {
                            
                             <>
                                {
                                    watchlist.includes(e._id) ?
-                                   <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img2/Color.svg" alt="Watchlist" /></span>
+                                   <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/color.svg" alt="Watchlist" /></span>
                                    :
                                    e.approval_status == 1 && e.active_status == 1 ?
-                                   <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img2/Star.svg" alt="Watchlist"/></span>
+                                   <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/star.svg" alt="Watchlist"/></span>
                                    :
                                    ""
                                }
                               </>
                           }
-                        </td>
+                        </td> */}
                         <td>{sl_no+i+1}</td>
                         <td>
                           <div className="media">
+                            <div className='media-left align-self-center'>
                             <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="token" className="rounded-circle"  />
-                            <div className="media-body">
+                            </div>
+                            <div className="media-body  align-self-center">
                               <h4 className="media-heading">{e.token_name} <span>{e.symbol}</span></h4>
                             </div>
                           </div>
@@ -307,8 +309,8 @@ const getTokensCurrentList=(items, offset)=>
                         <td>
                             {
                                 parseInt(e.approval_status) !== 2 ?
-                                <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
-                                  <a><span className="manage_tokens_edit">Edit Token</span></a>
+                                <Link href={market_coinpedia_url + "token/update?token_id="+e._id}>
+                                  <span className="manage_tokens_edit">Edit Token</span>
                                 </Link>
                                 :
                                 ""
@@ -322,13 +324,13 @@ const getTokensCurrentList=(items, offset)=>
                               :
                               parseInt(e.approval_status) === 1 && parseInt(e.active_status) === 1 ?
                               <>
-                               {/* <Link > */}
-                                  <a href={market_coinpedia_url+"token/launchpads/"+e.token_id}><span className="manage_tokens_edit">Edit Launchpad</span></a>
-                              {/* </Link> */}
-                
-                              <Link href={market_coinpedia_url + e.token_id}>
-                                <a><span className="manage_tokens_edit">View</span></a>
+                               <Link href={market_coinpedia_url+"token/launchpads/"+e.token_id}>
+                                 <span className="manage_tokens_edit">Edit Launchpad</span>
                               </Link>
+{/*                 
+                              <Link href={market_coinpedia_url + e.token_id}>
+                                <span className="manage_tokens_edit">View</span>
+                              </Link> */}
                               </>
                               :
                               null
@@ -422,6 +424,4 @@ export async function getServerSideProps({req})
           }
       }
   }
-
- 
 }

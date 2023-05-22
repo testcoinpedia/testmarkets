@@ -4,21 +4,22 @@ import Link from 'next/link'
 import Head from 'next/head';
 import {x_api_key, API_BASE_URL,separator, app_coinpedia_url, coinpedia_url,market_coinpedia_url,config} from '../../../components/constants'
 import Popupmodal from '../../../components/popupmodal' 
+import Top_header from '../../../components/manage_token/top_header'
 import { useRouter } from 'next/router'
 import moment from 'moment' 
 import dynamic from 'next/dynamic'; 
 import cookie from "cookie"
 import JsCookie from "js-cookie"
 import { Editor } from '@tinymce/tinymce-react';
-import Datetime from "react-datetime"
-import "react-datetime/css/react-datetime.css"
+// import Datetime from "react-datetime"
+// import "react-datetime/css/react-datetime.css"
 
 export default function CreateLauchPad() 
 {  
 
   const router = useRouter()
-  const {launchpad_token_id}= router.query
-  // console.log(launchpad_token_id)
+  const {token_id}= router.query
+  // console.log(token_id)
 
   const Multiselect = dynamic(
     () => import('multiselect-react-dropdown').then(module => module.Multiselect),
@@ -75,7 +76,7 @@ var object =  {
   const [confirm_remove_modal, set_confirm_remove_modal]=useState(false)
   const [today_date, set_today_date]= useState("")
   const [active_launchpad_row_id, set_active_launchpad_row_id]= useState("")
-  // const [token_id,set_token_id]= useState(launchpad_token_id)
+  // const [token_id,set_token_id]= useState(token_id)
   const [err_launchpad, set_err_launchpad]= useState("")
   const [err_tokenlaunchpa, set_err_tokenlaunchpa]= useState("")
   const [err_start_date, set_err_start_date]= useState("")
@@ -93,11 +94,26 @@ var object =  {
   const [edit_launchpad_row_id, set_edit_launchpad_row_id] = useState('')
   const [edit_launchpad_object, set_edit_launchpad_object] = useState('')
 
+
+//   title
+// launchpad_type
+// tokens_for_sale
+// percentage_of_total_supply
+// start_date
+// end_date
+// launchpad_price
+// listing_price
+// where_to_buy_link
+// soft_cap
+// payment_types
+// access_type
+// description
+
   useEffect(()=>
   { 
     acceptPaymentType()
     getTokenDetails() 
-  },[launchpad_token_id])
+  },[token_id])
 
   var yesterday = moment().subtract( 1, 'day' )
   var valid = function( current ) {
@@ -149,7 +165,7 @@ var object =  {
   const removeLaunchpad = (id)=>
   {
     const reqObj = {
-      token_id : launchpad_token_id,
+      token_id : token_id,
       launchpad_row_id:id
       } 
       setModalData({icon: "", title: "", content: ""})
@@ -197,8 +213,8 @@ var object =  {
   
   const getTokenDetails = ()=>
   {
-    //console.log(launchpad_token_id)
-    Axios.get(API_BASE_URL+"markets/listing_tokens/individual_details/"+launchpad_token_id, config(user_token)).then(res=>
+    //console.log(token_id)
+    Axios.get(API_BASE_URL+"markets/listing_tokens/individual_details/"+token_id, config(user_token)).then(res=>
     {
       //  console.log(res.data)
         if(res.data.status)
@@ -412,7 +428,7 @@ var object =  {
     setValidError("") 
     set_loader(true)
     const reqObj = {
-      token_id : launchpad_token_id,
+      token_id : token_id,
       launchpad_row_id:edit_launchpad_row_id, 
       launch_pad_type:launch_pad_type,
       start_date: req_start_date,
@@ -554,20 +570,305 @@ var object =  {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
       <div className="page">
-        <div>
+      <div className="create_airdrop create_launchpad">
           <div className="container">
-            <div className="col-md-12">
-              <div className="breadcrumb_block">
-              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
-              <Link href={market_coinpedia_url}><a >Live Market</a></Link> <span> &#62; </span>
-              <Link href="/token/"><a>Tokens</a></Link><span> &#62; </span>Launchpad
-                  </div>
-                 
+          <div className="for_padding">
+          <div className='market_token_tabs'>
+              <h4>Manage Launchpads</h4>
+              <Top_header active_tab={2} token_id={token_id}/>
               <div className="row">
-                <div className="col-lg-5 col-md-12">
-                  <div className="main_create_form">
-                    <h1 className="create-token-res">Launchpad List</h1>
-                    <p className="token_form_sub_text">List of Ongoing, Upcoming and Completed launchpads</p>
+                  <div className="col-lg-3 col-md-4">
+                  </div>  
+                  <div className="col-lg-12 col-md-6">
+                      
+                  </div>
+              </div>
+          </div>
+                
+            <div className="col-md-12">
+              <div className="row">
+              <div className="col-lg-5 col-md-12">
+              {
+                  !edit_launchpad_row_id ? 
+                  <>
+                  <h5 >Create Launchpad</h5>
+                  <p>Enter all these fields to create Launchpad</p>
+                  </>
+                  :
+                  <>
+                  <h5 className="create-token-res">Update Launchpad</h5>
+                  <p className="token_form_sub_text">Enter all these fields to update Launchpad</p>
+                  </>
+                }
+
+                        {/* {
+                            edit_launchpad_row_id ? 
+                            <>
+                            <button type="button" onClick={()=>btnremove(edit_launchpad_row_id)} className="edit_launchpad" data-toggle="modal" data-target="#removeConnection">Remove</button>
+                            <button type="button" onClick={()=> createLaunchpad()} className="edit_launchpad" >Go Back</button>
+                            </>
+                            :
+                            <Link href="/token" className="edit_launchpad"><i className="la la-arrow-left"></i>Go Back</Link>
+                        } */}
+
+                <form id="myForm" >
+                <div>
+                  <div className=" create_token_details">
+                    <div className="row">
+                      <div className="col-md-12">
+                          <div className="form-custom">
+                            <label htmlFor="email">Title<span className="label_star">*</span></label>
+                            <div className="form-group input_block_outline">
+                            <div className="input-group">
+                              <div className="input-group-append">
+                              <select  name="launch_pad_type" className="form-control select_launchpad_type" value={launch_pad_type} onChange={(e)=>set_launch_pad_type(e.target.value)}>
+                                      <option value="">Type</option>
+                                      <option value="1">ICO</option>
+                                      <option value="2">IDO</option>
+                                      <option value="3">IEO</option>
+                                    </select>
+                              </div>
+                              <input autoComplete="off" type="text" placeholder="Title"   value={where_to_buy_title} onChange={(e)=>set_where_to_buy_title(e.target.value)} />
+                            </div>
+                            </div>
+                            <div className="error">{err_launchpad} </div>
+                           
+                          </div>
+                      </div>
+                    </div> 
+                    
+
+                    <div className="row">
+                      <div className="col-md-6"> 
+                        <div className="form-custom">
+                          <label htmlFor="email">Tokens For sale<span className="label_star">*</span></label>
+                          <div className="form-group input_block_outline">
+                            <input type="number" className="form-control" placeholder="Number of Tokens(Hardcap)" value={tokens_sold} onChange={(e)=>set_tokens_sold(e.target.value)}/>
+                          </div>
+                          <div className="error">{err_launchpad}</div>
+                          <div>
+                            <span style={{float:"right", fontSize:"12px",fontWeight:"500"}}>13 % of Total Supply</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* <div className="col-md-6">
+                          <div className="form-custom">
+                            <label htmlFor="where_to_buy_title">Title<span className="label_star">*</span></label>
+                            <div className="form-group input_block_outline">
+                             
+                            </div>
+                            <div className="error">{err_wheretobuy}</div>
+                          </div>
+                      </div> */}
+
+                      <div className="col-md-6 ">
+                        <div className="form-custom">
+                          <label htmlFor="access_type">Access Type<span className="label_star">*</span></label>
+                            <div className="form-group input_block_outline">
+                            <select className='form-control' name="access_type"  value={access_type} onChange={(e)=>set_access_type(e.target.value)} >
+                              <option value="">Select Access Type</option>
+                              <option value="1">Public</option>
+                              <option value="2">Private</option> 
+                            </select>
+                            <div className="error">{err_access_type}</div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className='row'>
+                      <div className="col-md-6">
+                          <div className="form-custom">
+                            <label htmlFor="email">Start Date<span className="label_star">*</span></label> 
+                            <div className="form-group input_block_outline">
+                            <input type="date"  className="form-control" value={start_date} onChange={(e) => setStartDate(e.target.value)} />
+                            </div>
+                            <div className="error">{err_start_date}</div>
+                          </div>
+                      </div>
+                      <div className="col-md-6">
+                          <div className="form-custom">
+                            <label htmlFor="email">End Date<span className="label_star">*</span></label>
+                            <div className="form-group input_block_outline">
+                              <input type="date"  className="form-control" value={end_date} onChange={(e) => setEndDate(e.target.value)} />
+                              {/* <Datetime inputProps={ inputProps2 }  dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid2 }  name="end_date_n_time" value={end_date} onChange={(e) => setEndDate(e)}/> */}
+                            </div>
+                            <div className="error">{err_end_date}</div>
+                           </div>
+                      </div>
+                    </div>
+
+                    <div className='row'>
+                      <div className="col-md-6">
+                          <div className="form-custom">
+                          <label htmlFor="price">ICO Price<span className="label_star">*</span></label>
+                            <div className="form-group input_block_outline">
+                              <input type="number" placeholder="Eg.,$00.00"  value={price} onChange={(e)=>set_price(e.target.value)}  />
+                            </div>
+                            <div className="error">{err_price}</div>
+                          </div>
+                      </div>
+                      <div className="col-md-6">
+                      <div className="form-custom">
+                          <label htmlFor="price">Listing Price<span className="label_star">*</span></label>
+                            <div className="form-group input_block_outline">
+                              <input type="number" placeholder="Eg.,$00.00"  value={price} onChange={(e)=>set_price(e.target.value)}  />
+                            </div>
+                            <div className="error">{err_price}</div>
+                            {/* <div>
+                              <span style={{float:"right"}}>13% Change</span>
+                            </div> */}
+                          </div>
+                      </div>
+                    </div>
+
+                    <div className='row'>
+                      <div className="col-md-12">
+                          <div className="form-custom">
+                          <label htmlFor="accept_payment_type">Accept<span className="label_star">*</span></label>
+                            <div className="form-group input_block_outline" >
+                              <Multiselect  className="form-control" style={{border:"0px"}}
+                                selectedValues={accept_payment_type}
+                                options={payment_types} // Options to display in the dropdown
+                                onSelect={onSelect} // Function will trigger on select event
+                                onRemove={onRemove} // Function will trigger on remove event
+                                displayValue="payment_name" // Property name to display in the dropdown options
+                                /> 
+                            </div>
+                            <div className="error">{err_accept}</div>
+                          </div>
+                      </div>
+                     
+                    </div>
+
+                    <div className='row'>
+                      <div className="col-md-6">
+                          <div className="form-custom">
+                          <label htmlFor="price">Soft Cap</label>
+                            <div className="form-group input_block_outline">
+                              <input type="number" placeholder="Soft cap"  value={soft_cap} onChange={(e)=>set_soft_cap(e.target.value)}  />
+                            </div>
+                            <div className="error"></div>
+                          </div>
+                      </div>
+                      <div className="col-md-6">
+                          <div className="form-custom">
+                          <label htmlFor="where_to_buy_link">Where to Buy Link<span className="label_star">*</span></label>
+                          <div className="form-group input_block_outline">
+                            <input autoComplete="off" type="text" placeholder="Where to Buy Link" name="where_to_buy_link"  value={where_to_buy_link} onChange={(e)=>set_where_to_buy_link(e.target.value)}  />
+                          </div>
+                          <div className="error">{err_wheretobuylink}</div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div className='row'>
+                      <div className="col-md-12">
+                          <div className="form-custom">
+                          <label htmlFor="how_to_participate">About Launchpad<span className="label_star">*</span></label>
+                            <div className="form-group input_block_outline">
+                              <Editor apiKey="s6mr8bfc8y6a2ok76intx4ifoxt3ald11z2o8f23c98lpxnk" 
+                              onEditorChange={(e)=>set_how_to_participate(e)}
+                              value={how_to_participate} 
+                                  onInit={(evt, editor) => {editorRef.current = editor}}
+                               
+                                  init={{
+                                    height: 220,
+                                    menubar: false,
+                                    plugins: [
+                                      'advlist autolink lists link image charmap print preview anchor',
+                                      'searchreplace visualblocks code fullscreen',
+                                      'insertdatetime media table paste code help wordcount'
+                                    ],
+                                    toolbar: 'undo redo | formatselect | ' +
+                                    'bold italic backcolor | alignleft aligncenter ' +
+                                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                                    'removeformat | help'
+                                  
+                                  }}
+                                />
+                            </div>
+                            <div className="error">{err_airdrop}</div>
+                          </div>
+                      </div>
+                      <div className="col-md-6">
+                          <div className="form-custom">
+                            
+                          </div>
+                      </div>
+                    </div>
+
+
+                    <div className="row">
+                        <div className="col-md-12">
+                        <div className="review_upload_token create-launchpad-submit-button mt-3">
+                            {
+                              !edit_launchpad_row_id ? 
+                                <button type="button" onClick={()=> OnSubmitData()}>
+                                  {loader ? (
+                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Create Launch pad</div>
+                                        ) : (
+                                            <>Create Launch pad</>
+                                        )}
+                                </button>
+                              :
+                              <button type="button" onClick={()=> OnSubmitData()}>
+                                {loader ? (
+                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Update Launch pad</div>
+                                        ) : (
+                                            <>Update Launch pad</>
+                                        )}
+                              </button>
+                            }
+                            
+                          </div> 
+                        </div>
+                       
+                    </div>
+
+
+                  </div>
+                  
+                  
+                    </div>
+                  </form>
+                </div>
+               
+
+
+                <div className="col-lg-7 col-md-12">
+                <h5 className="create-token-res">Launchpad List</h5>
+                    <p>List of Ongoing, Upcoming and Completed launchpads</p>              
+                <div className="table-responsive">
+                  <table className="table">
+                      <thead>
+                      <tr>
+                      <th >Sl No.</th>
+                          {/* 
+                          <th >Title</th> */}
+                          <th >Sale Tokens</th>
+                          <th >Start-End</th>
+                          <th >Action</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr>
+                      <td>1</td>
+                              {/* 
+                          <td>erdfs</td> */}
+                          <td>erdfs</td>
+                          <td>erdfs</td>
+                              <td>
+                                  <button type="submit" title="Edit" onClick={() => getFundingDetails(e._id)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
+                          </td> 
+                          </tr>
+                      </tbody> 
+                  </table>
+                </div>
+
+                  {/* <div className="main_create_form">
+                    
                     <div className="col-md-12 launchpad_list_title">
                       <div className="row">
                         <div className="col-md-4 col-4">
@@ -631,254 +932,15 @@ var object =  {
                           Sorry, No data found
                       </div>
                       }   
-                  </div>
+                  </div> */}
                 </div>
               
-              <div className="col-lg-7 col-md-12">
-                <form id="myForm" >
-                <div>
-                  <div className="token_steps">
-                    <div className="row">
-                      <div className="col-md-6">
-                        {
-                          !edit_launchpad_row_id ? 
-                          <>
-                          <h1 className="create-token-res">Create New Launch Pad</h1>
-                          <p className="token_form_sub_text">Enter all these fields to create Launchpad</p>
-                          </>
-                          :
-                          <>
-                          <h1 className="create-token-res">Update Launch Pad</h1>
-                            <p className="token_form_sub_text">Enter all these fields to update Launchpad</p>
-                          </>
-                        }
-                      </div>
-                      <div className="col-md-6 text-right">
-                        {
-                            edit_launchpad_row_id ? 
-                            <>
-                            <button type="button" onClick={()=>btnremove(edit_launchpad_row_id)} className="edit_launchpad" data-toggle="modal" data-target="#removeConnection">Remove</button>
-                            <button type="button" onClick={()=> createLaunchpad()} className="edit_launchpad" >Go Back</button>
-                            </>
-                            :
-                            <Link href="/token" ><a className="edit_launchpad"><i className="la la-arrow-left"></i>Go Back</a></Link>
-                        }
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="token_list_table">
-                    <div className="row">
-                        <div className="col-md-4">
-                          <label htmlFor="email">Tokens For sale<span className="label_star">*</span></label>
-                        </div>
-                        <div className="col-md-7 mb-4">
-                          <div className="input-group">
-                            <div className="input-group-append">
-                            <select  name="launch_pad_type" className="form-control select_launchpad_type" value={launch_pad_type} onChange={(e)=>set_launch_pad_type(e.target.value)}>
-                                    <option value="">Type</option>
-                                    <option value="1">ICO</option>
-                                    <option value="2">IDO</option>
-                                    <option value="3">IEO</option>
-                                  </select>
-                            </div>
-                            <input type="number" className="form-control" placeholder="Number of Tokens for Sale" value={tokens_sold} onChange={(e)=>set_tokens_sold(e.target.value)}/>
-                           </div>
-                           <div className="error">{err_launchpad} </div>
-                           <div className="error">{err_tokenlaunchpa}</div>
-                        </div>
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-4">
-                        <label htmlFor="access_type">Enter Access Type<span className="label_star">*</span></label>
-                      </div>
-                      <div className="col-md-7 mb-4">
-                        <div className="form-group input_block_outline">
-                          <select name="access_type"  value={access_type} onChange={(e)=>set_access_type(e.target.value)} >
-                            <option value="">Select Access Type</option>
-                            <option value="1">Public</option>
-                            <option value="2">Private</option> 
-                          </select>
-                        </div>
-                        <div className="error">{err_access_type}</div>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-4">
-                        <label htmlFor="email">Start Date<span className="label_star">*</span></label> 
-                      </div>
-                      <div className="col-md-7 mb-4">
-                        <div className="form-group input_block_outline">
-                           {/* <input type="date"  className="form-control" value={start_date} onChange={(e) => setStartDate(e.target.value)} /> */}
-                           <Datetime inputProps={ inputProps }  dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid }   name="end_date_n_time" value={start_date} onChange={(e) => setStartDate(e)}/>
-                        </div>
-                        <div className="error">{err_start_date}</div>
-                      </div>
-                    </div> 
-                    {/* isValidDate={ valid } inputProps={ inputProps2 } */}
-                    <div className="row">
-                      <div className="col-md-4">
-                        <label htmlFor="email">End Date<span className="label_star">*</span></label>
-                      </div>
-                      <div className="col-md-7 mb-4">
-                        <div className="form-group input_block_outline">
-                          {/* <input type="date"  className="form-control" value={end_date} onChange={(e) => setEndDate(e.target.value)} /> */}
-                          <Datetime inputProps={ inputProps2 }  dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid2 }  name="end_date_n_time" value={end_date} onChange={(e) => setEndDate(e)}/>
-                        </div>
-                        <div className="error">{err_end_date}</div>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-4">
-                        <label htmlFor="price"> Enter Price<span className="label_star">*</span></label>
-                      </div>
-                      <div className="col-md-7 mb-4">
-                        <div className="form-group input_block_outline">
-                          <input type="number" placeholder="Eg.,$00.00"  value={price} onChange={(e)=>set_price(e.target.value)}  />
-                        </div>
-                        <div className="error">{err_price}</div>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-4">
-                        <label htmlFor="price">Soft Cap</label>
-                      </div>
-                      <div className="col-md-7 mb-4">
-                        <div className="form-group input_block_outline">
-                          <input type="number" placeholder="Soft cap"  value={soft_cap} onChange={(e)=>set_soft_cap(e.target.value)}  />
-                        </div>
-                        <div className="error"></div>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-4">
-                        <label htmlFor="where_to_buy_title">Enter Where to Buy Title<span className="label_star">*</span></label>
-                      </div>
-                      <div className="col-md-7 mb-4">
-                        <div className="form-group input_block_outline">
-                          <input autoComplete="off" type="text" placeholder="Where to Buy Title"   value={where_to_buy_title} onChange={(e)=>set_where_to_buy_title(e.target.value)} />
-                        </div>
-                        <div className="error">{err_wheretobuy}</div>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-4">
-                      <label htmlFor="where_to_buy_link">Enter Where to Buy Link<span className="label_star">*</span></label>
-                      </div>
-                      <div className="col-md-7 mb-4">
-                        <div className="form-group input_block_outline">
-                          <input autoComplete="off" type="text" placeholder="Where to Buy Link" name="where_to_buy_link"  value={where_to_buy_link} onChange={(e)=>set_where_to_buy_link(e.target.value)}  />
-                        </div>
-                        <div className="error">{err_wheretobuylink}</div>
-                      </div>
-                    </div>
-
-                        <div className="row">
-                          <div className="col-md-4">
-                          <label htmlFor="percentage_total_supply">Enter % of Total Supply<span className="label_star">*</span></label>
-                          </div>
-                          <div className="col-md-7 mb-4">
-                            <div className="form-group input_block_outline">
-                              <input type="number" placeholder="% of Total Supply"  value={percentage_total_supply} onChange={(e)=>set_percentage_total_supply(e.target.value)} />
-                            </div>
-                            <div className="error">{err_total_supply}</div>
-                          </div>
-                        </div>
-                
-                        <div className="row">
-                          <div className="col-md-4">
-                            <label htmlFor="accept_payment_type">Accept<span className="label_star">*</span></label>
-                          </div>
-                          <div className="col-md-7 mb-4">
-                            <div className="form-group input_block_outline multi-select-dropdown-input" style={{padding: '0 10px'}}>
-                              <Multiselect  className="form-control" 
-                                selectedValues={accept_payment_type}
-                                options={payment_types} // Options to display in the dropdown
-                                onSelect={onSelect} // Function will trigger on select event
-                                onRemove={onRemove} // Function will trigger on remove event
-                                displayValue="payment_name" // Property name to display in the dropdown options
-                                /> 
-                            </div>
-                            <div className="error">{err_accept}</div>
-                          </div>
-                        </div>
-
-                        <div className="row">
-                          <div className="col-md-4">
-                            <label htmlFor="how_to_participate">Enter About Launchpad<span className="label_star">*</span></label>
-                          </div>
-                          <div className="col-md-7 mb-4">
-                            <div className="form-group input_block_outline">
-                              <Editor apiKey="s6mr8bfc8y6a2ok76intx4ifoxt3ald11z2o8f23c98lpxnk" 
-                              onEditorChange={(e)=>set_how_to_participate(e)}
-                              value={how_to_participate} 
-                                  onInit={(evt, editor) => {editorRef.current = editor}}
-                               
-                                  init={{
-                                    height: 300,
-                                    menubar: false,
-                                    plugins: [
-                                      'advlist autolink lists link image charmap print preview anchor',
-                                      'searchreplace visualblocks code fullscreen',
-                                      'insertdatetime media table paste code help wordcount'
-                                    ],
-                                    toolbar: 'undo redo | formatselect | ' +
-                                    'bold italic backcolor | alignleft aligncenter ' +
-                                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                                    'removeformat | help'
-                                  
-                                  }}
-                                />
-                            </div>
-                            <div className="error">{err_airdrop}</div>
-                          </div>
-                        </div>
-
-                        <div className="row">
-                          <div className="col-md-4">
-                            
-                          </div>
-                          <div className="col-md-7">
-                            <div className="review_upload_token create-launchpad-submit-button mt-3">
-                            {
-                              !edit_launchpad_row_id ? 
-                                <button type="button" onClick={()=> OnSubmitData()}>
-                                  {loader ? (
-                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Create Launch pad</div>
-                                        ) : (
-                                            <>Create Launch pad</>
-                                        )}
-                                </button>
-                              :
-                              <button type="button" onClick={()=> OnSubmitData()}>
-                                {loader ? (
-                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Update Launch pad</div>
-                                        ) : (
-                                            <>Update Launch pad</>
-                                        )}
-                              </button>
-                            }
-                            
-                          </div> 
-                          </div>
-                        </div>
-                  
-                  
-                        
-                      </div> 
-                    </div>
-                  </form>
-                </div>
+              
               </div>
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       {/* <div className={"modal connect_wallet_error_block"+ (alert_message ? " collapse show" : "")}> 

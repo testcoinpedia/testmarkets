@@ -146,20 +146,20 @@ export default function OngoingLaunchPad({userAgent}) {
           <div className=" launchpad">
             <div className="container">
               <div className="col-md-12">
-              <div className="breadcrumb_block">
-              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
-              <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span> Completed Launchpads
-               </div>
+              {/* <div className="breadcrumb_block">
+              <Link href={coinpedia_url}>Home</Link> <span> &#62; </span> 
+              <Link href={market_coinpedia_url}>Live Market</Link><span> &#62; </span> Completed Launchpads
+               </div> */}
                 <div className="row launchpad_list">
-                  <div className="col-md-8 col-7">
+                  <div className="col-md-8 col-12">
                     <h1 className="page_title">Previous Listed Launchpads</h1>
                     <p>Here's a list of successful Launchpads that you would want to keep an eye on.</p>
                   </div>
-                  <div className="col-md-4 col-5">
+                  <div className="col-md-4 col-12">
                     <div className="launchpad-toke-button">
-                    <Link href={user_token ? "/token/create-new":app_coinpedia_url+"login"}><a><button className="btn-gradient-primary">
+                    <Link href={user_token ? "/token/create-new":app_coinpedia_url+"login"}><button className="btn_create button_transition">
                         <span className="btn__text">List your Token</span>
-                      </button></a></Link>
+                      </button></Link>
                     </div>
                   </div> 
                 </div>
@@ -167,10 +167,10 @@ export default function OngoingLaunchPad({userAgent}) {
                 <div className="row">
                   <div className="tabs_for_navigation">
                     <ul className="nav nav-tabs">
-                      <li><Link href="/launchpad"><a><span>Overview</span></a></Link></li>
-                      <li><Link href="/launchpad/ongoing"><a><span>Ongoing</span></a></Link></li>
-                      <li><Link href="/launchpad/upcoming"><a><span>Upcoming</span></a></Link></li>
-                      <li><Link href="/launchpad/ended"><a className="active"><span>Completed</span></a></Link></li>
+                      <li><Link href="/launchpad"><span>Overview</span></Link></li>
+                      <li><Link href="/launchpad/ongoing"><span>Ongoing</span></Link></li>
+                      <li><Link href="/launchpad/upcoming"><span>Upcoming</span></Link></li>
+                      <li><Link href="/launchpad/ended" className="active"><span >Completed</span></Link></li>
                     </ul>
                   </div>
                 </div> 
@@ -182,10 +182,10 @@ export default function OngoingLaunchPad({userAgent}) {
                         <li className="active_tab">All</li>
                         {
                               user_token?
-                              <li><Link href={app_coinpedia_url+"watchlist/?active_watchlist_tab=2"}><a><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
+                              <li><Link href="/watchlist"><img src="/assets/img/star.svg" alt="Watchlist"/> Watchlist</Link></li>
                               :
                               <li>
-                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/ended"}><a onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</a></Link>
+                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/ended"} onClick={()=> Logout()}><img src="/assets/img/star.svg" alt="Watchlist"/> Watchlist</Link>
                               </li>
                             }
                         {/* <li><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li> */}
@@ -247,21 +247,24 @@ export default function OngoingLaunchPad({userAgent}) {
                                        <>
                                        {
                                          watchlist.includes(e.token_row_id) ?
-                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img2/Color.svg" alt="Watchlist"/></span>
+                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/color.svg" alt="Watchlist"/></span>
                                          :
-                                         <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img2/Star.svg" /></span>
+                                         <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/star.svg" /></span>
                                          }
                                        </>
                                        :
-                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/ended"}><a onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/></a></Link>
+                                       <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/ended"} onClick={()=> Logout()}><img src="/assets/img/star.svg" alt="Watchlist"/></Link>
                                      }
                               </td>
                               <td className="mobile_hide">{sl_no+i+1}</td>
                               <td className="mobile_td_fixed">
                                 <a href={"/"+e.token_id}>
                                   <div className="media">
+                                    <div className='media-left align-self-center'>
                                     <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="Logo" />
-                                    <div className="media-body">
+
+                                    </div>
+                                    <div className="media-body align-self-center">
                                       <h5 className="launchpad_token_title">{e.token_name} <span>{e.symbol}</span></h5>
                                     </div>
                                   </div>
