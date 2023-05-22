@@ -10,8 +10,8 @@ import dynamic from 'next/dynamic';
 import cookie from "cookie"
 import JsCookie from "js-cookie"
 import { Editor } from '@tinymce/tinymce-react';
-// import Datetime from "react-datetime"
-// import "react-datetime/css/react-datetime.css"
+import Datetime from "react-datetime"
+import "react-datetime/css/react-datetime.css"
 
 export default function CreateLauchPad() 
 {  
@@ -558,9 +558,9 @@ var object =  {
           <div className="container">
             <div className="col-md-12">
               <div className="breadcrumb_block">
-              <Link href={coinpedia_url}>Home</Link> <span> &#62; </span> 
-              <Link href={market_coinpedia_url}>Live Market</Link> <span> &#62; </span>
-              <Link href="/token/">Tokens</Link><span> &#62; </span>Launchpad
+              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
+              <Link href={market_coinpedia_url}><a >Live Market</a></Link> <span> &#62; </span>
+              <Link href="/token/"><a>Tokens</a></Link><span> &#62; </span>Launchpad
                   </div>
                  
               <div className="row">
@@ -661,7 +661,7 @@ var object =  {
                             <button type="button" onClick={()=> createLaunchpad()} className="edit_launchpad" >Go Back</button>
                             </>
                             :
-                            <Link href="/token" className="edit_launchpad"><i className="la la-arrow-left"></i>Go Back</Link>
+                            <Link href="/token" ><a className="edit_launchpad"><i className="la la-arrow-left"></i>Go Back</a></Link>
                         }
                       </div>
                     </div>
@@ -711,8 +711,8 @@ var object =  {
                       </div>
                       <div className="col-md-7 mb-4">
                         <div className="form-group input_block_outline">
-                           <input type="date"  className="form-control" value={start_date} onChange={(e) => setStartDate(e.target.value)} />
-                           {/* <Datetime inputProps={ inputProps }  dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid }   name="end_date_n_time" value={start_date} onChange={(e) => setStartDate(e)}/> */}
+                           {/* <input type="date"  className="form-control" value={start_date} onChange={(e) => setStartDate(e.target.value)} /> */}
+                           <Datetime inputProps={ inputProps }  dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid }   name="end_date_n_time" value={start_date} onChange={(e) => setStartDate(e)}/>
                         </div>
                         <div className="error">{err_start_date}</div>
                       </div>
@@ -724,8 +724,8 @@ var object =  {
                       </div>
                       <div className="col-md-7 mb-4">
                         <div className="form-group input_block_outline">
-                          <input type="date"  className="form-control" value={end_date} onChange={(e) => setEndDate(e.target.value)} />
-                          {/* <Datetime inputProps={ inputProps2 }  dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid2 }  name="end_date_n_time" value={end_date} onChange={(e) => setEndDate(e)}/> */}
+                          {/* <input type="date"  className="form-control" value={end_date} onChange={(e) => setEndDate(e.target.value)} /> */}
+                          <Datetime inputProps={ inputProps2 }  dateFormat="YYYY-MM-DD" timeFormat={false} isValidDate={ valid2 }  name="end_date_n_time" value={end_date} onChange={(e) => setEndDate(e)}/>
                         </div>
                         <div className="error">{err_end_date}</div>
                       </div>
@@ -742,23 +742,6 @@ var object =  {
                         <div className="error">{err_price}</div>
                       </div>
                     </div>
-                    <div className="row">
-                          <div className="col-md-4">
-                            <label htmlFor="accept_payment_type">Accept<span className="label_star">*</span></label>
-                          </div>
-                          <div className="col-md-7 mb-4">
-                            <div className="form-group input_block_outline multi-select-dropdown-input" style={{padding: '0 10px'}}>
-                              <Multiselect  className="form-control" 
-                                selectedValues={accept_payment_type}
-                                options={payment_types} // Options to display in the dropdown
-                                onSelect={onSelect} // Function will trigger on select event
-                                onRemove={onRemove} // Function will trigger on remove event
-                                displayValue="payment_name" // Property name to display in the dropdown options
-                                /> 
-                            </div>
-                            <div className="error">{err_accept}</div>
-                          </div>
-                        </div>
 
                     <div className="row">
                       <div className="col-md-4">
@@ -808,7 +791,24 @@ var object =  {
                           </div>
                         </div>
                 
-                    
+                        <div className="row">
+                          <div className="col-md-4">
+                            <label htmlFor="accept_payment_type">Accept<span className="label_star">*</span></label>
+                          </div>
+                          <div className="col-md-7 mb-4">
+                            <div className="form-group input_block_outline multi-select-dropdown-input" style={{padding: '0 10px'}}>
+                              <Multiselect  className="form-control" 
+                                selectedValues={accept_payment_type}
+                                options={payment_types} // Options to display in the dropdown
+                                onSelect={onSelect} // Function will trigger on select event
+                                onRemove={onRemove} // Function will trigger on remove event
+                                displayValue="payment_name" // Property name to display in the dropdown options
+                                /> 
+                            </div>
+                            <div className="error">{err_accept}</div>
+                          </div>
+                        </div>
+
                         <div className="row">
                           <div className="col-md-4">
                             <label htmlFor="how_to_participate">Enter About Launchpad<span className="label_star">*</span></label>

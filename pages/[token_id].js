@@ -4,7 +4,7 @@ import Head from 'next/head'
 import Error from './404'
 import {
   API_BASE_URL, config, separator, createValidURL, strLenTrim, strTrim, getDomainName, app_coinpedia_url, coinpedia_url, market_coinpedia_url, IMAGE_BASE_URL,
-  graphqlApiKEY, roundNumericValue, Logout, DomainName
+  graphqlApiKEY, count_live_price, Logout, DomainName
 } from '../components/constants'
 import { live_price_graphql } from '../components/token_details/graphql'
 import { live_price_coingecko } from '../components/token_details/coingecko'
@@ -14,24 +14,14 @@ import ReactPaginate from 'react-paginate'
 import cookie from "cookie"
 import JsCookie from "js-cookie"
 import Axios from 'axios'
-// import Highcharts  from 'highcharts'
+import Highcharts  from 'highcharts'
 // import Datetime from "react-datetime"
 // import "react-datetime/css/react-datetime.css" 
 import Popupmodal from '../components/popupmodal'
-import Exchanges_list from '../components/token_details/exchanges_list'
 import BasicTokenInfo from '../components/basicTokenInfo'
 import Search_Contract_Address from '../components/searchContractAddress'
-// import Graph_Data from '../components/graphData'
+import Graph_Data from '../components/graphData'
 import Chart from '../components/lightWeightChart'
-import Token_chart from '../components/token_details/token_chart'
-import Price_analysis from '../components/token_details/price_analysis'
-import News from '../components/token_details/news'
-import Events from '../components/token_details/events'
-import Airdrops from '../components/token_details/airdrop'
-import Price_prediction from '../components/token_details/price_prediction'
-import Tokenomics from '../components/token_details/tokenomics'
-
-import { cmc_graph_ranges} from '../components/tokenDetailsFunctions' 
 // import dynamic from 'next/dynamic';
 
 
@@ -54,20 +44,19 @@ export default function tokenDetailsFunction({ errorCode, data, token_id, userAg
   const [dex_row_id, set_dex_row_id]=useState("")
   const explorerRef = useRef(null)
   const contractRef = useRef(null)
-  const [image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/128x128/')
+  const [image_base_url] = useState(IMAGE_BASE_URL + "/tokens/")
   const [symbol] = useState(data.symbol)
-  const [watchlist, set_watchlist] = useState(data.watchlist_status ? data.watchlist_status:false)
+  const [watchlist, set_watchlist] = useState(data.watchlist_status)
   const [share_modal_status, set_share_modal_status] = useState(false)
   const [light_dark_mode, set_light_dark_mode] = useState(JsCookie.get('light_dark_mode'))
   const [user_token] = useState((userAgent.user_token) ? userAgent.user_token : "")
   const [perPage] = useState(10)
   const [current_url] = useState(market_coinpedia_url + token_id)
   const [exchange_list_new, set_exchange_list_new] = useState([])
-  // console.log("exchange_list_new",exchange_list_new)
   const [exchangelist, set_exchangelist] = useState([])
   const [exchangesPageCount, setExchnagesPageCount] = useState(0)
   const [exchangesCurrentPage, setExchangesCurrentPage] = useState(0)
-  const [max_supply, set_max_supply] = useState(data.max_supply ? data.max_supply:"")
+  const [token_max_supply, set_token_max_supply] = useState(0)
   const [tokentransactions, set_tokentransactions] = useState([])
   const [tokentransactionsData, set_tokentransactionsdata] = useState([])
   const [tokentransactionsPageCount, settokentransactionsPageCount] = useState(0)
@@ -82,7 +71,7 @@ export default function tokenDetailsFunction({ errorCode, data, token_id, userAg
   // const [search_contract_address, set_search_contract_address] = useState("")    
   // const [validSearchContract, setvalidContractAddress] = useState("")
   const [api_from_type] = useState(data.api_from_type)
-console.log("api_from_type",token_id)
+
   const [decimal, setdecimal] = useState(0)
 
   const [category_list, set_category_list] = useState(false)
@@ -90,14 +79,13 @@ console.log("api_from_type",token_id)
   const [explorer_links, set_explorer_links] = useState(false)
   const [handleModalConnections, setHandleModalConnections] = useState(false)
   const [handleModalVote, setHandleModalVote] = useState(false)
-  
+
   const [customstartdate, setCustomstartdate] = useState("")
-  const [volume, set_volume] = useState(data.volume ? data.volume:"")
-  const [fully_diluted_market_cap, set_fully_diluted_market_cap] = useState(data.fully_diluted_market_cap ? data.fully_diluted_market_cap:"")
+  const [customenddate, setCustomenddate] = useState("")
 
   const [price_change_24h, set_price_change_24h] = useState("")
-  const [circulating_supply, set_circulating_supply] = useState(data.circulating_supply ? data.circulating_supply:"")
-  const [live_price, set_live_price] = useState(data.price ? data.price:"")
+  const [circulating_supply, set_circulating_supply] = useState(0)
+  const [live_price, set_live_price] = useState("")
   const [market_cap_rank, set_market_cap_rank] = useState("")
   const [market_cap_change_percentage_24h, set_market_cap_change_percentage_24h] = useState("")
   const [fully_diluted_valuation, set_fully_diluted_valuation] = useState("")
@@ -108,6 +96,7 @@ console.log("api_from_type",token_id)
   const [high_24h, set_high_24h] = useState("")
   const [categories, set_categories] = useState([])
   const [mcap_to_tvl_ratio, set_mcap_to_tvl_ratio] = useState("")
+  const [volume, set_volume] = useState(0)
 
   const [ath, set_ath] = useState(0)
   const [atl, set_atl] = useState(0)
@@ -131,41 +120,24 @@ console.log("api_from_type",token_id)
   const [launchpad_row_id, set_launchpad_row_id] = useState(data.launch_pads_data.length > 0 ? parseInt(data.launch_pads_data[0]._id) : "")
   const [launchpad_object, set_launchpad_object] = useState(data.launch_pads_data.length > 0 ? data.launch_pads_data[0] : "")
   const [coingecko_status, set_coingecko_status] = useState(false)
-  const [category_modal, set_category_modal] = useState(false)
 
-  
-  const [time_name, set_time_name] = useState("1D")
-  const [intervals, set_intervals] = useState("10m")
-  const [count, set_count] = useState("144")
   const change = async (row_id) => {
 
     await set_dex_row_id("")
 
     await set_dex_row_id(row_id)
-    
+
   }
 
-  
-
-  const plotGraph = async (pass_time_name, pass_interval, pass_count) =>
-  {
-    await set_time_name("")
-    set_time_name(pass_time_name)
-    set_intervals(pass_interval)
-    set_count(pass_count)
-  }
-  
-  useEffect( () => 
-  {
-    //graphAPI()
-    // if (parseInt(api_from_type) === 1) {
+  useEffect(async () => {
+    if (parseInt(api_from_type) === 1) {
       if (!coingecko_status) {
-        // coingeckoId()
-      // }
+        coingeckoId()
+      }
     }
     else {
       if (!coingecko_status) {
-        //graphqldata()
+        graphqldata()
       }
     }
     // categorySearchTokens()
@@ -175,13 +147,11 @@ console.log("api_from_type",token_id)
   }, [])
 
   const coingeckoId = async () => {
-    var coingecko_data = await live_price_coingecko(token_id)
+    var coingecko_data = await live_price_coingecko(data.api_from_id)
 
-
-    console.log("coingecko_data",coingecko_data)
     set_coingecko_status(true)
     set_mcap_to_tvl_ratio(coingecko_data.mcap_to_tvl_ratio)
-    set_max_supply(coingecko_data.max_supply)
+    set_token_max_supply(coingecko_data.token_max_supply)
     set_price_change_24h(coingecko_data.price_change_24h)
     set_circulating_supply(coingecko_data.circulating_supply)
     set_live_price(coingecko_data.live_price)
@@ -204,7 +174,7 @@ console.log("api_from_type",token_id)
     const reqObj = {
       token_id: token_id,
       live_price: coingecko_data.live_price,
-      total_max_supply: coingecko_data.max_supply,
+      total_max_supply: coingecko_data.token_max_supply,
       market_cap: coingecko_data.market_cap
     }
     await Axios.post(API_BASE_URL + 'markets/tokens/save_token_live_price', reqObj, config)
@@ -216,7 +186,7 @@ console.log("api_from_type",token_id)
       const graphql_data = await live_price_graphql(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)
       set_coingecko_status(true)
       set_circulating_supply(graphql_data.circulating_supply)
-      set_max_supply(graphql_data.max_supply)
+      set_token_max_supply(graphql_data.token_max_supply)
       set_price_change_24h(graphql_data.price_change_24h)
       set_live_price(graphql_data.live_price)
       set_market_cap(graphql_data.market_cap)
@@ -226,7 +196,7 @@ console.log("api_from_type",token_id)
       const reqObj = {
         token_id: data.token_id,
         live_price: graphql_data.live_price,
-        total_max_supply: graphql_data.max_supply,
+        total_max_supply: graphql_data.token_max_supply,
         market_cap: graphql_data.market_cap
       }
       await Axios.post(API_BASE_URL + 'markets/tokens/save_token_live_price', reqObj, config)
@@ -898,20 +868,17 @@ console.log("api_from_type",token_id)
   }
 
 
-  const addToWatchlist = (param_token_id) => 
-  {
-    Axios.get(API_BASE_URL + "markets/cryptocurrency/add_to_watchlist/" + param_token_id, config).then(res => {
+  const addToWatchlist = (param_token_id) => {
+    Axios.get(API_BASE_URL + "markets/token_watchlist/add_to_watchlist/" + param_token_id, config).then(res => {
       if (res.data.status) {
         set_watchlist(true)
       }
     })
   }
 
-  const removeFromWatchlist = (param_token_id) =>
-  {
-    Axios.get(API_BASE_URL + "markets/cryptocurrency/remove_from_watchlist/" + param_token_id, config).then(res => {
-      if (res.data.status) 
-      {
+  const removeFromWatchlist = (param_token_id) => {
+    Axios.get(API_BASE_URL + "markets/token_watchlist/remove_from_watchlist/" + param_token_id, config).then(res => {
+      if (res.data.status) {
         set_watchlist(false)
       }
     })
@@ -950,14 +917,6 @@ console.log("api_from_type",token_id)
       })
     }
   }
-
-  
-  
-  // https://coinpedia.org/wp-json/wp/v2/posts/?_fields=id,title,featured_image_sizes,author,yoast_head_json,date,tag_names,tags&categories=6&per_page=20&offset=0
-//   const Categories=(e)=>{
-// set_category_modal(true)
-// set_categories(e)
-//   }
 
   return (
     <>
@@ -1000,40 +959,13 @@ console.log("api_from_type",token_id)
                 <div className="col-lg-5 col-xl-5 col-md-12">
                   <div className="token_main_details">
                         <div className="media">
-                        
-                          <img src={image_base_url+(data.coinmarketcap_id ? data.coinmarketcap_id+".png" : "default.png")} onError={(e) => e.target.src = "/assets/img/default_token.png"} className="token_img" alt="logo" width="100%" height="100%" />
+                          <img src={data.token_image ? image_base_url + data.token_image : image_base_url + "default.png"} onError={(e) => e.target.src = "/assets/img/default_token.png"} className="token_img" alt="logo" width="100%" height="100%" />
                           <div className="media-body align-self-center">
                             <h4 className="media-heading">{data.token_name ? data.token_name : "-"} &nbsp; <span> ({data.symbol ? (data.symbol).toUpperCase() : "-"})</span> 
                               {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
                               
                             </h4>
-                            <div>
-                           
-                              <ul className='category-ul'>
-                              {
-                                data.categories ?
-                               <>
-                                {
-                                  data.categories.map((item, i) => 
-                                  i < 2 ?
-                                  <li key={i}><Link href={"/category/"+item.category_id}>{item.category_name}</Link></li>
-                                  :
-                                  ""
-                                  )
-                                }
-                                {
-                                  data.categories.length > 2 ?
-                                  <li onClick={()=>set_category_modal(true)}>+{data.categories.length-2} More</li>
-                                  :
-                                  ""
-                                }
-                               </>
-                                :
-                                ""
-                              }
-                              </ul>
-                            </div>
-                            {/* <p>Permissionless and non-custodial middleware</p>
+                            <p>Permissionless and non-custodial middleware</p>
                             <h6>
                             {
                               market_cap_rank ?
@@ -1049,7 +981,7 @@ console.log("api_from_type",token_id)
                                 :
                                 null
                             }
-                               <span> &nbsp; <img src="/assets/img/grey_arrow_up.svg" /></span></h6> */}
+                               <span> &nbsp; <img src="/assets/img/grey_arrow_up.svg" /></span></h6>
 
 
                             
@@ -1070,28 +1002,24 @@ console.log("api_from_type",token_id)
                 <div className="col-lg-3 col-xl-3 col-md-6">
                         <div className="token_price_block">
                           <h5>
-                            {live_price > 0 ? roundNumericValue(live_price) : "NA"}
+                            {live_price ? "$" : null} {live_price > 0 ? separator(parseFloat(live_price.toFixed(6))) : "NA"}
+                            
                           </h5>
                           <h6>
-                           {roundNumericValue((data.percent_change_24h*live_price)/100)}
-                           &nbsp; <span className='timings_price'>24 Hrs</span> <span>{
+                            <span>{
                               live_price ?
-                              data.percent_change_24h
+                                price_change_24h
                                   ?
-                                  data.percent_change_24h > 0
+                                  price_change_24h > 0
                                     ?
-                                    <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{(data.percent_change_24h).toFixed(2)}%</span></span>
+                                    <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{price_change_24h.toFixed(2)}%</span></span>
                                     :
-                                     <span className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{(data.percent_change_24h).toPrecision(3)}%</span></span>
+                                     <span className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{price_change_24h.toPrecision(3)}%</span></span>
                                   :
                                   null
                                 :
                                 null
-                            }</span> </h6>
-                            
-                            {/*  </h6> */}
-                            {/* &nbsp; 0.000145 <span className='symbol_token'>{data.symbol ? (data.symbol).toUpperCase() : "-"}</span></h6> */}
-
+                            }</span> &nbsp; 0.000145 <span className='symbol_token'>{data.symbol ? (data.symbol).toUpperCase() : "-"}</span></h6>
                           {/* <p>{data.token_name ? data.token_name : "-"} Price()</p> */}
                         </div>
                       </div>
@@ -1233,7 +1161,7 @@ console.log("api_from_type",token_id)
               <div className='row token_header_cols'>
                 <div className="col-lg-4 col-xl-4 col-md-12 pr-0">
                 <ul className="token_share_vote">
-                  <li>#{data.cmc_rank} Rank</li>
+                  <li>DeFi</li>
                         {
                           user_token
                             ?
@@ -1247,12 +1175,12 @@ console.log("api_from_type",token_id)
                             </>
                             :
                             <li style={{ cursor: "pointer" }} >
-                              <Link href={app_coinpedia_url + "login?prev_url=" + market_coinpedia_url + data.token_id} onClick={() => Logout()}>
+                              <Link href={app_coinpedia_url + "login?prev_url=" + market_coinpedia_url + data.token_id}><a onClick={() => Logout()}>
                                 <img src="/assets/img/coin_vote.svg" /> {votes}
-                              </Link>
+                              </a></Link>
                             </li>
                         }
-                        {/* <li>{data.list_type == 1 ? "Coin" : "Token"}</li> */}
+                        <li>{data.list_type == 1 ? "Coin" : "Token"}</li>
                         <li onClick={() => set_share_modal_status(true)} style={{ cursor: "pointer" }}><img src="/assets/img/coin_share.svg" /> Share</li>
                         <li>
                         {
@@ -1260,15 +1188,15 @@ console.log("api_from_type",token_id)
                                   <>
                                     {
                                       watchlist == true ?
-                                        <span onClick={() => removeFromWatchlist(data._id)} ><img src="/assets/img/watchlist_filled.svg" style={{width:"18px"}} /></span>
+                                        <span onClick={() => removeFromWatchlist(data._id)} ><img src="/assets/img/markets/filled-star.svg" style={{width:"18px"}} /></span>
                                         :
-                                        <span onClick={() => addToWatchlist(data._id)} ><img src="/assets/img/watchlist_outline.svg " style={{width:"18px"}} /></span>
+                                        <span onClick={() => addToWatchlist(data._id)} ><img src="/assets/img/markets/star.svg" style={{width:"18px"}} /></span>
                                     }
                                   </>
                                   :
-                                  <Link href={app_coinpedia_url + "login?prev_url=" + market_coinpedia_url + data.token_id} onClick={() => Logout()}>
-                                    <img src="/assets/img/watchlist_outline.svg"  style={{width:"18px"}} />
-                                  </Link>
+                                  <Link href={app_coinpedia_url + "login?prev_url=" + market_coinpedia_url + data.token_id}><a onClick={() => Logout()}>
+                                    <img src="/assets/img/markets/star.svg"  style={{width:"18px"}} />
+                                  </a></Link>
                               }
                         </li>
                       </ul>
@@ -1278,33 +1206,29 @@ console.log("api_from_type",token_id)
 
                   <li>
                 <div className="token_list_content">
-                                <h4>Market Cap  <span onClick={() => change(1)}><img src='/assets/img/info.png'  />
-                                </span>{circulating_supply > 0 ?
-                                <span>
-                                {
-                                   "$ "+separator(((circulating_supply*live_price)).toFixed(0))
-                                }
-                                 
-                                </span>
-                                 : "NA"} <span>
-                                </span>
+                                <h4>Market Cap  <span onClick={() => change(1)}><img src='/assets/img/info.png'  /></span><span>{market_cap ? "$" : null}{market_cap ? separator(market_cap.toFixed(4)) : data.market_cap ? separator(data.market_cap.toFixed(4)) : "NA"}</span>
                                 
-                                {/* {market_cap_change_percentage_24h ?
+                                {market_cap_change_percentage_24h ?
                                   market_cap_change_percentage_24h > 0 ?
                                     <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{market_cap_change_percentage_24h.toFixed(2) + "%"}</span></span>
                                     :
                                     <span className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{market_cap_change_percentage_24h.toFixed(2) + "%"}</span></span>
                                   :
                                   <span className="values_growth"></span>
-                                } */}
+                                }
                                 </h4>
                               </div>
                               </li>
                 <li>
                 <div className="token_list_content">
-                                <h4>Volume <span onClick={() => change(5)}><img src='/assets/img/info.png'  /></span>
+                                <h4>Volume {parseInt(api_from_type) === 1 ? '' : '24H'} <span onClick={() => change(5)}><img src='/assets/img/info.png'  /></span>
                                 <span>
-                                {volume > 0 ? "$ "+separator((volume).toFixed(0)) : "NA"}
+                                {
+                                    parseInt(api_from_type) === 1 ?
+                                      "$" + separator(volume)
+                                      :
+                                      contract_24h_volume ? "$" + separator(contract_24h_volume.toFixed(2)) : 'NA'
+                                  }
                                 </span>
                                 
                                 <span className="values_growth"></span>
@@ -1313,16 +1237,9 @@ console.log("api_from_type",token_id)
                               </li>
                 <li>
                 <div className="token_list_content">
-                                <h4>Circulating Supply <span onClick={() => change(3)}><img src='/assets/img/info.png' /></span>
-                                <span>{circulating_supply ? 
-                                <>
-                                {separator((circulating_supply).toFixed(0))+" "+(symbol).toUpperCase()}
-                                </>
+                                <h4>Circulating Supply <span onClick={() => change(3)}><img src='/assets/img/info.png' /></span><span>{circulating_supply ? separator(circulating_supply) : "NA"}</span>
                                 
-                                : "NA"} </span>
-                                
-
-                                {/* <span className="values_growth"><span className="normal">{circulating_supply ? ((circulating_supply / max_supply) * 100).toFixed(2) + "%" : null}</span></span> */}
+                                {/* <span className="values_growth"><span className="normal">{circulating_supply ? ((circulating_supply / token_max_supply) * 100).toFixed(2) + "%" : null}</span></span> */}
                                 </h4>
                               </div>
                               </li>
@@ -1457,7 +1374,7 @@ console.log("api_from_type",token_id)
                             }
 
                             {
-                              data.explorer != "" ?
+                              data.explorer.length > 0 && data.explorer[0] != "" ?
                                 <li className="coin_individual_list">
                                   <div className="quick_block_links">
                                     <div className="widgets__select links_direct" ref={explorerRef} onClick={() => { set_explorer_links(!explorer_links) }}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Explorer <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> </a></div>
@@ -1497,15 +1414,17 @@ console.log("api_from_type",token_id)
                                 null
                             }
 
-                            
-                        {
-                          ((data.contract_addresses))
+                            <li class="coin_individual_list">
+                                <div class="quick_block_links">
+                                <div class="widgets__select links_direct">
+                                  <a>
+                                  {
+                        parseInt(data.list_type) !== 2 ?
+                          ""
+                          :
+                          ((data.contract_addresses) && (data.contract_addresses.length > 0))
                             ?
                             <>
-                            <li className="coin_individual_list">
-                                <div className="quick_block_links">
-                                <div className="widgets__select links_direct">
-                                  <a>
                                   {
                                     data.contract_addresses.length > 1
                                       ?
@@ -1592,44 +1511,40 @@ console.log("api_from_type",token_id)
                                         <span className="wallet_address_token" onClick={() => set_other_contract(!other_contract)}>
                                           <a href={"https://bscscan.com/token/" + data.contract_addresses[0].contract_address} target="_blank"><img className="token_dropdown_img" src="/assets/img/BSC.svg"></img>{(data.contract_addresses[0].contract_address).slice(0, 4) + "..." + (data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4, data.contract_addresses[0].contract_address.length)}
                                           </a>
-                                          <img onClick={() => copyContract(data.contract_addresses[0]?.contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          <img onClick={() => copyContract(data.contract_addresses[0].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
                                         </span>
                                   }
-                                  </a>
-                                </div>
-                                </div>
-                              </li>
-
-                              {
-                                    contract_copy_status === 'ETH' ?
-                                      <span className="votes_market" >Copied</span>
-                                      :
-                                      null
-                                  }
-                                  {
-                                    contract_copy_status === 'BNB' ?
-                                      <span className="votes_market">Copied</span>
-                                      :
-                                      null
-                                  }
-
                                 </>
                             :
                             null
                       }
                       
-                      
-                              
-
-                            {/* <li className="coin_individual_list">
-                                <div className="quick_block_links">
-                                <div className="widgets__select links_direct">
-                                  <a>
-                                <img src="/assets/img/discuss.svg" className="coin_cat_img" />Discuss <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> 
+                      {
+                        contract_copy_status === 'ETH' ?
+                          <span className="votes_market" >Copied</span>
+                          :
+                          null
+                      }
+                      {
+                        contract_copy_status === 'BNB' ?
+                          <span className="votes_market">Copied</span>
+                          :
+                          null
+                      }
                               </a>
                               </div>
                               </div>
-                            </li> */}
+                            </li>
+
+                            <li class="coin_individual_list">
+                                <div class="quick_block_links">
+                                <div class="widgets__select links_direct">
+                                  <a>
+                                <img src="/assets/img/discuss.svg" class="coin_cat_img" />Discuss <img src="/assets/img/features_dropdown.svg" class="dropdown_arrow_img" /> 
+                              </a>
+                              </div>
+                              </div>
+                            </li>
 
                             
                             {
@@ -1649,15 +1564,15 @@ console.log("api_from_type",token_id)
                                 null
                             }
 
-                            {/* <li className="coin_individual_list">
-                                <div className="quick_block_links">
-                                <div className="widgets__select links_direct">
+                            <li class="coin_individual_list">
+                                <div class="quick_block_links">
+                                <div class="widgets__select links_direct">
                                   <a>
-                                <img src="/assets/img/social_media.svg" className="coin_cat_img" />Social Media <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> 
+                                <img src="/assets/img/social_media.svg" class="coin_cat_img" />Social Media <img src="/assets/img/features_dropdown.svg" class="dropdown_arrow_img" /> 
                               </a>
                               </div>
                               </div>
-                            </li> */}
+                            </li>
 
 
                             {/* {
@@ -1686,7 +1601,7 @@ console.log("api_from_type",token_id)
 
                             
                             {
-                              data.community_address != "" ?
+                              data.community_address.length > 0 && data.community_address[0] != "" ?
                                 <li className="coin_individual_list">
                                   <div className="quick_block_links">
                                     <div className="widgets__select links_direct" ref={communityRef} onClick={() => { set_community_links(!community_links) }}><a><img src="/assets/img/explorer.svg" className="coin_cat_img" />Community <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /></a></div>
@@ -1796,7 +1711,7 @@ console.log("api_from_type",token_id)
                                           {
                                             data.category_row_id_array.map((e, i) =>
                                               // <li key={i}>{e.business_name}</li>   
-                                              <Link href={"/?active_category_tab=" + e._id}><li key={i}>{e.business_name}</li></Link>
+                                              <Link href={"/?active_category_tab=" + e._id}><a><li key={i}>{e.business_name}</li></a></Link>
                                             )
                                           }
                                         </ul>
@@ -1817,47 +1732,43 @@ console.log("api_from_type",token_id)
                         <div className="row">
                         <div className="col-md-4 col-6">
                             <div className="token_left_border">
+                             
                               <div className="token_list_values">
                                 <h4>Max Supply <span onClick={() => change(4)}><img src='/assets/img/info.png'  /></span></h4>
-                                <h5>{max_supply ? separator(max_supply) : data.total_max_supply ? separator(data.total_max_supply.toFixed(4)) : "NA"}</h5>
+                                <h5>{token_max_supply ? separator(token_max_supply) : data.total_max_supply ? separator(data.total_max_supply.toFixed(4)) : "NA"}</h5>
                               </div>
+                              {
+                                parseInt(api_from_type) === 1 ?
+                                  <div className="token_list_values">
+                                    <h4>Total Supply</h4>
+                                    <h5>{total_supply ? separator(total_supply) : data.total_supply ? separator(data.total_supply.toFixed(4)) : "NA"}</h5>
+                                  </div>
+                                  :
+                                  ""
+                              }
 
-                              <div className="token_list_values">
-                                <h4>Total Supply</h4>
-                                <h5>{data.total_supply ? separator(data.total_supply.toFixed(4)) : "NA"}</h5>
+                                <div className="token_list_values">
+                                <h4>Liquidity <span onClick={() => change(6)}><img src='/assets/img/info.png'  /></span></h4>
+                                <h5>{liquidity ? "$" : null}{liquidity ? separator(liquidity.toFixed(4)) : "NA"}</h5>
                               </div>
                             </div>
                           </div>
                           <div className="col-md-4 col-6">
                             <div className="token_left_border">
-                              <div className="token_list_values">
-                                <h4>1 hour % change </h4>
-                                {
-                                  data.percent_change_1h?data.percent_change_1h>0?
-                                  <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{data.percent_change_1h.toFixed(2)+"%"}</span></h6>
-                                  :
-                                  <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(data.percent_change_1h.toFixed(2)).replace('-', '')+"%"}</span></h6>
-                                  :
-                                  "--"
-                                }
-                              </div>
-
-                              <div className="token_list_values">
-                                <h4>7 days % change </h4>
-                                {
-                                  data.percent_change_7d?data.percent_change_7d>0?
-                                  <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{data.percent_change_7d.toFixed(2)+"%"}</span></h6>
-                                  :
-                                  <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(data.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
-                                  :
-                                  "--"
-                                }
-                              </div>
                               
-                              {/* <div className="token_list_values">
-                                <h4>Liquidity <span onClick={() => change(6)}><img src='/assets/img/info.png'  /></span></h4>
-                                <h5>{liquidity ? "$" : null}{liquidity ? separator(liquidity.toFixed(4)) : "NA"}</h5>
-                              </div> */}
+                              <div className="token_list_values">
+                                <h4>Volume / Market Cap </h4>
+                                <h5>{parseInt(api_from_type) === 1 ? mcap_to_tvl_ratio : 'NA'}</h5>
+                              </div>
+                              {
+                                parseInt(api_from_type) === 1 ?
+                                  <div className="token_list_values">
+                                    <h4>Fully diluted valuation <span onClick={() => change(2)}><img src='/assets/img/info.png'  /></span></h4>
+                                    <h5>{parseInt(api_from_type) === 1 ? fully_diluted_valuation != undefined ? "$" + separator(fully_diluted_valuation) : 'NA' : "NA"}</h5>
+                                  </div>
+                                  :
+                                  ""
+                              }
 
                             </div>
                           </div>
@@ -1865,37 +1776,44 @@ console.log("api_from_type",token_id)
                           <div className="col-md-4 col-6">
                             <div className="token_left_border">
                              
-                            
-                            
-                            <div className="token_list_values">
-                                <h4>24h Time High </h4>
-                                <h5>
-                                  {data.high_price ? '$ '+separator(data.high_price) : 'NA'} &nbsp;
-                                  {/* {
-                                    ath_change_percentage ?
-                                      ath_change_percentage > 0 ?
-                                        <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
-                                        :
-                                        <span className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
-                                      :
-                                      <span className="values_growth"></span>
-                                  } */}
-                                </h5>
-                              </div>
-
-                              <div className="token_list_values">
-                                    <h4>24h Time Low </h4>
-                                    <h5>{data.low_price ? '$ '+separator(data.low_price) : 'NA'} &nbsp;
-                                      {/* {atl_change_percentage ?
+                              
+                              {
+                                parseInt(api_from_type) === 1 ?
+                                  <div className="token_list_values">
+                                    <h4>All Time High </h4>
+                                    <h5>
+                                      ${ath ? separator(ath) : 'NA'} &nbsp;
+                                      {
+                                        ath_change_percentage ?
+                                          ath_change_percentage > 0 ?
+                                            <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
+                                            :
+                                            <span className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
+                                          :
+                                          <span className="values_growth"></span>
+                                      }
+                                    </h5>
+                                  </div>
+                                  :
+                                  ""
+                              }
+                              {
+                                parseInt(api_from_type) === 1 ?
+                                  <div className="token_list_values">
+                                    <h4>All Time Low </h4>
+                                    <h5>${atl ? separator(atl) : 'NA'} &nbsp;
+                                      {atl_change_percentage ?
                                         atl_change_percentage > 0 ?
                                           <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{atl_change_percentage.toFixed(2) + "%"}</span></span>
                                           :
                                           <span className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{atl_change_percentage.toFixed(2) + "%"}</span></span>
                                         :
                                         <span className="values_growth"></span>
-                                      } */}
-                                      </h5>
+                                      }</h5>
                                   </div>
+                                  :
+                                  ""
+                              }
 
                             </div>
                           </div>
@@ -1912,12 +1830,12 @@ console.log("api_from_type",token_id)
                             <a className="nav-link active" data-toggle="tab" href="#charts" ><span>Chart</span></a>
                           </li>
                           <li className="nav-item" >
-                            {/* {
+                            {
                               api_from_type == 0 ?
                                 <a className="nav-link" data-toggle="tab" href="#home" onClick={() => getexchangedata(data.contract_addresses[0].contract_address, data.contract_addresses[0].network_type)}><span>Exchange</span></a>
-                                 : */}
+                                :
                                 <a className="nav-link" data-toggle="tab" href="#home" onClick={() => exchangecoingecko()} ><span>Exchange</span></a>
-                            {/* }  */}
+                            }
                           </li>
                           <li className="nav-item" >
                             {
@@ -1928,18 +1846,18 @@ console.log("api_from_type",token_id)
                             }
                           </li>
 
-                          {/* <li className="nav-item" >
+                          <li className="nav-item" >
                                 <a className="nav-link" data-toggle="tab" href="#about"><span>About</span></a>
                                 
-                          </li> */}
-                          {/* <li className="nav-item" >
+                          </li>
+                          <li className="nav-item" >
                                 <a className="nav-link" data-toggle="tab" href="#team"><span>Team</span></a>
                                 
                           </li>
                           <li className="nav-item" >
                                 <a className="nav-link" data-toggle="tab" href="#partners"><span>Partners</span></a>
                                 
-                          </li> */}
+                          </li>
 
 
                           <li className="nav-item" >
@@ -1953,82 +1871,69 @@ console.log("api_from_type",token_id)
                                 <a className="nav-link" data-toggle="tab" href="#indicators"><span>Indicators</span></a>
                                 
                           </li>
-                          <li className="nav-item" >
-                                <a className="nav-link" data-toggle="tab" href="#tokenomics"><span>Tokenomics</span></a>
-                                
-                          </li>
                          
                         </ul>
 
 
                   
                       <div className='charts_tables_content'>
-                        
+                       
+                    
+
                   <div className="token_details_tabs">
                     <div className="tab-content">
                       <div id="charts" className="tab-pane fade show in active">
-                        <div className='tokendetail_charts'>
+                      <div className='row'>
+                          <div className='col-md-6'>
+                          <h5 className='price_chart'>{(data.symbol).toUpperCase()} Price Chart</h5>
+                          </div>
+                          <div className='col-md-6'>
+                            <div className='charts_date_tab'>
+                              <ul className="nav nav-tabs">
+                                <li className="nav-item">
+                                  <a className="nav-link active" data-toggle="tab" href="#" ><span>1D</span></a>
+                                </li>
+                                <li className="nav-item" >
+                                      <a className="nav-link" data-toggle="tab" href="#"><span>1W</span></a>
+                                </li>
+                                <li className="nav-item" >
+                                      <a className="nav-link" data-toggle="tab" href="#"><span>1M</span></a>
+                                      
+                                </li>
+                                <li className="nav-item" >
+                                      <a className="nav-link" data-toggle="tab" href="#"><span>3M</span></a>
+                                      
+                                </li>
+                                <li className="nav-item" >
+                                      <a className="nav-link" data-toggle="tab" href="#"><span>1Y</span></a>
+                                      
+                                </li>
+                                <li className="nav-item" >
+                                      <a className="nav-link" data-toggle="tab" href="#"><span>All</span></a>
+                                      
+                                </li>
+                                {/* <img src="/assets/img/tokens_more.svg" /> */}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
                         {/* {
                             graph_data_date ?
                             <Graph_Data reqData={data} graph_data_date={graph_data_date} />
                             :
                             ""
                           } */}
-                          
-                          <div className='row'>
-                            <div className='col-md-6'>
-                            {/* <h5 className='price_chart'>{(symbol).toUpperCase()} Price Chart</h5> */}
-                            <div className='charts_date_tab float-left charts_price_tabs'>
-                                <ul className="nav nav-tabs">
-                                        <li className="nav-item" >
-                                            <a className="nav-link active" data-toggle="tab" href="#"><span>Price</span></a>
-                                        </li>
-                                        <li className="nav-item" >
-                                            <a className="nav-link" data-toggle="tab" href="#"><span>Market Cap</span></a>
-                                        </li>
-                                </ul>
-                            </div>
-                            </div>
-                            <div className='col-md-6'>
-                            <div className='charts_date_tab'>
-                                <ul className="nav nav-tabs">
-                                    {
-                                        cmc_graph_ranges.length ?
-                                        cmc_graph_ranges.map((item, i) =>
-                                        <li className="nav-item" KEY={i}>
-                                            <a className={"nav-link "+(time_name==item.time_name ? "active":"")} onClick={()=>plotGraph(item.time_name, item.intervals, item.count)}><span>{item.time_name}</span></a>
-                                        </li>
-                                        )
-                                        :
-                                        ""
-                                    }
-                                </ul>
-                            </div>
-                            </div>
-                        </div>
-    
-                           {
-                            time_name ? 
-                            <Token_chart reqData={{symbol:symbol.toLowerCase(), time_name, intervals, count}}/>
-                            :
-                            ""
-                           }         
-                          
-
                           {
                             graph_data_date ?
                             <Chart reqData={data} graph_data_date={graph_data_date} />
                             :
                             ""
                           }
-                          </div>
                       </div>
 
 
                       <div id="home" className="tab-pane fade">
-                        <Exchanges_list token_id={data.token_id} crypto_type={1}/>
-
-                        {/* <h4 className='tabs_title_token'>Exchange</h4>
+                        <h4 className='tabs_title_token'>Exchange</h4>
                         <div className="table-responsive">
                           <table className="table table-borderless">
                             <thead>
@@ -2121,7 +2026,7 @@ console.log("api_from_type",token_id)
                             </div>
                             :
                             null
-                        } */}
+                        }
                       </div>
                       <div id="menu1" className="tab-pane fade in">
                         <h4 className='tabs_title_token'>Transactions</h4>
@@ -2173,7 +2078,20 @@ console.log("api_from_type",token_id)
                             null
                         }
                       </div>
-                     
+                      <div id="about" className="tab-pane fade">
+                      <div className="about_token_details">
+                    {
+                      data.token_description ?
+                        <h4 className='tabs_title_token'>About {data.token_name ? data.token_name : "-"}</h4>
+                        :
+                        null
+                    }
+
+                    <div dangerouslySetInnerHTML={{ __html: data.token_description }}></div>
+
+
+                  </div>
+                      </div>
 
                       <div id="team" className="tab-pane fade">
                       <div className='team_detail_token'>
@@ -2234,23 +2152,17 @@ console.log("api_from_type",token_id)
                   </div>
                       </div>
 
-<div id="priceanalysis" className="tab-pane fade">
-<Price_analysis/> 
-</div>
+                      <div id="priceanalysis" className="tab-pane fade">
+                        <h5 className='text-center'>Coming Soon</h5>
+                      </div>
+                      <div id="priceprediction" className="tab-pane fade">
+                      <h5 className='text-center'>Coming Soon</h5>
+                      </div>
+                      <div id="indicators" className="tab-pane fade">
+                      <h5 className='text-center'>Coming Soon</h5>
+                      </div>
 
-
-<div id="priceprediction" className="tab-pane fade">
-<Price_prediction/>
-</div>
-<div id="indicators" className="tab-pane fade">
-<h5 className='text-center'>Coming Soon</h5>
-</div>
-
-<div id="tokenomics" className="tab-pane fade">
-<Tokenomics/>
-</div>
-
-</div>
+                    </div>
 
                   
                   </div>
@@ -2258,15 +2170,12 @@ console.log("api_from_type",token_id)
                       </div>
                       <div className="col-md-12 col-sm-12 col-12 col-lg-4 col-xl-4">
                       <ul className="nav nav-tabs token_events_tabs">
-                        
-                      <li className="nav-item" >
-                                <a className="nav-link active" data-toggle="tab" href="#news"><span>News</span></a>
+                          <li className="nav-item">
+                            <a className="nav-link active" data-toggle="tab" href="#events" ><span>Events</span></a>
                           </li>
-
-                          <li className="nav-item">                            
-                            <a className="nav-link " data-toggle="tab" href="#events" ><span>Events</span></a>
+                          <li className="nav-item" >
+                                <a className="nav-link" data-toggle="tab" href="#news"><span>News</span></a>
                           </li>
-                          
                           <li className="nav-item" >
                                 <a className="nav-link" data-toggle="tab" href="#airdrop"><span>Airdrop</span></a>
                                 
@@ -2275,19 +2184,59 @@ console.log("api_from_type",token_id)
                       <div className='events_tables_content'>
 
                       <div className="tab-content">
-
-                      <div id="news" className="tab-pane fade show in active ">
-                          <News/>
-                      </div>
-
-
-                      <div id="events" className="tab-pane fade in">
-                      <Events/>
-                        </div>
+                      <div id="events" className="tab-pane fade show in active">
+                        <h5>Events</h5>
+                        <img src="/assets/img/advertise.svg" />
                         
+                        </div>
+                        <div id="news" className="tab-pane fade in">
+
+
+                        <div className='news_list_events'>
+                        <h5>News</h5>
+                        <ul>
+                          <li>
+                            <p>7 Apr 2023</p>
+                            <h4>Ripple News: Don’t Buy XRP Until “This” Happens, Warns Top Crypto Analyst</h4>
+                          </li>
+                          <li>
+                            <p>23 Mar 2023</p>
+                            <h4>Dogecoin Price Analysis: DOGE Price Dumps After a Short-Lived Rally – What Traders Can Expect Next?</h4>
+                          </li>
+                        </ul>
+                        </div>
+                      </div>
 
                       <div id="airdrop" className="tab-pane fade  in ">
-                      <Airdrops/>
+                      <h5>Airdrop</h5>
+                      <div className='events_detail_score mt-3'>
+                      
+                          <h3>Airdrop Spool Token
+                          <span><button className='float-right'>Active</button></span></h3>
+                          <div className='media'>
+                            <div className='media-left'>
+                              <img src="/assets/img/trophy.svg" />
+                            </div>
+                            <div className='media-body align-self-center'>
+                              <h4>$ 2455441</h4>
+                              <p>544211544 SPOOL</p>
+                            </div>
+                          </div>
+                          <div className='timing_event_score'>
+                            <div className='row'>
+                              <div className='col-md-5'>
+                                <p>Start :  3 Mar 23</p>
+                              </div>
+                              <div className='col-md-4 padding_null'>
+                                <p>End :  3 May 23</p>
+                              </div>
+                              <div className='col-md-3'>
+                                <p><img src="/assets/img/thumbsup.svg" /> 2256</p>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
                         </div>
                       </div>
                     </div>
@@ -2298,18 +2247,7 @@ console.log("api_from_type",token_id)
 
                   
                   
-                  <div className="about_token_details">
-                    {
-                      data.token_description ?
-                        <h4 className='tabs_title_token'>About {data.token_name ? data.token_name : "-"}</h4>
-                        :
-                        null
-                    }
 
-                    <div dangerouslySetInnerHTML={{ __html: data.token_description }}></div>
-
-
-                  </div>
 
                   <div className="how_do_you_feel">
                     <div className="row">
@@ -2414,7 +2352,7 @@ console.log("api_from_type",token_id)
                                       <li>Tokens Sold <span>{launchpad_object.tokens_sold} {data.symbol ? (data.symbol).toUpperCase() : "-"}</span></li>
                                       <li>Access <span>{launchpad_object.access_type == 1 ? "Public" : "Private"}</span></li>
                                       <li>Where to buy <a href={launchpad_object.where_to_buy_link} target="_blank"><span>{launchpad_object.where_to_buy_title}</span></a></li>
-                                      <li>% of Total Supply <span> {launchpad_object.percentage_total_supply}({(max_supply * (launchpad_object.percentage_total_supply / 100))} {data.symbol ? (data.symbol).toUpperCase() : "-"})</span></li>
+                                      <li>% of Total Supply <span> {launchpad_object.percentage_total_supply}({(token_max_supply * (launchpad_object.percentage_total_supply / 100))} {data.symbol ? (data.symbol).toUpperCase() : "-"})</span></li>
                                       <li>Accept
                                         <span >{
                                           launchpad_object.accept_payment_type.map((e, i) =>
@@ -2455,13 +2393,13 @@ console.log("api_from_type",token_id)
 
                   
 
-                
 
-                  {/* <div className='disclaimer_content mb-5'>
+
+                  <div className='disclaimer_content mb-5'>
                     <h4>Disclaimer</h4>
                     <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of lorem ipsum.</p>
                    
-                  </div> */}
+                  </div>
 
                   
 
@@ -2528,7 +2466,7 @@ console.log("api_from_type",token_id)
 
                       <li className="token_price_block_airdrop">
                       <h6>Listing Price</h6>
-                          <h5>$0.100547851 <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />2.19%</span></span> </h5>
+                          <h5>$0.100547851 <span class="values_growth"><span class="green"><img src="/assets/img/value_up.svg" />2.19%</span></span> </h5>
                 </li>
 
                       <li >
@@ -2688,9 +2626,9 @@ console.log("api_from_type",token_id)
                                 null
                             }
 
-                            <li className="coin_individual_list">
-                                <div className="quick_block_links">
-                                <div className="widgets__select links_direct">
+                            <li class="coin_individual_list">
+                                <div class="quick_block_links">
+                                <div class="widgets__select links_direct">
                                   <a>
                                   {
                         parseInt(data.list_type) !== 2 ?
@@ -2810,11 +2748,11 @@ console.log("api_from_type",token_id)
                               </div>
                             </li>
 
-                            <li className="coin_individual_list">
-                                <div className="quick_block_links">
-                                <div className="widgets__select links_direct">
+                            <li class="coin_individual_list">
+                                <div class="quick_block_links">
+                                <div class="widgets__select links_direct">
                                   <a>
-                                <img src="/assets/img/discuss.svg" className="coin_cat_img" />Discuss <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> 
+                                <img src="/assets/img/discuss.svg" class="coin_cat_img" />Discuss <img src="/assets/img/features_dropdown.svg" class="dropdown_arrow_img" /> 
                               </a>
                               </div>
                               </div>
@@ -2833,11 +2771,11 @@ console.log("api_from_type",token_id)
                                 null
                             }
 
-                            <li className="coin_individual_list">
-                                <div className="quick_block_links">
-                                <div className="widgets__select links_direct">
+                            <li class="coin_individual_list">
+                                <div class="quick_block_links">
+                                <div class="widgets__select links_direct">
                                   <a>
-                                <img src="/assets/img/social_media.svg" className="coin_cat_img" />Social Media <img src="/assets/img/features_dropdown.svg" className="dropdown_arrow_img" /> 
+                                <img src="/assets/img/social_media.svg" class="coin_cat_img" />Social Media <img src="/assets/img/features_dropdown.svg" class="dropdown_arrow_img" /> 
                               </a>
                               </div>
                               </div>
@@ -3164,32 +3102,6 @@ console.log("api_from_type",token_id)
         </div>
       </div>
 
-      <div className={"modal " + (category_modal ? " modal_show" : " ")} >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h4 className="modal-title">Categories</h4>
-              <button type="button" className="close" data-dismiss="modal" onClick={() => set_category_modal(false)}>×</button>
-            </div>
-            <div className="modal-body">
-            
-              <ul className='category-ul '>
-                  {
-                    data.categories.map((item, i) => 
-                    
-                    <li key={i} className='mb-2'><Link href={"/category/"+item.category_id}>{item.category_name}</Link></li>
-                   
-                    )
-                  }
-                
-                
-                </ul>
-           
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className={"modal connect_wallet_error_block" + (handleModalVote ? " collapse show" : "")}>
         <div className="modal-dialog modal-sm">
           <div className="modal-content">
@@ -3233,17 +3145,15 @@ console.log("api_from_type",token_id)
 }
 
 
-export async function getServerSideProps({ query, req }) 
-{
+export async function getServerSideProps({ query, req }) {
   const token_id = query.token_id
   const search_by_category = query.search ? query.search : ""
   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
 
-  const tokenQuery = await fetch(API_BASE_URL + "markets/cryptocurrency/individual_details/" + token_id, config(userAgent.user_token))
-  if(tokenQuery) 
-  {
-    const tokenQueryRun = await tokenQuery.json()
-    return { props: { data: tokenQueryRun.message, errorCode: false, token_id: token_id, userAgent: userAgent, config: config(userAgent.user_token), search_by_category: search_by_category } }
+  const tokenQuery = await fetch(API_BASE_URL + "markets/tokens/individual_details/" + token_id, config(userAgent.user_token))
+  const tokenQueryRun = await tokenQuery.json()
+  if (tokenQueryRun.status) {
+    return { props: { data: tokenQueryRun.message, errorCode: false, token_id: token_id, userAgent: userAgent, tokenStatus: tokenQueryRun.tokenStatus, config: config(userAgent.user_token), search_by_category: search_by_category } }
   }
   else {
     return { props: { errorCode: true } }

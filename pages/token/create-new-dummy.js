@@ -241,78 +241,78 @@ const createNewToken = () =>
 
     if(with_contract_address === true)
     {
-    if(contract_address.length === 2)
-    {   
-      let list = err_contract_address
-
-      if(contract_address[0].network_type === "0" && contract_address[0].contract_address === "")
-      {  
-        list = "The Contract address network type field is required."
-        formValid = false
-      }   
-      else if(contract_address[0].network_type === "0"){  
-        list = "The  network type field is required."
-        formValid = false
-      }   
-      else if(contract_address[0].contract_address === ""){   
-        list = "The Contract address field is required."
-        formValid = false
-      }
-      else if((contract_address[0].contract_address).length !== 42){  
-        list = "The Contract address field must be equal to 42 characters."
-        formValid = false
-      }
-      else if(contract_address[1].network_type === "0" || contract_address[1].network_type === 0){  
-        list = "The Contract address network type field is required." 
-        formValid = false  
-      }  
-      else if(contract_address[1].contract_address === ""){ 
-        list = "The Contract address field is required."
-        formValid = false   
-      }
-      else if((contract_address[1].contract_address).length !== 42){
-        list = "The Contract address field must be equal to 42 characters."
-        formValid = false
-      }  
-      // else if(contract_address[0].contract_address === contract_address[1].contract_address){
-      //   list = "Both Contract addresses must not be same."
-      //   formValid = false
-      // }  
-      else if(contract_address[0].network_type === contract_address[1].network_type){
-        list = "Both Contract addresses network type must not be same."
-        formValid = false
-      }   
-      else{
-        list = ""
-      }
-      setErrContractAddress(list)
-    } 
-    else if(contract_address.length === 1){
-      
-      let list = err_contract_address 
-
-        if(contract_address[0].network_type === "0" && contract_address[0].contract_address === ""){  
-          list = "The Contract address and network type field is required."
-          formValid = false
-        }  
-        else if(contract_address[0].network_type === "0"){  
-          list = "The  network type field is required."
-          formValid = false
-        }  
-        else if(contract_address[0].contract_address === ""){   
-          list = "The Contract address field is required."
-          formValid = false
-        }
-        else if((contract_address[0].contract_address).length !== 42){  
-          list = "The Contract address field must be equal to 42 characters."
-          formValid = false
-        }
-        else{ 
-          list = ""   
+        if(contract_address.length === 2)
+        {   
+          let list = err_contract_address
+    
+          if(contract_address[0].network_type === "0" && contract_address[0].contract_address === "")
+          {  
+            list = "The Contract address network type field is required."
+            formValid = false
+          }   
+          else if(contract_address[0].network_type === "0"){  
+            list = "The  network type field is required."
+            formValid = false
+          }   
+          else if(contract_address[0].contract_address === ""){   
+            list = "The Contract address field is required."
+            formValid = false
+          }
+          else if((contract_address[0].contract_address).length !== 42){  
+            list = "The Contract address field must be equal to 42 characters."
+            formValid = false
+          }
+          else if(contract_address[1].network_type === "0" || contract_address[1].network_type === 0){  
+            list = "The Contract address network type field is required." 
+            formValid = false  
+          }  
+          else if(contract_address[1].contract_address === ""){ 
+            list = "The Contract address field is required."
+            formValid = false   
+          }
+          else if((contract_address[1].contract_address).length !== 42){
+            list = "The Contract address field must be equal to 42 characters."
+            formValid = false
+          }  
+          // else if(contract_address[0].contract_address === contract_address[1].contract_address){
+          //   list = "Both Contract addresses must not be same."
+          //   formValid = false
+          // }  
+          else if(contract_address[0].network_type === contract_address[1].network_type){
+            list = "Both Contract addresses network type must not be same."
+            formValid = false
+          }   
+          else{
+            list = ""
+          }
+          setErrContractAddress(list)
         } 
-        setErrContractAddress(list)  
-      }
-    }  
+        else if(contract_address.length === 1){
+          
+          let list = err_contract_address 
+    
+            if(contract_address[0].network_type === "0" && contract_address[0].contract_address === ""){  
+              list = "The Contract address and network type field is required."
+              formValid = false
+            }  
+            else if(contract_address[0].network_type === "0"){  
+              list = "The  network type field is required."
+              formValid = false
+            }  
+            else if(contract_address[0].contract_address === ""){   
+              list = "The Contract address field is required."
+              formValid = false
+            }
+            else if((contract_address[0].contract_address).length !== 42){  
+              list = "The Contract address field must be equal to 42 characters."
+              formValid = false
+            }
+            else{ 
+              list = ""   
+            } 
+            setErrContractAddress(list)  
+        } 
+    }
 
     if(website_link)
     {
@@ -374,17 +374,17 @@ const createNewToken = () =>
 
    if(token_description === '')
     {
-      setErrTokenDescription('The Description field is required.')
+      setErrTokenDescription('The Coin Description field is required.')
       formValid = false
     }
     else if(token_description.length <= 10)
     {
-        setErrTokenDescription('The Description must be atleast 4 characters.')
+        setErrTokenDescription('The Coin Description must be atleast 4 characters.')
         formValid = false
     }
     else if(token_description.length > 5000)
     {
-        setErrTokenDescription('The Description must be less than 5000 characters in length.')
+        setErrTokenDescription('The Coin Description must be less than 5000 characters in length.')
         formValid = false
     } 
  
@@ -573,8 +573,8 @@ const createNewToken = () =>
             {
                 if(response.status)
                 { 
-                  console.log(response) 
-                  setTokenMaxSupply(response.data.result/10**decimal) 
+                console.log(response) 
+                setTokenMaxSupply(response.data.result/10**decimal) 
                 }
             })
         }
@@ -584,8 +584,8 @@ const createNewToken = () =>
             {
                 if(response.status)
                 { 
-                  console.log(response) 
-                  setTokenMaxSupply(response.data.result/10**decimal) 
+                console.log(response) 
+                setTokenMaxSupply(response.data.result/10**decimal) 
                 }
             })
         }
@@ -606,10 +606,8 @@ const createNewToken = () =>
         const provider = new ethers.providers.JsonRpcProvider(mainnetUrl); 
         const tokenAbi = ["function totalSupply() view returns (uint256)"];
         const tokenContract = new ethers.Contract(id, tokenAbi, provider);
-        
         const supply = await tokenContract.totalSupply() / (10 ** decval);  
         getTokenUsdPrice(id,network_type)
-        console.log("supply", live_price)
         set_market_cap(supply * live_price)
     }
 
@@ -662,6 +660,24 @@ const createNewToken = () =>
   //       })
   //     }
   // }
+
+  const addMoreWebsites = () =>
+  {  
+    setWebsiteLink(prev => [...prev, ""]) 
+  }
+
+  const clickOnWebsiteDelete = (index) =>
+  {
+    setWebsiteLink(website_link.filter((s, sindex) => index !== sindex))
+  }
+   
+  const handleWebsiteChange = (e, index) => 
+  {
+    const { value } = e.target
+    const list = [...website_link] 
+    list[index] = value
+    setWebsiteLink(list)
+  }
  
   const addMoreExchange = () =>
   {  
@@ -733,7 +749,7 @@ const createNewToken = () =>
     //   getETHAccount() 
     // }
   },[]) 
-  
+
   useEffect(()=>
   {
     setSymbol("")
@@ -741,8 +757,8 @@ const createNewToken = () =>
     setTokenMaxSupply("")
     set_market_cap("")
     setContractAddress([{network_type: "0", contract_address: ""}])
-  },[with_contract_address])
-
+  },[with_contract_address]) 
+     
   const makeJobSchema=()=> 
   {  
     return { 
@@ -923,88 +939,83 @@ exchange_link
                       </div>
                     </div>
                     <div className="col-lg-9 col-md-8">
-                      <div className="row">
-                        <div className="col-lg-8 col-md-12">
-                          <div className="row">
-                            <div className="col-md-4">
+                        <div className="row">
+                            <div className="col-lg-8 col-md-12">
+                                <div className="input-appearance">
+                                    <input type="radio" value={with_contract_address} checked={with_contract_address === true} onChange={(s)=>set_with_contract_address(true)} style={{appearance:'auto'}} />
+                                    <label >With Contract Address</label>
+                                    <input type="radio" value={with_contract_address} checked={with_contract_address === false} onChange={(s)=>set_with_contract_address(false)} style={{appearance:'auto'}} />
+                                    <label >Without Contract Address</label> <br></br>
+                                </div>
                             </div>
-                            <div className="col-md-8">
-                              <div className="input-appearance">
-                                <label ><input type="radio" value={with_contract_address} checked={with_contract_address === true} onChange={()=>set_with_contract_address(true)} style={{appearance:'auto'}} />With Contract Address</label> &nbsp;
-                                <label ><input type="radio" value={with_contract_address} checked={with_contract_address === false} onChange={()=>set_with_contract_address(false)} style={{appearance:'auto'}} />Without Contract Address</label>
-                                <br></br>
-                              </div>
-                            </div>
-                          </div>
                         </div>
-                      </div>
-                      <br></br>
-                      {
-                          with_contract_address === true ?
-                          <div className="row">
-                      { 
-                        contract_address.length > 0
-                        ?
-                        contract_address.map((e, i)=>
-                        <div className="col-lg-8 col-md-12" key={i}>
-                          <div className="form-custom">
+
+                        {
+                            with_contract_address === true ?
                             <div className="row">
-                              <div className="col-md-4">
-                                <label htmlFor="email">Contract address<span className="label_star">*</span></label>
-                              </div>
-                              <div className="col-md-8">
-                                <div className="input_block_outline" style={{marginBottom: '0'}}>
-                                  <div className="input-group">
-                                    <div className="input-group-prepend">
-                                      <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address)} >
-                                            <option value="0">Type</option> 
-                                            <option value="1">ETH</option>
-                                            <option value="2">BSC</option>
-                                      </select>
+                            { 
+                                contract_address.length > 0
+                                ?
+                                contract_address.map((e, i)=>
+                                <div className="col-lg-8 col-md-12" key={i}>
+                                <div className="form-custom">
+                                    <div className="row">
+                                    <div className="col-md-4">
+                                        <label htmlFor="email">Contract address<span className="label_star">*</span></label>
                                     </div>
-                                    
-                                    {
-                                      i === 0 && e.network_type !== "0"
-                                      ?
-                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, (item.target.value).toLowerCase())}   />
-                                      :
-                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=>checkContractAddress(item, i)} />
-                                    }
+                                    <div className="col-md-8">
+                                        <div className="input_block_outline" style={{marginBottom: '0'}}>
+                                        <div className="input-group">
+                                            <div className="input-group-prepend">
+                                            <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address)} >
+                                                    <option value="0">Type</option> 
+                                                    <option value="1">ETH</option>
+                                                    <option value="2">BSC</option>
+                                            </select>
+                                            </div>
+                                            
+                                            {
+                                            i === 0 && e.network_type !== "0"
+                                            ?
+                                            <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, (item.target.value).toLowerCase())}   />
+                                            :
+                                            <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=>checkContractAddress(item, i)} />
+                                            }
+                                            </div>
+                    
+                                            {
+                                            i== 1 ?
+                                            <>
+                                                <button className="addmore_ico create-token-res" style={{float: "right", marginBottom: "10px"}} onClick={()=> removeContractAddress(i)}><span>- Remove Contract address</span></button>
+                                            </>
+                                            :
+                                            null
+                                        } 
+                                        </div>  
+                                        <>
+                                        {
+                                            contract_address.length !== 2 ?
+                                            <>
+                                            <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.png" /> Add More Contract addresses</span></button>
+                                            </>
+                                            :
+                                            null
+                                        }
+                                        </>
+                                        <div className="error">{err_contract_address}</div>
                                     </div>
-            
-                                    {
-                                      i== 1 ?
-                                      <>
-                                        <button className="addmore_ico create-token-res" style={{float: "right", marginBottom: "10px"}} onClick={()=> removeContractAddress(i)}><span>- Remove Contract address</span></button>
-                                      </>
-                                    :
-                                    null
-                                  } 
-                                </div>  
-                                <>
-                                  {
-                                    contract_address.length !== 2 ?
-                                    <>
-                                      <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.png" /> Add More Contract addresses</span></button>
-                                    </>
-                                    :
-                                    null
-                                  }
-                                </>
-                                <div className="error">{err_contract_address}</div>
-                              </div>
+                                    </div>
+                                </div>
+                                </div>
+                                )
+                                :
+                                null
+                            }
                             </div>
-                          </div>
-                        </div>
-                        )
-                        :
-                        null
+                            :
+                            null
                         }
-                      </div>
-                      :
-                      null
-                  }
-                
+                      
 
                       <div className="row">
                         <div className="col-lg-8 col-md-12">
@@ -1016,12 +1027,12 @@ exchange_link
                             <div className="form-custom"> 
                             
                             <div className="form-group input_block_outline">
-                            {
-                              with_contract_address === true ?
-                              <input type="text" className="form-control" placeholder="Token Name" value={token_name} readOnly />
-                              :
-                              <input type="text" className="form-control" placeholder="Token Name" value={token_name} onChange={(e)=>setTokenName(e.target.value)}/>
-                            }
+                                {
+                                    with_contract_address === true ?
+                                    <input type="text" className="form-control" placeholder="Token Name" value={token_name} readOnly />
+                                    :
+                                    <input type="text" className="form-control" placeholder="Token Name" value={token_name} onChange={(e)=>setTokenName(e.target.value)}/>
+                                }
                             </div>
                             <div className="error">{err_token_name}</div>
                           </div>
@@ -1039,12 +1050,12 @@ exchange_link
                             <div className="col-md-8">
                               <div className="form-custom"> 
                                 <div className="form-group input_block_outline">
-                                {
-                                    with_contract_address === true ?
-                                    <input type="text" className="form-control" placeholder="Symbol" value={symbol}  readOnly/>
-                                    :
-                                    <input type="text" className="form-control" placeholder="Symbol" value={symbol}  onChange={(e)=>setSymbol(e.target.value)}/>
-                                }
+                                    {
+                                        with_contract_address === true ?
+                                        <input type="text" className="form-control" placeholder="Symbol" value={symbol}  readOnly/>
+                                        :
+                                        <input type="text" className="form-control" placeholder="Symbol" value={symbol}  onChange={(e)=>setSymbol(e.target.value)}/>
+                                    }
                                   
                                 </div>
                                 <div className="error">{err_symbol}</div>
@@ -1093,9 +1104,7 @@ exchange_link
                           </div>
                         </div>
                       </div>
-
-                  
-
+                      
                       <div className="row">
                         <div className="col-lg-8 col-md-12">
                           <div className="row">
@@ -1113,6 +1122,51 @@ exchange_link
                           </div>
                         </div>
                       </div>
+                      {/* <div className="row">
+                        <div className="col-lg-8 col-md-12">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <label htmlFor="email">Website Link</label>
+                            </div>
+                            <div className="col-md-8">
+                            {
+                              website_link.length > 0 ?
+                              website_link.map((item, i) => 
+                              i == 0 ?
+                                <div key={i}>
+                                  <div className="form-custom create_token_no_space">
+                                    <div className="form-group input_block_outline">
+                                      <input autoComplete="off" type="text" className="form-control" placeholder="Website Link" name="link" value={item} onChange={e => handleWebsiteChange(e, i)} />
+                                    </div>
+                                    <button className="addmore_ico create-token-res" onClick={addMoreWebsites}><span><img src="/assets/img/add-more.png" /> Add More Website</span></button>
+                                  </div>
+                                </div>
+                            
+                                  : 
+                                  
+                                    <div >
+                                      <div className="form-custom create_token_top_space">
+                                        <div className="form-group input_block_outline">
+                                          <input autoComplete="off" type="text" className="form-control" placeholder="Website Link" name="link" value={item} onChange={e => handleWebsiteChange(e, i)} />
+                                        </div>
+                                        <p className="remove_block"><span onClick={() =>{clickOnWebsiteDelete(i)}}>Remove</span></p>
+                                      </div>
+                                    </div> 
+                                  
+                                )
+                                :
+                                  <div>
+                                  <div className="form-custom create_token_no_space">
+                                    <div className="form-group input_block_outline">
+                                      <input autoComplete="off" type="text" className="form-control" name="link" placeholder="Website URL" value={website_link} onChange={e => handleWebsiteChange(e, 0)} />
+                                    </div>
+                                  </div>
+                                </div>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      </div> */}
 
                       <div className="row">
                         <div className="col-lg-8 col-md-12">
@@ -1124,12 +1178,12 @@ exchange_link
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
                                   <div className="input-group">
-                                  {
-                                      with_contract_address === true ?
-                                      <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
-                                      :
-                                      <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)}/>
-                                  }
+                                    {
+                                        with_contract_address === true ?
+                                        <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
+                                        :
+                                        <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)}/>
+                                    }
                                     
                                     <div className="input-group-prepend">
                                       <span className="input-group-text">{symbol}</span>
@@ -1151,12 +1205,12 @@ exchange_link
                             <div className="col-md-8">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
-                                {
-                                    with_contract_address === true ?
-                                    <input type="number" placeholder="Market Cap"  className="form-control" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)} readOnly/>
-                                    :
-                                    <input type="number" placeholder="Market Cap"  className="form-control" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)}/>
-                                }
+                                    {
+                                        with_contract_address === true ?
+                                        <input type="number" placeholder="Market Cap"  className="form-control" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)} readOnly/>
+                                        :
+                                        <input type="number" placeholder="Market Cap"  className="form-control" value={market_cap} onChange={(e)=>set_market_cap(e.target.value)}/>
+                                    }
                                 </div>
                                 <div className="error">{err_market_cap}</div>
                               </div>

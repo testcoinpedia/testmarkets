@@ -149,8 +149,8 @@ const getTokensCurrentList=(items, offset)=>
         <div className="prices transaction_table_block token-pg-height">
         <div className="col-md-12">
         <div className="breadcrumb_block">
-        <Link href={coinpedia_url}>Home</Link> <span> &#62; </span> 
-        <Link href={market_coinpedia_url}>Live Market</Link><span> &#62; </span> Tokens
+        <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
+        <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span> Tokens
         </div>
         </div>
           <div className="col-md-12">
@@ -186,7 +186,7 @@ const getTokensCurrentList=(items, offset)=>
                   <div className="col-md-6">
                   <li>
                     <div className="quick_block_links main_page_coin_filter create_token_btn"> 
-                      <Link href="/token/create-new"><img src="/assets/img/create-token.svg" />Create Token</Link>
+                      <Link href="/token/create-new"><a><img src="/assets/img/create-token.svg" />Create Token</a></Link>
                     </div>
                   </li>
                   </div>
@@ -308,7 +308,7 @@ const getTokensCurrentList=(items, offset)=>
                             {
                                 parseInt(e.approval_status) !== 2 ?
                                 <Link href={market_coinpedia_url + "token/edit/"+e.token_id}>
-                                  <span className="manage_tokens_edit">Edit Token</span>
+                                  <a><span className="manage_tokens_edit">Edit Token</span></a>
                                 </Link>
                                 :
                                 ""
@@ -322,13 +322,13 @@ const getTokensCurrentList=(items, offset)=>
                               :
                               parseInt(e.approval_status) === 1 && parseInt(e.active_status) === 1 ?
                               <>
-                               <Link href={market_coinpedia_url+"token/launchpads/"+e.token_id}>
-                                 <span className="manage_tokens_edit">Edit Launchpad</span>
-                              </Link>
-{/*                 
+                               {/* <Link > */}
+                                  <a href={market_coinpedia_url+"token/launchpads/"+e.token_id}><span className="manage_tokens_edit">Edit Launchpad</span></a>
+                              {/* </Link> */}
+                
                               <Link href={market_coinpedia_url + e.token_id}>
-                                <span className="manage_tokens_edit">View</span>
-                              </Link> */}
+                                <a><span className="manage_tokens_edit">View</span></a>
+                              </Link>
                               </>
                               :
                               null
@@ -422,4 +422,6 @@ export async function getServerSideProps({req})
           }
       }
   }
+
+ 
 }

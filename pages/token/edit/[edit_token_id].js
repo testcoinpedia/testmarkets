@@ -7,11 +7,10 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import cookie from 'cookie'
 import dynamic from 'next/dynamic'
-// import "react-datetime/css/react-datetime.css"
+import "react-datetime/css/react-datetime.css"
 import {x_api_key, API_BASE_URL, app_coinpedia_url,config,graphqlApiKEY,IMAGE_BASE_URL,coinpedia_url,market_coinpedia_url} from '../../../components/constants'
 import Popupmodal from '../../../components/popupmodal' 
-import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
-
+import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Editor } from '@tinymce/tinymce-react';
 import Select from 'react-select'
@@ -156,7 +155,7 @@ export default function UpdateToken({userAgent, config, token_id})
             return;
           }
           blob.name = 'newFile.jpeg';
-          // window.URL.revokeObjectURL(fileUrl);
+          window.URL.revokeObjectURL(fileUrl);
           const fileUrl = window.URL.createObjectURL(blob);
           var reader = new FileReader();
           reader.readAsDataURL(blob);
@@ -183,28 +182,9 @@ export default function UpdateToken({userAgent, config, token_id})
   }
 }
 
-function onImageLoad(e) {
-  imgRef.current = e.currentTarget
-  const width = 50
-  const height = 50
-  const crop = centerCrop(makeAspectCrop(
-      {
-          unit: '%',
-          width: 50,
-      },
-      1 / 1,
-      width,
-      height,
-  ),
-      width,
-      height,
-  )
-  setCrop({ unit: 'px', width: 50, height: 50, aspect: 1 / 1 })
-}
-
-// const onLoad = useCallback((img) => {
-//   imgRef.current = img;
-// }, []);
+const onLoad = useCallback((img) => {
+  imgRef.current = img;
+}, []);
    
   const createNewToken = () =>
   { 
@@ -764,8 +744,8 @@ const getTokensDetails = (type, address) =>{
             <div className="for_padding">
               <div className=" token_steps">
                <div className="breadcrumb_block">
-              <Link href={coinpedia_url}>Home</Link> <span> &#62; </span> 
-              <Link href={market_coinpedia_url}>Live Market</Link><span> &#62; </span> Edit Token
+              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
+              <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span> Edit Token
                </div>
                 <div className="row">
                   <div className="col-lg-9 col-md-9 col-8">
@@ -774,7 +754,7 @@ const getTokensDetails = (type, address) =>{
                   </div>
                   <div className="col-lg-3 col-md-3 col-4">
                   <div className="quick_block_links main_page_coin_filter create_token_btn">
-                      <Link href="/token"><i className="la la-arrow-left"></i>Go Back</Link>
+                      <Link href="/token"><a ><i className="la la-arrow-left"></i>Go Back</a></Link>
                       {/* <div class="text-right" onClick={() => router.back()}><a class="btn btn-primary"><i className="la la-arrow-left"></i>Go Back</a></div> */}
                     </div>
                   </div>
@@ -1354,17 +1334,12 @@ const getTokensDetails = (type, address) =>{
                 <button type="button" className="close" data-dismiss="modal"  onClick={()=>imageCropModalClose()}>&times;</button>
                 <h6 className="mb-3">Select Token Logo</h6>
                 <ReactCrop
+                  src={upImg}
+                  onImageLoaded={onLoad}
                   crop={crop}
                   onChange={(c) => setCrop(c)}
                   onComplete={(c) => onCropComplete(c)}
-                  aspect={1 / 1} ><img
-                  alt="Crop me"
-                  src={upImg}
-                  onLoad={onImageLoad}
-                  style={{ width: "100%" }}
-              />
-          </ReactCrop>
-
+                /> 
                 <div className="text-center review_upload_token mt-2">
                   <button  className="dsaf" onClick={() =>{oncCropComplete()}}>Set Token Logo</button> 
                 </div>

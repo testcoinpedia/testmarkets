@@ -152,8 +152,8 @@ export default function OngoingLaunchPad({userAgent}) {
             <div className="container">
               <div className="col-md-12">
               <div className="breadcrumb_block">
-              <Link href={coinpedia_url}>Home</Link> <span> &#62; </span> 
-              <Link href={market_coinpedia_url}>Live Market</Link><span> &#62; </span> Ongoing Launchpads
+              <Link href={coinpedia_url}><a >Home</a></Link> <span> &#62; </span> 
+              <Link href={market_coinpedia_url}><a >Live Market</a></Link><span> &#62; </span> Ongoing Launchpads
                </div>
                 <div className="row launchpad_list">
                   <div className="col-md-8 col-7">
@@ -163,9 +163,9 @@ export default function OngoingLaunchPad({userAgent}) {
                   <div className="col-md-4 col-5">
                     <div className="launchpad-toke-button">
                     <Link href={user_token ? "/token/create-new":app_coinpedia_url+"login"}>
-                     <button className="btn-gradient-primary">
+                      <a><button className="btn-gradient-primary">
                         <span className="btn__text">List your Token</span>
-                      </button></Link>
+                      </button></a></Link>
                     </div>
                   </div> 
                 </div>
@@ -173,10 +173,10 @@ export default function OngoingLaunchPad({userAgent}) {
                 <div className="row">
                   <div className="tabs_for_navigation">
                     <ul className="nav nav-tabs">
-                      <li><Link href="/launchpad"> <span>Overview</span> </Link></li>
-                      <li><Link href="/launchpad/ongoing" className="active"><span >Ongoing</span> </Link></li>
-                      <li><Link href="/launchpad/upcoming"> <span>Upcoming</span> </Link></li>
-                      <li><Link href="/launchpad/ended"> <span>Completed</span></Link></li>
+                      <li><Link href="/launchpad"><a><span>Overview</span></a></Link></li>
+                      <li><Link href="/launchpad/ongoing"><a className="active"><span>Ongoing</span></a></Link></li>
+                      <li><Link href="/launchpad/upcoming"><a><span>Upcoming</span></a></Link></li>
+                      <li><Link href="/launchpad/ended"><a><span>Completed</span></a></Link></li>
                     </ul>
                   </div>
                 </div> 
@@ -188,10 +188,10 @@ export default function OngoingLaunchPad({userAgent}) {
                         <li className="active_tab">All</li>
                         {
                               user_token?
-                              <li className={watchlist_tab_status===2?"active_tab":null}><Link href="/watchlist"><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</Link></li>
+                              <li className={watchlist_tab_status===2?"active_tab":null}><Link href={app_coinpedia_url+"watchlist/?active_watchlist_tab=2"}><a><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</a></Link></li>
                               :
                               <li>
-                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/ongoing"} onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</Link>
+                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/ongoing"}><a onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/> Watchlist</a></Link>
                               </li>
                             }
                         <li className="inactive"  data-toggle="modal" data-target="#comingSoon">DeFi</li>
@@ -253,7 +253,7 @@ export default function OngoingLaunchPad({userAgent}) {
                               }
                             </>
                             :
-                            <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/ongoing"} onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/></Link>
+                            <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/ongoing"}><a onClick={()=> Logout()}><img src="/assets/img2/Star.svg" alt="Watchlist"/></a></Link>
                           }
                           </td>
                           

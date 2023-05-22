@@ -1,26 +1,26 @@
 @font-face {
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu";
   src: "/assets/fonts/ubuntu/Ubuntu-Light.ttf" format("truetype");
   font-weight: 200;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu";
   src: "/assets/fonts/ubuntu/Ubuntu-Regular.ttf" format("truetype");
   font-weight: 300;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu";
   src: "/assets/fonts/ubuntu/Ubuntu-Medium.ttf" format("truetype");
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu";
   src: "/assets/fonts/ubuntu/Ubuntu-Bold.ttf" format("truetype");
   font-weight: 500;
   font-display: swap;
@@ -51,7 +51,7 @@
   font-size: 14px;
   margin-bottom: 4px;
   font-weight: 300 !important;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu";
   margin-top: 1px;
 }
 
@@ -66,7 +66,7 @@
   color: #fff;
   font-size: 13px;
   font-weight: 200 !important;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu";
   margin-top: 8px;
 }
 
@@ -325,7 +325,7 @@ button.active.hiring_btn.mbl {
 .market_top_header .connect_wallet_header .connect_wallet {
   background: #2a1d5d;
   color: #fff;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 14px;
   padding: 9px 15px;
   border-radius: 6px;
@@ -333,7 +333,7 @@ button.active.hiring_btn.mbl {
   margin-top: 12px;
   min-width: 120px;
   max-height: 47px;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu";
   height: 38px;
   -webkit-font-smoothing: antialiased;
 }
@@ -479,7 +479,7 @@ button.active.hiring_btn.mbl {
   text-transform: capitalize !important;
   font-weight: 200;
   font-size: 15px;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu";
   display: inline;
 }
 
@@ -534,7 +534,7 @@ a:hover {
   font-size: 14px ;
   padding: 7px 10px !important;
   display: block;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu";
   margin: 0px !important;
 }
 
@@ -686,11 +686,6 @@ a:hover {
   padding: 8px 10px;
   border-radius: 8px;
   margin-right: 15px;
-}
-
-.track_your_portfolio_desktop a {
-  color: #fff;
-  font-weight: 400;
 }
 
 .track_your_portfolio_desktop .growth_icon {
@@ -847,7 +842,7 @@ a:hover {
     color: #000;
     font-size: 12px;
     font-weight: 300 !important;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: "Ubuntu";
   }
 
   .mobile_view_crypto h6 .green {
@@ -1030,7 +1025,7 @@ a:hover {
     line-height: 22px;
     color: #fff;
     font-weight: 200;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: "Ubuntu";
     -webkit-font-smoothing: antialiased;
   }
 

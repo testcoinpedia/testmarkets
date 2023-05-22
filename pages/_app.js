@@ -1,4 +1,4 @@
-// import '../styles/globals.css' 
+import '../styles/globals.css' 
 import Head from 'next/head';
 import App from 'next/app';
 import Topmenu from '../components/Topmenu'
@@ -27,18 +27,27 @@ class MyApp extends App{
           <link rel="shortcut icon" type="image/x-icon" href={favicon}/>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
+          {/* <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" /> */}
+          {/* <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;300;400;600&display=swap" rel="stylesheet" /> */}
+          {/* <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600&display=swap" rel="stylesheet"></link> */}
           <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"></link>
           
           <link rel="stylesheet" href="/assets/css/bootstrap.min.css" crossOrigin="anonymous"/>
           <link rel="stylesheet" media="all" href="/assets/css/market.css" />
           <link rel="stylesheet" media="all" href="/assets/css/header.css" />
           <link rel="stylesheet" media="all" href="/assets/css/footer.css" />
+          {/* <link rel="stylesheet" media="all" href="/assets/css/app.css" /> */}
+          
 
           <link rel="preconnect" href="https://fonts.googleapis.com"></link>
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin></link>
           <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet"></link>
 
-          <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet" />          
+
+          {/* <link rel="preconnect" href="https://fonts.googleapis.com"></link>
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin></link>
+          <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&display=swap" rel="stylesheet"></link> */}
+          
           
           <link rel="stylesheet" media="all" href="/assets/css/darktheme.css" />
           
@@ -55,20 +64,30 @@ class MyApp extends App{
           }}
         />
         
-      
+        {/* <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "g9f2ka14rv");
+          `,
+        }}
+        ></script> */}
           
-        <script src="https://kit.fontawesome.com/215157a960.js" crossOrigin="anonymous"></script>
+
+        </Head>
+        <Topmenu />
+          <Component {...pageProps} />
+          <script src="https://kit.fontawesome.com/215157a960.js" crossOrigin="anonymous"></script>
           <script src="/assets/js/jquery.min.js"></script>
           <script src="/assets/js/popper.min.js" crossOrigin="anonymous"></script>
           <script src="/assets/js/bootstrap.min.js" crossOrigin="anonymous"></script>
           <script src="/static/datafeeds/udf/dist/bundle.js" />
-        </Head>
-        <Topmenu />
-          <Component {...pageProps} />
-        
           
           <Footer /> 
-          
+   
       </> 
       )
   }
