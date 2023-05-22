@@ -1862,8 +1862,8 @@ console.log("api_from_type",token_id)
                         <div className="col-md-4 col-12">
                             <div className="token_left_border">
                               <div className="token_list_values">
-                                <h4>Max Supply :  &nbsp;<span onClick={() => change(4)}><img src='/assets/img/info.png'  /></span></h4>
-                                <h5>{max_supply ? separator(max_supply) : data.total_max_supply ? separator(data.total_max_supply.toFixed(4)) : "NA"}</h5>
+                                <h4>Max Supply :  &nbsp;</h4>
+                                <h5>{max_supply ? separator(max_supply) : data.total_max_supply ? separator(data.total_max_supply.toFixed(4)) : "NA"} &nbsp;<span onClick={() => change(4)}><img src='/assets/img/info.png'  /></span></h5>
                               </div>
 
                               <div className="token_list_values">
