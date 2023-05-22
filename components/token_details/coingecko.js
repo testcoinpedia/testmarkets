@@ -4,10 +4,10 @@ import {  count_live_price} from '../constants'
 export const live_price_coingecko = async (token_id) =>
 {
     var resObj = {}
-   await Axios.get("https://api.coingecko.com/api/v3/coins/"+token_id).then(res=>{
+    const res = await Axios.get("https://api.coingecko.com/api/v3/coins/"+token_id)
     if(res.data)
-    
-        // console.log("coingecko",res.data)
+    {
+        console.log("coingecko",res.data)
         resObj['name'] = res.data.name
         resObj['id'] = res.data.id
         resObj['live_price'] = res.data.market_data.current_price.usd
@@ -53,15 +53,11 @@ export const live_price_coingecko = async (token_id) =>
             createObj['last_traded_at'] = i.last_traded_at
             createObj['trust_score'] = i.trust_score
             
-             myArr.push(createObj) 
+            await myArr.push(createObj) 
         }
         resObj['exchanges'] = myArr
 
         // return res.data
-    
-})
-// .catch(console.error)
-    
-        
+    }
     return resObj
 }

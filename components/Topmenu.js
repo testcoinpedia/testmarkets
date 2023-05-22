@@ -1,17 +1,15 @@
-'use client';
 import React, { useEffect, useState } from 'react';
 import Web3 from 'web3'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 import Axios from 'axios'
 import cookie from 'cookie'
 import JsCookie from "js-cookie"
-import SearchContractAddress from './searchContractAddress'
 // import { useSelector, useDispatch } from 'react-redux'
-// import $ from 'jquery';
-// import "slick-carousel/slick/slick.css";
-// import "slick-carousel/slick/slick-theme.css";
-// import Slider from 'react-slick';
+import $ from 'jquery';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from 'react-slick';
 import { USDFormatValue } from '../config/helper'
 import { API_BASE_URL, events_coinpedia_url, app_coinpedia_url, market_coinpedia_url, coinpedia_url, Logout, separator, logo, config, api_url, cookieDomainExtension, IMAGE_BASE_URL } from '../components/constants'
 import Popupmodal from './popupmodal'
@@ -20,16 +18,14 @@ import Popupmodal from './popupmodal'
 
 export default function Topmenu() {
   const router = useRouter()
-// +((router.pathname).substring(1))
-  const [current_page_url] = useState(market_coinpedia_url)
-  console.log("current_page_url", current_page_url)
+  const [current_page_url] = useState(market_coinpedia_url+((router.pathname).substring(1)))
   const [login_dropdown, set_login_dropdown] = useState(0)
   const [live_prices_list, set_live_prices_list] = useState({});
   const [light_dark_mode, set_light_dark_mode] = useState("")
   // const userData = useSelector(state => state.userData)
   const [image_base_url] = useState(IMAGE_BASE_URL + "/profile/")
   const check_in_array = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SCUSDT', 'XRPUSDT']
-  const [display_tokens_balance, set_display_tokens_balance] = useState(0) 
+  const [display_tokens_balance, set_display_tokens_balance] = useState(JsCookie.get('display_tokens_balance') ? JsCookie.get('display_tokens_balance'):0) 
 
   useEffect(() => 
   {
@@ -44,30 +40,30 @@ export default function Topmenu() {
 
   useEffect(() => {
     getLivePricesList()
-    // $(".primary_navbar").hover(
-    //   function () {
-    //     $(this).children("div").addClass("result_hover");
-    //   }
+    $(".primary_navbar").hover(
+      function () {
+        $(this).children("div").addClass("result_hover");
+      }
 
-    // );
+    );
 
     if (JsCookie.get('user_full_name')) {
       //console.log(JsCookie.get('user_full_name'))
       set_login_dropdown(1)
     }
 
-    // if (JsCookie.get('light_dark_mode') === "dark") {
-    //   set_light_dark_mode(JsCookie.get('light_dark_mode'))
-    //   $("body").addClass("dark_theme")
-    // }
-    // else {
-    //   set_light_dark_mode(JsCookie.get('light_dark_mode'))
-    //   $("body").removeClass("dark_theme")
-    // }
+    if (JsCookie.get('light_dark_mode') === "dark") {
+      set_light_dark_mode(JsCookie.get('light_dark_mode'))
+      $("body").addClass("dark_theme")
+    }
+    else {
+      set_light_dark_mode(JsCookie.get('light_dark_mode'))
+      $("body").removeClass("dark_theme")
+    }
   }, [login_dropdown, JsCookie.get('light_dark_mode')])
 
   const customToggle = () => {
-   // $(".main_menu_header").toggleClass("fixed_toggle_navbar");
+    $(".main_menu_header").toggleClass("fixed_toggle_navbar");
   }
 
   const settings = {
@@ -218,13 +214,13 @@ export default function Topmenu() {
     if (JsCookie.get('light_dark_mode') === "dark") {
       JsCookie.set("light_dark_mode", "light", { domain: cookieDomainExtension })
       set_light_dark_mode("light")
-      // $("body").removeClass("dark_theme")
+      $("body").removeClass("dark_theme")
       location.reload()
     }
     else {
       JsCookie.set("light_dark_mode", "dark", { domain: cookieDomainExtension })
       set_light_dark_mode("dark")
-      // $("body").addClass("dark_theme")
+      $("body").addClass("dark_theme")
       location.reload()
     }
   }
@@ -241,8 +237,8 @@ export default function Topmenu() {
                   <div className="navbar-header">
                     <div className="row">
                       <div className="col-md-6 col-lg-3 col-xl-3 col-6">
-                        <Link href={coinpedia_url} className="navbar-brand">
-                          <img src={logo} className="logo_header" />
+                        <Link href={coinpedia_url}>
+                          <a className="navbar-brand"><img src={logo} className="logo_header" /></a>
                         </Link>
                       </div>
                       <div className="col-lg-4 col-md-6 col-xl-5 market_live_price_desktop">
@@ -281,25 +277,35 @@ export default function Topmenu() {
                         </div>
 
                         <div className="login_portfolio">
-                         <div className="desktop_view_crypto">
+                        {
+                          current_page_url ?
+                          <div className="desktop_view_crypto">
                             <div className="track_your_portfolio_desktop">
                               {
                                 display_tokens_balance > 0 ?
-                                  <a href={app_coinpedia_url}>
+                                
+                                  <Link href={app_coinpedia_url}>
+                                    <a>
                                     <img className="growth_icon" src="https://image.coinpedia.org/wp-content/uploads/2023/03/20130900/line-chart.png" /> 
                                     &nbsp;Portfolio: {USDFormatValue(display_tokens_balance)}
                                     <img className="portfolio_right" src="https://image.coinpedia.org/wp-content/uploads/2023/03/20130902/right-arrow-1.png" />
-                                  </a>
+                                    </a>
+                                  </Link>
+                                
                                 :
-                                <a href={app_coinpedia_url}>
+                                
+                                <Link href={app_coinpedia_url}>
+                                  <a>
                                   <img className="growth_icon" src="https://image.coinpedia.org/wp-content/uploads/2023/03/20130900/line-chart.png" /> Track your Portfolio 
                                   <img className="portfolio_right" src="https://image.coinpedia.org/wp-content/uploads/2023/03/20130902/right-arrow-1.png" />
-                                </a>
+                                  </a>
+                                </Link>
                               }
-                            </div>
                           </div>
-                          
-                       
+                          </div>
+                          :
+                          <></>
+                        } 
                         {/* data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" */}
 
 
@@ -312,16 +318,16 @@ export default function Topmenu() {
                               </button>
                               <div className="dropdown-menu dropdown_wallet_header side-menu-list" aria-labelledby="dropdownMenuButton">
                                 <h6>User</h6>
-                                <Link href={app_coinpedia_url} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/21160228/menu-wallet.svg" title="Portfolio" alt="Portfolio" />Portfolio</Link>
-                                <Link href={app_coinpedia_url + "profile"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130600/menu-user-profile.svg" title=" Manage User Profile" alt=" Manage User Profile" /> Manage User Profile</Link>
-                                <Link href={app_coinpedia_url + "referrals"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130558/menu-referrals.svg" title="Referral List" alt="Referral List" /> Referral List</Link>
+                                <Link href={app_coinpedia_url} ><a className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/21160228/menu-wallet.svg" title="Portfolio" alt="Portfolio" />Portfolio</a></Link>
+                                <Link href={app_coinpedia_url + "profile"} ><a className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130600/menu-user-profile.svg" title=" Manage User Profile" alt=" Manage User Profile" /> Manage User Profile</a></Link>
+                                <Link href={app_coinpedia_url + "referrals"} ><a className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130558/menu-referrals.svg" title="Referral List" alt="Referral List" /> Referral List</a></Link>
 
                                 <h6>Company</h6>
-                                <Link href={app_coinpedia_url + "company/profile"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/02/23104252/menu_company.svg" title="Company Profile" alt="Company Profile" /> Company Profile</Link>
+                                <Link href={app_coinpedia_url + "company/profile"} ><a className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/02/23104252/menu_company.svg" title="Company Profile" alt="Company Profile" /> Company Profile</a></Link>
                                 <a href={market_coinpedia_url + "token"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130553/menu-token.svg" title="Manage Tokens" alt="Manage Tokens" /> Manage Tokens</a>
                                 {/* <a href={market_coinpedia_url+"create-launchpad/maker"}  className="dropdown-item"><img src="/assets/img/menu-airdrop.png" /> Manage Launchpad/Airdrop</a> */}
                                 <a href={market_coinpedia_url + "token/create-new"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130550/menu-list-token.svg" title="List a Token" alt="List a Token" /> List a Token</a>
-                                <Link href={app_coinpedia_url + "profile/my-nft-collection"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130548/menu-nft.svg" title="My NFT Collection" alt="My NFT Collection" /> My NFT Collection</Link>
+                                <Link href={app_coinpedia_url + "profile/my-nft-collection"} ><a className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130548/menu-nft.svg" title="My NFT Collection" alt="My NFT Collection" /> My NFT Collection</a></Link>
 
 
                                 {
@@ -352,18 +358,18 @@ export default function Topmenu() {
                                 {/* <a className="header_reg_btn" href="/register">Verify</a> */}
                                 {/* <Link href="/connections"><a className="dropdown-item"><img src="/assets/img/drop_referral_list.png" /> Connections</a></Link> */}
                                 <h6>Other</h6>
-                                <Link href={events_coinpedia_url+"my-events"} onClick={() => customToggle()} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2022/12/30183750/desk-manage.svg" title=" Manage Events" alt=" Manage Events" className="manageevent_icon"/> Manage Events</Link>
+                                <Link href={events_coinpedia_url+"my-events"} ><a onClick={() => customToggle()} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2022/12/30183750/desk-manage.svg" title=" Manage Events" alt=" Manage Events" className="manageevent_icon"/> Manage Events</a></Link>
                                 <a className="dropdown-item" onClick={() => logoutFunction()} style={{ color: '#fe4b4b' }}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/21160229/sidemenu-logout.svg" title="Logout" alt="Logout" /> Logout</a>
 
                               </div>
                             </div>
                             :
-                            <div className=" connect_wallet_header">
-                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}>
-                                <button className="btn connect_wallet" type="button">
+                            <div className="dropdown connect_wallet_header">
+                              <a href={app_coinpedia_url+"login/"}>
+                                <button className="btn connect_wallet" type="button" >
                                   <img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17161416/connect-wallet-header.svg" className="login_img" title="Login" alt="Login" /> Login
                                 </button>
-                              </Link>
+                              </a>
                             </div>
                           }
                         </div>
@@ -384,19 +390,22 @@ export default function Topmenu() {
                      {
                         display_tokens_balance > 0 ?
                         <h4>
-                          <a href={app_coinpedia_url}>
-                           
+                          <Link href={app_coinpedia_url}>
+                            <a>
                           <img className="growth_icon" src="https://image.coinpedia.org/wp-content/uploads/2023/03/10152629/track-portfolio.svg" /> 
                           Portfolio: $  {USDFormatValue(display_tokens_balance)}
                           <img className="portfolio_right" src="https://image.coinpedia.org/wp-content/uploads/2023/03/10171148/right-arrow.png" />
-                          
                           </a>
+                          </Link>
                         </h4>
                         :
                         <h4>
-                          <a href={app_coinpedia_url}>
+                          <Link href={app_coinpedia_url}>
+                          <a>
                           <img className="growth_icon" src="https://image.coinpedia.org/wp-content/uploads/2023/03/10152629/track-portfolio.svg" /> Track your Portfolio 
+                          <img className="portfolio_right" src="https://image.coinpedia.org/wp-content/uploads/2023/03/10171148/right-arrow.png" />
                           </a>
+                          </Link>
                         </h4>
                       }
                    </div>
@@ -505,10 +514,10 @@ export default function Topmenu() {
                       <li className="dropdown mobile_login_block">
                         <Link href={app_coinpedia_url + "login?prev_url="+market_coinpedia_url}>
 
-                       
+                        <a >
                           <img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180324/footer-logo.svg" className="login_icon" /> Login / Create Account
                           {/* <span className="caret"></span> */}
-                        
+                        </a>
                         </Link>
                         <ul className="dropdown-menu">
                         </ul>
@@ -526,7 +535,7 @@ export default function Topmenu() {
                           </ul>
                         </li> */}
 
-                  <li className="res_menu_list top_menu_home portfolio_icon"><Link href={app_coinpedia_url} onClick={() => customToggle()}><img src="https://image.coinpedia.org/wp-content/uploads/2022/12/29184911/portfolio.svg" className="mobile_menu_icons" alt="Portfolio" title="Portfolio"  /> Portfolio</Link></li>
+                  <li className="res_menu_list top_menu_home portfolio_icon"><Link href={app_coinpedia_url}><a onClick={() => customToggle()}><img src="https://image.coinpedia.org/wp-content/uploads/2022/12/29184911/portfolio.svg" className="mobile_menu_icons" alt="Portfolio" title="Portfolio"  /> Portfolio</a></Link></li>
 
 
                   <li className="res_menu_list top_menu_home"><a href={coinpedia_url}><img src="https://image.coinpedia.org/wp-content/uploads/2022/11/05140518/home.svg" className="mobile_menu_icons" /> Home</a></li>
@@ -612,9 +621,9 @@ export default function Topmenu() {
 
                     <div className="dropdown-menu " aria-labelledby="navbarDropdown">
                       <ul>
-                        <li><Link href={app_coinpedia_url + "companies"} className="dropdown-item">Companies</Link></li>
-                        <li><Link href={app_coinpedia_url + "partners"} className="dropdown-item">Partners</Link></li>
-                        <li><Link href={events_coinpedia_url} className="dropdown-item">Events</Link></li>
+                        <li><Link href={app_coinpedia_url + "companies"}><a className="dropdown-item">Companies</a></Link></li>
+                        <li><Link href={app_coinpedia_url + "partners"}><a className="dropdown-item">Partners</a></Link></li>
+                        <li><Link href={events_coinpedia_url}><a className="dropdown-item">Events</a></Link></li>
                         {/* <li><Link href={app_coinpedia_url + "jobs"}><a className="dropdown-item">Jobs</a></Link></li> */}
                       </ul>
                     </div>
@@ -650,10 +659,8 @@ export default function Topmenu() {
                   }
 
                 </ul>
-                <ul className="nav navbar-nav navbar-right ml-auto markets_new_design ">
-                 <li>
-                 {/* <SearchContractAddress /> */}
-                </li> 
+                <ul className="nav navbar-nav navbar-right ml-auto ">
+                  {/* <li className="active hiring_btn"><a href={coinpedia_url+"careers"}>We Are Hiring</a></li> */}
                   <li className="dark_theme_toggle" onClick={() => setDarkMode()} id="theme_color">
                     {/* <img src="https://api.coinpedia.org/uploads/tokens/1636636942618d190eb91f9.png" /> */}
                     {
