@@ -89,7 +89,7 @@ export default function Exchange({exchange_list_new, crypto_type, token_id})
             <table className="table table-borderless">
                 <thead>
                     <tr>
-                        <th>Exchange</th>
+                        <th className='mobile_fixed_first'>Exchange</th>
                         <th>Pairs</th>
                         <th>Liquidity in Pool</th>
                         <th>Trades Count</th>
@@ -103,7 +103,8 @@ export default function Exchange({exchange_list_new, crypto_type, token_id})
                         exchange_list.length>0?
                         exchange_list.map((e, i) => {
                         return <tr key={i}>
-                            <td ><div className='media'>
+                            <td className='mobile_fixed_first'>
+                                <div className='media'>
                                 <div className='media-left align-self-center'>
                                     <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" />
                                 </div>

@@ -11644,7 +11644,7 @@ font-weight: 500 !important;
 }
 
 .events_tables_content{
-  padding: 15px 15px;
+  padding: 15px 0 15px 15px;
   border: 1px solid #D8DDE1;
     border-radius: 10px;
     margin-bottom: 15px;
@@ -12239,7 +12239,7 @@ color: #000000;
 }
 
 .exchange_page {
-  padding: 0 0 0 15px !important;
+  padding: 15px 0 15px 15px !important;
 }
 
 .exchange_table .table-responsive{
@@ -12257,6 +12257,7 @@ color: #000000;
   background-color: #eff2f5;
   width: 8px;
   border-radius: 10px;
+  height: 8px;
 }
 
 .news_list_events{
@@ -12274,6 +12275,7 @@ color: #000000;
   background-color: #eff2f5;
   width: 8px;
   border-radius: 10px;
+  height: 8px;
 }
 
 .price_block {
@@ -12388,6 +12390,7 @@ color: #000000;
   background-color: #eff2f5;
   width: 8px;
   border-radius: 10px;
+  height: 8px;
 }
 
 
@@ -14674,7 +14677,7 @@ color: #000000;
 }
 
 .coin_details .token_list_values {
-  padding: 10px 0;
+  padding: 10px 0 0;
 }
 
 .coin_details .token_list_values h4 {
@@ -14732,7 +14735,7 @@ color: #000000;
 
 .values_growth span img {
   margin-right: 3px;
-  vertical-align: revert;
+  vertical-align: revert !important;
   margin-bottom: 1px;
 }
 
@@ -14820,7 +14823,7 @@ font-weight: 500 !important;
 
 
 .token_price_block .values_growth{
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .token_price_block p {
@@ -14883,6 +14886,7 @@ font-weight: 500 !important;
   font-size: 13px !important;
   font-family: 'Space Grotesk' !important;
   font-weight: 700 !important;
+  margin-bottom: 0 !important;
 }
 
 
@@ -14928,7 +14932,7 @@ font-weight: 500 !important;
   padding: 8px 14px;
   -webkit-box-pack: center;
   justify-content: center;
-  width: 96px;
+  /* width: 96px; */
   border-radius: 8px;
   background-color: rgb(244 247 253);
   margin-right: 8px;
@@ -14966,6 +14970,8 @@ font-weight: 500 !important;
   margin-top: 0px;
   box-shadow: none;
   padding: 0 15px;
+  border-top: 1px solid #cad0d63b;
+  border-bottom: 1px solid #cad0d63b;
 }
 
 .search_section .search_input input::placeholder{
@@ -15357,6 +15363,19 @@ border-radius: 8px;
   color: #fff;
   /* float: right; */
   padding: 5px 15px;
+}
+
+.ico_details a{
+  background: #dfe9f4;
+  padding: 10px;
+  color: #363636;
+  border-radius: 8px;
+  font-family: 'Space Grotesk';
+  font-weight: 500 !important;
+}
+
+.ico_status_button{
+  float: right;
 }
 
 .dropdown_ico{
@@ -17422,7 +17441,13 @@ screen and (max-height: 300px) {
 @media only screen and (max-width: 767px) {
 
   .token_share_vote{
-    float:left;
+    /* float:left; */
+    justify-content: center;
+    margin-top: 0;
+  }
+
+  .search-tokens .count_token_list{
+    margin-top: 0px !important;
   }
 
   .token_main_details .media {
@@ -17448,6 +17473,10 @@ screen and (max-height: 300px) {
     /* display: block !important; */
   }
 
+  .cust_filters_dropdown .cust_filter_result{
+    margin-top: 0;
+  }
+  
   
   .token_events_tabs{
     margin-top: 30px;
@@ -17457,6 +17486,7 @@ screen and (max-height: 300px) {
     width: 95%;
     top: 0;
     right: 10px;
+    margin-top: 5px;
   }
 
 
@@ -17473,7 +17503,7 @@ screen and (max-height: 300px) {
   }
 
   .detail_airdrop_data h3{
-    font-size: 17px;
+    font-size: 16px;
   }
 
   .detail_airdrop_data h6{
@@ -17481,11 +17511,17 @@ screen and (max-height: 300px) {
   }
 
   .tokendetail_charts{
-    padding: 10px;
+    padding: 5px;
   }
   
   .exchange_table table thead tr th{
-    min-width: 100px
+    font-size: 13px !important;
+    position: relative !important;
+  }
+
+  .exchange_table table thead tr th:first-child{
+    position: sticky !important;
+    z-index: 999;
   }
 
   .markets_header_token{
@@ -17503,6 +17539,9 @@ screen and (max-height: 300px) {
   .categories__item {
     padding: 7px 6px;
 }
+  .search-tokens{
+    margin-bottom: 5px;
+  }
 
   .coin_details {
     margin-bottom: 0;
@@ -17552,9 +17591,7 @@ screen and (max-height: 300px) {
     width: 10px;
   }
 
-  .quick_block_links .widgets__select {
-    border-radius: 5px;
-  }
+  
 
   .market_growth {
     padding: 4px 8px;
@@ -17573,8 +17610,8 @@ screen and (max-height: 300px) {
   }
 
   .token_main_details .media .media-heading {
-    font-size: 18px;
     margin-top: 5px;
+    font-size: 22px;
   }
 
   .token_main_details .media .media-body h4 span img {
@@ -17671,10 +17708,10 @@ screen and (max-height: 300px) {
     display: none;
   }
 
-  .categories__container .markets_list_quick_links:first-child .categories__item {
+  /* .categories__container .markets_list_quick_links:first-child .categories__item {
     margin-right: 10px;
     margin-left: 0px;
-  }
+  } */
 
   .create_token_top_space {
     margin-top: 15px;
@@ -17835,7 +17872,7 @@ screen and (max-height: 300px) {
 
   .cust_filters_dropdown .cust_filter_input{
     height: 40px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     margin-top: 10px !important;
   }
 
@@ -17922,9 +17959,9 @@ screen and (max-height: 300px) {
   }
 
   .coin_main_links .links_direct {
-    padding: 4px 6px 2px !important;
+    /* padding: 4px 6px 2px !important; */
     /* font-size: 10px; */
-    text-align: center;
+    /* text-align: center; */
   }
 
   /* .coin_details .token_list_values h4 {
@@ -17942,6 +17979,17 @@ screen and (max-height: 300px) {
 
   .coin_quick_details {
     margin-bottom: 10px;
+    display: flex;
+    overflow: scroll;
+  }
+
+  .quick_block_links .widgets__select{
+    min-width: 130px;
+    width: 100%;
+  }
+
+  .quick_block_links{
+    margin-right: 10px;
   }
 
   .pager__list.pagination_element ul li a {
@@ -17988,7 +18036,6 @@ screen and (max-height: 300px) {
   .coin_details .token_list_values {
     padding: 8px 0;
     display: flex;
-    justify-content: center;
   }
 
   .coin_details .token_list_values h5{
@@ -19208,7 +19255,7 @@ screen and (max-height: 300px) {
   }
 
   .token_price_block h5 {
-    font-size: 18px;
+    /* font-size: 18px; */
   }
 
   .coin_details .token_left_border {
@@ -19228,18 +19275,17 @@ screen and (max-height: 300px) {
   
 
   .token_share_vote li img {
-    width: 16px;
-    top: 0;
+    width: 14px;
+    top: -2px;
     vertical-align: middle;
   }
 
   .token_main_details {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 5px 0;
   }
 
   .token_price_block {
-    margin-top: 15px;
+    margin-top: 0px;
   }
 
   .market_token_details .table-borderless td {
@@ -20134,7 +20180,7 @@ font-weight: 500 !important;
 }
 .all-categories-list li .active_category{
   background: rgba(239, 242, 245, 0.60) !important;
-    border: 1px solid #cad0d638;
+    border: 0px solid #cad0d638;
     border-radius: 6px;
   color: #424242;
   margin-right: 0px !important;
@@ -20315,7 +20361,7 @@ justify-content: end;
 }
 
 .exchange_table table thead tr th{
-  min-width: 100% !important;
+  min-width: 110px !important;
   padding: 15px 5px !important;
 }
 
@@ -20335,7 +20381,12 @@ justify-content: end;
   font-family: 'Space Grotesk';
   font-weight: 400 !important;
   min-width: 80px;
+  /* position: sticky; */
+  top: 0;
+  background-color: #fff;
+  /* z-index: 0; */
 }
+
 
 .market_page_data table tbody tr{
   border-bottom: 1px solid #eeeaec !important;
@@ -20487,14 +20538,75 @@ justify-content: end;
     font-size: 18px;
   }
   .markets_new_design .market_insights p{
-    font-size: 13px;
+    font-size: 14px;
     margin-top: 15px;
-    margin-bottom: 0;
+    margin-bottom: 5px;
+  }
+
+  .search_section .search-result{
+    text-align: left;
+  }
+  .search_section .search-result .searchbox_titles{
+    margin-top: 0;
   }
 
   .market_page_data tr .mobile_fixed_first, .mobile_fixed{
     box-shadow: 5px 0 7px -2px #ddd;
     /* background: #eeeeee4d; */
+  }
+
+  .coin_details .token_list_values h4 {
+    font-size: 11px;
+  }
+
+  .coin_details .token_list_values h5 {
+    font-size: 11px;
+  }
+
+  .token_list_content h4 img {
+    width: 12px;
+  }
+
+  .coin_details .token_list_values h5 span img{
+    width: 12px;
+  }
+
+  .token_list_values .values_growth .green{
+    font-size: 12px;
+  }
+
+  .popup_modal_for_all h4 {
+    margin-top: 0px;
+    font-size: 15px;
+  }
+
+  .popup_modal_for_all .modal-body h5 {
+    margin-top: 10px;
+  }
+
+  .popup_modal_for_all .close {
+    font-size: 25px;
+  }
+
+  .charts_price_tabs{
+    width: auto;
+    padding: 2px 3px 3px;
+  }
+  .charts_price_tabs .nav-tabs li a {
+    padding: 1px 5px 0;
+    min-width: 60px;
+  }
+  .charts_date_tab .nav-tabs li a {
+    padding: 1px 6px 0;
+  }
+
+  .coin_details .token_list_values .values_growth span img{
+    width: 9px;
+    vertical-align: revert;
+  }
+
+  .token_list_values .values_growth .red{
+    font-size: 11px;
   }
 
   .all-categories-list li a{
@@ -20530,6 +20642,134 @@ justify-content: end;
   .price-tracking-tbl .filter_rows{
     text-align: left;
   }
+
+  .token_main_details .media p{
+    font-size: 14px;
+  }
+
+  .category-ul li{
+    font-size: 13px;
+  }
+  .token_price_block h6 {
+    font-size: 13px;
+    margin-top: 0;
+  }
+  .token_list_content h4 {
+    font-size: 11px;
+  }
+  .timings_price{
+    font-size: 13px;
+  }
+  .token_price_block .values_growth {
+    font-size: 13px;
+  }
+  .recent-searches{
+    width: auto;
+    margin-bottom: 5px;
+  }
+
+  .airdrop_col{
+    margin-top: 10px;
+  }
+
+  .ico_details .ico_heading {
+    font-size: 16px;
+  }
+  .ico_dates{
+    font-size: 12px;
+    margin: 15px 0;
+  }
+  .ico_dates span{
+    font-size: 12px;
+  }
+
+  .ico_prices p{
+    font-size: 12px;
+  }
+  .ico_prices h5{
+    font-size: 12px;
+  }
+  .ico_details .values_growth span{
+    font-size: 12px;
+  }
+
+  .ico_details.values_growth span img{
+    width: 9px;
+  }
+
+  .ico_status_button{
+  }
+  .details_airdrop_card p {
+    font-size: 14px;
+  }
+  .ico_details .ico_button {
+    padding: 0px 10px;
+  }
+  .dropdown_ico{
+    width: 20px;
+    margin-left: 5px;
+  }
+  .ico_details .ico_button {
+  font-size: 12px;
+
+}
+.detail_airdrop_data .list_numbers{
+  display: block;
+}
+.detail_airdrop_data li {
+  font-size: 14px;
+}
+.price_desc p {
+  font-size: 13px;
+}
+.price_desc h4 {
+  font-size: 14px;
+}
+.news_list_events p{
+  font-size: 13px;
+}
+.news_list_events h4{
+  font-size: 14px;
+}
+.tokenomic_table th {
+  padding: 10px 0 !important;
+}
+.tokenomic_table td {
+  padding: 10px 0 !important;
+}
+.ico_calendar_tabs li .nav-link{
+  min-width: auto !important;
+  margin: 0 5px 10px;
+}
+.token_main_details .media .token_img {
+  width: 70px;
+}
+.token_list_content{
+  margin-top: 0;
+}
+.token_share_vote li {
+  font-size: 13px;
+}
+.coin_details .token_list_values h4{
+  margin-bottom: 0;
+}
+.detail_airdrop_data p{
+  font-size: 14px;
+}  
+.market_page_data table thead{
+  position: relative;
+}
+.new_design_serach{
+  margin-top: 0px !important;
+}
+
+/* .dropdown_block{
+  position: relative;
+} */
+.exchange_table .table-responsive{
+  overflow: auto;
+  max-height: 100%;
+}
 }
 @media screen and (min-width:580px) and (max-width:767px){
   .price-tracking-tbl .filter-category-section .search_filter{

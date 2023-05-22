@@ -265,13 +265,13 @@ return (
           <div className="container">
             <div className="col-md-12">
               <div className="row market_insights ">
-                <div className="col-md-12 col-lg-6">
+                <div className="col-md-6 col-lg-6 ">
                   <h1 className="page_title">Cryptocurrency Live Prices</h1>
                   {/* by Market Cap */}
                   <p>Global market cap today: $ 1.38 trillion <img src="/assets/img/markets/high-value.png" alt="high value"/><span className="color-green">10.02%</span> in 24 hrs.</p>
                 </div>
                 <div className="col-md-1 col-lg-2"></div>
-                <div className="col-md-5 col-lg-4" >
+                <div className="col-md-5 col-lg-4 " >
                   <SearchContractAddress /> 
                 </div>
               </div>

@@ -10,7 +10,7 @@ import JsCookie from "js-cookie"
 import cookie from 'cookie'
 import dynamic from 'next/dynamic'
 // import "react-datetime/css/react-datetime.css"
-import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,  market_coinpedia_url,config,graphqlApiKEY,separator} from '../../components/constants'; 
+import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,IMAGE_BASE_URL,  market_coinpedia_url,config,graphqlApiKEY,separator} from '../../components/constants'; 
 import Select from 'react-select'
 import Popupmodal from '../../components/popupmodal'
 import Top_header from '../../components/manage_token/top_header' 
@@ -38,6 +38,8 @@ export default function Create_token({config})
     const [market_cap, set_market_cap] = useState("") 
     const [err_contract_address, setErrContractAddress] = useState("")
     const [loader, set_loader] = useState("")
+    const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/") 
+    const [display_image, set_display_image] = useState("")
     
     const [symbol, setSymbol] = useState('')  
     const [token_name, setTokenName] = useState('')
@@ -84,8 +86,8 @@ export default function Create_token({config})
     const [with_contract_address, set_with_contract_address] = useState(true)
 
     const onSelect =(selectedList, selectedItem)=> { 
-        category_name_ids.push(selectedItem._id)
-        category_name.push(selectedItem)  
+        category_name_ids?.push(selectedItem._id)
+        category_name?.push(selectedItem)  
     }
     
     const onRemove = (selectedList, removedItem) => {
@@ -102,7 +104,7 @@ export default function Create_token({config})
   
     const getBusinessModels = () => 
     { 
-        Axios.get(API_BASE_URL+"app/company_business_models", config).then(res => 
+        Axios.get(API_BASE_URL+"markets/cryptocurrency/unique_categories", config).then(res => 
         {
             if (res.data.status) 
             {
@@ -399,16 +401,16 @@ const createNewToken = () =>
       setErrTokenDescription('The Description field is required.')
       formValid = false
     }
-    else if(token_description.length <= 10)
-    {
-        setErrTokenDescription('The Description must be atleast 4 characters.')
-        formValid = false
-    }
-    else if(token_description.length > 5000)
-    {
-        setErrTokenDescription('The Description must be less than 5000 characters in length.')
-        formValid = false
-    } 
+    // else if(token_description?.length <= 10)
+    // {
+    //     setErrTokenDescription('The Description must be atleast 4 characters.')
+    //     formValid = false
+    // }
+    // else if(token_description?.length > 5000)
+    // {
+    //     setErrTokenDescription('The Description must be less than 5000 characters in length.')
+    //     formValid = false
+    // } 
  
     if(!formValid)
     {
@@ -419,26 +421,26 @@ const createNewToken = () =>
       list_type : with_contract_address === false ? 3 : 2,
       wallet_address : wallet_address, 
       symbol : symbol, 
+      token_row_id:token_row_id,
       token_name : token_name,
       token_image : token_image,
       website_link : website_link,
       whitepaper : whitepaper,
-      total_max_supply : token_max_supply,
-      price : live_price,
-      market_cap : market_cap, 
-      token_description : token_description,
+      total_supply : token_max_supply,
+      description : token_description,
       source_code_link : source_code_link,
-      explorer : explorer,
-      exchange_link : exchange_link,
-      community_address : community_address,
+      explorers : explorer,
+      exchanges : exchange_link,
+      communities : community_address,
       contract_addresses : with_contract_address === false ? [] : contract_address,
       meta_keywords : meta_keywords,
       meta_description : meta_description,
-      category_row_id:category_name_ids,
-    }  
-
+      categories:category_name_ids,
+      market_cap:market_cap
+    }
+    
     // console.log(reqObj)
-    Axios.post(API_BASE_URL+"markets/listing_tokens/create_new", reqObj, config).then(response=>
+    Axios.post(API_BASE_URL+"markets/users/manage_crypto/update_n_save_details", reqObj, config).then(response=>
     { 
       set_loader(false)
       // console.log(response)
@@ -446,7 +448,8 @@ const createNewToken = () =>
       { 
         setShowNav(true) 
         setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: response.data.message.alert_message})
-        clearform()
+        if(!token_row_id){
+        clearform()}
         setToken_id(response.data.token_id)
       } 
       else
@@ -750,6 +753,9 @@ const createNewToken = () =>
   useEffect(()=>
   {
     getBusinessModels() 
+    if(token_row_id){
+      getTokenDetails()
+    }
     // if(localStorage.getItem("walletconnectedtype") === "1"){
     //   getAccount()
     //   getETHAccount() 
@@ -758,11 +764,11 @@ const createNewToken = () =>
   
   useEffect(()=>
   {
-    setSymbol("")
-    setTokenName("")
-    setTokenMaxSupply("")
-    set_market_cap("")
-    setContractAddress([{network_type: "0", contract_address: ""}])
+    // setSymbol("")
+    // setTokenName("")
+    // setTokenMaxSupply("")
+    // set_market_cap("")
+    // setContractAddress([{network_type: "0", contract_address: ""}])
   },[with_contract_address])
 
   const makeJobSchema=()=> 
@@ -783,13 +789,106 @@ const createNewToken = () =>
           setContractAddress(list)
   }  
 
+  const getTokenDetails=()=>
+  {
+    Axios.get(API_BASE_URL+"markets/users/manage_crypto/individual_details/"+token_row_id, config).then(response=>
+    {
+      if(response.data.status)
+      { 
+        console.log(response.data) 
+        if(response.data.message.list_type !== 3){
+          setContractAddress(response.data.message.contract_addresses)
+        }
+        else
+        {
+          setContractAddress([{network_type: "0", contract_address: ""}])
+        }
+        setErrContractAddress("")  
+        setSymbol(response.data.message.symbol) 
+        setTokenName(response.data.message.token_name)
+        setWebsiteLink(response.data.message.website_link)
+        setWhitepaper(response.data.message.whitepaper) 
+        setTokenMaxSupply(response.data.message.total_supply)
+        set_market_cap(response.data.message.market_cap) 
+        setTokenDescription(response.data.message.description)
+        set_meta_keywords(response.data.message.meta_keywords)
+        set_meta_description(response.data.message.meta_description)
+        set_category_name(response.data.message.categories_array)
+        set_category_name_ids(response.data.message.categories)
+        if(response.data.message.list_type == 3)
+        {
+          set_with_contract_address(false)
+        }
+        if(response.data.message.token_image)
+        {
+            set_display_image(response.data.message.token_image)
+        }
+        // set_list_type(response.data.message.list_type)
+
+        // if(response.data.message.token_image)
+        // {
+        //   setTokenImage(image_base_url+response.data.message.token_image)
+        // }
+        // else
+        // {
+        //   setTokenImage(image_base_url+"default.png")
+        // }
+        
+        // set_category_row_id(response.data.message.category_row_id)
+        // set_category_name(response.data.message.category_name)
+        seSourceCodeLink(response.data.message.source_code_link) 
+
+        if(response.data.message.explorer)
+        {
+          if(response.data.message.explorer.length < 1)
+          {
+            setExplorersList([""])
+          }
+          else
+          {
+            setExplorersList(response.data.message.explorer)
+          }
+        }
+        
+
+        if(response.data.message.exchange_link){
+          if(response.data.message.exchange_link.length < 1){
+            setExchangesList([""])
+          }
+          else{
+            setExchangesList(response.data.message.exchange_link)
+          }
+          
+        }
+        
+
+        if(response.data.message.community_address){
+          if(response.data.message.community_address.length < 1){ 
+            setCommunitysList([""])
+          }
+          else{
+            setCommunitysList (response.data.message.community_address)
+          }
+        }
+        
+ 
+
+        // setImageUrl(response.data.image_base_url)
+      }
+      // else
+      // {
+      //   router.push("/token")
+      // }
+    })
+  }
   const getTokenData =(data,type, index, address)=>{  
     checkContractAddress(data, index)
-    getTokenDetails(type, address)
+    getTokenAddress(type, address)
     
   }
   
-  const getTokenDetails = (type, address) =>{  
+  
+  const getTokenAddress = (type, address) =>{  
 
       let network_type = ""
 
@@ -902,8 +1001,10 @@ const createNewToken = () =>
               <div> 
                 <div className="token_form">
                   <div className='market_token_tabs'>
-                    <h4>Update Token Details</h4>
-                        <Top_header active_tab={1} token_id={token_row_id}/>
+                    <h4>{token_row_id?"Update":"Create"} Token Details</h4>
+                    {token_row_id?
+                      <Top_header active_tab={1} token_id={token_row_id}/>
+                    :""}
                         {/* <h5>Create Token</h5>
                         <p>Enter all these fields to create token</p> */}
 
@@ -1087,7 +1188,7 @@ exchange_link
                                     options={categories} // Options to display in the dropdown
                                     onSelect={onSelect} // Function will trigger on select event
                                     onRemove={onRemove} // Function will trigger on remove event
-                                    displayValue="business_name" // Property name to display in the dropdown options
+                                    displayValue="category_name" // Property name to display in the dropdown options
                                 /> 
                                 </div>
                                  <div className="error">{err_website_link}</div>
@@ -1163,7 +1264,7 @@ exchange_link
                         </div>
                       </div>
 
-                      <div className="row">
+                      {/* <div className="row">
                         <div className="col-lg-10 col-md-12">
                           <div className="row">
                             <div className="col-md-5">
@@ -1184,7 +1285,7 @@ exchange_link
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
 
                       <div className="row">
                         <div className="col-lg-10 col-md-12">
@@ -1228,6 +1329,10 @@ exchange_link
                                 token_image !== '' ?
                                 <img src={token_image} alt="token image" id="tokenlogo" width="50" height="50" className="mt-2"/> 
                                 :
+                                display_image ?
+                                <img  src={image_base_url+display_image} alt="token image" width="50" height="50" className="mt-2" />
+                                :
+                              
                                 null
                               }
                             </div>

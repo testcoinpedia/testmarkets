@@ -346,7 +346,7 @@ return (
                                 recent_search_list && recent_search_list.length > 0 ?
                                 <>
                                 <p className='searchbox_titles mt-4'>Recent searches</p>
-                                <div>
+                                <div className='text-center'>
                                     {
                                         recent_search_list.map((e,i) =>
                                         <Link href={"/"+e.token_id}>

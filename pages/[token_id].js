@@ -1024,7 +1024,7 @@ console.log("api_from_type",token_id)
               <div className='container'>
               <div className="col-md-12">
           <div className="row">
-                <div className="col-lg-6 col-xl-6 col-md-12">
+                <div className="col-lg-6 col-xl-6 col-md-12 order-md-1 order-2">
                   <div className="token_main_details">
                         <div className="media">
                           <div className='media-left align-self-center'>
@@ -1097,7 +1097,7 @@ console.log("api_from_type",token_id)
                   </div>
                 </div>
 
-                <div className="col-lg-3 col-xl-3 col-md-6">
+                <div className="col-lg-3 col-xl-3 col-md-6 order-md-2 order-3">
                         <div className="token_price_block airdrop_data_content">
                           <h5>
                             {live_price > 0 ? roundNumericValue(live_price) : "NA"}
@@ -1136,7 +1136,7 @@ console.log("api_from_type",token_id)
                         </div>
                       </div>
 
-                      <div className="col-lg-3 col-xl-3 col-md-6 ">
+                      <div className="col-lg-3 col-xl-3 col-md-6 order-md-3 order-1 ">
                   <div className="row">
                     <div className="col-md-12 ">
                       {
@@ -1860,22 +1860,33 @@ console.log("api_from_type",token_id)
                       <div className="col-md-7">
                         <div className="row">
                         <div className="col-md-4 col-12">
+                         
                             <div className="token_left_border">
-                              <div className="token_list_values">
-                                <h4>Max Supply :  &nbsp;</h4>
+                              <div className='row'>
+                            <div className='col-md-12 col-6'>
+                            <div className="token_list_values">
+                                <h4>Max Supply:  &nbsp;</h4>
                                 <h5>{max_supply ? separator(max_supply) : data.total_max_supply ? separator(data.total_max_supply.toFixed(4)) : "NA"} &nbsp;<span onClick={() => change(4)}><img src='/assets/img/info.png'  /></span></h5>
                               </div>
-
+                            </div>
+                              
+                              <div className='col-md-12 col-6'>
                               <div className="token_list_values">
-                                <h4>Total Supply : &nbsp;</h4>
-                                <h5>{data.total_supply ? separator(data.total_supply.toFixed(4)) : "NA"}</h5>
+                                <h4>Total Supply: &nbsp;</h4>
+                                <h5>{data.total_supply ? separator(data.total_supply.toFixed(2)) : "NA"}</h5>
                               </div>
+                            </div>
+                            </div>
+
+                             
                             </div>
                           </div>
                           <div className="col-md-4 col-12">
                             <div className="token_left_border">
-                              <div className="token_list_values">
-                                <h4>1 hour % change : &nbsp;</h4>
+                            <div className='row'>
+                            <div className='col-md-12 col-6'>
+                            <div className="token_list_values">
+                                <h4>1 hour % change: &nbsp;</h4>
                                 {
                                   data.percent_change_1h?data.percent_change_1h>0?
                                   <h5 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{data.percent_change_1h.toFixed(2)+"%"}</span></h5>
@@ -1885,18 +1896,24 @@ console.log("api_from_type",token_id)
                                   "--"
                                 }
                               </div>
-
+                              </div>
+                              <div className='col-md-12 col-6'>
                               <div className="token_list_values">
-                                <h4>7 days % change : &nbsp;</h4>
+                                <h4>7 days % change: &nbsp;</h4>
                                 {
                                   data.percent_change_7d?data.percent_change_7d>0?
-                                  <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{data.percent_change_7d.toFixed(2)+"%"}</span></h6>
+                                  <h5 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{data.percent_change_7d.toFixed(2)+"%"}</span></h5>
                                   :
-                                  <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(data.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                  <h5 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(data.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h5>
                                   :
                                   "--"
                                 }
                               </div>
+                              </div>
+                              </div>
+                              
+
+                             
                               
                               {/* <div className="token_list_values">
                                 <h4>Liquidity <span onClick={() => change(6)}><img src='/assets/img/info.png'  /></span></h4>
@@ -1908,11 +1925,10 @@ console.log("api_from_type",token_id)
                           
                           <div className="col-md-4 col-12">
                             <div className="token_left_border">
-                             
-                            
-                            
+                            <div className='row'>
+                            <div className='col-md-12 col-6'>
                             <div className="token_list_values">
-                                <h4>24h Time High : &nbsp;</h4>
+                                <h4>24h Time High: &nbsp;</h4>
                                 <h5>
                                   {data.high_price ? '$ '+separator(data.high_price) : 'NA'} &nbsp;
                                   {/* {
@@ -1926,9 +1942,10 @@ console.log("api_from_type",token_id)
                                   } */}
                                 </h5>
                               </div>
-
+                              </div>
+                              <div className='col-md-12 col-6'>
                               <div className="token_list_values">
-                                    <h4>24h Time Low : &nbsp;</h4>
+                                    <h4>24h Time Low: &nbsp;</h4>
                                     <h5>{data.low_price ? '$ '+separator(data.low_price) : 'NA'} &nbsp;
                                       {/* {atl_change_percentage ?
                                         atl_change_percentage > 0 ?
@@ -1940,6 +1957,14 @@ console.log("api_from_type",token_id)
                                       } */}
                                       </h5>
                                   </div>
+                              </div>
+                              </div>
+                             
+                            
+                            
+                           
+
+                             
 
                             </div>
                           </div>
@@ -2032,7 +2057,7 @@ console.log("api_from_type",token_id)
                           } */}
                           
                           <div className='row'>
-                            <div className='col-md-6'>
+                            <div className='col-md-6 col-6'>
                             {/* <h5 className='price_chart'>{(symbol).toUpperCase()} Price Chart</h5> */}
                             <div className='charts_date_tab float-left charts_price_tabs'>
                                 <ul className="nav nav-tabs">
@@ -2045,7 +2070,7 @@ console.log("api_from_type",token_id)
                                 </ul>
                             </div>
                             </div>
-                            <div className='col-md-6'>
+                            <div className='col-md-6 col-6'>
                             <div className='charts_date_tab'>
                                 <ul className="nav nav-tabs">
                                     {

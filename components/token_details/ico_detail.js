@@ -17,11 +17,11 @@ export default function MyFunction() {
         <>
         <div className='ico_details'>
             <div className='row'>
-                <div className='col-md-7'>
+                <div className='col-md-7 col-7'>
                 <h4 className='ico_heading' data-toggle="collapse" href="#data_ico">Polkadot (DOT)  ICO - Round 1,</h4>
                 </div>
-                <div className='col-md-5'>
-                <div className='float-right'>
+                <div className='col-md-5 col-5'>
+                <div className='ico_status_button'>
                     <div className={`dropdown ${isOpen ? 'open' : ''}`}>
             <button className='live_button ico_button' >Live</button>
             <img className='dropdown_ico ' onClick={handleToggle} src="/assets/img/dropdown_icon.png" data-toggle="collapse" href="#data_ico" />
@@ -40,21 +40,49 @@ export default function MyFunction() {
             <div className='ico_prices'>
             <div className='row'>
                 <div className='col-md-3'>
-                    <p>ICO Price</p>
-                    <h5>$ 0.01</h5>
+                    <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>ICO Price</p>
+                        </div>
+                        <div className='col-md-12 col-6'>
+                        <h5>$ 0.01</h5>
+                        </div>
+                    </div>
+                    
                 </div>
                 <div className='col-md-3'>
-                <p>Listing Price</p>
-                    <h5 className='values_growth'>$ 1.05 <span class="green"><img src="/assets/img/markets/high.png" alt="high price" />90.00 %</span></h5>
+                <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>Listing Price</p>
+                        </div>
+                        <div className='col-md-12 col-6'>
+                        <h5 className='values_growth'>$ 1.05 <span class="green"><img src="/assets/img/markets/high.png" alt="high price" />90.00 %</span></h5>
                     {/* <h5 class="values_growth">$ 1.05 <span class="red"><img src="/assets/img/markets/low.png" alt="high price" />5.04%</span></h5> */}
+                        </div>
+                    </div>                
+                  
                 </div>
                 <div className='col-md-3'>
-                <p>Soft Cap</p>
-                    <h5>$ 9784511561</h5>
+                <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>Soft Cap</p>
+                        </div>
+                        <div className='col-md-12 col-6'>
+                        <h5>$ 9784511561</h5>
+                        </div>
+                    </div>               
+               
                 </div>
                 <div className='col-md-3'>
-                <p>Hard Cap</p>
-                    <h5>$ 561265126513</h5>
+                <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>Hard Cap</p>
+                        </div>
+                        <div className='col-md-12 col-6'>
+                        <h5>$ 561265126513</h5>
+                        </div>
+                    </div>
+                   
                 </div>
                 </div>
             </div>
@@ -64,10 +92,11 @@ export default function MyFunction() {
             <li>Solana</li>
             <li>ETH</li>
            <li className='detail_button_ico button_transition '>Buy Now </li>
-           <li><Link href="/ico_calendar/" >Ico Calendar </Link></li>
+           
             </ul>
            
             </div>
+            {/* <Link href="/ico_calendar/" >Ico Calendar </Link> */}
 
             <div className='detail_airdrop_data collapse' id="data_ico">
                 <h3>
@@ -85,11 +114,11 @@ export default function MyFunction() {
 
         <div className='ico_details mt-3'>
             <div className='row'>
-                <div className='col-md-7'>
+                <div className='col-md-7 col-7'>
                 <h4 className='ico_heading'  data-toggle="collapse" href="#data_upcoming_ico">Polkadot (DOT)  ICO - Round 1</h4>
                 </div>
-                <div className='col-md-5'>
-                <div className='float-right'>
+                <div className='col-md-5 col-5'>
+                <div className='ico_status_button'>
                 <div className={`dropdown ${isOpen ? 'open' : ''}`}>
             {/* <button className='live_button ico_button' data-toggle="collapse" href="#data_ico" role="button" aria-expanded="false" aria-controls="collapseExample">Live</button> */}
             <button className='upcoming_button ico_button'  >Upcoming</button>
@@ -106,21 +135,51 @@ export default function MyFunction() {
             <div className='ico_prices'>
             <div className='row'>
                 <div className='col-md-3'>
-                    <p>ICO Price</p>
-                    <h5>$ 0.01</h5>
+                <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>ICO Price</p>
+                            </div>
+                            <div className='col-md-12 col-6'>
+                            <h5>$ 0.01</h5>
+                            </div>
+                            </div>
+                    
+                   
                 </div>
                 <div className='col-md-3'>
-                <p>Listing Price</p>
-                    <h5 className='values_growth'>$ 1.05 <span class="green"><img src="/assets/img/markets/high.png" alt="high price" />90.00 %</span></h5>
+                <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>Listing Price</p>
+                            </div>
+                            <div className='col-md-12 col-6'>
+                            <h5 className='values_growth'>$ 1.05 <span class="green"><img src="/assets/img/markets/high.png" alt="high price" />90.00 %</span></h5>
                     {/* <h5 class="values_growth">$ 1.05 <span class="red"><img src="/assets/img/markets/low.png" alt="high price" />5.04%</span></h5> */}
+                            </div>
+                            </div>
+               
+                    
                 </div>
                 <div className='col-md-3'>
-                <p>Soft Cap</p>
-                    <h5>$ 9784511561</h5>
+                <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>Soft Cap</p>
+                            </div>
+                            <div className='col-md-12 col-6'>
+                            <h5>$ 9784511561</h5>
+                            </div>
+                            </div>
+                
+                    
                 </div>
                 <div className='col-md-3'>
-                <p>Hard Cap</p>
-                    <h5>$ 561265126513</h5>
+                <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>Hard Cap</p>
+                            </div>
+                            <div className='col-md-12 col-6'>
+                            <h5>$ 561265126513</h5>
+                            </div>
+                            </div>
                 </div>
                 </div>
             </div>
@@ -148,11 +207,11 @@ export default function MyFunction() {
 
         <div className='ico_details mt-3'>
             <div className='row'>
-                <div className='col-md-7'>
+                <div className='col-md-7 col-7'>
                 <h4 className='ico_heading' data-toggle="collapse" href="#data_completed_ico">Polkadot (DOT)  ICO - Round 1</h4>
                 </div>
-                <div className='col-md-5'>
-                <div className='float-right'>
+                <div className='col-md-5 col-5'>
+                <div className='ico_status_button'>
                 <div className={`dropdown ${isOpen ? 'open' : ''}`}>
             {/* <button className='live_button ico_button' data-toggle="collapse" href="#data_ico" role="button" aria-expanded="false" aria-controls="collapseExample">Live</button> */}
             {/* <button className='upcoming_button ico_button' data-toggle="collapse" href="#data_ico" role="button" aria-expanded="false" aria-controls="collapseExample">Upcoming</button> */}
@@ -172,21 +231,50 @@ export default function MyFunction() {
             <div className='ico_prices'>
             <div className='row'>
                 <div className='col-md-3'>
-                    <p>ICO Price</p>
-                    <h5>$ 0.01</h5>
+                <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>ICO Price</p>
+                            </div>
+                            <div className='col-md-12 col-6'>
+                            <h5>$ 0.01</h5>
+                            </div>
+                            </div>                    
                 </div>
                 <div className='col-md-3'>
-                <p>Listing Price</p>
-                    {/* <h5 className='values_growth'>$ 1.05 <span class="green"><img src="/assets/img/markets/high.png" alt="high price" />90.00 %</span></h5> */}
+                <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>Listing Price</p>
+                            </div>
+                            <div className='col-md-12 col-6'>
+                            {/* <h5 className='values_growth'>$ 1.05 <span class="green"><img src="/assets/img/markets/high.png" alt="high price" />90.00 %</span></h5> */}
                     <h5 class="values_growth">$ 1.05 <span class="red"><img src="/assets/img/markets/low.png" alt="high price" />5.04%</span></h5>
+                            </div>
+                            </div>
+                    
                 </div>
                 <div className='col-md-3'>
-                <p>Soft Cap</p>
-                    <h5>$ 9784511561</h5>
+                <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>Soft Cap</p>
+                            </div>
+                            <div className='col-md-12 col-6'>
+                            <h5>$ 9784511561</h5>
+                            </div>
+                            </div>
+                
+                  
                 </div>
                 <div className='col-md-3'>
-                <p>Hard Cap</p>
-                    <h5>$ 561265126513</h5>
+                <div className='row'>
+                        <div className='col-md-12 col-6'>
+                        <p>Hard Cap</p>
+                            </div>
+                            <div className='col-md-12 col-6'>
+                            <h5>$ 561265126513</h5>
+                            </div>
+                            </div>
+               
+                   
                 </div>
                 </div>
             </div>

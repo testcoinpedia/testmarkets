@@ -37,7 +37,7 @@ export default function WalletTokensList({userAgent, config})
          
     const getTokens= async ()=>
     {
-      const res = await Axios.get(API_BASE_URL+"markets/listing_tokens/listed_tokens", config)
+      const res = await Axios.get(API_BASE_URL+"markets/manage_crypto/list", config)
       if(res.data.status)
       {
           console.log(res.data.watchlist)
@@ -53,44 +53,6 @@ export default function WalletTokensList({userAgent, config})
       }
         
     }
-    
-  
-    const addToWatchlist = (param_token_id) =>
-  {
-    Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config)
-    .then(res=>
-    { 
-      // console.log("add", res.data)
-      if(res.data.status)
-      {
-        var sdawatchlist = watchlist
-        set_watchlist([])
-        sdawatchlist.push(param_token_id)
-        set_watchlist(sdawatchlist)
-        // console.log("watchlist", watchlist)
-        // getTokens() 
-      }
-    })
-  }
-  
-  const removeFromWatchlist = (param_token_id) =>
-  {
-    Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config)
-    .then(res=>
-    {
-      // console.log("remove", res.data)
-      if(res.data.status)
-      {
-        var sdawatchlist = watchlist
-        set_watchlist([])
-        sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
-        set_watchlist(sdawatchlist)
-        // console.log("watchlist", watchlist)
-        // getTokens() 
-      }
-    })
-  }
-
 
     const handlePageClick =  (page) => 
    { 

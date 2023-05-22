@@ -38,7 +38,19 @@ export default function Create_token({config, token_id})
     const [market_cap, set_market_cap] = useState("") 
     const [err_contract_address, setErrContractAddress] = useState("")
     const [loader, set_loader] = useState("")
+        
+
+    const [tokenomics_name, set_tokenomics_name ] = useState('')
+    const [percentage_of_total_supply, set_percentage_of_total_supply ] = useState('')
+    const [total_supply, set_total_supply ] = useState('')
+
     
+    const [err_tokenomics_name, set_err_tokenomics_name ] = useState('')
+    const [err_percentage_of_total_supply, set_err_percentage_of_total_supply ] = useState('')
+    const [err_total_supply, set_err_total_supply ] = useState('')
+
+
+
     const makeJobSchema=()=> 
     {  
       return { 
@@ -108,15 +120,19 @@ export default function Create_token({config, token_id})
                         <div className="form-custom">
                             <label htmlFor="email">Tokenomics Name <span className="label_star">*</span></label>
                             <div className="form-group input_block_outline">
-                            <input type="text" className="form-control" placeholder="Tokenomics name" value=""/>
+                            <input type="text" className="form-control" placeholder="Tokenomics name"value={tokenomics_name} onChange={(e) => set_tokenomics_name(e.target.value)}/>
                             </div>
+                            <div className="error">{err_tokenomics_name}</div>
+                            
                         </div>
 
                         <div className="form-custom">
                             <label htmlFor="email">Percentage value of Total Supply <span className="label_star">*</span></label>
                             <div className="form-group input_block_outline">
-                                <input type="text" className="form-control" placeholder="% Value" value=""/>
+                                <input type="text" className="form-control" placeholder="% Value" value={percentage_of_total_supply} onChange={(e) => set_percentage_of_total_supply(e.target.value)}/>
                             </div>
+                            <div className="error">{err_percentage_of_total_supply}</div>
+
                         </div>
 
                         
@@ -124,8 +140,10 @@ export default function Create_token({config, token_id})
                         <div className="form-custom">
                             <label htmlFor="email">Total Supply </label>
                             <div className="form-group input_block_outline">
-                                <input type="text" className="form-control" placeholder="Total Supply" value=""/>
+                                <input type="text" className="form-control" placeholder="Total Supply" value={total_supply} onChange={(e) => set_total_supply(e.target.value)}/>
                             </div>
+                            <div className="error">{err_total_supply}</div>
+
                         </div>
 
                         <div className="review_upload_token mt-3">

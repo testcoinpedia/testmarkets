@@ -23,11 +23,11 @@ export default function MyFunction() {
                         <p>Amount</p>
                         <h6>$5 of DAO token per winner</h6>
                     </div>
-                    <div className='col-md-4'>
+                    <div className='col-md-4 col-6 airdrop_col'>
                         <p>Start Date</p>
                         <h6>May 8 2023</h6>
                     </div>
-                    <div className='col-md-4'>
+                    <div className='col-md-4 col-6 airdrop_col'>
                         <p>End Date</p>
                         <h6>June 10 2023</h6>
                     </div>
