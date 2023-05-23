@@ -268,7 +268,7 @@ return (
             <div className="modal-dialog modal-sm">
               <div className="modal-content">
                 <div className="modal-body">
-                  <button type="button" className="close" data-dismiss="modal" onClick={()=>ModalVote()}>&times;</button>
+                  <button type="button" className="close" data-dismiss="modal" onClick={()=>ModalVote()}><span><img src="/assets/img/close_icon.svg" /></span></button>
                   {
                     voting_status == false ?
                     <h4> Do you want to support this token ? </h4>

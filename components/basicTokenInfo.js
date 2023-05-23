@@ -144,7 +144,7 @@ export default function Popupmodal({dex_row_id})
                <div className="modal-content">
                <div class="modal-header">
                 <h4 class="modal-title">{selected_dex_data.heading?selected_dex_data.heading:""}</h4>
-                <button type="button" className="close" data-dismiss="modal" onClick={()=> setShowModal(!showmodal)}>&times;</button>
+                <button type="button" className="close" data-dismiss="modal" onClick={()=> setShowModal(!showmodal)}><span><img src="/assets/img/close_icon.svg" /></span></button>
                 </div>               
                <div className="modal-body">
                    <div>{selected_dex_data.title ? <h5>{selected_dex_data.title}</h5> : null}</div>

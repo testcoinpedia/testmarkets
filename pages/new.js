@@ -226,7 +226,7 @@ return (
                   <div className='row'>
                     <div className='col-md-6 col-lg-8 col-12'>
                           <div className="input-group search_filter">
-                            <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
+                            <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token" />
                               <div className="input-group-prepend ">
                                   <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                                 </div>
@@ -269,7 +269,7 @@ return (
                                 <th className=" table_circulating_supply">Market Cap</th> 
                                 <th className=" ">Volume(24H)</th>  
                                 <th className=" table_circulating_supply">Circulating Supply</th>  
-                                <th className="">Last 7 Days</th>
+                                <th className="last_data">Last 7 Days</th>
                             </tr>
                          </thead>
                          
@@ -466,7 +466,7 @@ return (
               
                 <div className="modal-header">
               
-                  <button type="button" className="close" data-dismiss="modal">&times;</button>
+                  <button type="button" className="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" /></span></button>
                 </div>
                 
                 <div className="modal-body">

@@ -1001,7 +1001,7 @@ const createNewToken = () =>
               <div> 
                 <div className="token_form">
                   <div className='market_token_tabs'>
-                    <h4>{token_row_id?"Update":"Create"} Token Details</h4>
+                    <h1 className='page_main_heading'>{token_row_id?"Update":"Create"} Token Details</h1>
                     {token_row_id?
                       <Top_header active_tab={1} token_id={token_row_id}/>
                     :""}
@@ -1024,8 +1024,12 @@ explorer
 exchange_link 
 */}
  <div className='create_token_details'>
-   
+ <div className='form_headings'>
+                    <h5>Create Token</h5>
+                    <p >Enter all these fields to create token</p>
+                        </div>  
                   <div className="row">
+                  
                     {/* <div className="col-lg-3 col-md-4">
                       <div className="token_steps_list">
                         <ul>
@@ -1240,7 +1244,7 @@ exchange_link
                         <div className="col-lg-10 col-md-12">
                           <div className="row">
                             <div className="col-md-5">
-                              <label htmlFor="email">Token Max Supply</label>
+                              <label htmlFor="email">Token Supply</label>
                             </div>
                             <div className="col-md-7">
                               <div className="form-custom">
@@ -1541,13 +1545,20 @@ exchange_link
                               <label>Meta Description</label>
                             </div>
                             <div className="col-md-7">
-                              <div>
+                            <div>
+                                <div className="form-custom create_token_no_space">
+                                  <div className="form-group input_block_outline">
+                                      <textarea type="text" className="form-control" placeholder="Enter Meta Description"  onChange={(e) => set_meta_description(e.target.value)}>{meta_description}</textarea>
+                                  </div>
+                                </div>
+                             </div>
+                              {/* <div>
                                   <div className="form-custom create_token_no_space">
                                     <div className="form-group input_block_outline">
                                       <input autoComplete="off" type="text" className="form-control" placeholder="Meta Description"  value={meta_description} onChange={(e) => set_meta_description(e.target.value)}/>
                                     </div>
                                   </div>
-                                </div>
+                                </div> */}
                             </div>
                           </div>
                         </div>

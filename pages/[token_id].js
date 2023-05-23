@@ -2404,7 +2404,6 @@ console.log("api_from_type",token_id)
 
                     <div dangerouslySetInnerHTML={{ __html: data.token_description }}></div>
 
-
                   </div>
 
                   <div className="how_do_you_feel">
@@ -3201,7 +3200,7 @@ console.log("api_from_type",token_id)
             <div className="modal-content">
               <div className="modal-header">
                 <h4 className="modal-title coming_soon_title">Coming Soon !!</h4>
-                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                <button type="button" className="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" /></span></button>
               </div>
               <div className="modal-body">
                 <p className="coming_soon_subtext">This feature will be available soon</p>
@@ -3217,7 +3216,7 @@ console.log("api_from_type",token_id)
             <div className="modal-content">
               <div className="modal-header">
                 <h4 className="modal-title coming_soon_title">Oops!</h4>
-                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                <button type="button" className="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" /></span></button>
               </div>
               <div className="modal-body">
                 <p className="coming_soon_subtext">{no_data_link}</p>
@@ -3232,7 +3231,7 @@ console.log("api_from_type",token_id)
           <div className="modal-content">
             <div className="modal-header">
               <h4 className="modal-title">Share</h4>
-              <button type="button" className="close" data-dismiss="modal" onClick={() => set_share_modal_status(false)}>×</button>
+              <button type="button" className="close" data-dismiss="modal" onClick={() => set_share_modal_status(false)}><span><img src="/assets/img/close_icon.svg" /></span></button>
             </div>
             <div className="modal-body">
               <div className="row">
@@ -3265,7 +3264,7 @@ console.log("api_from_type",token_id)
           <div className="modal-content">
             <div className="modal-header">
               <h4 className="modal-title">Categories</h4>
-              <button type="button" className="close" data-dismiss="modal" onClick={() => set_category_modal(false)}>×</button>
+              <button type="button" className="close" data-dismiss="modal" onClick={() => set_category_modal(false)}><span><img src="/assets/img/close_icon.svg" /></span></button>
             </div>
             <div className="modal-body">
             
@@ -3290,7 +3289,7 @@ console.log("api_from_type",token_id)
         <div className="modal-dialog modal-sm">
           <div className="modal-content">
             <div className="modal-body">
-              {/* <button type="button" className="close" data-dismiss="modal" onClick={() => ModalVote()}>&times;</button> */}
+              {/* <button type="button" className="close" data-dismiss="modal" onClick={() => ModalVote()}><span><img src="/assets/img/close_icon.svg" /></span></button> */}
               {
                 voting_status == false ?
                   <h4> Do you want to support this token? </h4>

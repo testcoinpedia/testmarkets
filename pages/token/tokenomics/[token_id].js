@@ -38,6 +38,7 @@ export default function Create_token({config, token_id})
     const [market_cap, set_market_cap] = useState("") 
     const [err_contract_address, setErrContractAddress] = useState("")
     const [loader, set_loader] = useState("")
+  const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
         
 
     const [tokenomics_name, set_tokenomics_name ] = useState('')
@@ -50,7 +51,118 @@ export default function Create_token({config, token_id})
     const [err_total_supply, set_err_total_supply ] = useState('')
 
 
+    useEffect(() => {
+      getTokenDetails();
+    }, []);
 
+    const createTokenomic = () =>
+    { 
+      let formValid = true
+      setModalData({ icon: "", title: "", content: "" })
+      // if(wallet_address === '')
+      // {
+      //   formValid = false
+      //   setErrWalletConnection(true)
+      // }
+      set_err_tokenomics_name('')
+      set_err_percentage_of_total_supply('') 
+      set_err_total_supply('')
+     
+   
+      if(tokenomics_name === '')
+      {
+        set_err_tokenomics_name('The tokenomics name field is required.')
+        formValid = false
+      }
+      else if(tokenomics_name.length < 4)
+      {
+        set_err_tokenomics_name('The tokenomics name must be atleast 4 characters.')
+        formValid = false
+      } 
+     
+   
+
+  
+      if(percentage_of_total_supply === '')
+      {
+        set_err_percentage_of_total_supply('The percentage of total supply field is required.')
+          formValid = false
+      }
+      
+      
+  
+      if(total_supply === '')
+      {
+        set_err_total_supply('The total supply field is required.')
+          formValid = false
+      }
+  
+  
+  
+      set_loader(true)
+      const reqObj = {
+        tokenomics_name:tokenomics_name,
+        percentage_of_total_supply:percentage_of_total_supply,
+        total_supply: total_supply,
+        
+      } 
+     
+      if(formValid)
+      { 
+        
+        Axios.post(API_BASE_URL+"markets/listing_tokens/update_token_details/", reqObj, config).then(response=> { 
+          set_loader(false)
+          // console.log(response)
+          if(response.data.status)
+          { 
+           
+            // console.log(response.data)
+            setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: response.data.message.alert_message})
+          } 
+          { 
+    
+            if(response.data.message.tokenomics_name)
+            {
+              set_err_tokenomics_name(response.data.message.tokenomics_name)   
+            }
+            
+            if(response.data.message.percentage_of_total_supply)
+            {
+              set_err_percentage_of_total_supply(response.data.message.percentage_of_total_supply)
+            } 
+    
+            if(response.data.message.total_supply)
+            {  
+              set_err_total_supply(response.data.message.total_supply)
+            }
+            
+          }
+        })
+      }
+      
+    }  
+
+    const getTokenDetails=()=>
+  {
+  
+    Axios.get(API_BASE_URL+"markets/listing_tokens/individual_details/"+token_id, config)
+    .then(response=>{
+      if(response.data.status){ 
+      
+        console.log(response.data) 
+       
+        set_total_supply(response.data.message.total_max_supply)
+       
+        // set_category_row_id(response.data.message.category_row_id)
+        // set_category_name(response.data.message.category_name)
+      
+      }
+      // else
+      // {
+      //   router.push("/token")
+      // }
+    })
+  }
     const makeJobSchema=()=> 
     {  
       return { 
@@ -99,7 +211,7 @@ export default function Create_token({config, token_id})
               <div> 
                 <div className="token_form">
                 <div className='market_token_tabs'>
-                <h4>Manage Tokenomics</h4>
+                <h1 className='page_main_heading'>Manage Tokenomics</h1>
                 <Top_header active_tab={4} token_id={token_id}/>
                     {/* <div className="row">
                         <div className="col-lg-3 col-md-4">
@@ -113,8 +225,10 @@ export default function Create_token({config, token_id})
                   <div className=" token_steps">
                   <div className="row">
                     <div className="col-lg-5 col-md-5">
-                    <h1>Create Tokenomics</h1>
+                    <div className='form_headings'>
+                    <h5>Create Tokenomics</h5>
                     <p >Enter all these fields to create tokenomics</p>
+                    </div>
             
                     <div className='create_token_details'>
                         <div className="form-custom">
@@ -125,29 +239,36 @@ export default function Create_token({config, token_id})
                             <div className="error">{err_tokenomics_name}</div>
                             
                         </div>
-
-                        <div className="form-custom">
-                            <label htmlFor="email">Percentage value of Total Supply <span className="label_star">*</span></label>
+                    <div className='row'>
+                      <div className='col-md-6'>
+                      <div className="form-custom">
+                            <label htmlFor="email">Total Supply Percentage<span className="label_star">*</span></label>
                             <div className="form-group input_block_outline">
-                                <input type="text" className="form-control" placeholder="% Value" value={percentage_of_total_supply} onChange={(e) => set_percentage_of_total_supply(e.target.value)}/>
+                                <input type="number" className="form-control" placeholder="% Value" value={percentage_of_total_supply} onChange={(e) => set_percentage_of_total_supply(e.target.value)}/>
                             </div>
                             <div className="error">{err_percentage_of_total_supply}</div>
 
                         </div>
-
-                        
-
-                        <div className="form-custom">
+                      </div>
+                      <div className='col-md-6'>
+                      <div className="form-custom">
                             <label htmlFor="email">Total Supply </label>
                             <div className="form-group input_block_outline">
-                                <input type="text" className="form-control" placeholder="Total Supply" value={total_supply} onChange={(e) => set_total_supply(e.target.value)}/>
+                                <input type="text" className="form-control" placeholder="Total Supply" value={total_supply} onChange={(e) => set_total_supply(e.target.value)} readOnly/>
                             </div>
                             <div className="error">{err_total_supply}</div>
 
                         </div>
+                      </div>
+                    </div>
+                       
+
+                        
+
+                    
 
                         <div className="review_upload_token mt-3">
-                        <button className="dsaf button_transition" >
+                        <button className="dsaf button_transition"  onClick={() =>{createTokenomic()}}>
                             {loader ? (
                                 <div className="loader"><span className="spinner-border spinner-border-sm "></span>Create</div>
                                 ) : (
@@ -159,11 +280,11 @@ export default function Create_token({config, token_id})
                     </div>
 
                 <div className='col-lg-7 col-md-7 '>
-                <div className='mb-4'>
-                <h1>Tokenomics List</h1>
+                <div className='form_headings'>
+                <h5>Tokenomics List</h5>
                  <p>Here you will get the listed Tokenomics</p>
                 </div>
-                  <div >
+                  <div className='market_page_data token_tables'>
               
                     <div className="table-responsive">
                 <table className="table">
@@ -229,7 +350,7 @@ export default function Create_token({config, token_id})
     
 
 
-        {/* {modal_data.title ? <Popupmodal name={modal_data} /> : null} */}
+        {modal_data.title ? <Popupmodal name={modal_data} /> : null}
 
     </>
   )

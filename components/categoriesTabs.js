@@ -93,7 +93,7 @@ return (
                 <div className="modal-content">
                   <div className="modal-header">
                     <h4 className="modal-title coming_soon_title">Coming Soon !!</h4>
-                    <button type="button" className="close" data-dismiss="modal">&times;</button>
+                    <button type="button" className="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" /></span></button>
                   </div>
                   <div className="modal-body">
                     <p className="coming_soon_subtext">This feature will be available soon</p>

@@ -9,6 +9,8 @@ import Head from 'next/head'
 import JsCookie from "js-cookie" 
 import cookie from 'cookie'
 import dynamic from 'next/dynamic'
+import moment from "moment";
+
 // import "react-datetime/css/react-datetime.css"
 import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,  market_coinpedia_url,config,graphqlApiKEY,separator} from '../../../components/constants'; 
 import Select from 'react-select'
@@ -46,6 +48,9 @@ export default function Create_token({config,token_id})
     const [participate_link, set_participate_link] = useState("")
     const [description, set_description] = useState("")
     const [how_to_participate, set_how_to_participate] = useState("")
+    const [airdrop_list, set_airdrop_list] = useState([])
+    const [api_loader, set_api_loader] = useState(false)
+    const [elements, set_elements] = useState([]);
 
     const [err_title, set_err_title] = useState("")
     const [err_sub_title, set_err_sub_title] = useState("")
@@ -56,17 +61,32 @@ export default function Create_token({config,token_id})
     const [err_description, set_err_description] = useState("")
     const [err_how_to_participate, set_err_how_to_participate] = useState("")
 
-    const [edit_airdrop_row_id, set_edit_airdrop_row_id] = useState('')
+    const [airdrop_row_id, set_airdrop_row_id] = useState(0)
 
+    // API_BASE_URL+"markets/users/manage_airdrops/list
+
+    useEffect(() => {
+      airdropList();
+    }, []);
+
+
+    const clearform = () =>
+    {   
+        set_title("")
+        set_sub_title("")
+        set_winner_price("")
+        set_start_date("")
+        set_end_date("")
+        set_participate_link("")
+        set_description("")
+        set_how_to_participate("")
+        set_airdrop_row_id("")
+       
+    }
     const createAirdrop = () =>
     { 
       let formValid = true
       setModalData({ icon: "", title: "", content: "" })
-      // if(wallet_address === '')
-      // {
-      //   formValid = false
-      //   setErrWalletConnection(true)
-      // }
       set_err_title('')
       set_err_sub_title('') 
       set_err_winner_price('')
@@ -95,14 +115,18 @@ export default function Create_token({config,token_id})
         set_err_sub_title('The sub title field is required.')
           formValid = false
       }
-      
-      
-  
-      if(winner_price === '')
+      else if(sub_title.length<15)
       {
-        set_err_winner_price('The winner price field is required.')
+        set_err_sub_title('The sub title field should be atleast 15 characters.')
           formValid = false
       }
+      
+      
+      // if(winner_price === '')
+      // {
+      //   set_err_winner_price('The winner price field is required.')
+      //     formValid = false
+      // }
   
   
       
@@ -116,12 +140,19 @@ export default function Create_token({config,token_id})
         set_err_end_date('The end date field is required.')
           formValid = false
       }
-  
-      if(participate_link === '')
-      {
-        set_err_participate_link('The participate link field is required.')
-        formValid = false
+      if (start_date > end_date) {
+        formValid = false;
+        set_err_end_date("Please select valid End date .");
       }
+  
+      if(participate_link){
+        if(/\s/g.test(participate_link))
+        {
+          set_err_participate_link('The participate link field should not contain whitespace.')
+          formValid = false
+        }
+      }
+     
     
       // else if(token_description.length > 5000)
       // {
@@ -138,42 +169,40 @@ export default function Create_token({config,token_id})
         set_err_description('The description field should be atleast 4 characters in length.')
         formValid = false
       }
-      if(how_to_participate === '')
-      {
-        set_err_how_to_participate('The participate field is required.')
-        formValid = false
-      }
-      else if(how_to_participate.length<4)
-      {
-        set_err_how_to_participate('The participate field should be atleast 4 characters in length.')
-        formValid = false
-      }
+      // if(how_to_participate === '')
+      // {
+      //   set_err_how_to_participate('The participate field is required.')
+      //   formValid = false
+      // }
+      // else if(how_to_participate.length<4)
+      // {
+      //   set_err_how_to_participate('The participate field should be atleast 4 characters in length.')
+      //   formValid = false
+      // }
       set_loader(true)
       const reqObj = {
         token_id:token_id,
-        edit_airdrop_row_id:edit_airdrop_row_id,
+        airdrop_row_id:airdrop_row_id,
         title: title,
         sub_title: sub_title, 
         winner_price: winner_price,
-        start_date: start_date,
-        end_date: end_date,
+        start_date: moment(start_date).utc().format(),
+        end_date: moment(end_date).utc().format(),
         participate_link: participate_link,
         description: description,
         how_to_participate: how_to_participate,
         
       } 
-     
       if(formValid)
       { 
         
-        Axios.post(API_BASE_URL+"markets/listing_tokens/update_token_details/", reqObj, config).then(response=> { 
+        Axios.post(API_BASE_URL+"markets/users/manage_airdrops/update_n_save_details/", reqObj, config).then(response=> { 
           set_loader(false)
-          // console.log(response)
           if(response.data.status)
           { 
-           
-            // console.log(response.data)
+            clearform()
             setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: response.data.message.alert_message})
+            airdropList();
           } 
           { 
     
@@ -219,31 +248,82 @@ export default function Create_token({config,token_id})
       }
       
     }  
-    const getAirdrop = (ticket_row_id) => {
-      // Axios.get(
-      //   API_BASE_URL + "app/ticket/view_ticket/" + ticket_row_id,
-      //   config
-      // ).then((response) => {
-      //   if (response.data.status === true) {
-      //     set_title(response.data.message.title)
-      //     set_sub_title(response.data.message.sub_title)
-      //     set_winner_price(response.data.message.winner_price)
-      //     set_start_date(response.data.message.start_date)
-      //     set_end_date(response.data.message.end_date)
-      //     set_participate_link(response.data.message.participate_link)
-      //     set_description(response.data.message.description)
-      //     set_how_to_participate(response.data.message.how_to_participate)
-      //     set_edit_airdrop_row_id(response.data.message._id)
-      //   } else {
-      //     set_success_message_modal({
-      //       icon: "/assets/img/attendee_cross.png",
-      //       title: "Oops!",
-      //       content: response.data.message.alert_message,
-      //     });
-      //   }
-      // });
+    const airdropList = () => 
+    {
+      Axios.get(API_BASE_URL + "markets/users/manage_airdrops/list/", config).then(
+        (response) => 
+        {
+          console.log(response);
+          if(response.data.status) 
+          {
+            set_api_loader(false)
+            set_airdrop_list(response.data.message);
+          }
+        }
+      );
+    };
+    const getAirdrop = (e) => {
+      
+   
+          set_title(e.title)
+          set_sub_title(e.sub_title)
+          set_winner_price(e.winner_price)
+          set_start_date(moment(e.start_date).format("YYYY-MM-DDTHH:mm"))
+          set_end_date(moment(e.end_date).format("YYYY-MM-DDTHH:mm"))
+          set_participate_link(e.participate_link)
+          set_description(e.description)
+          set_how_to_participate(e.how_to_participate)
+          set_airdrop_row_id(e._id)
+    
     };
     
+    const btndelete = (row_id) => {
+      let ele= <div className="remove_modal">
+      <div className="modal" id="removeConnection">
+          <div className="modal-dialog modal-sm">
+          <div className="modal-content">
+              <div className="modal-body">
+              <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" /></button>
+              <div className="text-center">
+              <div className=""><img src="/assets/img/cancel.png" className="prop_modal_img"/></div>
+                  <h4 className="">Delete Airdrop!</h4>
+                  <p>Do you really want to delete this connection?</p>
+              </div>  
+              </div>
+              <div className="modal-footer">
+              <button type="button" className="tn btn-danger btn-sm" onClick={() => Delete(row_id)} data-dismiss="modal"> Delete </button>
+              </div>
+          </div>
+          </div>
+      </div> 
+      </div>
+      set_elements(ele);
+    };
+  
+    const Delete = (row_id) => {
+      setModalData({ icon: "", title: "", content: "" });
+  
+      Axios.get(
+        API_BASE_URL+"markets/users/manage_airdrops/delete_airdrop/"+row_id,
+        config
+      ).then((response) => {
+        if (response.data.status === true) {
+          setModalData({
+            icon: "/assets/img/update-successful.png",
+            title: "Thank You!",
+            content: "Airdrop Deleted Successfully",})
+          airdropList();
+          clearform();
+          set_airdrop_row_id("");
+        } else {
+          setModalData({
+            icon: "/assets/img/attendee_cross.png",
+            title: "Oops!",
+            content: response.data.message.alert_message,
+          });
+        }
+      });
+    };
     const makeJobSchema=()=> 
     {  
       return { 
@@ -293,7 +373,7 @@ export default function Create_token({config,token_id})
                 <div className="token_form">
 
                 <div className='market_token_tabs'>
-                <h4>Manage Airdrops</h4>
+                <h1 className='page_main_heading'>Manage Airdrops</h1>
                 <Top_header active_tab={3} token_id={token_id}/>
                     {/* <div className="row">
                         <div className="col-lg-3 col-md-4">
@@ -306,8 +386,10 @@ export default function Create_token({config,token_id})
                   <div className=" token_steps">
                   <div className="row">
                     <div className="col-lg-5 col-md-5 ">
-                    <h1>{edit_airdrop_row_id?"Update":"Create"} Airdrop</h1>
-                    {edit_airdrop_row_id?"":<p>Enter all these fields to create Airdrop</p>}
+                    <div className='form_headings'>
+                    <h5>{airdrop_row_id?"Update":"Create"} Airdrop</h5>
+                    {airdrop_row_id?<p>Edit airdrop details for your tokens.</p>:<p>You can create airdrops for your tokens.</p>}
+                    </div>
                       <div className='create_token_details'>
                       <div className="row">
                         <div className="col-lg-12 col-md-12">
@@ -337,9 +419,9 @@ export default function Create_token({config,token_id})
                       <div className="row">
                           <div className="col-lg-6 col-md-6">
                             <div className="form-custom">
-                              <label htmlFor="email">Winner amount <span className="label_star">*</span></label>
+                              <label htmlFor="email">Winner amount ($)</label>
                                 <div className="form-group input_block_outline">
-                                  <input type="text" className="form-control" placeholder="Winner amount" value={winner_price} onChange={(e) => set_winner_price(e.target.value)}/>
+                                  <input type="number" className="form-control" placeholder="Winner amount $" value={winner_price} onChange={(e) => set_winner_price(e.target.value)}/>
                               </div>
                             <div className="error">{err_winner_price}</div>
 
@@ -348,7 +430,7 @@ export default function Create_token({config,token_id})
 
                           <div className="col-lg-6 col-md-6">
                             <div className="form-custom">
-                              <label htmlFor="email">Participate Link <span className="label_star">*</span></label>
+                              <label htmlFor="email">Participate Link </label>
                               <div className="form-group input_block_outline">
                                 <input type="text" className="form-control" placeholder="Participate Link"  value={ participate_link} onChange={(e) => set_participate_link(e.target.value)}/>
                               </div>
@@ -365,7 +447,7 @@ export default function Create_token({config,token_id})
                           <label htmlFor="email">Start date <span className="label_star">*</span></label>
                           <div className="form-custom">
                             <div className="form-group input_block_outline">
-                              <input type="date" className="form-control" placeholder="Total Supply"value={start_date} onChange={(e) => set_start_date(e.target.value)}/>
+                              <input type="datetime-local" className="form-control" placeholder="Total Supply"value={start_date} onChange={(e) => set_start_date(e.target.value)}/>
                             </div>
                             <div className="error">{err_start_date}</div>
 
@@ -376,7 +458,7 @@ export default function Create_token({config,token_id})
                           <label htmlFor="email">End date <span className="label_star">*</span></label>
                           <div className="form-custom">
                             <div className="form-group input_block_outline">
-                              <input type="date" className="form-control" placeholder="Total Supply" value={end_date} onChange={(e) => set_end_date(e.target.value)}/>
+                              <input type="datetime-local" className="form-control" placeholder="Total Supply" value={end_date} onChange={(e) => set_end_date(e.target.value)}/>
                             </div>
                             <div className="error">{err_end_date}</div>
 
@@ -387,14 +469,14 @@ export default function Create_token({config,token_id})
                           <div className="form-custom">
                               <label htmlFor="email">Airdrop description <span className="label_star">*</span></label>
                                 <div className="form-group input_block_outline">
-                                  <textarea  className="form-control" placeholder="Airdrop description" value={description} onChange={(e) => set_description(e.target.value)}/>
+                                  <textarea  className="form-control" rows={6} placeholder="Airdrop description" value={description} onChange={(e) => set_description(e.target.value)}/>
                                 </div>
                             <div className="error">{err_description}</div>
 
                           </div>
                       
                       <div className="form-custom">
-                          <label htmlFor="email">How to participate in airdrops <span className="label_star">*</span></label>
+                          <label htmlFor="email">How to participate in airdrops </label>
                             <div className="form-group input_block_outline">
                             <Editor 
                             apiKey="s6mr8bfc8y6a2ok76intx4ifoxt3ald11z2o8f23c98lpxnk" 
@@ -424,9 +506,9 @@ export default function Create_token({config,token_id})
                               <div className="review_upload_token mt-3">
                                 <button className="dsaf button_transition"  onClick={() =>{createAirdrop()}} >
                                  {loader ? (
-                                      <div className="loader"><span className="spinner-border spinner-border-sm "></span>{edit_airdrop_row_id?"Update":"Create"}</div>
+                                      <div className="loader"><span className="spinner-border spinner-border-sm "></span>{airdrop_row_id?"Update":"Create"}</div>
                                       ) : (
-                                          <>{edit_airdrop_row_id?"Update":"Create"}</>
+                                          <>{airdrop_row_id?"Update":"Create"}</>
                                       )}
                                 </button> 
                       </div>
@@ -435,47 +517,57 @@ export default function Create_token({config,token_id})
 
                 <div className='col-lg-7 col-md-7 '>
                 <div className='mb-4'>
-                    {/* <div className="funding_details"> */}
-                        <h1>Airdrops List</h1>
+                <div className='form_headings'>
+                        <h1>Airdrops List ({airdrop_list.length})</h1>
                         <p>Here you will get the listed Airdrops</p>
-                    {/* </div> */}
+                    </div>
                 </div>
+                <div className='market_page_data'>
                   <div className='table-responsive '>
                 <table className="table  ">
                 <thead>
                 <tr>
                     <th >Sl No.</th>
-                    <th >Airdrop title<br></br>(subtitle)</th>
+                    <th >Airdrop title</th>
                     <th >Amount</th>
-                    <th >Date</th>
-                    <th >Airdrop Link</th>
+                    <th >Start date-end date</th>
                     <th >Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                {/* {
-                    funding_list.length>0?
-                    funding_list.map((e, i) =>
+                {
+                  !api_loader?
+                    airdrop_list.length>0?
+                    airdrop_list.map((e, i) =>
                     <tr key={i}>
-                       
+                        <td>{i+1}</td>
+                        {e.participate_link?<a href={participate_link} title={e.title} target='_blank'><td>{e.title}</td></a>
+                        :<td>{e.title}</td>}
+                        
+                        <td>{e.winner_price?e.winner_price:"--"}</td>
+                        <td>{e.start_date
+                                ? moment(e.start_date).format(
+                                    "ll"
+                                  )
+                                : "-"}-{e.end_date
+                                  ? moment(e.end_date).format(
+                                      "ll"
+                                    )
+                                  : "-"}</td>
+                        <td>
+                        <button type="submit" title="Edit" onClick={() => getAirdrop(e)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
+                        <button type="submit" title="delete" onClick={() => btndelete(e._id)} className="tn btn-danger btn-sm ml-1" name="delete" data-toggle="modal" data-target="#removeConnection" >Delete</button>
+                        </td> 
                     </tr>
                     )
                     :
                     <tr>
                         <td colSpan="6"  className="text-lg-center text-md-left">No Records Found</td>
                     </tr>
-                    
-                } */}
-                <tr>
-                <td>1</td>
-                <td>erdfs</td>
-                <td>erdfs</td>
-                <td>erdfs</td>
-                <td>erdfs</td>
-                 <td>
-                        <button type="submit" title="Edit" onClick={() => getAirdrop(e._id)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
-                        </td> 
-                        </tr>
+                    :
+                    "dfg"
+                }
+              
                 </tbody> 
             </table>
             <div>
@@ -504,6 +596,7 @@ export default function Create_token({config,token_id})
     } */}
         </div>
         </div>
+        </div>
                 </div>
             </div>
         </div>
@@ -518,8 +611,8 @@ export default function Create_token({config,token_id})
     
 
 
-        {/* {modal_data.title ? <Popupmodal name={modal_data} /> : null} */}
-
+        {modal_data.title ? <Popupmodal name={modal_data} /> : null}
+        {elements}
     </>
   )
 }

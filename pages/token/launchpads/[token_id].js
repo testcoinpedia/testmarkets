@@ -574,7 +574,7 @@ var object =  {
           <div className="container">
           <div className="for_padding">
           <div className='market_token_tabs'>
-              <h4>Manage Launchpads</h4>
+              <h1 className='page_main_heading'>Manage Launchpads</h1>
               <Top_header active_tab={2} token_id={token_id}/>
               <div className="row">
                   <div className="col-lg-3 col-md-4">
@@ -588,6 +588,7 @@ var object =  {
             <div className="col-md-12">
               <div className="row">
               <div className="col-lg-5 col-md-12">
+                <div className='form_headings'>
               {
                   !edit_launchpad_row_id ? 
                   <>
@@ -600,6 +601,7 @@ var object =  {
                   <p className="token_form_sub_text">Enter all these fields to update Launchpad</p>
                   </>
                 }
+                </div>
 
                         {/* {
                             edit_launchpad_row_id ? 
@@ -647,7 +649,7 @@ var object =  {
                           </div>
                           <div className="error">{err_launchpad}</div>
                           <div>
-                            <span style={{float:"right", fontSize:"12px",fontWeight:"500"}}>13 % of Total Supply</span>
+                            <span className='total_supply'>13 % of Total Supply</span>
                           </div>
                         </div>
                       </div>
@@ -728,7 +730,7 @@ var object =  {
                           <div className="form-custom">
                           <label htmlFor="accept_payment_type">Accept<span className="label_star">*</span></label>
                             <div className="form-group input_block_outline" >
-                              <Multiselect  className="form-control" style={{border:"0px"}}
+                              <Multiselect   style={{border:"0px"}}
                                 selectedValues={accept_payment_type}
                                 options={payment_types} // Options to display in the dropdown
                                 onSelect={onSelect} // Function will trigger on select event
@@ -838,34 +840,39 @@ var object =  {
 
 
                 <div className="col-lg-7 col-md-12">
+                <div className='form_headings'>
                 <h5 className="create-token-res">Launchpad List</h5>
-                    <p>List of Ongoing, Upcoming and Completed launchpads</p>              
-                <div className="table-responsive">
-                  <table className="table">
-                      <thead>
-                      <tr>
-                      <th >Sl No.</th>
-                          {/* 
-                          <th >Title</th> */}
-                          <th >Sale Tokens</th>
-                          <th >Start-End</th>
-                          <th >Action</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr>
-                      <td>1</td>
-                              {/* 
-                          <td>erdfs</td> */}
-                          <td>erdfs</td>
-                          <td>erdfs</td>
-                              <td>
-                                  <button type="submit" title="Edit" onClick={() => getFundingDetails(e._id)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
-                          </td> 
-                          </tr>
-                      </tbody> 
-                  </table>
-                </div>
+                    <p>List of Ongoing, Upcoming and Completed launchpads</p> 
+                    </div> 
+                        <div className='market_page_data token_tables'>      
+                          <div className="table-responsive">
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                <th >Sl No.</th>
+                                    {/* 
+                                    <th >Title</th> */}
+                                    <th >Sale Tokens</th>
+                                    <th >Start-End</th>
+                                    <th >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                <td>1</td>
+                                        {/* 
+                                    <td>erdfs</td> */}
+                                    <td>erdfs</td>
+                                    <td>erdfs</td>
+                                        <td>
+                                            <button type="submit" title="Edit" onClick={() => getFundingDetails(e._id)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
+                                    </td> 
+                                    </tr>
+                                </tbody> 
+                            </table>
+                          </div>
+                      </div>
+                     
 
                   {/* <div className="main_create_form">
                     

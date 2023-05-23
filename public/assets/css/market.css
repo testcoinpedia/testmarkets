@@ -9415,7 +9415,7 @@ tbody td {
 }
 
 .popup_modal_for_all .modal-dialog {
-  margin-top: 18%;
+  /* margin-top: 18%; */
 }
 
 .coin_main_links {
@@ -9570,6 +9570,7 @@ tbody td {
 
 .modal-content {
   border-radius: 20px;
+  margin-top: 25vh;
 }
 
 .modal-open .modal {
@@ -9599,9 +9600,11 @@ tbody td {
   font-size: 15px;
 }
 
-#market_share_page .modal-title {
+.modal-title {
   float: left;
   font-size: 16px;
+  font-weight: 600 !important;
+  font-family: 'Space Grotesk';
 }
 
 #market_share_page .input-group {
@@ -9932,6 +9935,14 @@ font-weight: 400 !important;
   border-right: 2px solid rgb(17, 20, 45);
   margin-right: 15px;
   line-height: 1;
+  padding: initial;
+}
+
+.tabs_partition{
+  border-right: 2px solid rgb(17, 20, 45);
+  margin-right: 15px;
+  line-height: 1;
+  padding: 5px 0;
 }
 
 .search_filter .input-group-text {
@@ -10381,13 +10392,14 @@ border-radius: 6px;
 }
 
 .form-custom {
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .error {
   color: #e30000;
   font-size: 11px;
-  font-weight: 200 !important;
+  font-weight: 400 !important;
+  font-family: 'Space Grotesk';
 }
 
 .label_star {
@@ -10411,7 +10423,24 @@ button {
   color: #251c49;
   background: transparent;
   font-size: 14px;
-  font-weight: 200;
+  font-weight: 500;
+  font-family: 'Space Grotesk';
+}
+
+.form-custom .form-group textarea {
+  color: #251c49;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Space Grotesk';
+}
+
+.total_supply{
+  text-align: right;
+  font-size: 12px;
+  font-weight: 500 !important;
+  font-family: 'Space Grotesk';
+  float: right;
 }
 
 .form-custom .form-control {
@@ -10460,6 +10489,11 @@ input[type="number"] {
   color: #a2a7b0 !important;
 }
 
+.form-custom .form-group textarea::placeholder {
+  color: #a2a7b0 !important;
+  font-weight: 400 !important;
+}
+
 .token_steps {
   margin-bottom: 20px;
   /* margin-top: 55px; */
@@ -10477,11 +10511,11 @@ input[type="number"] {
 .input_block_outline select {
   padding: 0;
   border: 0;
-  margin-top: 6px;
+  /* margin-top: 6px; */
   outline: none !important;
   box-shadow: none !important;
   font-size: 14px;
-  height: 24px;
+  /* height: 24px; */
   font-weight: 400;
   font-family: 'Space Grotesk';
   width: 100%;
@@ -10940,7 +10974,7 @@ label{
 
 .create_token_details label{
   font-family: 'Space Grotesk' !important;
-font-weight: 600 !important;
+font-weight: 700 !important;
 font-size: 15px !important;
 text-align: right;
 
@@ -11075,6 +11109,18 @@ font-weight: 400;
 
 .market_page_data tr td {
   vertical-align: middle;
+}
+
+.categories_table tr td {
+  min-width: 180px !important;
+}
+
+.categories_table tr td:first-child {
+  min-width: 60px !important;
+}
+
+.categories_table tr td:last-child {
+  min-width: 100px !important;
 }
 
 .market_page_data a {
@@ -12556,7 +12602,7 @@ color: #000000;
   color: #979797;
   margin-right: 5px;
   font-family: 'Space Grotesk';
-  font-weight: 400 !important;
+  font-weight: 600 !important;
 }
 
 .token_list_content  .values_growth{
@@ -13270,11 +13316,21 @@ color: #000000;
   cursor: pointer;
 }
 
+.close img{
+  width: 14px !important;
+}
+
 .markets_subtitle {
   font-size: 18px;
   font-weight: 600 !important;
   font-family: 'Space Grotesk';
   margin-top: 10px;
+}
+
+.page_main_heading{
+  font-size: 30px;
+    font-family: 'Space Grotesk';
+    font-weight: 700 !important;
 }
 
 .cust_filters_dropdown .cust_filter_input .input-group-addon {
@@ -13479,8 +13535,12 @@ color: #000000;
 /* ...popup modal css starts here... */
 .popup_modal_for_all img {
   width: 40px;
-  margin-left: 15px;
-  margin-top: -17px;
+  margin-top: 20px;
+}
+
+.popup_modal_for_all .close img{
+  width: 14px;
+  margin: 0;
 }
 
 .popup_modal_for_all h4 {
@@ -14871,7 +14931,7 @@ font-weight: 500 !important;
 .back_button_search{
   width: 22px;
   position: relative;
-  bottom: 5px;
+  bottom: 4px;
 }
 
 .search_section .search-result .media .media-heading span {
@@ -15073,7 +15133,7 @@ font-weight: 500 !important;
 .token_share_vote {
   margin-top: 8px;
   /* text-align: right; */
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   position: relative;
   z-index: 9;
   display: flex;
@@ -15682,6 +15742,25 @@ padding: 1px 8px;
 
 }
 
+.form_headings h5{
+  font-family: 'Space Grotesk';
+  font-weight: 600 !important;
+  font-size: 18px;
+  color: #000;
+}
+
+.form_headings p{
+  font-family: 'Space Grotesk';
+  font-weight: 500;
+  font-size: 13px;
+  color: #737681;
+}
+
+.token_tables{
+  margin-top: 15px;
+}
+
+
 /***************transitions **********************/
 
 
@@ -15900,13 +15979,14 @@ padding: 1px 8px;
 
   .market_page_data table thead tr th{
     min-width: 80px !important;
+    font-size: 13px;
   }
 
   .market_page_data table thead tr th:first-child{
     min-width: 35px !important;
   }
 
-  .market_page_data table thead tr th:last-child {
+  .market_page_data table thead .last_data {
     min-width: 130px !important;
   }
 
@@ -15939,7 +16019,7 @@ padding: 1px 8px;
   }
 
   .new_markets_index table tbody tr td {
-    padding: 4px 10px;
+    padding: 10px 10px;
     font-size: 12px;
   }
 
@@ -17461,6 +17541,16 @@ screen and (max-height: 300px) {
     width: 50%;
   }
 
+  .categories_table tr td {
+    min-width: 140px !important;
+  }
+
+  .categories_table tr td:last-child {
+    min-width: 80px !important;
+  }
+
+ 
+
   .how_do_you_feel h4{
     font-size: 16px;
   }
@@ -17524,8 +17614,22 @@ screen and (max-height: 300px) {
     z-index: 999;
   }
 
+  .exchange_table table thead tr th:last-child{
+    min-width: 80px !important;
+  }
+
+  .exchange_table table tr td:last-child{
+    min-width: 80px !important;
+  }
+
   .markets_header_token{
     text-align: center;
+    /* border-bottom: 1px solid #eee;
+    background: #fff !important; */
+  }
+
+  .markets_list_quick_links{
+    margin-top: 0;
   }
 
   .events_detail_score .timing_event_score{
@@ -17961,12 +18065,16 @@ screen and (max-height: 300px) {
   .coin_main_links .links_direct {
     /* padding: 4px 6px 2px !important; */
     /* font-size: 10px; */
-    /* text-align: center; */
+    text-align: center;
   }
 
-  /* .coin_details .token_list_values h4 {
+  .quick_block_links .widgets__select a{
+    font-size: 13px;
+  }
+
+  .coin_details .token_list_values h4 {
     font-size: 12px;
-  } */
+  }
 
   .best_and_worst .nav-tabs li a {
     padding: 8px 25px;
@@ -17984,7 +18092,7 @@ screen and (max-height: 300px) {
   }
 
   .quick_block_links .widgets__select{
-    min-width: 130px;
+    min-width: max-content;
     width: 100%;
   }
 
@@ -18034,7 +18142,7 @@ screen and (max-height: 300px) {
   }
 
   .coin_details .token_list_values {
-    padding: 8px 0;
+    padding: 5px 0 0 ;
     display: flex;
   }
 
@@ -18254,6 +18362,11 @@ screen and (max-height: 300px) {
     font-size: 12px;
     width: 70px;
     white-space: normal !important;
+    word-break: break-word;
+  }
+
+  .new_markets_index table tbody tr .rank_class{
+    max-width: 100px !important;
   }
 
   .manage_tokens_edit,
@@ -19808,6 +19921,14 @@ screen and (max-height: 300px) {
     margin: 0px;
   }
 
+  .categories_table thead tr th:last-child {
+    min-width: 80px !important;
+}
+
+.categories_table tr td:last-child {
+  min-width: 80px !important;
+}
+
   .addmore_ico span img {
     width: 14px;
   }
@@ -20360,9 +20481,22 @@ justify-content: end;
   width: 0;
 }
 
+.price-tracking-tbl .filter_rows li select{
+  margin-left: 0;
+  height: 30px !important;
+  min-height: auto;
+  margin-top: 5px;
+  color: #727272 !important;
+}
+
 .exchange_table table thead tr th{
-  min-width: 110px !important;
-  padding: 15px 5px !important;
+  min-width: 120px !important;
+  padding: 15px 8px !important;
+}
+
+.exchange_table table tr td{
+  min-width: 120px !important;
+  padding: 15px 8px !important;
 }
 
 .exchange_table table thead th{
@@ -20432,9 +20566,6 @@ justify-content: end;
 .reduce-col-pd {
   padding-left: 6px;
   padding-right: 6px;
-}
-.price-tracking-tbl  .filter_rows li select{
-  margin-left: 0;
 }
 
 
@@ -20572,7 +20703,7 @@ justify-content: end;
   }
 
   .token_list_values .values_growth .green{
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .popup_modal_for_all h4 {
@@ -20609,36 +20740,46 @@ justify-content: end;
     font-size: 11px;
   }
 
+
   .all-categories-list li a{
     font-size: 14px;
     padding: 6px 12px
   }
+
   .markets_new_design .category_list {
     margin: 0px 0 8px;
   }
+
   .gainers-loosers .tab-pane table thead, .gainers-loosers .tab-pane table th{
     font-size: 14px;
   }
+
   .gainers-loosers .tab-pane table td{
     font-size: 13px;
   }
+
   .gainers-loosers .view-more-pg{
     font-size: 14px;
   }
+
   .price-tracking-tbl h2 {
     font-size: 20px;
   }
+
   .markets_new_design .search_filter .input-group-text, .markets_new_design .search_filter.new_design_serach .form-control {
     font-size: 13px !important;
     /* padding-top: 0 !important; */
   }
+
   .price-tracking-tbl .category_list li{
     font-size: 14px;
   }
+
   .reduce-col-pd {
     padding-left: 15px;
     padding-right: 15px;
   }
+
   .price-tracking-tbl .filter_rows{
     text-align: left;
   }
@@ -20650,19 +20791,28 @@ justify-content: end;
   .category-ul li{
     font-size: 13px;
   }
+
   .token_price_block h6 {
     font-size: 13px;
     margin-top: 0;
   }
+
   .token_list_content h4 {
     font-size: 11px;
   }
+
   .timings_price{
     font-size: 13px;
   }
-  .token_price_block .values_growth {
+
+  .token_price_block .values_growth .green {
     font-size: 13px;
   }
+
+  .token_price_block .values_growth .red {
+    font-size: 13px;
+  }
+
   .recent-searches{
     width: auto;
     margin-bottom: 5px;
@@ -20675,10 +20825,12 @@ justify-content: end;
   .ico_details .ico_heading {
     font-size: 16px;
   }
+
   .ico_dates{
     font-size: 12px;
     margin: 15px 0;
   }
+
   .ico_dates span{
     font-size: 12px;
   }
@@ -20686,9 +20838,11 @@ justify-content: end;
   .ico_prices p{
     font-size: 12px;
   }
+
   .ico_prices h5{
     font-size: 12px;
   }
+
   .ico_details .values_growth span{
     font-size: 12px;
   }
@@ -20699,66 +20853,87 @@ justify-content: end;
 
   .ico_status_button{
   }
+
   .details_airdrop_card p {
     font-size: 14px;
   }
+
   .ico_details .ico_button {
     padding: 0px 10px;
   }
+
   .dropdown_ico{
-    width: 20px;
-    margin-left: 5px;
+    width: 16px;
+    margin-left: 6px;
+    bottom: 4px;
   }
+
   .ico_details .ico_button {
   font-size: 12px;
 
 }
+
 .detail_airdrop_data .list_numbers{
   display: block;
 }
+
 .detail_airdrop_data li {
   font-size: 14px;
 }
+
 .price_desc p {
   font-size: 13px;
 }
+
 .price_desc h4 {
   font-size: 14px;
 }
+
 .news_list_events p{
   font-size: 13px;
 }
+
 .news_list_events h4{
   font-size: 14px;
 }
+
 .tokenomic_table th {
   padding: 10px 0 !important;
 }
+
 .tokenomic_table td {
   padding: 10px 0 !important;
 }
+
 .ico_calendar_tabs li .nav-link{
   min-width: auto !important;
   margin: 0 5px 10px;
 }
+
 .token_main_details .media .token_img {
   width: 70px;
 }
+
 .token_list_content{
   margin-top: 0;
 }
+
 .token_share_vote li {
   font-size: 13px;
 }
+
 .coin_details .token_list_values h4{
   margin-bottom: 0;
 }
+
 .detail_airdrop_data p{
   font-size: 14px;
-}  
+}
+
 .market_page_data table thead{
   position: relative;
 }
+
 .new_design_serach{
   margin-top: 0px !important;
 }
@@ -20770,6 +20945,31 @@ justify-content: end;
   overflow: auto;
   max-height: 100%;
 }
+
+.airdrop_card h4{
+  font-size: 18px;
+}
+
+.airdrop_card h6{
+  font-size: 14px;
+}
+
+.airdrop_card p{
+  font-size: 14px;
+}
+
+.airdrop_card_bottom h6{
+  font-size: 14px;
+}
+
+.airdrop_page_indi h3 {
+  font-size: 20px;
+}
+
+.airdrop_button_bottom button {
+  padding: 10px;
+}
+
 }
 @media screen and (min-width:580px) and (max-width:767px){
   .price-tracking-tbl .filter-category-section .search_filter{

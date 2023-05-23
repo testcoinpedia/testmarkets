@@ -209,7 +209,7 @@ return (
                    
                   
                 </div>
-                <div className="market_page_data new_token_page">
+                <div className="market_page_data categories_table new_token_page">
                      <div className="table-responsive">
                        <table className="table table-borderless">
                          <thead>
@@ -414,7 +414,7 @@ return (
               
                 <div class="modal-header">
               
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <button type="button" class="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" /></span></button>
                 </div>
                 
                 <div class="modal-body">

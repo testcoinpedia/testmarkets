@@ -1296,16 +1296,13 @@ const getTokensDetails = (type, address) =>{
                         <div className="col-lg-8 col-md-12">
                           <div className="row">
                             <div className="col-md-4">
-                              <label>Meta Description</label>
+                            <label>Meta Description</label>
                             </div>
                             <div className="col-md-8">
-                              <div>
-                                  <div className="form-custom create_token_no_space">
-                                    <div className="form-group input_block_outline">
-                                      <input autoComplete="off" type="text" className="form-control" placeholder="Meta Description"  value={meta_description} onChange={(e) => set_meta_description(e.target.value)}/>
-                                    </div>
-                                  </div>
-                                </div>
+                            <div className="form-group input_block_outline_meta">
+                                 <textarea type="text" className="form-control" placeholder="Enter Meta Description" value={meta_description} onChange={(e) => set_meta_description(e.target.value)}> </textarea>
+                                
+                            </div>
                             </div>
                           </div>
                         </div>

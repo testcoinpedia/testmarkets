@@ -226,7 +226,8 @@ export default function GainersLosers({user_token, config, userAgent})
                     <div className="row">
                         <div className="col-md-9 mb-3 col-7">
                             <ul className="secondary_tabs">
-                                <li className={all_tab_status == 0?"secondary_tabs_active":null}><a onClick={()=>set_all_tab_status(0)}>Gainers</a></li>
+                                <li className={all_tab_status == 0?"secondary_tabs_active ":null}><a onClick={()=>set_all_tab_status(0)}>Gainers </a></li>
+                                <span className='tabs_partition'></span>
                                 <li className={all_tab_status == 1?"secondary_tabs_active":null}><a onClick={()=>set_all_tab_status(1)}>Losers</a></li>
                             </ul>
                         </div>
@@ -235,7 +236,7 @@ export default function GainersLosers({user_token, config, userAgent})
                             
                             <div className="col-md-12 ">
                                 <div className="input-group search_filter">
-                                    <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token By Name" />
+                                    <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token" />
                                     <div className="input-group-prepend ">
                                         <span className="input-group-text" ><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                                     </div>
@@ -259,7 +260,7 @@ export default function GainersLosers({user_token, config, userAgent})
                                         <tr>
 
                                         <th className="mobile_fixed_first" style={{minWidth: '35px'}}></th>
-                                        <th className="mobile_hide_view "style={{minWidth: '35px'}}>Rank</th>
+                                        <th className="mobile_hide_view " style={{minWidth: '35px'}}>Rank</th>
                                         <th className="mobile_fixed">Name</th>
                                         <th className="">Price</th>
                                         <th className="" style={{minWidth: 'unset'}}>24h</th>
@@ -267,7 +268,7 @@ export default function GainersLosers({user_token, config, userAgent})
                                         <th className=" table_circulating_supply">Market Cap</th> 
                                         <th className=" ">Volume(24H)</th>  
                                         <th className=" table_circulating_supply">Circulating Supply</th>  
-                                        <th className="">Last 7 Days</th>
+                                        <th className="last_data">Last 7 Days</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -369,7 +370,7 @@ export default function GainersLosers({user_token, config, userAgent})
                                             ?
                                             top_loosers.map((e, i) => 
                                                 <tr key={i}>
-                                                    <td>
+                                                    <td className='mobile_fixed_first'>
                                                     {
                                                         user_token ?
                                                         <>
@@ -385,7 +386,7 @@ export default function GainersLosers({user_token, config, userAgent})
                                                     }
                                                     </td>
                                                     <td className="mobile_hide_table_col"> {e.cmc_rank} </td>
-                                                    <td>
+                                                    <td  className='mobile_fixed'>
                                                         <Link href={"/"+e.token_id}>
                                                             <div className="media">
                                                                 <div className="media-left">
@@ -473,7 +474,7 @@ export default function GainersLosers({user_token, config, userAgent})
            <div className="modal-content">
              <div className="modal-header">
                <h4 className="modal-title coming_soon_title">Coming Soon !!</h4>
-               <button type="button" className="close" data-dismiss="modal">&times;</button>
+               <button type="button" className="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" /></span></button>
              </div>
              <div className="modal-body">
                <p className="coming_soon_subtext">This feature will be available soon</p>

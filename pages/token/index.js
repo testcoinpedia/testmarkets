@@ -37,7 +37,7 @@ export default function WalletTokensList({userAgent, config})
          
     const getTokens= async ()=>
     {
-      const res = await Axios.get(API_BASE_URL+"markets/manage_crypto/list", config)
+      const res = await Axios.get(API_BASE_URL+"markets/users/manage_crypto/list", config)
       if(res.data.status)
       {
           console.log(res.data.watchlist)

@@ -313,7 +313,7 @@ export default function Create_token({config, token_id})
               <div> 
                 <div className="token_form">
                 <div className='market_token_tabs'>
-                <h4>Manage Team Members</h4>
+                <h1 className='page_main_heading'>Manage Team Members</h1>
                 <Top_header active_tab={5} token_id={token_id}/>
                     {/* <div className="row">
                         <div className="col-lg-3 col-md-4">
@@ -326,10 +326,11 @@ export default function Create_token({config, token_id})
 
                   <div className=" token_steps">
                   <div className="row">
-                    <div className="col-lg-5 col-md-5">
-                    <h1>Create Team members</h1>
-                    {/* <p >Enter all these fields to create tokenomics</p> */}
-            
+                    <div className="col-lg-4 col-md-4">
+                    <div className='form_headings'>
+                    <h5>Create Team members</h5>
+                    <p >Enter all these fields to create tokenomics</p>
+                        </div>  
                     <div className='create_token_details'>
                         <div className="form-custom">
                             <label htmlFor="email">Team Member <span className="label_star">*</span></label>
@@ -522,22 +523,29 @@ export default function Create_token({config, token_id})
                         </div>
                     </div>
                     </div>
-
+                <div className="col-lg-1 col-md-1">
+                </div>
                 <div className='col-lg-7 col-md-7 '>
-                <div className='mb-4'>
-                <h1>Team Members List</h1>
+                <div className='form_headings'>
+                <h5>Team Members List</h5>
                  <p>Here you will get the listed Tokenomics</p>
                 </div>
-                  <div >
-              
-                    <div className="table-responsive">
+
+            <div className='market_page_data token_tables'>              
+                <div className="table-responsive">
                 <table className="table">
                 <thead>
                 <tr>
-                    <th >Sl No.</th>
-                    <th >team members</th>
-                    {/* <th >% Value</th>
-                    <th >Total Supply</th> */}
+                    <th className="mobile_fixed_first" style={{minWidth: '35px'}}>#</th>
+                    <th>Created On</th>
+                    <th>
+                        Image Name <br/>
+                       Designation at Company Name             
+                    </th>
+                    <th>Email ID
+                        <br/>
+                        Type
+                    </th>
                     <th >Action</th>
                 </tr>
                 </thead>
