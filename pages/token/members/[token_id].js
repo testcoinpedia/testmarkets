@@ -208,6 +208,10 @@ export default function Create_token({config, token_id})
 
       }
 
+     
+
+
+
       const  removeUser = (index) =>
       {
           set_event_speaker_array(event_speaker_array.filter((s, sindex) => index !== sindex))
@@ -537,24 +541,41 @@ export default function Create_token({config, token_id})
                 <thead>
                 <tr>
                     <th className="mobile_fixed_first" style={{minWidth: '35px'}}>#</th>
-                    <th>Created On</th>
+                    
                     <th>
-                        Image Name <br/>
-                       Designation at Company Name             
+                    Name(User ID)        
                     </th>
                     <th>Email ID
-                        <br/>
-                        Type
                     </th>
+                    <th>Register Status</th>
                     <th >Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                         <td>1</td>
-                    <td>erdfs</td>
+                   
+                    <td>
+                        <div className='media'>
+                            <div className='media-left align-self-center'>
+                            <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/18876.png" />
+                            </div>
+                            <div className='media-body align-self-center m-0'>
+                                    <h4 className='media-heading'>Nissa Shaikh</h4>
+                                    <p>Developer <span >Ultimez Technology</span></p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                       
+                        <a>ultimeznissa@gmail.com</a>
+                        <p>15 mins ago</p>
+                        </td>
+                        <td>Registered</td>
                         <td>
                             <button type="submit" title="Edit" onClick={() => getFundingDetails(e._id)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
+                            <button type="submit" title="delete" className="tn btn-danger btn-sm ml-1" name="delete" data-toggle="modal" data-target="#removeConnection" >Delete</button>
+
                     </td> 
                     </tr>
                 </tbody> 
@@ -583,6 +604,26 @@ export default function Create_token({config, token_id})
         :
         null
     } */}
+
+<div className="remove_modal">
+        <div className="modal" id="removeConnection">
+            <div className="modal-dialog modal-sm">
+            <div className="modal-content">
+                <div className="modal-body">
+                <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" /></button>
+                <div className="text-center">
+                <div className=""><img src="/assets/img/cancel.png" className="prop_modal_img"/></div>
+                    <h4 className="">Delete!</h4>
+                    <p>Do you really want to delete this team member?</p>
+                </div>  
+                </div>
+                <div className="modal-footer">
+                <button type="button" className="tn btn-danger btn-sm" onClick={() => Delete(row_id)} data-dismiss="modal"> Delete </button>
+                </div>
+            </div>
+            </div>
+        </div> 
+        </div>
         
                 </div>
             </div>

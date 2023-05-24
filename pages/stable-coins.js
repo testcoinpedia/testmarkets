@@ -243,7 +243,7 @@ return (
                           <div className="col-md-4 col-lg-4 col-4 mobile_hide_view">
                             <ul className="filter_rows">
                                 <li>
-                                  <select className="show-num" onChange={(e)=>set_per_page_count(e.target.value)} >
+                                  <select className="form-select" onChange={(e)=>set_per_page_count(e.target.value)} >
                                   <option value="" disabled>Show Rows</option>
                                   <option value={100}>100</option>
                                   <option value={50}>50</option>

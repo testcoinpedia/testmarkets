@@ -31,7 +31,7 @@ export const favicon = '/assets/img/favicon.png'
 
 
 //API local links
-//export const API_BASE_URL = 'http://192.168.1.100:3010/'
+// export const API_BASE_URL = 'http://192.168.1.100:3010/'
 
 //API TEST links
 export const API_BASE_URL = 'https://shark-app-q5yj6.ondigitalocean.app/'

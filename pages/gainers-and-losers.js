@@ -224,14 +224,14 @@ export default function GainersLosers({user_token, config, userAgent})
 
                 <div className="prices transaction_table_block">
                     <div className="row">
-                        <div className="col-md-9 mb-3 col-7">
+                        <div className="col-md-8 mb-3 col-7">
                             <ul className="secondary_tabs">
                                 <li className={all_tab_status == 0?"secondary_tabs_active ":null}><a onClick={()=>set_all_tab_status(0)}>Gainers </a></li>
                                 <span className='tabs_partition'></span>
                                 <li className={all_tab_status == 1?"secondary_tabs_active":null}><a onClick={()=>set_all_tab_status(1)}>Losers</a></li>
                             </ul>
                         </div>
-                        <div className="col-md-3 mb-3 col-12 filter-category-section">
+                        <div className="col-md-4 mb-3 col-12 filter-category-section">
                         <div className="row">
                             
                             <div className="col-md-12 ">
@@ -385,7 +385,7 @@ export default function GainersLosers({user_token, config, userAgent})
                                                         <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url} onClick={()=> Logout()}><img src="/assets/img/star.svg" alt="Watchlist"/></Link>
                                                     }
                                                     </td>
-                                                    <td className="mobile_hide_table_col"> {e.cmc_rank} </td>
+                                                    <td className="mobile_hide_view wishlist "> {e.cmc_rank} </td>
                                                     <td  className='mobile_fixed'>
                                                         <Link href={"/"+e.token_id}>
                                                             <div className="media">

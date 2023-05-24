@@ -1005,7 +1005,7 @@ exchange_link
                                   {
                                     contract_address.length !== 2 ?
                                     <>
-                                      <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.png" /> Add More Contract addresses</span></button>
+                                      <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.svg" /> Add More Contract addresses</span></button>
                                     </>
                                     :
                                     null
@@ -1287,7 +1287,7 @@ exchange_link
                                     <div className="form-group input_block_outline">
                                       <input autoComplete="off" type="text" className="form-control" placeholder="Exchange URL" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
                                     </div>
-                                    <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.png" /> Add More Exchange</span></button>
+                                    <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.svg" /> Add More Exchange</span></button>
                                   </div>
                                 </div>
                             
@@ -1335,7 +1335,7 @@ exchange_link
                                           <input autoComplete="off" className="form-control" type="text" placeholder="Explorer URL" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
                                         </div>
                                       
-                                        <button className="addmore_ico create-token-res" onClick={addMoreExplorers}><span><img src="/assets/img/add-more.png" /> Add More Explorer</span></button>
+                                        <button className="addmore_ico create-token-res" onClick={addMoreExplorers}><span><img src="/assets/img/add-more.svg" /> Add More Explorer</span></button>
                                       </div>
                                     </div>
                                 </div>
@@ -1382,7 +1382,7 @@ exchange_link
                                       <div className="form-group input_block_outline">
                                         <input autoComplete="off" type="text" className="form-control" placeholder="Community URL" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
                                       </div>
-                                      <button className="addmore_ico create-token-res" onClick={addMoreCommunity}><span><img src="/assets/img/add-more.png" /> Add More Community</span></button>
+                                      <button className="addmore_ico create-token-res" onClick={addMoreCommunity}><span><img src="/assets/img/add-more.svg" /> Add More Community</span></button>
                                     </div>
                                   </div>
                               </div>

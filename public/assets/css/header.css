@@ -1274,9 +1274,7 @@ a:hover {
 }
 
 @media (max-width: 768px) {
-  .mobile_hide_view {
-    display: none;
-  }
+  
 
   .mobile_hide {
     display: none;
@@ -1295,6 +1293,10 @@ a:hover {
   .category_list {
     margin: 8px 0;
     padding-bottom: 5px;
+  }
+
+  .mobile_hide_view {
+    display: none;
   }
 
   .hiring_btn {

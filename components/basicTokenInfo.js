@@ -148,9 +148,8 @@ export default function Popupmodal({dex_row_id})
                 </div>               
                <div className="modal-body">
                    <div>{selected_dex_data.title ? <h5>{selected_dex_data.title}</h5> : null}</div>
-                   {selected_dex_data.sub_title ? <h5>{selected_dex_data.sub_title}</h5> : null}
-                   <br></br>
-                   <p>{selected_dex_data.description ? <p className="invalidcredential">- {selected_dex_data.description}</p>  : null}</p>
+                   {selected_dex_data.sub_title ? <h5 className='mt-2'>{selected_dex_data.sub_title}</h5> : null}
+                   <p className='mt-2'>{selected_dex_data.description ? <p className="invalidcredential">- {selected_dex_data.description}</p>  : null}</p>
                    {/* <hr className='mt-3'></hr> */}
                    
                </div>

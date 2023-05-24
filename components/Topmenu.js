@@ -320,9 +320,9 @@ export default function Topmenu() {
                                 <Link href={app_coinpedia_url + "company/profile"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/02/23104252/menu_company.svg" title="Company Profile" alt="Company Profile" /> Company Profile</Link>
                                 <a href={market_coinpedia_url + "token"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130553/menu-token.svg" title="Manage Tokens" alt="Manage Tokens" /> Manage Tokens</a>
                                 {/* <a href={market_coinpedia_url+"create-launchpad/maker"}  className="dropdown-item"><img src="/assets/img/menu-airdrop.png" /> Manage Launchpad/Airdrop</a> */}
-                                <a href={market_coinpedia_url + "token/create-new"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130550/menu-list-token.svg" title="List a Token" alt="List a Token" /> List a Token</a>
-                                <Link href={app_coinpedia_url + "profile/my-nft-collection"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130548/menu-nft.svg" title="My NFT Collection" alt="My NFT Collection" /> My NFT Collection</Link>
-
+                                <a href={market_coinpedia_url + "token/update"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130550/menu-list-token.svg" title="List a Token" alt="List a Token" /> List a Token</a>
+                               
+                                {/* <Link href={app_coinpedia_url + "profile/my-nft-collection"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130548/menu-nft.svg" title="My NFT Collection" alt="My NFT Collection" /> My NFT Collection</Link> */}
 
                                 {
                                   parseInt(JsCookie.get('user_email_status')) === 0 && JsCookie.get('user_wallet_address') == "" ?
@@ -495,7 +495,7 @@ export default function Topmenu() {
                           <li className="menu_company_list">Company</li>
                           <li><a href={app_coinpedia_url + "company/profile"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17134907/mobile-menu-company-profile.svg" /> Company Profile</a></li>
                           <li><a href={market_coinpedia_url + "token"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17134907/mobile-menu-manage-tokens.svg" /> Manage Tokens</a></li>
-                          <li><a href={market_coinpedia_url + "token/create-new"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17134908/mobile-menu-list-token.svg" /> List a Token</a></li>
+                          <li><a href={market_coinpedia_url + "token/update"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17134908/mobile-menu-list-token.svg" /> List a Token</a></li>
                           <li><a href={app_coinpedia_url + "profile/my-nft-collection"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17134908/mobile-menu-nft-collections.svg" /> My NFT Collection</a></li>
                           <li className="menu_company_list">Other</li>
                           <li><a href={events_coinpedia_url + "my-events"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/12/30183750/menu-company-1.svg" className="manageevent_icon" /> Manage Events</a></li>

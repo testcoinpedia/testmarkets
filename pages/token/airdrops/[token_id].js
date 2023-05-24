@@ -250,7 +250,7 @@ export default function Create_token({config,token_id})
     }  
     const airdropList = () => 
     {
-      Axios.get(API_BASE_URL + "markets/users/manage_airdrops/list/", config).then(
+      Axios.get(API_BASE_URL + "markets/users/manage_airdrops/list/"+token_id, config).then(
         (response) => 
         {
           console.log(response);
@@ -287,7 +287,7 @@ export default function Create_token({config,token_id})
               <div className="text-center">
               <div className=""><img src="/assets/img/cancel.png" className="prop_modal_img"/></div>
                   <h4 className="">Delete Airdrop!</h4>
-                  <p>Do you really want to delete this connection?</p>
+                  <p>Do you really want to delete this Airdrop detail?</p>
               </div>  
               </div>
               <div className="modal-footer">
@@ -565,7 +565,7 @@ export default function Create_token({config,token_id})
                         <td colSpan="6"  className="text-lg-center text-md-left">No Records Found</td>
                     </tr>
                     :
-                    "dfg"
+                    ""
                 }
               
                 </tbody> 

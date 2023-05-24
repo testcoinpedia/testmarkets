@@ -184,7 +184,7 @@ return (
                        <div className='row'>
                     <div className='col-md-6 col-lg-8 col-12'>
                           <div className="input-group search_filter">
-                            <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Category By Name" />
+                            <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Category" />
                               <div className="input-group-prepend ">
                                   <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                                 </div>
@@ -195,7 +195,7 @@ return (
                           <div className="col-md-4 col-lg-4 col-4 mobile_hide_view">
                             <ul className="filter_rows">
                                 <li>
-                                  <select className="show-num" onChange={(e)=>set_per_page_count(e.target.value)} >
+                                  <select className="form-select" onChange={(e)=>set_per_page_count(e.target.value)} >
                                   <option value="" disabled>Show Rows</option>
                                   <option value={100}>100</option>
                                   <option value={50}>50</option>

@@ -374,7 +374,7 @@ return (
                           <div className="col-md-3 col-6 ">
                             <ul className="filter_rows">
                                 <li>{count>100?
-                                  <select className="show-num" onChange={(e)=>set_per_page_count(e.target.value)} >
+                                  <select className="form-select" onChange={(e)=>set_per_page_count(e.target.value)} >
                                   <option value="" disabled>Show Rows</option>
                                   <option value={100}>100</option>
                                   <option value={50}>50</option>

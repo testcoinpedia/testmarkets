@@ -148,7 +148,7 @@ const getTokensCurrentList=(items, offset)=>
                   <div className="col-md-6">
                   <li>
                     <div className="quick_block_links main_page_coin_filter create_token_btn"> 
-                      <Link href="/token/create-new"><img src="/assets/img/create-token.svg" />Create Token</Link>
+                      <Link href="/token/update"><img src="/assets/img/create-token.svg" />Create Token</Link>
                     </div>
                   </li>
                   </div>

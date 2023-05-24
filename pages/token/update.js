@@ -1048,10 +1048,10 @@ exchange_link
                         <div className="col-lg-10 col-md-12">
                             <div className="form-custom">
                           <div className="row">
-                            <div className="col-md-5">
+                            <div className="col-md-4">
                             <label htmlFor="email">List Type<span className="label_star">*</span></label>
                             </div>
-                            <div className="col-md-7 ">
+                            <div className="col-md-8">
                               <div className="input-appearance">
                                 <label><input type="radio" value={with_contract_address} checked={with_contract_address === true} onChange={()=>set_with_contract_address(true)} style={{appearance:'auto'}} />&nbsp;&nbsp;With Contract Address</label>
                                 <br></br><label ><input type="radio" value={with_contract_address} checked={with_contract_address === false} onChange={()=>set_with_contract_address(false)} style={{appearance:'auto'}} />&nbsp;&nbsp;Without Contract Address</label>
@@ -1109,7 +1109,7 @@ exchange_link
                                   {
                                     contract_address.length !== 2 ?
                                     <>
-                                      <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.png" /> Add More Contract addresses</span></button>
+                                      <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.svg" /> Add More Contract addresses</span></button>
                                     </>
                                     :
                                     null
@@ -1315,26 +1315,26 @@ exchange_link
                             <div className="col-md-5">
                               <label htmlFor="email">Logo</label>
                             </div>
-                            <div className="col-md-5">
+                            <div className="col-md-7">
                               <form id="imageUploadForm" >
-                                <div className="choose_file_input">
-                                  <div className="form-group">
-                                    <label> 
-                                        <input className="choose_logo" type="file" accept="image/*" onChange={onSelectFile} />
+                                <div className="choose_file_input form-custom">
+                                  <div className="form-group input_block_outline">
+                                    <label className='m-0'> 
+                                        <input className="choose_logo form-control" type="file" accept="image/*" onChange={onSelectFile} />
                                         <span >Choose Logo </span> 
                                       </label> 
                                   </div>
                                   <div className="error">{err_token_image}</div>
                                 </div>
                               </form>
-                            </div>
-                            <div className="col-md-3">
+                            {/* </div>
+                            <div className="col-md-3"> */}
                               {
                                 token_image !== '' ?
-                                <img src={token_image} alt="token image" id="tokenlogo" width="50" height="50" className="mt-2"/> 
+                                <img src={token_image} alt="token image" id="tokenlogo" width="50" height="50" className="mb-4 mt-0"/> 
                                 :
                                 display_image ?
-                                <img  src={image_base_url+display_image} alt="token image" width="50" height="50" className="mt-2" />
+                                <img  src={image_base_url+display_image} alt="token image" width="50" height="50" className="mb-4 mt-0" />
                                 :
                               
                                 null
@@ -1395,7 +1395,7 @@ exchange_link
                                     <div className="form-group input_block_outline">
                                       <input autoComplete="off" type="text" className="form-control" placeholder="Exchange URL" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
                                     </div>
-                                    <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.png" /> Add More Exchange</span></button>
+                                    <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.svg" /> Add More Exchange</span></button>
                                   </div>
                                 </div>
                             
@@ -1443,7 +1443,7 @@ exchange_link
                                           <input autoComplete="off" className="form-control" type="text" placeholder="Explorer URL" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
                                         </div>
                                       
-                                        <button className="addmore_ico create-token-res" onClick={addMoreExplorers}><span><img src="/assets/img/add-more.png" /> Add More Explorer</span></button>
+                                        <button className="addmore_ico create-token-res" onClick={addMoreExplorers}><span><img src="/assets/img/add-more.svg" /> Add More Explorer</span></button>
                                       </div>
                                     </div>
                                 </div>
@@ -1490,7 +1490,7 @@ exchange_link
                                       <div className="form-group input_block_outline">
                                         <input autoComplete="off" type="text" className="form-control" placeholder="Community URL" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
                                       </div>
-                                      <button className="addmore_ico create-token-res" onClick={addMoreCommunity}><span><img src="/assets/img/add-more.png" /> Add More Community</span></button>
+                                      <button className="addmore_ico create-token-res" onClick={addMoreCommunity}><span><img src="/assets/img/add-more.svg" /> Add More Community</span></button>
                                     </div>
                                   </div>
                               </div>

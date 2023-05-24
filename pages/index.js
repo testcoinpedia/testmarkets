@@ -316,11 +316,11 @@ return (
                                   </div>
                                   :
                                   <div className="markets_selected_category">
-                                    {category_name}
+                                    <p>{category_name}</p>
 
-                                    <span className="input-group-addon close_category_icon" onClick={()=>closeCategory()}>
+                                    <div className="input-group-addon close_category_icon" onClick={()=>closeCategory()}>
                                       <img src="/assets/img/close_mark.png" />
-                                    </span>
+                                    </div>
                                   </div>  
                                 }
                               </div>
@@ -431,7 +431,7 @@ return (
                                      </td>
                                     <td className="mobile_hide_view mobile_td_fixed wishlist"> {sl_no+i+1}
                                     </td>
-                                     <td className="mobile_fixed rank_class">
+                                     <td className="mobile_fixed">
                                        <Link href={"/"+e.token_id}>
                                          
                                           <div className="media">
