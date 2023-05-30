@@ -63,6 +63,7 @@ export default function Create_token({config,token_id})
 
     const [airdrop_row_id, set_airdrop_row_id] = useState(0)
 
+    console.log("token_id",token_id)
     // API_BASE_URL+"markets/users/manage_airdrops/list
 
     useEffect(() => {
@@ -181,7 +182,7 @@ export default function Create_token({config,token_id})
       // }
       set_loader(true)
       const reqObj = {
-        token_id:token_id,
+        token_row_id:token_id,
         airdrop_row_id:airdrop_row_id,
         title: title,
         sub_title: sub_title, 
@@ -340,7 +341,7 @@ export default function Create_token({config,token_id})
   return(
     <>
       <Head>
-        <title>Create New Token</title>
+        <title>Manage Airdrops</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />

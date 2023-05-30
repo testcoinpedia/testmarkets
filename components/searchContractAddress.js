@@ -412,7 +412,7 @@ return (
                                 {
                                     searched_categories_list.slice(0,6).map((e,i) =>
                                     
-                                       <li>
+                                       <li onClick={()=>Category(e.category_id)}>
                                             <Link href={"/category/"+e.category_id}>
                                                 <div className="media">
                                                     <div className="media-body">

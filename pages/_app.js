@@ -4,6 +4,7 @@ import App from 'next/app';
 import Topmenu from '../components/Topmenu'
 import Footer from '../components/Footer'
 import {favicon} from '../components/constants'
+// import rootReducer from '../components/redux/store'
 
 
 class MyApp extends App{ 
@@ -63,12 +64,13 @@ class MyApp extends App{
           <script src="/assets/js/bootstrap.min.js" crossOrigin="anonymous"></script>
           <script src="/static/datafeeds/udf/dist/bundle.js" />
         </Head>
+        {/* <Provider store={rootReducer}> */}
         <Topmenu />
           <Component {...pageProps} />
         
           
           <Footer /> 
-          
+          {/* </Provider> */}
       </> 
       )
   }

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Web3 from 'web3'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 import Axios from 'axios'
 import cookie from 'cookie'
 import JsCookie from "js-cookie"
@@ -20,9 +20,10 @@ import Popupmodal from './popupmodal'
 
 export default function Topmenu() {
   const router = useRouter()
+  const pathname=router.pathname
 // +((router.pathname).substring(1))
-  const [current_page_url] = useState(market_coinpedia_url)
-  console.log("current_page_url", current_page_url)
+  const [current_page_url] = useState(market_coinpedia_url+"/portfolio")
+  console.log("current_page_url", pathname)
   const [login_dropdown, set_login_dropdown] = useState(0)
   const [live_prices_list, set_live_prices_list] = useState({});
   const [light_dark_mode, set_light_dark_mode] = useState("")
@@ -281,23 +282,25 @@ export default function Topmenu() {
                         </div>
 
                         <div className="login_portfolio">
+                          {!pathname.includes("portfolio")?
                          <div className="desktop_view_crypto">
                             <div className="track_your_portfolio_desktop">
                               {
                                 display_tokens_balance > 0 ?
-                                  <a href={app_coinpedia_url}>
+                                  <a href={market_coinpedia_url + "portfolio"}>
                                     <img className="growth_icon" src="https://image.coinpedia.org/wp-content/uploads/2023/03/20130900/line-chart.png" /> 
                                     &nbsp;Portfolio: {USDFormatValue(display_tokens_balance)}
                                     <img className="portfolio_right" src="https://image.coinpedia.org/wp-content/uploads/2023/03/20130902/right-arrow-1.png" />
                                   </a>
                                 :
-                                <a href={app_coinpedia_url}>
+                                <a href={app_coinpedia_url + "login"}>
                                   <img className="growth_icon" src="https://image.coinpedia.org/wp-content/uploads/2023/03/20130900/line-chart.png" /> Track your Portfolio 
                                   <img className="portfolio_right" src="https://image.coinpedia.org/wp-content/uploads/2023/03/20130902/right-arrow-1.png" />
                                 </a>
                               }
                             </div>
                           </div>
+                          :null}
                           
                        
                         {/* data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" */}
@@ -379,12 +382,13 @@ export default function Topmenu() {
                   </div>
                   {/* ........... */}
                 </div>
+                {!pathname.includes("portfolio")?
                 <div className="mobile_view_crypto">
                 <div className="track_your_portfolio">
                      {
                         display_tokens_balance > 0 ?
                         <h4>
-                          <a href={app_coinpedia_url}>
+                          <a href={market_coinpedia_url + "portfolio"}>
                            
                           <img className="growth_icon" src="https://image.coinpedia.org/wp-content/uploads/2023/03/10152629/track-portfolio.svg" /> 
                           Portfolio: $  {USDFormatValue(display_tokens_balance)}
@@ -394,12 +398,13 @@ export default function Topmenu() {
                         </h4>
                         :
                         <h4>
-                          <a href={app_coinpedia_url}>
+                          <a href={app_coinpedia_url + "login"}>
                           <img className="growth_icon" src="https://image.coinpedia.org/wp-content/uploads/2023/03/10152629/track-portfolio.svg" /> Track your Portfolio 
                           </a>
                         </h4>
                       }
                    </div>
+                  
                   
                 {/* <Slider {...settings} >
 
@@ -420,6 +425,7 @@ export default function Topmenu() {
                         
                                           
                 </div>
+                 :null}
               </div>
             </div>
           </div>

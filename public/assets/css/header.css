@@ -98,8 +98,8 @@
 }
 
 .select_launchpad_type {
-  background: #cbd8e2 !important;
-  height: 30px !important;
+  background: #fff !important;
+  /* height: 30px !important; */
   /* margin-top: 4px; */
   margin-left: 5px;
   padding: 0 5px;
