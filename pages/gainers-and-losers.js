@@ -18,6 +18,7 @@ export default function GainersLosers({user_token, config, userAgent})
     const [image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
     const [loader_status, set_loader_status]=useState(true)
     const [all_tab_status, set_all_tab_status] = useState(0)
+    const [per_page_count, set_per_page_count] = useState(100)
     const [top_gainers, set_top_gainers] = useState([])
     const [top_loosers, set_top_loosers] = useState([])
     const [date_type_status, set_date_type_status] = useState(false);
@@ -38,7 +39,8 @@ export default function GainersLosers({user_token, config, userAgent})
 
     const [coin_type_list] = useState([
         { value: 100, label: "Top 100" },
-        { value: 500, label: "Top 500" }
+        { value: 500, label: "Top 500" },
+        { value: 9500, label: "ALL" }
       ])
   const date_type_ref = useRef()
   const coin_ref = useRef()
@@ -83,7 +85,7 @@ export default function GainersLosers({user_token, config, userAgent})
         }
       }
         set_loader_status(false)
-        Axios.get(API_BASE_URL+"markets/cryptocurrency/gainers/40", req_config).then(response => 
+        Axios.get(API_BASE_URL+"markets/cryptocurrency/gainers/"+per_page_count, req_config).then(response => 
         {
             set_loader_status(true)
             console.log("Gainers",response.data.message)   
@@ -109,7 +111,7 @@ export default function GainersLosers({user_token, config, userAgent})
         }
 
         set_loader_status(false)
-        Axios.get(API_BASE_URL+"markets/cryptocurrency/losers/40", req_config).then(response => 
+        Axios.get(API_BASE_URL+"markets/cryptocurrency/losers/"+per_page_count, req_config).then(response => 
         {
             set_loader_status(true)
             console.log("losers",response.data.message)   
@@ -505,18 +507,34 @@ export default function GainersLosers({user_token, config, userAgent})
                                 <table className="table table-borderless">
                                     <thead>
                                         <tr>
-
-                                        <th className="mobile_fixed_first" style={{minWidth: '35px'}}></th>
-                                        <th className="mobile_hide_view "style={{minWidth: '35px'}}>Rank</th>
-                                        <th className="mobile_fixed table-cell-shadow-right">Name</th>
-                                        <th className="">Price</th>
-                                        <th className="" style={{minWidth: 'unset'}}>{percent_change==1?" 1h":percent_change==2?"24h":percent_change==3?"7d":"24h"}</th>
-                                        {/* <th className=" " style={{minWidth: 'unset'}}>24h</th> */}
-                                        {/* <th className=" " style={{minWidth: 'unset'}}>7d</th> */}
-                                        <th className=" table_circulating_supply">Market Cap</th> 
-                                        <th className=" ">Volume(24H)</th>  
-                                        <th className=" table_circulating_supply">Circulating Supply</th>  
-                                        <th className="last_data">Last 7 Days</th>
+                                          <th className="mobile_fixed_first" style={{minWidth: '35px'}}></th>
+                                          <th className="mobile_hide_view "style={{minWidth: '35px'}}>Rank</th>
+                                          <th className="mobile_fixed table-cell-shadow-right">Name</th>
+                                          <th className="">Price</th>
+                                          <th style={{minWidth: 'unset'}}>
+                                            {
+                                              percent_change == 1 ? 
+                                              <>
+                                              1h
+                                              </>
+                                              : 
+                                              percent_change == 3 ? 
+                                              <>
+                                              7d
+                                              </>
+                                             
+                                              :
+                                              <>
+                                              24h
+                                              </>
+                                            }
+                                          </th>
+                                          {/* <th className=" " style={{minWidth: 'unset'}}>24h</th> */}
+                                          {/* <th className=" " style={{minWidth: 'unset'}}>7d</th> */}
+                                          <th className=" table_circulating_supply">Market Cap</th> 
+                                          <th className=" ">Volume(24H)</th>  
+                                          <th className=" table_circulating_supply">Circulating Supply</th>  
+                                          <th className="last_data">Last 7 Days</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -573,17 +591,49 @@ export default function GainersLosers({user_token, config, userAgent})
                                                     </Link>
                                                 </td> */}
                                                 <td className="mobile_hide_table_col">
-                                                    <Link href={"/"+e.token_id}>
-                                                    {
-                                                        e.percent_change_7d?e.percent_change_7d>0?
-                                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
-                                                        :
-                                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
-                                                        :
-                                                        "--"
-                                                        }
+                                                <Link href={"/"+e.token_id}>
+                                                {
+                                                  percent_change == 1 ? 
+                                                  <>
+                                                  {
+                                                    e.percent_change_1h?e.percent_change_1h>0?
+                                                    <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_1h.toFixed(2)+"%"}</span></h6>
+                                                    :
+                                                    <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_1h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                    :
+                                                    "--"
+                                                  }
+                                                  </>
+                                                  :
+                                                  percent_change == 3 ?
+                                                  <>
+                                                  {
+                                                    e.percent_change_7d?e.percent_change_7d>0?
+                                                    <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
+                                                    :
+                                                    <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                    :
+                                                    "--"
+                                                  }
+                                                  </>
+                                                  :
+                                                  <>
+                                                  {
+                                                    e.percent_change_24h?e.percent_change_24h>0?
+                                                    <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
+                                                    :
+                                                    <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                    :
+                                                    "--"
+                                                  }
+                                                  </>
+                                                  
+                                                }
+                                                </Link>
+                                                    
+                                                      
                                                         {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>1.05%</span></h6> */}
-                                                    </Link>
+                                                    
                                                     </td>
                                                 <td className="mobile_hide_table_col">
                                                     <Link href={"/"+e.token_id}>
@@ -603,7 +653,19 @@ export default function GainersLosers({user_token, config, userAgent})
                                                 </td> 
                                                 
                                                 <td className="mobile_hide_table_col">
-                                                <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
+                                                  {
+                                                    percent_change == 3 ?
+                                                    <>
+                                                    <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
+                                                    </>
+                                                    :
+                                                    percent_change == 1 ? 
+                                                    "-"
+                                                    :
+                                                    <>
+                                                    <img className={e.percent_change_24h>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/1d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
+                                                    </>
+                                                  }
                                                 </td>  
                                                
                                             </tr> 
@@ -653,31 +715,51 @@ export default function GainersLosers({user_token, config, userAgent})
                                                             {e.price_updated_on ? moment(e.price_updated_on).fromNow():null}
                                                         </Link>
                                                     </td>
-                                        
-                                                    <td className="mobile_hide_table_col"> 
-                                                        <Link href={"/"+e.token_id}>
-                                                            <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
-                                                        </Link>
-                                                    </td>
                                                     <td className="mobile_hide_table_col">
                                                     <Link href={"/"+e.token_id}>
-                                                    {
-                                                        e.percent_change_7d?e.percent_change_7d>0?
-                                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
-                                                        :
-                                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
-                                                        :
-                                                        "--"
+                                                      {
+                                                        percent_change == 1 ? 
+                                                        <>
+                                                        {
+                                                          e.percent_change_1h?e.percent_change_1h>0?
+                                                          <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_1h.toFixed(2)+"%"}</span></h6>
+                                                          :
+                                                          <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_1h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                          :
+                                                          "--"
                                                         }
-                                                        {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>1.05%</span></h6> */}
-                                                    </Link>
+                                                        </>
+                                                        :
+                                                        percent_change == 3 ?
+                                                        <>
+                                                        {
+                                                          e.percent_change_7d?e.percent_change_7d>0?
+                                                          <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
+                                                          :
+                                                          <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                          :
+                                                          "--"
+                                                        }
+                                                        </>
+                                                        :
+                                                        <>
+                                                        {
+                                                          e.percent_change_24h?e.percent_change_24h>0?
+                                                          <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
+                                                          :
+                                                          <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                          :
+                                                          "--"
+                                                        }
+                                                        </>
+                                                      }
+                                                      </Link>
                                                     </td>
                                                     <td className="mobile_hide_table_col">
                                                         <Link href={"/"+e.token_id}>
                                                         {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"}
                                                         </Link>
-                                                    </td>  
-
+                                                    </td>
                                                     <td className="mobile_hide_table_col">
                                                         <Link href={"/"+e.token_id}>
                                                         {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"}
@@ -689,9 +771,20 @@ export default function GainersLosers({user_token, config, userAgent})
                                                         </Link>
                                                     </td>  
                                                     <td className="mobile_hide_table_col">
+                                                      {
+                                                        percent_change == 3 ?
+                                                        <>
                                                         <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
-                                                        </td> 
-                                                    
+                                                        </>
+                                                        :
+                                                        percent_change == 1 ? 
+                                                        "-"
+                                                        :
+                                                        <>
+                                                        <img className={e.percent_change_24h>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/1d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
+                                                        </>
+                                                      }
+                                                    </td>
                                                 </tr> 
                                             ) 
                                             :

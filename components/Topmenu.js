@@ -315,7 +315,7 @@ export default function Topmenu() {
                               </button>
                               <div className="dropdown-menu dropdown_wallet_header side-menu-list" aria-labelledby="dropdownMenuButton">
                                 <h6>User</h6>
-                                <Link href={app_coinpedia_url} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/21160228/menu-wallet.svg" title="Portfolio" alt="Portfolio" />Portfolio</Link>
+                                <Link href={market_coinpedia_url + "portfolio"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/21160228/menu-wallet.svg" title="Portfolio" alt="Portfolio" />Portfolio</Link>
                                 <Link href={app_coinpedia_url + "profile"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130600/menu-user-profile.svg" title=" Manage User Profile" alt=" Manage User Profile" /> Manage User Profile</Link>
                                 <Link href={app_coinpedia_url + "referrals"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130558/menu-referrals.svg" title="Referral List" alt="Referral List" /> Referral List</Link>
 

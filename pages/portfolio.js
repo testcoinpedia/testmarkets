@@ -1953,6 +1953,7 @@ const getTokenDetail=  (e)=>
                                   }
                                   </ul> 
                                   :
+                                  
                                   <span className="px-2 mobile_select_display wallet_address_display">0 Networks</span>
                                 } 
 
@@ -1971,6 +1972,7 @@ const getTokenDetail=  (e)=>
                                     </>
                                     :
                                     <>
+                                    
                                     <span className='px-1'>{active_networks.length} Networks</span>
                                     </>
                                   } 

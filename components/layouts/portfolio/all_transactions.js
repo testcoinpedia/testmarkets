@@ -515,7 +515,7 @@ export default function TransactionFun({networks, addresses})
                     </div>
                     </div>
         <div className="remove_wallet_modal token-details-popup">
-            <div className={"modal "+(transaction_details_modal_status ? " modal-show":"")}>
+            <div className={"modal "+(transaction_details_modal_status ? " modal-show":"")} style={transaction_details_modal_status?{display:'block'}:{display:"none"}}>
                 <div className="modal-dialog " >
                     <div className="modal-content">
                         <div className="modal-body">

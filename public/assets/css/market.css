@@ -9563,7 +9563,7 @@ tbody td {
 
 .modal-content {
   border-radius: 20px;
-  margin-top: 25vh;
+  margin-top: 0vh;
 }
 
 .modal-open .modal {
@@ -13906,7 +13906,7 @@ padding: 10px;
 }
 
 .modal-body{
-  padding: 10px;
+  padding: 20px;
 }
 
 .popup_modal_for_all .modal-body p {
@@ -16179,7 +16179,6 @@ padding: 1px 8px;
   animation-timing-function: ease-out;
 }
 
-
 .modal-content {
   animation-name: zoom-in;
   animation-duration: 0.3s;
@@ -16207,7 +16206,6 @@ padding: 1px 8px;
   transform-origin: center;
   animation-timing-function: ease-out;
 }
-
 
 .button_blue_transition {
   background-position: center !important;
@@ -16241,10 +16239,6 @@ padding: 1px 8px;
   background-size: 100% !important;
   transition: background 0s !important;
   transform: scale(0.9) !important;
-}
-
-.button_transition_grey{
-
 }
 
 .button_transition_grey {
@@ -16726,8 +16720,8 @@ padding: 1px 8px;
 
 .test_dropdown .dropdown_button {
   background: #fff;
-  padding: 0 10px;
-  margin-top: 15px;
+  padding: 10px;
+  margin-top: 8px;
 }
 
 .test_dropdown li img {
@@ -16762,6 +16756,171 @@ padding: 1px 8px;
   border-radius: 50% !important;
 }
 
+.token-details-popup .media {
+  margin-bottom: 15px;
+}
+
+.txn-netwok {
+  width: 28px !important;
+  margin-top: 5px;
+  margin-right: 5px !important;
+  border-radius: 50% !important;
+}
+
+.token-details-popup .token-value-details {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.token-value-details .txn-netwok {
+  margin-top: 2px !important;
+  margin-right: 0 !important;
+}
+
+.token-details-popup .modal-dialog {
+  margin-top: 10vh;
+}
+
+.token-details-popup .token-details-table {
+  background-color: #f8f9fc;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.token-details-popup .token-type-name {
+  font-weight: 300 !important;
+  font-size: 13px;
+  color: #000;
+  padding-bottom: 2px;
+}
+
+.token-details-popup tr:last-child .token-type-name {
+  padding-bottom: 0;
+}
+
+.token-details-popup .close_wallet {
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+
+.token-details-popup .media h4 {
+  font-size: 14px;
+  margin-bottom: 0px;
+  color: #000;
+  font-weight: 500 !important;
+  margin-top: 2px;
+}
+
+.token-details-popup .media img {
+  width: 38px;
+  margin-right: 10px;
+}
+
+.token-details-popup .media p {
+  color: #777;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.token-details-popup .modal-body {
+  padding-bottom: 0;
+}
+
+.token-details-table tbody td {
+  padding: 3px 13px;
+  word-break: break-word;
+}
+
+.token-value-details {
+  text-align: right;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+.token-details-balance {
+  background: #281965;
+  padding: 10px 0;
+  border-radius: 15px;
+  color: white;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.token-details-balance p {
+  font-weight: 300;
+}
+
+.tooltip-inner {
+  font-size: 12px !important;
+}
+
+.token-details-balance h5 {
+  margin: 5px 0;
+}
+
+.transaction_detail_modal h4 {
+  font-size: 16px;
+  font-weight: 500 !important;
+  margin: 0 0 10px;
+}
+
+.add_another_account {
+  text-align: center;
+  padding-top: 10px !important;
+  color: #0029ff !important;
+}
+
+.add_wallet_modal .modal-header {
+  border-bottom: unset;
+  text-align: center;
+}
+
+.add_wallet_modal .modal-content {
+  background: #ffffff;
+  padding: 25px;
+  font-weight: 500 !important;
+}
+
+.add_wallet_modal input {
+  width: 100%;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #ebebeb;
+  border-radius: 12px;
+}
+
+.add_wallet_modal input::placeholder {
+  color: #676e72;
+  font-weight: 200;
+  font-size: 12px;
+}
+
+.add_wallet_modal .modal-body {
+  padding: 0px;
+  font-weight: 400 !important;
+}
+
+.add_wallet_modal .modal-content h4 {
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+.addwallet_popup label {
+  font-weight: 400 !important;
+  font-size: 14px;
+  text-align: left;
+  float: left;
+}
+
+.modal_input_block {
+  margin-top: 10px;
+}
+
+.remove_wallet_modal .modal_small h4 {
+
+}
 /* End Portfolio Page */
 
 @media (min-width: 1024px) and (max-width: 1400px){
@@ -16908,7 +17067,6 @@ padding: 1px 8px;
     background: #fff;
   }
 
-
   .completed_events table thead th{
     min-width: 140px;
   }
@@ -16919,8 +17077,6 @@ padding: 1px 8px;
     z-index: 100;
     /* background: #e5e4ec; */
   }
-
- 
 
   .market_insights {
     /* text-align: center; */
@@ -16937,10 +17093,6 @@ padding: 1px 8px;
   .price-tracking-tbl table tbody tr td .values_growth .red{
     font-size: 12px;
   }
-
-
-
-  
   
   .token_content h2 {
     font-size: 16px;
@@ -16950,9 +17102,6 @@ padding: 1px 8px;
     font-size: 14px;
     line-height: 1.5;
   }
-
-  
-  
 
   .market_vote {
     padding: 2px 9px;
