@@ -6,8 +6,8 @@ import { app_coinpedia_url, market_coinpedia_url } from '../components/constants
 
 export default function Details({active_tab, user_token}) 
 {   
-  console.log("active_tab", active_tab)
   const [tab_status_connections, set_tab_status_connections] = useState(active_tab ?active_tab:"") 
+  console.log("active_tab1", tab_status_connections)
   
 return (
     <div>
@@ -23,7 +23,7 @@ return (
                     </li>
                     :
                     <li className="tabs_watchlist">
-                      <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url} onClick={()=> Logout()}><img src="/assets/img/watchlist_filled.svg" alt="Watchlist" width={17} height={17} /> Watchlist</Link>
+                      <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url} ><img src="/assets/img/watchlist_filled.svg" alt="Watchlist" width={17} height={17} /> Watchlist</Link>
                     </li>
                   }
 

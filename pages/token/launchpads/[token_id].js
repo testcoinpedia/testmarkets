@@ -53,6 +53,7 @@ var object =  {
   const [alert_message, setAlertMessage] = useState('')
   const [element,set_element]=useState([])
   const [payment_types,set_payment_types]=useState([])
+  const [accept_payment_type_ids, set_accept_payment_type_ids]= useState([])
   const [payment_types_list,set_payment_types_list]=useState([])
   const [launch_pad, setLaunchPadList] = useState([])
   const [err_launch_pad, set_err_launch_pad] = useState([])
@@ -70,6 +71,7 @@ var object =  {
   const [listing_price, set_listing_price]= useState("")
   const [launchpad_list, set_launchpad_list]= useState("")
   const [percentage,set_percentage]=useState(0)
+  const [elements, set_elements] = useState([]);
 
   const [user_token, set_user_token]= useState(JsCookie.get('user_token'))
   const [soft_cap, set_soft_cap]= useState("")
@@ -79,7 +81,6 @@ var object =  {
   const [access_type, set_access_type]= useState("")
   const [description, set_description]= useState("")
   const [accept_payment_type, set_accept_payment_type]= useState([])
-  const [accept_payment_type_ids, set_accept_payment_type_ids]= useState([])
   const [accept_payment_names, set_accept_payment_names]= useState([])
   const [confirm_remove_modal, set_confirm_remove_modal]=useState(false)
   const [today_date, set_today_date]= useState("")
@@ -123,7 +124,7 @@ var object =  {
   { 
     acceptPaymentType()
     getTokenDetail()
-    lanchpadList
+    lanchpadList()
   },[token_id])
 
   var yesterday = moment().subtract( 1, 'day' )
@@ -189,7 +190,7 @@ var object =  {
       // console.log(res.data)
         if(res.data.status)
         {
-          getTokenDetails()
+          gatLaunchpadDetails()
           setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message})
          
         }
@@ -235,7 +236,7 @@ var object =  {
     })
   }
   
-  const getTokenDetails = ()=>
+  const gatLaunchpadDetails = ()=>
   {
     //console.log(token_id)
     Axios.get(API_BASE_URL+"markets/users/manage_launchpads/individual_details/"+token_id, config).then(res=>
@@ -263,7 +264,7 @@ var object =  {
     Axios.get(API_BASE_URL + "markets/users/manage_launchpads/list/"+token_id, config).then(
       (response) => 
       {
-        console.log(response);
+        console.log("dfgf",response);
         if(response.data.status) 
         {
           set_api_loader(false)
@@ -272,73 +273,83 @@ var object =  {
       }
     );
   };
-  const getLaunchpad = (e) => {
-    
-    set_launchpad_type()
-    setStartDate()
-    setEndDate()
-    set_tokens_for_sale()
-    set_launchpad_price()
-    set_listing_price()
-    set_soft_cap()
-    set_title()
-    set_where_to_buy_link()
-    set_percentage_of_total_supply()
-    set_access_type()
-    set_description()
-    set_accept_payment_type()
-    set_accept_payment_type_ids()
-    set_edit_launchpad_row_id()
-        
-  
+
+  const getLaunchpad = (row_id) => {
+    Axios.get(API_BASE_URL + "markets/users/manage_launchpads/individual_details/"+row_id, config).then(
+      (response) => 
+      {
+    if(response.data.status) 
+    {
+      console.log("indi",response.data.message)
+        set_launchpad_type(response.data.message.launchpad_type)
+        setStartDate(moment(response.data.message.start_date).format("YYYY-MM-DD"))
+        setEndDate(moment(response.data.message.end_date).format("YYYY-MM-DD"))
+        set_tokens_for_sale(response.data.message.tokens_for_sale)
+        set_launchpad_price(response.data.message.launchpad_price)
+        set_listing_price(response.data.message.listing_price)
+        set_soft_cap(response.data.message.soft_cap)
+        set_title(response.data.message.title)
+        set_where_to_buy_link(response.data.message.where_to_buy_link)
+        set_percentage_of_total_supply(response.data.message.percentage_of_total_supply)
+        set_access_type(response.data.message.access_type)
+        set_description(response.data.message.description)
+        set_payment_types(response.data.message.payment_types_list)
+        set_accept_payment_type_ids(response.data.message.payment_types)
+        set_edit_launchpad_row_id(response.data.message._id)
+
+        }
+      })
   };
-  // const btndelete = (row_id) => {
-  //   let ele= <div className="remove_modal">
-  //   <div className="modal" id="removeConnection">
-  //       <div className="modal-dialog modal-sm">
-  //       <div className="modal-content">
-  //           <div className="modal-body">
-  //           <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" /></button>
-  //           <div className="text-center">
-  //           <div className=""><img src="/assets/img/cancel.png" className="prop_modal_img"/></div>
-  //               <h4 className="">Delete Airdrop!</h4>
-  //               <p>Do you really want to delete this Airdrop detail?</p>
-  //           </div>  
-  //           </div>
-  //           <div className="modal-footer">
-  //           <button type="button" className="tn btn-danger btn-sm" onClick={() => Delete(row_id)} data-dismiss="modal"> Delete </button>
-  //           </div>
-  //       </div>
-  //       </div>
-  //   </div> 
-  //   </div>
-  //   set_elements(ele);
-  // };
 
-  // const Delete = (row_id) => {
-  //   setModalData({ icon: "", title: "", content: "" });
 
-  //   Axios.get(
-  //     API_BASE_URL+"markets/users/manage_airdrops/delete_airdrop/"+row_id,
-  //     config
-  //   ).then((response) => {
-  //     if (response.data.status === true) {
-  //       setModalData({
-  //         icon: "/assets/img/update-successful.png",
-  //         title: "Thank You!",
-  //         content: "Airdrop Deleted Successfully",})
-  //       airdropList();
-  //       clearform();
-  //       set_airdrop_row_id("");
-  //     } else {
-  //       setModalData({
-  //         icon: "/assets/img/attendee_cross.png",
-  //         title: "Oops!",
-  //         content: response.data.message.alert_message,
-  //       });
-  //     }
-  //   });
-  // };
+  const btndelete = (row_id) => {
+    let ele= <div className="remove_modal">
+    <div className="modal" id="removeConnection">
+        <div className="modal-dialog modal-sm">
+        <div className="modal-content">
+            <div className="modal-body">
+            <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" /></button>
+            <div className="text-center">
+            <div className=""><img src="/assets/img/cancel.png" className="prop_modal_img"/></div>
+                <h4 className="">Delete Launchpad!</h4>
+                <p>Do you really want to delete this Launchpad detail?</p>
+            </div>  
+            </div>
+            <div className="modal-footer">
+            <button type="button" className="tn btn-danger btn-sm" onClick={() => Delete(row_id)} data-dismiss="modal"> Delete </button>
+            </div>
+        </div>
+        </div>
+    </div> 
+    </div>
+    set_elements(ele);
+  };
+
+  const Delete = (row_id) => {
+    setModalData({ icon: "", title: "", content: "" });
+
+    Axios.get(
+      API_BASE_URL+"markets/users/manage_launchpads/delete_launchpad/"+row_id,
+      config
+    ).then((response) => {
+      if (response.data.status === true) {
+        setModalData({
+          icon: "/assets/img/update-successful.png",
+          title: "Thank You!",
+          content: response.data.message.alert_message,})
+          lanchpadList();
+        clearForm();
+        set_edit_launchpad_row_id("");
+      } else {
+        setModalData({
+          icon: "/assets/img/cancel.png",
+          title: "Oops!",
+          content: response.data.message.alert_message,
+        });
+      }
+    });
+  };
+
     const acceptPaymentType = ()=>
     {
         Axios.get(API_BASE_URL+"app/payment_type", config).then(res=>
@@ -349,6 +360,26 @@ var object =  {
             }
         })
     }
+  
+    const clearForm = () => {
+    
+          set_launchpad_type("")
+          setStartDate("")
+          setEndDate("")
+          set_tokens_for_sale("")
+          set_launchpad_price("")
+          set_listing_price("")
+          set_soft_cap("")
+          set_title("")
+          set_where_to_buy_link("")
+          set_percentage_of_total_supply("")
+          set_access_type("")
+          set_description("")
+          set_accept_payment_type("")
+          set_payment_types("")
+          set_edit_launchpad_row_id("")
+       
+    };
   
   const createLaunchpad = () =>
   {   
@@ -474,22 +505,22 @@ var object =  {
       set_err_accept("The Accept payment type field is required.")
     }
    
-    if(description=="")
+    if(!description)
     {
       formIsValid=false
       set_err_airdrop("The About launchpad field is required.")
     }
-    else if(description.length < 11) 
+    else if(description.length<4) 
     {
       formIsValid=false
       set_err_airdrop("The About launchpad field must be atleast 4 character.")
     }
   
     
-    // if(!formIsValid)
-    // {
-    //   return
-    // }
+    if(!formIsValid)
+    {
+      return
+    }
 
     // if(edit_launchpad_row_id)
     // {
@@ -505,7 +536,7 @@ var object =  {
     // setValidError("") 
     set_loader(true)
     const reqObj = {
-      token_id : token_id,
+      token_row_id : token_id,
       launchpad_row_id:edit_launchpad_row_id, 
       title:title,
       launchpad_type: launchpad_type,
@@ -517,7 +548,7 @@ var object =  {
       listing_price:listing_price,
       where_to_buy_link:where_to_buy_link,
       soft_cap:soft_cap,
-      payment_types:payment_types,
+      payment_types:accept_payment_type_ids,
       access_type:access_type,
       description:description
     } 
@@ -528,7 +559,9 @@ var object =  {
         if(res.data.status)
         { 
             setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: res.data.message.alert_message}) 
-            // getTokenDetails()
+            lanchpadList()
+            clearForm()
+            // gatLaunchpadDetails()
             // if(edit_launchpad_row_id=="")
             // {
             //     createLaunchpad()
@@ -588,12 +621,19 @@ var object =  {
     }) 
 
   }
-  const tokenSale=(e)=>{
+  const tokenSale=(e)=>
+  {
     set_tokens_for_sale(e)
+    set_err_tokens_sale("")
     set_percentage_of_total_supply(null)
-    if(e){
-    var value=(supply/e)
-    set_percentage_of_total_supply(value.toFixed(2))
+    if(e>supply)
+    {
+    
+      set_err_tokens_sale("The Tokens for sale field should be less than or equal to total supply.")
+      set_percentage_of_total_supply(null)
+    }
+    else{
+    set_percentage_of_total_supply(((e/supply)*100).toFixed(2))
   }
   }
  
@@ -624,7 +664,7 @@ var object =  {
   return(
     <>
       <Head>
-        <title>Create Update Launchpad</title>
+        <title>Manage Launchpad</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
@@ -766,6 +806,24 @@ var object =  {
                     </div>
 
                     <div className='row'>
+                      <div className="col-md-12">
+                          <div className="form-custom">
+                          <label htmlFor="accept_payment_type">Accept<span className="label_star">*</span></label>
+                            <div className="form-group input_block_outline" >
+                              <Multiselect   style={{border:"0px"}}
+                                selectedValues={payment_types}
+                                options={payment_types_list} // Options to display in the dropdown
+                                onSelect={onSelect} // Function will trigger on select event
+                                onRemove={onRemove} // Function will trigger on remove event
+                                displayValue="payment_name" // Property name to display in the dropdown options
+                                /> 
+                            </div>
+                            <div className="error">{err_accept}</div>
+                          </div>
+                      </div>
+                     
+                    </div>
+                    <div className='row'>
                       <div className="col-md-6">
                           <div className="form-custom">
                             <label htmlFor="email">Start Date<span className="label_star">*</span></label> 
@@ -811,24 +869,7 @@ var object =  {
                       </div>
                     </div>
 
-                    <div className='row'>
-                      <div className="col-md-12">
-                          <div className="form-custom">
-                          <label htmlFor="accept_payment_type">Accept<span className="label_star">*</span></label>
-                            <div className="form-group input_block_outline" >
-                              <Multiselect   style={{border:"0px"}}
-                                selectedValues={payment_types}
-                                options={payment_types_list} // Options to display in the dropdown
-                                onSelect={onSelect} // Function will trigger on select event
-                                onRemove={onRemove} // Function will trigger on remove event
-                                displayValue="payment_name" // Property name to display in the dropdown options
-                                /> 
-                            </div>
-                            <div className="error">{err_accept}</div>
-                          </div>
-                      </div>
-                     
-                    </div>
+                   
 
                     <div className='row'>
                       <div className="col-md-6">
@@ -927,7 +968,7 @@ var object =  {
 
                 <div className="col-lg-7 col-md-12">
                 <div className='form_headings'>
-                <h5 className="create-token-res">Launchpad List</h5>
+                <h5 className="create-token-res">Launchpad List ({launchpad_list.length})</h5>
                     <p>List of Ongoing, Upcoming and Completed launchpads</p> 
                     </div> 
                         <div className='market_page_data token_tables'>      
@@ -936,26 +977,24 @@ var object =  {
                                 <thead>
                                 <tr>
                                 <th >Sl No.</th>
-                                    {/* 
-                                    <th >Title</th> */}
-                                    <th >Sale Tokens</th>
+                                    <th >Type</th>
+                                    <th >Sale Tokens (%)</th>
                                     <th >Start-End</th>
                                     <th >Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
 
-                                {/* {
+                                {
                                   !api_loader?
                                   launchpad_list.length>0?
                                   launchpad_list.map((e, i) =>
                                     <tr key={i}>
                                         <td>{i+1}</td>
-                                        {e.participate_link?<a href={participate_link} title={e.title} target='_blank'><td>{e.title}</td></a>
-                                        :<td>{e.title}</td>}
+                                        <td>{e.launchpad_type==1?"ICO":e.launchpad_type==2?"IDO":"IEO"}</td>
+                                        {e.tokens_for_sale?<a href={e.where_to_buy_link} title={e.title} target='_blank'><td>{e.tokens_for_sale} ({e.percentage_of_total_supply+"%"})</td></a>
+                                        :<td>{e.tokens_for_sale} ({e.percentage_of_total_supply+"%"})</td>}
                                         
-                                        <td>{e.winner_price?e.winner_price:"--"}</td>
                                         <td>{e.start_date
                                                 ? moment(e.start_date).format(
                                                     "ll"
@@ -966,7 +1005,7 @@ var object =  {
                                                     )
                                                   : "-"}</td>
                                         <td>
-                                        <button type="submit" title="Edit" onClick={() => getLaunchpad(e)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
+                                        <button type="submit" title="Edit" onClick={() => getLaunchpad(e._id)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
                                         <button type="submit" title="delete" onClick={() => btndelete(e._id)} className="tn btn-danger btn-sm ml-1" name="delete" data-toggle="modal" data-target="#removeConnection" >Delete</button>
                                         </td> 
                                     </tr>
@@ -977,16 +1016,15 @@ var object =  {
                                     </tr>
                                     :
                                     ""
-                                } */}
-                                <td>1</td>
-                                        {/* 
-                                    <td>erdfs</td> */}
+                                }
+                                {/* <td>1</td>
+                                     
                                     <td>erdfs</td>
                                     <td>erdfs</td>
                                         <td>
                                             <button type="submit" title="Edit" onClick={() => getFundingDetails(e._id)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
                                     </td> 
-                                    </tr>
+                                    </tr> */}
                                 </tbody> 
                             </table>
                           </div>
@@ -1093,7 +1131,7 @@ var object =  {
         </div>
       </div> */}
 
-      {element}
+      {elements}
       {modal_data.title ? <Popupmodal name={modal_data} /> : null}
     </>
   )

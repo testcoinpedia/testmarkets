@@ -221,7 +221,7 @@ return (
 
 <div>
 <div className="all-categories-list">
-  <CategoriesTab /> 
+  <CategoriesTab user_token={user_token}/> 
 </div>
 
               </div>

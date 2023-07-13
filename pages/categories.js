@@ -215,7 +215,7 @@ return (
                          <thead>
                             <tr>
                                 <th className="mobile_hide_view" style={{minWidth: '35px'}}>#</th>
-                                <th className="mobile_fixed_first">Category</th>
+                                <th className="mobile_fixed_first table-cell-shadow-right">Category</th>
                                 {/* <th className="">Title</th> */}
                                 <th className="">Top Gainers</th>
                                 {/* <th className="mobile_hide_table_col" style={{minWidth: 'unset'}}>Tokens</th> */}
@@ -236,7 +236,7 @@ return (
                              <tr key={i}>
                                     <td className="mobile_hide_view wishlist"> {sl_no+i+1}
                                     </td>
-                                     <td className="mobile_fixed_first">
+                                     <td className="mobile_fixed_first table-cell-shadow-right">
                                        <Link href={"/category/"+e.category_id}> 
                                           <div className="media">
                                             
@@ -253,8 +253,8 @@ return (
                                             {e.title}
                                         </Link>
                                     </td> */}
-                                    <td>
-                                       <Link href={"/category/"+e.category_id}>
+                                    <td className='top_gainers_tab'>
+                                       <Link href={"/"+e.token_gainer.token_id}>
                                          
                                           <div className="media">
                                             <div className="media-left">
@@ -262,7 +262,8 @@ return (
                                             </div>
                                             <div className="media-body">
                                               <h4 className="media-heading mt-0">{e.token_gainer.token_name} </h4>
-                                              <p>{(e.token_gainer.symbol)?.toUpperCase()}</p>
+                                             
+                                              <p className=' top_gainers_para'>{(e.token_gainer.symbol)?.toUpperCase()}</p>
                                               {
                                             e.token_gainer.percent_change_24h?
                                             e.token_gainer.percent_change_24h>0?
@@ -273,8 +274,7 @@ return (
                                             "--"
                                             }
                                             </div>
-                                           
-                                          </div> 
+                                            </div>
                                          
                                          
                                        </Link>

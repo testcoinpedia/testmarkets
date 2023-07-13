@@ -258,7 +258,7 @@ export default function Create_token({config, token_id})
   return(
     <>
       <Head>
-        <title>Create New Token</title>
+        <title>Manage Tockenomics</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
         <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
         <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
@@ -371,7 +371,7 @@ export default function Create_token({config, token_id})
                         <td>{e.tokenomics_name}</td>
                         
                         <td>{e.percentage_of_total_supply?e.percentage_of_total_supply+"%":"--"}</td>
-                        <td>{e.total_supply?e.total_supply:""}</td>
+                        <td>{e.total_supply?e.total_supply.toFixed(2):""}</td>
                         <td>
                         <button type="submit" title="Edit" onClick={() => getTokenomic(e)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
                         <button type="submit" title="delete" onClick={() => btndelete(e._id)} className="tn btn-danger btn-sm ml-1" name="delete" data-toggle="modal" data-target="#removeConnection" >Delete</button>

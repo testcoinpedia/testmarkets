@@ -12,6 +12,7 @@ import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
 import WatchList from '../components/watchlist'
 import Select from 'react-select'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 // import Select from 'react-select'
 import { useRouter } from 'next/navigation'
@@ -306,7 +307,7 @@ return (
                                       set_category_status(!category_status)
                                     }>
 
-                                      <input onChange={(e)=> searchTags(e.target.value)} autoComplete='off' type="text" className="form-control " placeholder="Select Category" />
+                                      <input onChange={(e)=> searchTags(e.target.value)} autoComplete='off'  type="text" className="form-control " placeholder="Select Category" />
                                       <span className="input-group-addon lightmode_image">
                                         <img src="/assets/img/filter_dropdown.svg" title="Filter Dropdown" alt="Filter Dropdown" />
                                       </span>
@@ -392,14 +393,49 @@ return (
                             <tr>
                                 <th className="mobile_fixed_first" style={{minWidth: '35px'}}></th>
                                 <th className="mobile_hide_view" style={{minWidth: '35px'}}>#</th>
-                                <th className="mobile_fixed rank_class">Name</th>
+                                <th className="mobile_fixed rank_class table-cell-shadow-right">Name</th>
                                 <th className="">Price</th>
                                 <th className="  " style={{minWidth: 'unset'}}>1h</th>
                                 <th className="  " style={{minWidth: 'unset'}}>24h</th>
                                 <th className="  " style={{minWidth: 'unset'}}>7d</th>
-                                <th className="  table_circulating_supply">Market Cap</th> 
-                                <th className="  ">Volume(24H)</th>  
-                                <th className="  table_circulating_supply">Circulating Supply</th>  
+                                <th className="  table_circulating_supply">Market Cap &nbsp;
+                                <OverlayTrigger
+                                   delay={{ hide: 450, show: 300 }}
+                                    overlay={(props) => (
+                                      <Tooltip {...props}>
+                                        <p>The Market capitalization refers to the total value of all a company's shares of stock. It is calculated by multiplying the price of a stock by its total number of outstanding shares</p>
+
+                                        <p className='mt-2 cap_cal'>Market Cap = Current Price x Circulating Supply.</p>
+                                      </Tooltip>
+                                    )}
+                                    placement="bottom"
+                                  ><span className='info_col' ><img src="/assets/img/info.png"  /></span>
+                                  </OverlayTrigger>
+                                </th> 
+                                <th className="  ">Volume(24H) &nbsp;
+                                <OverlayTrigger
+                                    // delay={{ hide: 450, show: 300 }}
+                                    overlay={(props) => (
+                                      <Tooltip {...props}>
+                                       <p>A measure of how much of a cryptocurrency was traded in the last 24 hours.</p>
+                                      </Tooltip>
+                                    )}
+                                    placement="bottom"
+                                  ><span className='info_col' ><img src="/assets/img/info.png"  /></span>
+                                  </OverlayTrigger>
+                                </th>  
+                                <th className="  table_circulating_supply">Circulating Supply &nbsp;
+                                <OverlayTrigger
+                                    delay={{ hide: 450, show: 300 }}
+                                    overlay={(props) => (
+                                      <Tooltip {...props}>
+                                        <p>The amount of coins that are circulating in the market and are in public hands. It is analogous to the flowing shares in the stock market.</p>
+                                      </Tooltip>
+                                    )}
+                                    placement="bottom"
+                                  ><span className='info_col' ><img src="/assets/img/info.png"  /></span>
+                                  </OverlayTrigger>
+                                </th>  
                                 <th className="last_data">Last 7 Days</th>
                             </tr>
                          </thead>
@@ -426,12 +462,12 @@ return (
                                             }
                                           </>
                                           :
-                                          <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url} onClick={()=> Logout()}><img src="/assets/img/star.svg" alt="Watchlist"/></Link>
+                                          <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url} ><img src="/assets/img/star.svg" alt="Watchlist"/></Link>
                                       }
                                      </td>
                                     <td className="mobile_hide_view mobile_td_fixed wishlist"> {sl_no+i+1}
                                     </td>
-                                     <td className="mobile_fixed">
+                                     <td className="mobile_fixed table-cell-shadow-right">
                                        <Link href={"/"+e.token_id}>
                                          
                                           <div className="media">

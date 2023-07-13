@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState,useRef} from 'react'
 import Link from 'next/link' 
 import cookie from "cookie"
 import ReactPaginate from 'react-paginate'  
@@ -18,22 +18,74 @@ export default function GainersLosers({user_token, config, userAgent})
     const [image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
     const [loader_status, set_loader_status]=useState(true)
     const [all_tab_status, set_all_tab_status] = useState(0)
+    const [per_page_count, set_per_page_count] = useState(100)
     const [top_gainers, set_top_gainers] = useState([])
     const [top_loosers, set_top_loosers] = useState([])
-    const [search_title, set_search_title] = useState("")  
+    const [date_type_status, set_date_type_status] = useState(false);
+    const [date_type_name, set_date_type_name] = useState("");
+    const [coin_type_status, set_coin_type_status] = useState(false);
+    const [coin_type_name, set_coin_type_name] = useState("");
+    const [cmc_rank, set_cmc_rank] = useState("");
+    const [percent_change, set_percent_change] = useState("");
+    const [search_value, set_search_value] = useState("");
+    
     
 
+    const [date_type_list] = useState([
+        { value: 1, label: "1h" },
+        { value: 2, label: "24h" },
+        { value: 3, label: "7d" }
+      ])
+
+    const [coin_type_list] = useState([
+        { value: 100, label: "Top 100" },
+        { value: 500, label: "Top 500" },
+        { value: 9500, label: "ALL" }
+      ])
+  const date_type_ref = useRef()
+  const coin_ref = useRef()
+
+
+    
+
+ 
     useEffect(() => 
     { 
         topGainners()
         topLosers()
         
-    }, [search_title, watch_list_status])
+        let handler = (e) => {
+           
+              if (!date_type_ref?.current?.contains(e.target)) {
+                set_date_type_status(false)
+              }
+              if (!coin_ref?.current?.contains(e.target)) {
+                set_coin_type_status(false)
+              }
+          }
+          document.addEventListener("mousedown", handler)
+    
+          return () => {
+              document.removeEventListener("mousedown", handler)
+          }
+          
+    }, [search_value, watch_list_status,cmc_rank,percent_change])
 
     const topGainners=  async()=>
     {
+      const req_config = { 
+        headers : {
+          api_key : "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS"
+        },
+        params:
+        {
+          cmc_rank:cmc_rank,
+          percent_change:percent_change,
+          search:search_value
+        }
+      }
         set_loader_status(false)
-        Axios.get(API_BASE_URL+"markets/cryptocurrency/gainers/40", config).then(response => 
+        Axios.get(API_BASE_URL+"markets/cryptocurrency/gainers/"+per_page_count, req_config).then(response => 
         {
             set_loader_status(true)
             console.log("Gainers",response.data.message)   
@@ -46,8 +98,20 @@ export default function GainersLosers({user_token, config, userAgent})
 
     const topLosers=  async()=>
     {
+        const req_config = { 
+          headers : {
+            api_key : "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS"
+          },
+          params:
+          {
+            cmc_rank:cmc_rank,
+            percent_change:percent_change,
+            search:search_value
+          }
+        }
+
         set_loader_status(false)
-        Axios.get(API_BASE_URL+"markets/cryptocurrency/losers/40", config).then(response => 
+        Axios.get(API_BASE_URL+"markets/cryptocurrency/losers/"+per_page_count, req_config).then(response => 
         {
             set_loader_status(true)
             console.log("losers",response.data.message)   
@@ -224,24 +288,209 @@ export default function GainersLosers({user_token, config, userAgent})
 
                 <div className="prices transaction_table_block">
                     <div className="row">
-                        <div className="col-md-8 mb-3 col-7">
+                        <div className="col-md-12 col-lg-6 mb-3 col-12">
                             <ul className="secondary_tabs">
                                 <li className={all_tab_status == 0?"secondary_tabs_active ":null}><a onClick={()=>set_all_tab_status(0)}>Gainers </a></li>
                                 <span className='tabs_partition'></span>
                                 <li className={all_tab_status == 1?"secondary_tabs_active":null}><a onClick={()=>set_all_tab_status(1)}>Losers</a></li>
                             </ul>
                         </div>
-                        <div className="col-md-4 mb-3 col-12 filter-category-section">
+                        <div className="col-md-12 col-lg-6 mb-3 col-12 filter-category-section select_category_gainers">
                         <div className="row">
                             
-                            <div className="col-md-12 ">
+                            <div className="col-md-4 col-lg-6 col-12 col-sm-12 ">
                                 <div className="input-group search_filter">
-                                    <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token" />
+                                    <input value={search_value} onChange={(e)=> set_search_value(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token" />
                                     <div className="input-group-prepend ">
                                         <span className="input-group-text" ><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                                     </div>
                                 </div> 
                             </div>
+
+                            <div className="col-md-4 col-lg-3 col-6 ">
+                            <div className="cust_filters_dropdown" ref={date_type_ref}>
+                            <div className="cust_filter_input" >
+                               
+                               {
+                                 !percent_change ?
+                                 <div className="input-group" onClick={() =>
+                                     set_date_type_status(!date_type_status)
+                                   }>
+
+                                     <input  autoComplete='off'  type="text" className="form-control " placeholder="Time" />
+                                     <span className="input-group-addon lightmode_image">
+                                       <img src="/assets/img/filter_dropdown.svg" title="Filter Dropdown" alt="Filter Dropdown" />
+                                     </span>
+                                     <span className="input-group-addon darkmode_image">
+                                       <img src="/assets/img/filter_dropdown_grey.svg" title="Filter Dropdown" alt="Filter Dropdown" />
+                                     </span>
+                                 </div>
+                                 :
+                                 <div className="markets_selected_category">
+                                   <p>{date_type_name}</p>
+
+                                   <div className="input-group-addon close_category_icon" onClick={()=> 
+                                   {set_percent_change("");
+                                    set_date_type_name("")}}>
+                                     <img src="/assets/img/close_mark.png" />
+                                   </div>
+                                 </div>  
+                               }
+                             </div>
+                            
+                          {date_type_status ? (
+                            <ul className="cust_filter_result">
+                              {date_type_list.map((item) => (
+                                <li
+                                  onClick={() => 
+                                    {
+                                      set_percent_change(item.value);
+                                    set_date_type_name(item.label);
+                                    set_date_type_status(false)
+                                  }
+                                }
+                                >
+                                  {" "}
+                                  {item.label}{" "}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            ""
+                          )}
+                         
+
+{/* <div class="cust_filter_input">
+                                <div class="input-group">
+                                <input autocomplete="off" class="form-control " data-bs-toggle="dropdown" autoComplete='off' placeholder="Time" />
+                                    <span class="input-group-addon lightmode_image">
+                                        <img src="/assets/img/filter_dropdown.svg" title="Filter Dropdown" alt="Filter Dropdown" /></span>
+                            </div>
+                            </div> */}
+                           
+                            {/* <ul className="cust_filter_result">
+                                 <li>24h</li>
+                                 <li>1d</li>
+                                 <li>7d</li>
+                                 <li>30d</li>
+                                </ul> */}
+                               
+                            </div>
+                            </div>
+
+                          <div className="col-md-4 col-lg-3 col-6 ">
+                          <div className="cust_filters_dropdown" ref={coin_ref}>
+                          <div className="cust_filter_input" >
+                               
+                               {
+                                 !cmc_rank ?
+                                 <div className="input-group" onClick={() =>
+                                     set_coin_type_status(!coin_type_status)
+                                   }>
+
+                                     <input  autoComplete='off'  type="text" className="form-control " placeholder="Coins" />
+                                     <span className="input-group-addon lightmode_image">
+                                       <img src="/assets/img/filter_dropdown.svg" title="Filter Dropdown" alt="Filter Dropdown" />
+                                     </span>
+                                     <span className="input-group-addon darkmode_image">
+                                       <img src="/assets/img/filter_dropdown_grey.svg" title="Filter Dropdown" alt="Filter Dropdown" />
+                                     </span>
+                                 </div>
+                                 :
+                                 <div className="markets_selected_category">
+                                   <p>{coin_type_name}</p>
+
+                                   <div className="input-group-addon close_category_icon" onClick={()=> 
+                                   {set_cmc_rank("");
+                                    set_coin_type_name("")}}>
+                                     <img src="/assets/img/close_mark.png" />
+                                   </div>
+                                 </div>  
+                               }
+                             </div>
+                          {/* {coin_type_name ? (
+                        <div className="dropdown_selected_element">
+                          <p>{coin_type_name}{" "}</p>
+                          <img
+                            src="/assets/img/close_mark.png"
+                            className="close_mark lightmode_image"
+                            onClick={() => {
+                              set_coin_type("");
+                              set_coin_type_name("");
+                            }}
+                            title="Tag Close" alt="Tag Close"
+                          />
+                           <img src="/assets/img/cancel_icon_dark.png" className="close_mark darkmode_image" title="Tag Close" alt="Tag Close"  onClick={() => {
+                              set_coin_type("");
+                              set_coin_type_name("");
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <> */}
+                        {/* <div ref={coin_ref}> */}
+                          {/* <div
+                            className="cust_filter_input"
+                            onClick={() =>
+                              set_coin_type_status(!coin_type_status)
+                            }
+                          >
+                            <div class="input-group">
+                              <input
+                                id="email"
+                                type="text"
+                                class="form-control "
+                                placeholder="Coins"
+                                disabled
+                              />
+                              <span class="input-group-addon lightmode_image">
+                                <img src="/assets/img/filter_dropdown.svg" title="Event Type" alt="Event Type" />
+                              </span>
+                              <span class="input-group-addon darkmode_image">
+                              <img src="/assets/img/filter_dropdown_grey.svg" title="Event Type" alt="Event Type" />
+                            </span>
+                            </div>
+                          </div> */}
+                          
+                          {coin_type_status ? (
+                            <ul className="cust_filter_result">
+                              {coin_type_list.map((item) => (
+                                <li
+                                  onClick={() => 
+                                    {
+                                      set_cmc_rank(item.value);
+                                    set_coin_type_name(item.label);
+                                    set_coin_type_status(false)
+                                  }
+                                }
+                                >
+                                  {" "}
+                                  {item.label}{" "}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            ""
+                          )}
+                          {/* </div>
+                        </>
+                      )} */}
+                            {/* <div class="cust_filter_input">
+                                <div class="input-group">
+                                <input autocomplete="off" type="text" class="form-control " autoComplete='off' placeholder="Coins" />
+                                    <span class="input-group-addon lightmode_image">
+                                        <img src="/assets/img/filter_dropdown.svg" title="Filter Dropdown" alt="Filter Dropdown" /></span>
+                            </div>
+                            </div>
+
+                            <ul className="cust_filter_result">
+                                 <li>Top 100</li>
+                                 <li>Top 500</li>
+                                 <li>All</li>
+                                </ul> */}
+                               
+                            </div>
+                          </div>
                            
                         </div>
                          
@@ -258,17 +507,34 @@ export default function GainersLosers({user_token, config, userAgent})
                                 <table className="table table-borderless">
                                     <thead>
                                         <tr>
-
-                                        <th className="mobile_fixed_first" style={{minWidth: '35px'}}></th>
-                                        <th className="mobile_hide_view " style={{minWidth: '35px'}}>Rank</th>
-                                        <th className="mobile_fixed">Name</th>
-                                        <th className="">Price</th>
-                                        <th className="" style={{minWidth: 'unset'}}>24h</th>
-                                        <th className=" " style={{minWidth: 'unset'}}>7d</th>
-                                        <th className=" table_circulating_supply">Market Cap</th> 
-                                        <th className=" ">Volume(24H)</th>  
-                                        <th className=" table_circulating_supply">Circulating Supply</th>  
-                                        <th className="last_data">Last 7 Days</th>
+                                          <th className="mobile_fixed_first" style={{minWidth: '35px'}}></th>
+                                          <th className="mobile_hide_view "style={{minWidth: '35px'}}>Rank</th>
+                                          <th className="mobile_fixed table-cell-shadow-right">Name</th>
+                                          <th className="">Price</th>
+                                          <th style={{minWidth: 'unset'}}>
+                                            {
+                                              percent_change == 1 ? 
+                                              <>
+                                              1h
+                                              </>
+                                              : 
+                                              percent_change == 3 ? 
+                                              <>
+                                              7d
+                                              </>
+                                             
+                                              :
+                                              <>
+                                              24h
+                                              </>
+                                            }
+                                          </th>
+                                          {/* <th className=" " style={{minWidth: 'unset'}}>24h</th> */}
+                                          {/* <th className=" " style={{minWidth: 'unset'}}>7d</th> */}
+                                          <th className=" table_circulating_supply">Market Cap</th> 
+                                          <th className=" ">Volume(24H)</th>  
+                                          <th className=" table_circulating_supply">Circulating Supply</th>  
+                                          <th className="last_data">Last 7 Days</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -298,7 +564,7 @@ export default function GainersLosers({user_token, config, userAgent})
                                                 }
                                                 </td>
                                                 <td className=" mobile_hide_view wishlist "> {e.cmc_rank} </td>
-                                                <td className="mobile_fixed">
+                                                <td className="mobile_fixed table-cell-shadow-right">
                                                     <Link href={"/"+e.token_id}>
                                                         <div className="media">
                                                             <div className="media-left align-self-center">
@@ -319,23 +585,55 @@ export default function GainersLosers({user_token, config, userAgent})
                                                     </Link>
                                                 </td>
                                     
-                                                <td className="mobile_hide_table_col"> 
+                                                {/* <td className="mobile_hide_table_col"> 
                                                     <Link href={"/"+e.token_id}>
                                                         <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
                                                     </Link>
-                                                </td>
+                                                </td> */}
                                                 <td className="mobile_hide_table_col">
-                                                    <Link href={"/"+e.token_id}>
-                                                    {
-                                                        e.percent_change_7d?e.percent_change_7d>0?
-                                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
-                                                        :
-                                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
-                                                        :
-                                                        "--"
-                                                        }
+                                                <Link href={"/"+e.token_id}>
+                                                {
+                                                  percent_change == 1 ? 
+                                                  <>
+                                                  {
+                                                    e.percent_change_1h?e.percent_change_1h>0?
+                                                    <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_1h.toFixed(2)+"%"}</span></h6>
+                                                    :
+                                                    <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_1h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                    :
+                                                    "--"
+                                                  }
+                                                  </>
+                                                  :
+                                                  percent_change == 3 ?
+                                                  <>
+                                                  {
+                                                    e.percent_change_7d?e.percent_change_7d>0?
+                                                    <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
+                                                    :
+                                                    <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                    :
+                                                    "--"
+                                                  }
+                                                  </>
+                                                  :
+                                                  <>
+                                                  {
+                                                    e.percent_change_24h?e.percent_change_24h>0?
+                                                    <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
+                                                    :
+                                                    <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                    :
+                                                    "--"
+                                                  }
+                                                  </>
+                                                  
+                                                }
+                                                </Link>
+                                                    
+                                                      
                                                         {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>1.05%</span></h6> */}
-                                                    </Link>
+                                                    
                                                     </td>
                                                 <td className="mobile_hide_table_col">
                                                     <Link href={"/"+e.token_id}>
@@ -355,7 +653,19 @@ export default function GainersLosers({user_token, config, userAgent})
                                                 </td> 
                                                 
                                                 <td className="mobile_hide_table_col">
-                                                <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
+                                                  {
+                                                    percent_change == 3 ?
+                                                    <>
+                                                    <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
+                                                    </>
+                                                    :
+                                                    percent_change == 1 ? 
+                                                    "-"
+                                                    :
+                                                    <>
+                                                    <img className={e.percent_change_24h>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/1d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
+                                                    </>
+                                                  }
                                                 </td>  
                                                
                                             </tr> 
@@ -405,31 +715,51 @@ export default function GainersLosers({user_token, config, userAgent})
                                                             {e.price_updated_on ? moment(e.price_updated_on).fromNow():null}
                                                         </Link>
                                                     </td>
-                                        
-                                                    <td className="mobile_hide_table_col"> 
-                                                        <Link href={"/"+e.token_id}>
-                                                            <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
-                                                        </Link>
-                                                    </td>
                                                     <td className="mobile_hide_table_col">
                                                     <Link href={"/"+e.token_id}>
-                                                    {
-                                                        e.percent_change_7d?e.percent_change_7d>0?
-                                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
-                                                        :
-                                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
-                                                        :
-                                                        "--"
+                                                      {
+                                                        percent_change == 1 ? 
+                                                        <>
+                                                        {
+                                                          e.percent_change_1h?e.percent_change_1h>0?
+                                                          <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_1h.toFixed(2)+"%"}</span></h6>
+                                                          :
+                                                          <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_1h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                          :
+                                                          "--"
                                                         }
-                                                        {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>1.05%</span></h6> */}
-                                                    </Link>
+                                                        </>
+                                                        :
+                                                        percent_change == 3 ?
+                                                        <>
+                                                        {
+                                                          e.percent_change_7d?e.percent_change_7d>0?
+                                                          <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
+                                                          :
+                                                          <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                          :
+                                                          "--"
+                                                        }
+                                                        </>
+                                                        :
+                                                        <>
+                                                        {
+                                                          e.percent_change_24h?e.percent_change_24h>0?
+                                                          <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
+                                                          :
+                                                          <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                          :
+                                                          "--"
+                                                        }
+                                                        </>
+                                                      }
+                                                      </Link>
                                                     </td>
                                                     <td className="mobile_hide_table_col">
                                                         <Link href={"/"+e.token_id}>
                                                         {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"}
                                                         </Link>
-                                                    </td>  
-
+                                                    </td>
                                                     <td className="mobile_hide_table_col">
                                                         <Link href={"/"+e.token_id}>
                                                         {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"}
@@ -441,9 +771,20 @@ export default function GainersLosers({user_token, config, userAgent})
                                                         </Link>
                                                     </td>  
                                                     <td className="mobile_hide_table_col">
+                                                      {
+                                                        percent_change == 3 ?
+                                                        <>
                                                         <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
-                                                        </td> 
-                                                    
+                                                        </>
+                                                        :
+                                                        percent_change == 1 ? 
+                                                        "-"
+                                                        :
+                                                        <>
+                                                        <img className={e.percent_change_24h>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/1d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
+                                                        </>
+                                                      }
+                                                    </td>
                                                 </tr> 
                                             ) 
                                             :

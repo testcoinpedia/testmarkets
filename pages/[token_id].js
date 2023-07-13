@@ -33,6 +33,7 @@ import Tokenomics from '../components/token_details/tokenomics'
 import MarketCapChart from '../components/token_details/marketcap_chart'
 import Airdrop_detail from '../components/token_details/airdrop_details'
 import Ico_detail from '../components/token_details/ico_detail'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 import { cmc_graph_ranges} from '../components/tokenDetailsFunctions' 
 // import dynamic from 'next/dynamic';
@@ -136,6 +137,10 @@ console.log("api_from_type",token_id)
   const [coingecko_status, set_coingecko_status] = useState(false)
   const [category_modal, set_category_modal] = useState(false)
   const [chart_tab, set_chart_tab] = useState(1)
+
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+
+
   
   const [time_name, set_time_name] = useState("1D")
   const [intervals, set_intervals] = useState("10m")
@@ -148,8 +153,23 @@ console.log("api_from_type",token_id)
     
   }
 
+  const handleTooltipClick = (data) => {
+    setTooltipVisible(true);
+    var copyText = document.createElement("input")
+    copyText.value = data
+    document.body.appendChild(copyText)
+    copyText.select()
+    document.execCommand("Copy")
+    copyText.remove()
+    setTimeout(() => {
+      setTooltipVisible(false); 
+    }, 3000);
+  };
 
-
+  const tooltip = (
+    <Tooltip arrowOffsetTop={20} id="tooltip">Copied</Tooltip>
+  );
+  
 
   const div = useRef();
 
@@ -1170,7 +1190,7 @@ console.log("api_from_type",token_id)
                                               Ethereum : {(data.contract_addresses[0].contract_address).slice(0, 4) + "..." + (data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4, data.contract_addresses[0].contract_address.length)}
                                             </span>
                                           </a>&nbsp;
-                                          <img onClick={() => { copyContract(data.contract_addresses[0].contract_address, 'ETH') }} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          <img onClick={() => { copyContract(data.contract_addresses[0].contract_address, 'ETH') }} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                           <img src="/assets/img/down-arrow.png" ref={contractRef} onClick={() => set_other_contract(!other_contract)} className="dropdown_arrow_img" />
                                           {
                                             other_contract
@@ -1187,7 +1207,7 @@ console.log("api_from_type",token_id)
                                                         contract_copy_status === 'BNB' ?
                                                           <span>Copied</span>
                                                           :
-                                                          <img onClick={() => copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                          <img onClick={() => copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                                       }
                                                     </p>
                                                   </div>
@@ -1209,7 +1229,7 @@ console.log("api_from_type",token_id)
                                               contract_copy_status === 'BNB' ?
                                                 <span className="votes_market">Copied</span>
                                                 :
-                                                <img onClick={() => copyContract(data.contract_addresses[0].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                <img onClick={() => copyContract(data.contract_addresses[0].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
 
                                             }
 
@@ -1222,7 +1242,7 @@ console.log("api_from_type",token_id)
                                                   <p>Ethereum</p>
                                                   <p>
                                                     <a href={"https://etherscan.io/token/" + data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0, 4) + "..." + (data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4, data.contract_addresses[1].contract_address.length)}</a>
-                                                    <img onClick={() => copyContract(data.contract_addresses[1].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                    <img onClick={() => copyContract(data.contract_addresses[1].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                                   </p>
                                                 </div>
                                                 :
@@ -1238,13 +1258,13 @@ console.log("api_from_type",token_id)
                                           <a href={"https://etherscan.io/token/" + data.contract_addresses[0].contract_address} target="_blank">
                                             <img className="token_dropdown_img" src="/assets/img/ETH.svg"></img> Ethereum : {(data.contract_addresses[0].contract_address).slice(0, 4) + "..." + (data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4, data.contract_addresses[0].contract_address.length)}
                                           </a>
-                                          <img onClick={() => copyContract(data.contract_addresses[0].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          <img onClick={() => copyContract(data.contract_addresses[0].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                         </span>
                                         :
                                         <span className="wallet_address_token" onClick={() => set_other_contract(!other_contract)}>
                                           <a href={"https://bscscan.com/token/" + data.contract_addresses[0].contract_address} target="_blank"><img className="token_dropdown_img" src="/assets/img/BSC.svg"></img> Binance Smart Chain : {(data.contract_addresses[0].contract_address).slice(0, 4) + "..." + (data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4, data.contract_addresses[0].contract_address.length)}
                                           </a>
-                                          <img onClick={() => copyContract(data.contract_addresses[0].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          <img onClick={() => copyContract(data.contract_addresses[0].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                         </span>
                                   }
                                 </span>
@@ -1548,7 +1568,11 @@ console.log("api_from_type",token_id)
                                 <div className="quick_block_links">
                                 <div className="widgets__select links_direct">
                                   <a>
+                                  
+                                    
+                                   
                                   {
+
                                     data.contract_addresses.length > 1
                                       ?
                                       parseInt(data.contract_addresses[0].network_type) === 1
@@ -1560,7 +1584,7 @@ console.log("api_from_type",token_id)
                                               Ethereum : {(data.contract_addresses[0].contract_address).slice(0, 4) + "..." + (data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4, data.contract_addresses[0].contract_address.length)}
                                             </span>
                                           </a>&nbsp;
-                                          <img onClick={() => { copyContract(data.contract_addresses[0].contract_address, 'ETH') }} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          <img onClick={() => { copyContract(data.contract_addresses[0].contract_address, 'ETH') }} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                           <img src="/assets/img/down-arrow.png" ref={contractRef} onClick={() => set_other_contract(!other_contract)} className="dropdown_arrow_img" />
                                           {
                                             other_contract
@@ -1577,7 +1601,7 @@ console.log("api_from_type",token_id)
                                                         contract_copy_status === 'BNB' ?
                                                           <span>Copied</span>
                                                           :
-                                                          <img onClick={() => copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                          <img onClick={() => copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                                       }
                                                     </p>
                                                   </div>
@@ -1599,7 +1623,7 @@ console.log("api_from_type",token_id)
                                               contract_copy_status === 'BNB' ?
                                                 <span className="votes_market">Copied</span>
                                                 :
-                                                <img onClick={() => copyContract(data.contract_addresses[0].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                <img onClick={() => copyContract(data.contract_addresses[0].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
 
                                             }
 
@@ -1612,7 +1636,7 @@ console.log("api_from_type",token_id)
                                                   <p>Ethereum</p>
                                                   <p>
                                                     <a href={"https://etherscan.io/token/" + data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0, 4) + "..." + (data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4, data.contract_addresses[1].contract_address.length)}</a>
-                                                    <img onClick={() => copyContract(data.contract_addresses[1].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                    <img onClick={() => copyContract(data.contract_addresses[1].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                                   </p>
                                                 </div>
                                                 :
@@ -1628,13 +1652,24 @@ console.log("api_from_type",token_id)
                                           <a href={"https://etherscan.io/token/" + data.contract_addresses[0].contract_address} target="_blank">
                                             <img className="token_dropdown_img" src="/assets/img/ETH.svg"></img>{(data.contract_addresses[0].contract_address).slice(0, 4) + "..." + (data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4, data.contract_addresses[0].contract_address.length)}
                                           </a>
-                                          <img onClick={() => copyContract(data.contract_addresses[0].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          <img onClick={() => copyContract(data.contract_addresses[0].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                         </span>
                                         :
                                         <span className="wallet_address_token" onClick={() => set_other_contract(!other_contract)}>
                                           <a href={"https://bscscan.com/token/" + data.contract_addresses[0].contract_address} target="_blank"><img className="token_dropdown_img" src="/assets/img/BSC.svg"></img>{(data.contract_addresses[0].contract_address).slice(0, 4) + "..." + (data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4, data.contract_addresses[0].contract_address.length)}
                                           </a>
-                                          <img onClick={() => copyContract(data.contract_addresses[0]?.contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          <OverlayTrigger
+                                    placement="top"
+                                    delay={{ show: 200, hide: 200 }}
+                                    overlay={tooltip}
+                                    show={tooltipVisible}
+                                    onExited={() => setTooltipVisible(false)}
+                                  >
+                                    <span onClick={()=>handleTooltipClick(data.contract_addresses[0]?.contract_address, 'BNB')} >
+                                      <img src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%"  />  
+                                  </span>
+                                  </OverlayTrigger>
+                                          {/* <img onClick={() => copyContract(data.contract_addresses[0]?.contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" /> */}
                                         </span>
                                   }
                                   </a>
@@ -2806,7 +2841,7 @@ console.log("api_from_type",token_id)
                                               Ethereum : {(data.contract_addresses[0].contract_address).slice(0, 4) + "..." + (data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4, data.contract_addresses[0].contract_address.length)}
                                             </span>
                                           </a>&nbsp;
-                                          <img onClick={() => { copyContract(data.contract_addresses[0].contract_address, 'ETH') }} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          <img onClick={() => { copyContract(data.contract_addresses[0].contract_address, 'ETH') }} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                           <img src="/assets/img/down-arrow.png" ref={contractRef} onClick={() => set_other_contract(!other_contract)} className="dropdown_arrow_img" />
                                           {
                                             other_contract
@@ -2823,7 +2858,7 @@ console.log("api_from_type",token_id)
                                                         contract_copy_status === 'BNB' ?
                                                           <span>Copied</span>
                                                           :
-                                                          <img onClick={() => copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                          <img onClick={() => copyContract(data.contract_addresses[1].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                                       }
                                                     </p>
                                                   </div>
@@ -2845,7 +2880,7 @@ console.log("api_from_type",token_id)
                                               contract_copy_status === 'BNB' ?
                                                 <span className="votes_market">Copied</span>
                                                 :
-                                                <img onClick={() => copyContract(data.contract_addresses[0].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                <img onClick={() => copyContract(data.contract_addresses[0].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
 
                                             }
 
@@ -2858,7 +2893,7 @@ console.log("api_from_type",token_id)
                                                   <p>Ethereum</p>
                                                   <p>
                                                     <a href={"https://etherscan.io/token/" + data.contract_addresses[1].contract_address} target="_blank">{(data.contract_addresses[1].contract_address).slice(0, 4) + "..." + (data.contract_addresses[1].contract_address).slice(data.contract_addresses[1].contract_address.length - 4, data.contract_addresses[1].contract_address.length)}</a>
-                                                    <img onClick={() => copyContract(data.contract_addresses[1].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                                    <img onClick={() => copyContract(data.contract_addresses[1].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                                   </p>
                                                 </div>
                                                 :
@@ -2874,13 +2909,13 @@ console.log("api_from_type",token_id)
                                           <a href={"https://etherscan.io/token/" + data.contract_addresses[0].contract_address} target="_blank">
                                             <img className="token_dropdown_img" src="/assets/img/ETH.svg"></img>{(data.contract_addresses[0].contract_address).slice(0, 4) + "..." + (data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4, data.contract_addresses[0].contract_address.length)}
                                           </a>
-                                          <img onClick={() => copyContract(data.contract_addresses[0].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          <img onClick={() => copyContract(data.contract_addresses[0].contract_address, "ETH")} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                         </span>
                                         :
                                         <span className="wallet_address_token" onClick={() => set_other_contract(!other_contract)}>
                                           <a href={"https://bscscan.com/token/" + data.contract_addresses[0].contract_address} target="_blank"><img className="token_dropdown_img" src="/assets/img/BSC.svg"></img>{(data.contract_addresses[0].contract_address).slice(0, 4) + "..." + (data.contract_addresses[0].contract_address).slice(data.contract_addresses[0].contract_address.length - 4, data.contract_addresses[0].contract_address.length)}
                                           </a>
-                                          <img onClick={() => copyContract(data.contract_addresses[0].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link copy-contract-img" width="100%" height="100%" />
+                                          <img onClick={() => copyContract(data.contract_addresses[0].contract_address, 'BNB')} src="/assets/img/copy_img.svg" className="copy_link ml-2 copy-contract-img" width="100%" height="100%" />
                                         </span>
                                   }
                                 </>
@@ -3241,7 +3276,7 @@ console.log("api_from_type",token_id)
                     <input type="text" id="referral-link" className="form-control" defaultValue={market_coinpedia_url + data.token_id} readOnly />
                     <div className="input-group-prepend">
                       <span className="input-group-text" id="myTooltip" onClick={() => myReferrlaLink()}>
-                        <img src="/assets/img/copy-file.png" className="copy_link" width="100%" height="100%" />
+                        <img src="/assets/img/copy-file.png" className="copy_link ml-2" width="100%" height="100%" />
                       </span>
                     </div>
                   </div>

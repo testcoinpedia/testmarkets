@@ -4,6 +4,7 @@ import App from 'next/app';
 import Topmenu from '../components/Topmenu'
 import Footer from '../components/Footer'
 import {favicon} from '../components/constants'
+// import rootReducer from '../components/redux/store'
 
 
 class MyApp extends App{ 
@@ -43,17 +44,7 @@ class MyApp extends App{
           <link rel="stylesheet" media="all" href="/assets/css/darktheme.css" />
           
           <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-100404206-1"></script>
-          {/* <script async src="https://www.googletagmanager.com/gtag/js?id=G-4R54LKN7PN"/>
-          <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-4R54LKN7PN');
-            `,
-          }}
-        /> */}
+
         
       
           
@@ -63,12 +54,13 @@ class MyApp extends App{
           <script src="/assets/js/bootstrap.min.js" crossOrigin="anonymous"></script>
           <script src="/static/datafeeds/udf/dist/bundle.js" />
         </Head>
+        {/* <Provider store={rootReducer}> */}
         <Topmenu />
           <Component {...pageProps} />
         
           
           <Footer /> 
-          
+          {/* </Provider> */}
       </> 
       )
   }

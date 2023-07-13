@@ -67,12 +67,14 @@ export const config=(user_token)=>
       }}
   }
 }
-// export const graphqlApiKEY = "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
+export const graphqlApiKEY = "BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5"
 
 // export const graphqlApiKEY = "BQYXSU6x0V4fdfipsg3myrytbKPXFme7"
 
-export const graphqlApiKEY = "BQYDhJL0RXOU29HIwyFK2M5Bb5OOy3pp"
+// export const graphqlApiKEY = "BQYDhJL0RXOU29HIwyFK2M5Bb5OOy3pp"
 
+export const graphqlApiURL = "https://graphql.bitquery.io/"
+// export const graphqlApiKEY = "BQYXSU6x0V4fdfipsg3myrytbKPXFme7"
 
 export const strLenTrim=(title, length)=>
 {
@@ -361,5 +363,26 @@ export const convertvalue=(labelValue)=>
     return true
   }
 
+  export const reduxData = {
+    login:"loginAccount",
+    logout:"logoutAccount",
+    companySave:"companySaveData",
+    companyRemove:"companyRemoveData",
+    profileSave:"profileSaveData",
+    profileRemove:"profileRemoveData",
+    eventsCount:"eventsCountData",
+    walletBalance:"portfolioWalletBalance"
+  }
 
+  export const getShortWalletAddress=(wallet_address)=>
+  {
+      var res1 = wallet_address.substr(0, 4)
+      var res2 = wallet_address.substr(wallet_address.length - 4)
+      return res1+'...'+res2
+  }
 
+ 
+  export const event_image_size = "300000"
+  
+  export const live_price_url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin%2Cethereum%2Chex%2Cbinance-coin%2Ctether&per_page=100&page=1&sparkline=false'
+  

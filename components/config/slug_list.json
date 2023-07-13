@@ -1,0 +1,687 @@
+{
+    "ada-price": {
+        "id": 50894,
+        "name": "ADA price",
+        "slug": "ada-price"
+    },
+    "airdrops": {
+        "id": 25346,
+        "name": "Airdrops",
+        "slug": "airdrops"
+    },
+    "algo-price": {
+        "id": 50895,
+        "name": "ALGO price",
+        "slug": "algo-price"
+    },
+    "algorand-price": {
+        "id": 50896,
+        "name": "Algorand price",
+        "slug": "algorand-price"
+    },
+    "altcoin": {
+        "id": 41530,
+        "name": "Altcoins",
+        "slug": "altcoin"
+    },
+    "apt": {
+        "id": 50884,
+        "name": "apt",
+        "slug": "apt"
+    },
+    "apt-price": {
+        "id": 50886,
+        "name": "APT price",
+        "slug": "apt-price"
+    },
+    "aptos": {
+        "id": 50883,
+        "name": "Aptos",
+        "slug": "aptos"
+    },
+    "aptos-price": {
+        "id": 50885,
+        "name": "Aptos price",
+        "slug": "aptos-price"
+    },
+    "aptos-price-prediction": {
+        "id": 50887,
+        "name": "Aptos price prediction",
+        "slug": "aptos-price-prediction"
+    },
+    "artificial-intelligence": {
+        "id": 50820,
+        "name": "Artificial Intelligence",
+        "slug": "artificial-intelligence"
+    },
+    "binance-updates": {
+        "id": 21535,
+        "name": "Binance",
+        "slug": "binance-updates"
+    },
+    "bitcoin": {
+        "id": 6041,
+        "name": "Bitcoin",
+        "slug": "bitcoin"
+    },
+    "bitcoin-cash": {
+        "id": 7200,
+        "name": "Bitcoin Cash",
+        "slug": "bitcoin-cash"
+    },
+    "bitcoin-etf": {
+        "id": 21712,
+        "name": "Bitcoin ETF",
+        "slug": "bitcoin-etf"
+    },
+    "bitcoin-exchange": {
+        "id": 9920,
+        "name": "Bitcoin exchange",
+        "slug": "bitcoin-exchange"
+    },
+    "bitcoin-futures": {
+        "id": 10863,
+        "name": "Bitcoin Futures",
+        "slug": "bitcoin-futures"
+    },
+    "bitcoin-gambling": {
+        "id": 6044,
+        "name": "Bitcoin gambling",
+        "slug": "bitcoin-gambling"
+    },
+    "bitcoin-halving": {
+        "id": 41539,
+        "name": "Bitcoin Halving",
+        "slug": "bitcoin-halving"
+    },
+    "bitcoin-mining": {
+        "id": 6267,
+        "name": "Bitcoin Mining",
+        "slug": "bitcoin-mining"
+    },
+    "bitcoin-news": {
+        "id": 10080,
+        "name": "Bitcoin News",
+        "slug": "bitcoin-news"
+    },
+    "bitcoin-payment": {
+        "id": 9993,
+        "name": "Bitcoin Payment",
+        "slug": "bitcoin-payment"
+    },
+    "bitcoin-price": {
+        "id": 9654,
+        "name": "Bitcoin Price",
+        "slug": "bitcoin-price"
+    },
+    "bitcoin-price-prediction": {
+        "id": 50909,
+        "name": "Bitcoin price prediction",
+        "slug": "bitcoin-price-prediction"
+    },
+    "bitcoin-trading": {
+        "id": 9761,
+        "name": "Bitcoin Trading",
+        "slug": "bitcoin-trading"
+    },
+    "bitcoin-wallet": {
+        "id": 10904,
+        "name": "Bitcoin wallet",
+        "slug": "bitcoin-wallet"
+    },
+    "blockchain": {
+        "id": 8097,
+        "name": "Blockchain",
+        "slug": "blockchain"
+    },
+    "blockchain-events": {
+        "id": 6045,
+        "name": "Blockchain events",
+        "slug": "blockchain-events"
+    },
+    "blockchain-industry": {
+        "id": 25094,
+        "name": "blockchain industry",
+        "slug": "blockchain-industry"
+    },
+    "blockchain-project": {
+        "id": 12913,
+        "name": "Blockchain project",
+        "slug": "blockchain-project"
+    },
+    "blockchain-startups": {
+        "id": 25987,
+        "name": "blockchain startups",
+        "slug": "blockchain-startups"
+    },
+    "blockchain-tech": {
+        "id": 16430,
+        "name": "Blockchain Technology",
+        "slug": "blockchain-tech"
+    },
+    "btc": {
+        "id": 9666,
+        "name": "BTC",
+        "slug": "btc"
+    },
+    "btc-price": {
+        "id": 50908,
+        "name": "BTC price",
+        "slug": "btc-price"
+    },
+    "cardano": {
+        "id": 27417,
+        "name": "Cardano (ADA)",
+        "slug": "cardano"
+    },
+    "cardano-price": {
+        "id": 50893,
+        "name": "Cardano price",
+        "slug": "cardano-price"
+    },
+    "casino-game": {
+        "id": 41755,
+        "name": "Casino Game",
+        "slug": "casino-game"
+    },
+    "centralized-exchange": {
+        "id": 50879,
+        "name": "Centralized Exchange",
+        "slug": "centralized-exchange"
+    },
+    "chainlink": {
+        "id": 36214,
+        "name": "Chainlink (LINK)",
+        "slug": "chainlink"
+    },
+    "coinbase": {
+        "id": 10437,
+        "name": "Coinbase Exchange",
+        "slug": "coinbase"
+    },
+    "coinmarketcap": {
+        "id": 39334,
+        "name": "Coinmarketcap",
+        "slug": "coinmarketcap"
+    },
+    "cro-price": {
+        "id": 50898,
+        "name": "CRO price",
+        "slug": "cro-price"
+    },
+    "cronos-price": {
+        "id": 50897,
+        "name": "Cronos price",
+        "slug": "cronos-price"
+    },
+    "crypto-exchange": {
+        "id": 11230,
+        "name": "Crypto Exchange",
+        "slug": "crypto-exchange"
+    },
+    "crypto-finance": {
+        "id": 16046,
+        "name": "Crypto finance",
+        "slug": "crypto-finance"
+    },
+    "crypto-gambling": {
+        "id": 50809,
+        "name": "Crypto gambling",
+        "slug": "crypto-gambling"
+    },
+    "crypto-mining": {
+        "id": 12201,
+        "name": "Crypto Mining",
+        "slug": "crypto-mining"
+    },
+    "crypto-mlm": {
+        "id": 6049,
+        "name": "Crypto MLMs",
+        "slug": "crypto-mlm"
+    },
+    "crypto-news": {
+        "id": 6046,
+        "name": "Crypto news",
+        "slug": "crypto-news"
+    },
+    "crypto-payment": {
+        "id": 14651,
+        "name": "Crypto payment",
+        "slug": "crypto-payment"
+    },
+    "crypto-projects": {
+        "id": 50831,
+        "name": "Crypto projects",
+        "slug": "crypto-projects"
+    },
+    "crypto-regulations": {
+        "id": 13108,
+        "name": "Crypto Regulations",
+        "slug": "crypto-regulations"
+    },
+    "crypto-scams": {
+        "id": 12844,
+        "name": "Crypto scams",
+        "slug": "crypto-scams"
+    },
+    "crypto-trading": {
+        "id": 12651,
+        "name": "Crypto trading",
+        "slug": "crypto-trading"
+    },
+    "crypto-wallets": {
+        "id": 50744,
+        "name": "Crypto wallets",
+        "slug": "crypto-wallets"
+    },
+    "cryptocurrency": {
+        "id": 9594,
+        "name": "Cryptocurrency",
+        "slug": "cryptocurrency"
+    },
+    "cryptocurrency-exchange": {
+        "id": 10397,
+        "name": "Cryptocurrency Exchange",
+        "slug": "cryptocurrency-exchange"
+    },
+    "crypto-exchange-review": {
+        "id": 29753,
+        "name": "Cryptocurrency Exchange Review",
+        "slug": "crypto-exchange-review"
+    },
+    "crypto-investment": {
+        "id": 14876,
+        "name": "Cryptocurrency Investment",
+        "slug": "crypto-investment"
+    },
+    "cryptocurrency-mining": {
+        "id": 11066,
+        "name": "Cryptocurrency mining",
+        "slug": "cryptocurrency-mining"
+    },
+    "cryptocurrency-price": {
+        "id": 10530,
+        "name": "Cryptocurrency Price",
+        "slug": "cryptocurrency-price"
+    },
+    "cryptocurrency-regulation": {
+        "id": 14866,
+        "name": "Cryptocurrency Regulation",
+        "slug": "cryptocurrency-regulation"
+    },
+    "cryptocurrency-tax": {
+        "id": 22047,
+        "name": "Cryptocurrency Tax",
+        "slug": "cryptocurrency-tax"
+    },
+    "cryptocurrency-trading": {
+        "id": 10887,
+        "name": "Cryptocurrency Trading",
+        "slug": "cryptocurrency-trading"
+    },
+    "dao": {
+        "id": 50821,
+        "name": "DAO",
+        "slug": "dao"
+    },
+    "dapps": {
+        "id": 22160,
+        "name": "DApps",
+        "slug": "dapps"
+    },
+    "decentraland-price": {
+        "id": 50901,
+        "name": "Decentraland price",
+        "slug": "decentraland-price"
+    },
+    "decentralized-exchange": {
+        "id": 12085,
+        "name": "Decentralized exchange",
+        "slug": "decentralized-exchange"
+    },
+    "defi": {
+        "id": 49060,
+        "name": "DeFi",
+        "slug": "defi"
+    },
+    "dogecoin-doge": {
+        "id": 50715,
+        "name": "Dogecoin (DOGE)",
+        "slug": "dogecoin-doge"
+    },
+    "e-sports": {
+        "id": 23972,
+        "name": "E-sports",
+        "slug": "e-sports"
+    },
+    "elon-musk": {
+        "id": 50882,
+        "name": "Elon Musk",
+        "slug": "elon-musk"
+    },
+    "eth-price": {
+        "id": 50910,
+        "name": "ETH price",
+        "slug": "eth-price"
+    },
+    "ethereum": {
+        "id": 6042,
+        "name": "Ethereum",
+        "slug": "ethereum"
+    },
+    "ethereum-merger": {
+        "id": 50854,
+        "name": "Ethereum Merger",
+        "slug": "ethereum-merger"
+    },
+    "ethereum-price": {
+        "id": 50911,
+        "name": "Ethereum price",
+        "slug": "ethereum-price"
+    },
+    "events-in-coinpedia": {
+        "id": 50873,
+        "name": "Events in coinpedia",
+        "slug": "events-in-coinpedia"
+    },
+    "exchange-2": {
+        "id": 50860,
+        "name": "exchange",
+        "slug": "exchange-2"
+    },
+    "exchange": {
+        "id": 6056,
+        "name": "Exchange News",
+        "slug": "exchange"
+    },
+    "fintech-company": {
+        "id": 50876,
+        "name": "Fintech Company",
+        "slug": "fintech-company"
+    },
+    "fintech-startup": {
+        "id": 9956,
+        "name": "Fintech startup",
+        "slug": "fintech-startup"
+    },
+    "forex-trading": {
+        "id": 27659,
+        "name": "Forex Trading",
+        "slug": "forex-trading"
+    },
+    "ftx": {
+        "id": 50856,
+        "name": "FTX",
+        "slug": "ftx"
+    },
+    "gamefi": {
+        "id": 50811,
+        "name": "Gamefi",
+        "slug": "gamefi"
+    },
+    "gaming": {
+        "id": 50853,
+        "name": "gaming",
+        "slug": "gaming"
+    },
+    "gaming-token": {
+        "id": 50746,
+        "name": "Gaming token",
+        "slug": "gaming-token"
+    },
+    "gemini-echange-review": {
+        "id": 50880,
+        "name": "Gemini Echange review",
+        "slug": "gemini-echange-review"
+    },
+    "gold": {
+        "id": 49922,
+        "name": "Gold",
+        "slug": "gold"
+    },
+    "hack": {
+        "id": 24908,
+        "name": "Hack",
+        "slug": "hack"
+    },
+    "halving": {
+        "id": 41445,
+        "name": "Halving",
+        "slug": "halving"
+    },
+    "ico": {
+        "id": 6047,
+        "name": "ICO Update",
+        "slug": "ico"
+    },
+    "ido": {
+        "id": 50819,
+        "name": "IDO",
+        "slug": "ido"
+    },
+    "john-mcafee": {
+        "id": 26945,
+        "name": "John McAfee",
+        "slug": "john-mcafee"
+    },
+    "litecoin": {
+        "id": 9664,
+        "name": "Litecoin (LTC)",
+        "slug": "litecoin"
+    },
+    "luna-2-0": {
+        "id": 50843,
+        "name": "LUNA 2.0",
+        "slug": "luna-2-0"
+    },
+    "luna-price": {
+        "id": 50903,
+        "name": "LUNA price",
+        "slug": "luna-price"
+    },
+    "lunc-price": {
+        "id": 50905,
+        "name": "LUNC price",
+        "slug": "lunc-price"
+    },
+    "market-stories": {
+        "id": 34892,
+        "name": "Market Stories",
+        "slug": "market-stories"
+    },
+    "matic-price": {
+        "id": 50892,
+        "name": "MATIC price",
+        "slug": "matic-price"
+    },
+    "media-partner": {
+        "id": 50877,
+        "name": "media partner",
+        "slug": "media-partner"
+    },
+    "meme-coins": {
+        "id": 50807,
+        "name": "Meme Coins",
+        "slug": "meme-coins"
+    },
+    "metacryp": {
+        "id": 50849,
+        "name": "metacryp",
+        "slug": "metacryp"
+    },
+    "metaverse": {
+        "id": 50773,
+        "name": "Metaverse",
+        "slug": "metaverse"
+    },
+    "multi-level-marketing": {
+        "id": 43175,
+        "name": "Multi Level Marketing (MLM)",
+        "slug": "multi-level-marketing"
+    },
+    "nft-tokens": {
+        "id": 50725,
+        "name": "NFT Tokens",
+        "slug": "nft-tokens"
+    },
+    "partnership": {
+        "id": 25051,
+        "name": "Partnership",
+        "slug": "partnership"
+    },
+    "play-to-earn": {
+        "id": 50816,
+        "name": "Play-to-Earn",
+        "slug": "play-to-earn"
+    },
+    "polygon-price": {
+        "id": 50891,
+        "name": "Polygon price",
+        "slug": "polygon-price"
+    },
+    "press-release": {
+        "id": 50878,
+        "name": "Press Release",
+        "slug": "press-release"
+    },
+    "price-analysis": {
+        "id": 26029,
+        "name": "Price Analysis",
+        "slug": "price-analysis"
+    },
+    "price-prediction": {
+        "id": 50729,
+        "name": "Price Prediction",
+        "slug": "price-prediction"
+    },
+    "regulations": {
+        "id": 6048,
+        "name": "Regulations News",
+        "slug": "regulations"
+    },
+    "xrp": {
+        "id": 11226,
+        "name": "Ripple (XRP)",
+        "slug": "xrp"
+    },
+    "ripple": {
+        "id": 9655,
+        "name": "Ripple News",
+        "slug": "ripple"
+    },
+    "shiba-inu-shib": {
+        "id": 50731,
+        "name": "Shiba Inu SHIB",
+        "slug": "shiba-inu-shib"
+    },
+    "smart-contracts": {
+        "id": 24973,
+        "name": "Smart Contracts",
+        "slug": "smart-contracts"
+    },
+    "solana": {
+        "id": 50763,
+        "name": "Solana (SOL)",
+        "slug": "solana"
+    },
+    "sponsored": {
+        "id": 50774,
+        "name": "Sponsored-Post",
+        "slug": "sponsored"
+    },
+    "stablecoin": {
+        "id": 25285,
+        "name": "Stablecoin",
+        "slug": "stablecoin"
+    },
+    "staking": {
+        "id": 50767,
+        "name": "Staking",
+        "slug": "staking"
+    },
+    "starbucks": {
+        "id": 50864,
+        "name": "starbucks",
+        "slug": "starbucks"
+    },
+    "stellar-price": {
+        "id": 50888,
+        "name": "Stellar price",
+        "slug": "stellar-price"
+    },
+    "stocks": {
+        "id": 50827,
+        "name": "stocks",
+        "slug": "stocks"
+    },
+    "terra-2-0-price": {
+        "id": 50902,
+        "name": "Terra 2.0 price",
+        "slug": "terra-2-0-price"
+    },
+    "terra-classic-price": {
+        "id": 50904,
+        "name": "Terra Classic price",
+        "slug": "terra-classic-price"
+    },
+    "tezos-price": {
+        "id": 50906,
+        "name": "Tezos price",
+        "slug": "tezos-price"
+    },
+    "top-10-crypto": {
+        "id": 27584,
+        "name": "Top 10 In Crypto",
+        "slug": "top-10-crypto"
+    },
+    "topcryptocuurencies": {
+        "id": 50846,
+        "name": "topcryptocuurencies",
+        "slug": "topcryptocuurencies"
+    },
+    "traders-guide": {
+        "id": 26770,
+        "name": "Traders Guide",
+        "slug": "traders-guide"
+    },
+    "trading-bots": {
+        "id": 9543,
+        "name": "Trading Bots",
+        "slug": "trading-bots"
+    },
+    "vechain-price": {
+        "id": 50899,
+        "name": "VeChain price",
+        "slug": "vechain-price"
+    },
+    "vet-price": {
+        "id": 50900,
+        "name": "VET price",
+        "slug": "vet-price"
+    },
+    "web3": {
+        "id": 50806,
+        "name": "Web3",
+        "slug": "web3"
+    },
+    "xlm-price": {
+        "id": 50889,
+        "name": "XLM PRICE",
+        "slug": "xlm-price"
+    },
+    "xlm-price-prediction": {
+        "id": 50890,
+        "name": "XLM price prediction",
+        "slug": "xlm-price-prediction"
+    },
+    "xrp-price-prediction": {
+        "id": 50912,
+        "name": "XRP price prediction",
+        "slug": "xrp-price-prediction"
+    },
+    "xtz-price": {
+        "id": 50907,
+        "name": "XTZ price",
+        "slug": "xtz-price"
+    }
+}

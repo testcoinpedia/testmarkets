@@ -15,7 +15,7 @@ import { useRouter } from 'next/router'
 
 export default function Companies({data, user_token, config, category_id, errorCode})
 { 
-  console.log(category_id)
+  console.log("category_id",category_id)
   if (errorCode) { return <Error /> }
     const router = useRouter()
     const myRef = useRef(null)
@@ -27,6 +27,7 @@ export default function Companies({data, user_token, config, category_id, errorC
     const [per_page_count, set_per_page_count] = useState(100)
     const [pageCount, setPageCount] = useState(0)
     const [sl_no, set_sl_no]=useState(0)
+    const [category, set_category]=useState(category_id)
     const [firstcount, setfirstcount] = useState(1)
     const [finalcount, setfinalcount] = useState(per_page_count)
     const [selectedPage, setSelectedPage] = useState(0) 
@@ -41,7 +42,7 @@ export default function Companies({data, user_token, config, category_id, errorC
     useEffect(()=>
     {  
         tokensList({selected : 0})
-    },[per_page_count, search_title, category_id]) 
+    },[per_page_count, search_title, category]) 
 
 
     const tokensList = async (page) =>
@@ -69,6 +70,7 @@ export default function Companies({data, user_token, config, category_id, errorC
                 setCurrentPage(page.selected)
                 setfirstcount(current_pages+1)
                 setCount(res.data.count)
+                // set_category()
                 // console.log(categ)
                 //setfinalcount(parseInt(current_pages)+parseInt(per_page_count))
                 const presentPage = page.selected+1
@@ -153,7 +155,7 @@ return (
     
    <>
       <Head>
-         <title>{data.category_name} Tokens by Market Cap | Coinpedia </title>
+         <title>{data.category_name+" Tokens by Market Cap | Coinpedia"} </title>
          <meta name="description" content="Coinpedia’s Market bring you with a list of top cryptocurrencies with real timeprices, including percentage change, charts, history, volume and more."/>
          <meta name="keywords" content="crypto market, crypto market tracker, Crypto tracker live, Cryptocurrency market, crypto market insights , Live crypto insights, crypto price alerts, Live crypto alerts." />
          <meta property="og:locale" content="en_US" />
@@ -199,7 +201,7 @@ return (
 
               <div>
               <div className="all-categories-list">
-                <CategoriesTab active_tab={category_id=="bnb-chain"?9:category_id=="defi"?10:""} user_token={user_token}/> 
+                <CategoriesTab active_tab={category=="bnb-chain"?9:category=="defi"?10:""} user_token={user_token}/> 
               </div>
 
             </div>
@@ -257,7 +259,7 @@ return (
                               
                             <th className="mobile_fixed_first" style={{minWidth: '35px'}}></th>
                                 <th className="mobile_hide_view" style={{minWidth: '35px'}}>#</th>
-                                <th className="mobile_fixed name_col">Name</th>
+                                <th className="mobile_fixed name_col table-cell-shadow-right">Name</th>
                                 <th className="">Price</th>
                                 <th className=" mobile_hide_table_col" style={{minWidth: 'unset'}}>1h</th>
                                 <th className=" mobile_hide_table_col" style={{minWidth: 'unset'}}>24h</th>
@@ -296,7 +298,7 @@ return (
                                     </td>
                                     <td className="mobile_hide_view wishlist"> {sl_no+i+1}
                                     </td>
-                                     <td className="mobile_fixed">
+                                     <td className="mobile_fixed table-cell-shadow-right">
                                        <Link href={"/"+e.token_id}>
                                          
                                           <div className="media">

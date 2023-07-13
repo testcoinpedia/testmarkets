@@ -258,7 +258,7 @@ return (
 
                                 <th className="mobile_fixed_first" style={{minWidth: '35px'}}></th>
                                 <th className="mobile_hide_view" style={{minWidth: '35px'}}>#</th>
-                                <th className="mobile_fixed name_col">Name</th>
+                                <th className="mobile_fixed table-cell-shadow-right name_col">Name</th>
                                 <th className="">Price</th>
                                 <th className=" " style={{minWidth: 'unset'}}>1h</th>
                                 <th className=" " style={{minWidth: 'unset'}}>24h</th>
@@ -300,7 +300,7 @@ return (
                                      </td>
                                     <td className="mobile_hide_view wishlist"> {sl_no+i+1}
                                     </td>
-                                     <td className="mobile_fixed">
+                                     <td className="mobile_fixed table-cell-shadow-right">
                                        <Link href={"/"+e.token_id}>
                                          
                                           <div className="media">
