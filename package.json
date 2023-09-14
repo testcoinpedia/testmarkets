@@ -20,13 +20,20 @@
     "next": "13.4.1",
     "react": "18.2.0",
     "react-apexcharts": "^1.4.0",
+    "react-apple-login": "^1.1.6",
     "react-bootstrap": "^2.7.4",
     "react-content-loader": "^6.2.1",
+    "react-countdown": "^2.3.5",
     "react-dom": "18.2.0",
+    "react-dynamic-import": "^1.1.5",
+    "react-google-login": "^5.2.2",
     "react-image-crop": "^10.0.9",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-otp-input": "^3.0.2",
     "react-paginate": "^8.2.0",
-    "react-redux": "^8.0.5",
+    "react-redux": "^8.1.1",
     "react-select": "^5.7.3",
+    "redux": "^4.2.1",
     "web3": "^1.9.0"
   }
 }

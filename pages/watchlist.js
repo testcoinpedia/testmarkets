@@ -11,6 +11,7 @@ import CategoriesTab from '../components/categoriesTabs'
 import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
 import WatchList from '../components/watchlist'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 // import Select from 'react-select'
 import { useRouter } from 'next/navigation'
@@ -27,20 +28,21 @@ export default function Companies({user_token, config, userAgent})
     const [sl_no, set_sl_no]=useState(0)
     const [firstcount, setfirstcount] = useState(1)
     const [finalcount, setfinalcount] = useState(per_page_count)
-    const [image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
     const [count, setCount]=useState(0)
     const [loader_status, set_loader_status] = useState(false)
     const [all_tab_status, set_all_tab_status] = useState((active_category_tab > 0) ? 0 : 1)
     const [watchlist_tab_status, set_watchlist_tab_status] = useState("")
     const [search_title, set_search_title] = useState("")
     const [category_list, set_category_list] = useState([]) 
+    const [image_base_url] = useState(IMAGE_BASE_URL+'/markets/cryptocurrencies/')
+    const [cmc_image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
     const [category_row_id, set_category_row_id] = useState((active_category_tab > 0) ? active_category_tab : "") 
     
     
     useEffect(()=>
     {  
         tokensList({selected : 0})
-        getCategoryList()
+        // getCategoryList()
     },[per_page_count, search_title, category_row_id]) 
 
 
@@ -158,44 +160,41 @@ export default function Companies({user_token, config, userAgent})
         tokensList({selected : 0})
     }  
 
-    const makeJobSchema=()=>
-    {  
-        return { 
-            "@context":"http://schema.org/",
-            "@type":"Organization",
-            "name":"Coinpedia",
-            "url":"https://pro.coinpedia.org",
-            "logo":"http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
-            "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
-        } 
-    }
+    
  
 return (
    <>
       <Head>
-         <title>Your Cryptocurrency Watchlist | Coinpedia </title>
-         <meta name="description" content="Coinpedia’s Market bring you with a list of top cryptocurrencies with real timeprices, including percentage change, charts, history, volume and more."/>
+          <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+         <title>Watchlist | Personalised Monitoring </title>
+         <meta name="description" content="Coinpedia markets watchlist option allows you to add your favorite assets to the watchlist and get a personalized monitoring list. You can also remove and add unlimited assets to the list."/>
          <meta name="keywords" content="crypto market, crypto market tracker, Crypto tracker live, Cryptocurrency market, crypto market insights , Live crypto insights, crypto price alerts, Live crypto alerts." />
          <meta property="og:locale" content="en_US" />
          <meta property="og:type" content="website" />
-         <meta property="og:title" content="Your Cryptocurrency Watchlist | Coinpedia" />
-         <meta property="og:description" content="Coinpedia company listing page offers quick view of all listed companies of Fintech, Blockchain and Finance category. Get Exchages, Wallets, Coins, Tools, Trading forms and more. " />
-         <meta property="og:url" content={market_coinpedia_url} />
-         <meta property="og:site_name" content="List of Fintech Companies | CoinPedia Pro Account. " />
+         <meta property="og:title" content="Watchlist | Personalised Monitoring" />
+         <meta property="og:description" content="Coinpedia markets watchlist option allows you to add your favorite assets to the watchlist and get a personalized monitoring list. You can also remove and add unlimited assets to the list. " />
+         <meta property="og:url" content={market_coinpedia_url + "watchlist/"} />
+         <meta property="og:site_name" content="Coinpedia Cryptocurrency Markets" />
          <meta property="og:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
          <meta property="og:image:secure_url" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
          <meta property="og:image:width" content="400" />
          <meta property="og:image:height" content="400" />
-
+         <meta property="og:image:type" content="image/png" />
          <meta name="twitter:card" content="summary" />
          <meta name="twitter:site" content="@coinpedia" />
          <meta name="twitter:creator" content="@coinpedia" />
-         <meta name="twitter:title" content="Your Cryptocurrency Watchlist | Coinpedia" />
-         <meta name="twitter:description" content="Here's a list of the leading fintech companies in the country across the various sub-sectors.We are extending and updating the list regularly." />
+         <meta name="twitter:title" content="Watchlist | Personalised Monitoring" />
+         <meta name="twitter:description" content="Coinpedia markets watchlist option allows you to add your favorite assets to the watchlist and get a personalized monitoring list. You can also remove and add unlimited assets to the list." />
          <meta name="twitter:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
 
-         <link rel="canonical" href={market_coinpedia_url}/>
-         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
+         <link rel="canonical" href={market_coinpedia_url + "watchlist/"}/>
+
+         <script type="application/ld+json"  
+          dangerouslySetInnerHTML={{
+            __html: `{"@context":"http://schema.org","@type":"Table","about":"My Watchlist"}`,
+          }}
+        />
+
       </Head>
 
       <div className="page new_markets_index min_height_page markets_new_design">
@@ -207,22 +206,17 @@ return (
           <div className="container">
             <div className="col-md-12">
               <div className="row market_insights ">
-                <div className="col-md-6 col-lg-6">
-                  <h1 className="page_title">Your Cryptocurrency Watchlist</h1>
+                <div className="col-md-12 col-lg-12">
+                  <h1 className="page_title">My Watchlist</h1>
                   {/* by Market Cap */}
-                  <p>Global market cap today: $ 1.38 trillion <img src="/assets/img/markets/high-value.png" alt="high value"/><span className="color-green">10.02%</span> in 24 hrs.</p>
+                  <p>Add and remove assets to your personalized monitoring list.</p>
                 </div>
-                <div className="col-md-1 col-lg-2"></div>
-                <div className="col-md-5 col-lg-4" >
-                  {/* <SearchContractAddress />  */}
-                </div>
+                
               </div>
-             
-
-<div>
-<div className="all-categories-list">
-  <CategoriesTab user_token={user_token}/> 
-</div>
+              <div>
+              <div className="all-categories-list">
+                <CategoriesTab active_tab={11} user_token={user_token}/>
+              </div>
 
               </div>
             </div>
@@ -270,18 +264,50 @@ return (
                        <table className="table table-borderless">
                          <thead>
                             <tr>
-                                <th className="" style={{minWidth: '34px'}}></th>
-                                <th className="mobile_hide_table_col" style={{minWidth: '34px'}}>#</th>
-                                <th className="">Name</th>
+                                <th className="mobile_fixed_first" style={{minWidth: '34px'}}></th>
+                                <th className="mobile_hide_view" style={{minWidth: '34px'}}>#</th>
+                                <th className="mobile_fixed rank_class table-cell-shadow-right">Name</th>
                                 <th className="">Price</th>
-                                <th className=" mobile_hide_table_col" style={{minWidth: 'unset'}}>1h</th>
-                                <th className=" mobile_hide_table_col" style={{minWidth: 'unset'}}>24h</th>
-                                <th className=" mobile_hide_table_col" style={{minWidth: 'unset'}}>7d</th>
-                                <th className="mobile_hide_table_col table_circulating_supply">Market Cap</th> 
-                                <th className=" mobile_hide_table_col">Volume(24H)</th>  
-                                <th className="mobile_hide_table_col table_circulating_supply">Circulating Supply</th>  
-                                <th className="mobile_hide_table_col">Last 7 Days</th>
-                               
+                                <th className="" style={{minWidth: 'unset'}}>1h</th>
+                                <th className="" style={{minWidth: 'unset'}}>24h</th>
+                                <th className="" style={{minWidth: 'unset'}}>7d</th>
+                                <th className="table_circulating_supply">Market Cap&nbsp;
+                                  <OverlayTrigger
+                                    delay={{ hide: 450, show: 300 }}
+                                    overlay={(props) => (
+                                      <Tooltip {...props} className="custom_pophover">
+                                        <p>Market capitalization is a measure used to determine the total value of a publicly traded cryptocurrency. It is calculated by multiplying the current market price of a single coin/token X total supply of the coin/token.</p>
+                                      </Tooltip>
+                                    )}
+                                    placement="bottom"
+                                  ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
+                                  </OverlayTrigger>
+                                </th> 
+                                <th className="volume_24h">Volume(24H)&nbsp;
+                                  <OverlayTrigger
+                                    // delay={{ hide: 450, show: 300 }}
+                                    overlay={(props) => (
+                                      <Tooltip {...props} className="custom_pophover">
+                                        <p>The 24-hour volume, also known as trading volume or trading activity, refers to the total amount of a specific coin/token that has been bought and sold within a 24-hour period. It represents the total number of coins/tokens traded during that time frame.</p>
+                                      </Tooltip>
+                                    )}
+                                    placement="bottom"
+                                  ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
+                                  </OverlayTrigger>
+                                </th>  
+                                <th className="table_circulating_supply">Circulating Supply&nbsp;
+                                  <OverlayTrigger
+                                    delay={{ hide: 450, show: 300 }}
+                                    overlay={(props) => (
+                                      <Tooltip {...props} className="custom_pophover">
+                                        <p>Circulating supply refers to the total number of coins/tokens that are currently in circulation and available to the public. It represents the portion of the total supply of a cryptocurrency that is actively being traded or held by investors.</p>
+                                      </Tooltip>
+                                    )}
+                                    placement="bottom"
+                                  ><span className='info_col' ><img src="/assets/img/info.png" alt="info"/></span>
+                                  </OverlayTrigger>
+                                </th>  
+                                <th className="last_data">Last 7 Days</th>
                             </tr>
                          </thead>
                          
@@ -295,25 +321,23 @@ return (
                              tokens_list.map((e, i) => 
                              <tr key={i}>
                                  
-                                     <td>
+                                     <td className='mobile_fixed_first'>
                                         {
                                          e.watchlist_status== true ?
-                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src=" /assets/img/color.svg" alt="Watchlist" width={17} height={17} /></span>
+                                         <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src=" /assets/img/wishlist_star_selected.svg" alt="Watchlist" width={17} height={17} /></span>
                                          :
                                          <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/star.svg" alt="Watchlist" width={17} height={17} /></span>
                                         }
                                      
                                      </td>
-                                    <td>
-                                        <span className="mobile_hide_table_col wishlist"> {sl_no+i+1}</span>
-                                    </td>
-                                     <td>
+                                     <td className="mobile_hide_view mobile_td_fixed wishlist"> {sl_no+i+1} </td>
+                                     <td className="mobile_fixed table-cell-shadow-right">
                                        <Link href={"/"+e.token_id}>
                                          
                                           <div className="media">
                                             <div className="media-left align-self-center">
-                                              <img src={image_base_url+(e.coinmarketcap_id ? e.coinmarketcap_id+".png" : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
-                                            </div>
+                                            <img src={(e.token_image ? image_base_url+e.token_image: e.coinmarketcap_id ? cmc_image_base_url+e.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                             </div>
                                             <div className="media-body align-self-center">
                                               <h4 className="media-heading">{e.token_name} </h4>
                                               <p>{(e.symbol).toUpperCase()}</p>
@@ -330,10 +354,12 @@ return (
                                      <td className="market_list_price"> 
                                        <Link href={"/"+e.token_id}>
                                          
-                                         <span className="block_price">{roundNumericValue(e.price)}</span>
+                                         <span className="block_price">{e.price ? "$"+roundNumericValue(e.price):""}</span>
+                                        
+                                         {e.updated_on ? moment(e.updated_on).fromNow():null}
                                            {/* <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(9)):"-"}</span> */}
-                                          {/* <br/> {e.price} <br/> */}
-                                           {e.updated_on ? moment(e.updated_on).fromNow():null} 
+                                          {/* <br/> {e.price}  */}
+                                           {/*   */}
                                          
                                          </Link>
                                     </td>
@@ -387,7 +413,7 @@ return (
                                         e.percent_change_1h?e.percent_change_1h>0?
                                         <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_1h.toFixed(2)+"%"}</span></h6>
                                         :
-                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_1h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="low price"/>{(e.percent_change_1h.toFixed(2)).replace('-', '')+"%"}</span></h6>
                                         :
                                         "--"
                                         }
@@ -401,7 +427,7 @@ return (
                                         e.percent_change_24h?e.percent_change_24h>0?
                                         <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
                                         :
-                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="low price"/>{(e.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
                                         :
                                         "--"
                                         }
@@ -414,7 +440,7 @@ return (
                                         e.percent_change_7d?e.percent_change_7d>0?
                                         <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
                                         :
-                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="low price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
                                         :
                                         "--"
                                         }
@@ -443,7 +469,12 @@ return (
                                      
                                       
                                      <td className="mobile_hide_table_col">
-                                      <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
+                                      {
+                                        e.coinmarketcap_id ?
+                                        <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} style={{width:"170px"}} height="100%"/>
+                                        :
+                                        ""
+                                      }
                                      </td> 
                                        {/* <td  className="mobile_hide_table_col text-center">
                                        {
@@ -563,7 +594,7 @@ return (
             
               <div className="modal-header">
             
-                <button type="button" className="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" /></span></button>
+                <button type="button" className="close" data-dismiss="modal"><span><img src="" alt="Close" /></span></button>
               </div>
               
               <div className="modal-body">

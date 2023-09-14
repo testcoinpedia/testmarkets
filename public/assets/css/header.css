@@ -32,7 +32,7 @@
     text-align: center;
     margin-top: 10px;
     width: 33.33%;
-    border-right: 1px solid #3a325b;
+    border-right: 1px solid #27146b;
     vertical-align: super;
 }
 
@@ -50,8 +50,8 @@
   color: #fab50a;
   font-size: 14px;
   margin-bottom: 4px;
-  font-weight: 300 !important;
-  font-family: 'Ubuntu', sans-serif;
+  font-weight: 200 !important;
+  font-family: 'Space Grotesk';
   margin-top: 1px;
 }
 
@@ -66,21 +66,21 @@
   color: #fff;
   font-size: 13px;
   font-weight: 200 !important;
-  font-family: 'Ubuntu', sans-serif;
-  margin-top: 8px;
+  font-family: "Space grotesk";
+  margin-top: 7px;
 }
 
 .market_live_price h6 .green {
   color: #3ad1ab;
-  font-family: "Ubuntu" !important;
-  font-weight: 200 !important;
+  font-family: 'Space Grotesk' !important;
+  font-weight: 400 !important;
   font-size: 12px !important;
 }
 
 .market_live_price h6 .red {
-  color: #ff767c;
-  font-family: "Ubuntu" !important;
-  font-weight: 200 !important;
+  color: #ff767c !important;
+  font-family: "Space grotesk" !important;
+  font-weight: 400 !important;
   font-size: 12px !important;
 }
 
@@ -98,7 +98,6 @@
 }
 
 .select_launchpad_type {
-  background: #fff !important;
   /* height: 30px !important; */
   /* margin-top: 4px; */
   margin-left: 5px;
@@ -150,7 +149,7 @@
 }
 
 .navbar-expand-lg .navbar-nav .nav-link {
-  padding: 0px 7px 0px 14px !important;
+  padding: 12px 7px 12px 14px !important;
   margin: 10px 0px;
 }
 
@@ -166,7 +165,7 @@
 .track_your_portfolio h4 a{
   font-size: 14px;
   line-height: 1;
-  font-weight: 600 !important;
+  font-weight: 200 !important;
   font-family: 'Space Grotesk';
   color: #000;
 }
@@ -282,9 +281,9 @@ button.active.hiring_btn.mbl {
   background: #f1b50a !important;
 
   margin-top: 14px;
-  margin-left: 14px;
+  margin-left: 20px;
   color: #111 !important;
-  font-weight: 300 !important;
+  font-weight: 600 !important;
   border-radius: 7px;
   padding: 8px 10px !important;
   font-size: 15px !important;
@@ -308,7 +307,7 @@ button.active.hiring_btn.mbl {
 .connect_wallet_header .dropdown_wallet_header {
   right: 0;
   left: auto;
-  top: 60px;
+  /* top: 60px; */
   border: 0;
   padding: 10px 15px;
   min-width: 224px;
@@ -317,25 +316,26 @@ button.active.hiring_btn.mbl {
 }
 
 .market_top_header .connect_wallet_header .connect_wallet {
-  background: #2a1d5d;
+  background: #25126d;
   color: #fff;
-  font-weight: 400;
+  font-weight: 200;
   font-size: 14px;
-  padding: 9px 15px;
+  padding: 10px 15px;
   border-radius: 6px;
-  line-height: 1;
-  margin-top: 12px;
+  line-height: 1.3;
+  margin-top: 13px;
   min-width: 120px;
   max-height: 47px;
-  font-family: 'Ubuntu', sans-serif;
-  height: 38px;
+  font-family: "Space grotesk";
   -webkit-font-smoothing: antialiased;
+  text-transform: capitalize;
+  margin-bottom: 11px;
 }
 
 .market_top_header .connect_wallet_header .connect_wallet .login_img {
   width: 19px;
   margin-right: 10px;
-  vertical-align: middle;
+  vertical-align: sub;
 }
 
 .connect_wallet_header .dropdown_wallet_header .header_reg_btn img {
@@ -356,7 +356,12 @@ button.active.hiring_btn.mbl {
 .connect_wallet_header .dropdown_wallet_header a {
   font-size: 13px;
   padding: 5px 7px;
-  font-weight: 300 !important;
+  font-weight: 500 !important;
+}
+
+.connect_wallet_header .dropdown_wallet_header .dropdown-item:hover{
+  background: #e9eef5 !important;
+    border-radius: 5px;
 }
 
 .connect_wallet_header .dropdown_wallet_header a span {
@@ -365,7 +370,7 @@ button.active.hiring_btn.mbl {
 }
 
 .connect_wallet_header .side-menu-list a:hover {
-  background: #e9eef5;
+  background: #15074d !important;
   border-radius: 5px;
 }
 
@@ -402,30 +407,31 @@ button.active.hiring_btn.mbl {
 .main_menu_header .dropdown .dropdown-menu {
   background: #15074d;
   box-shadow: 0 0 15px #3a325b;
-  /* padding: 7px; */
+  padding: 10px;
   border-radius: 2px;
   min-width: 180px;
   border-top: 2px solid #08f;
   margin-top: 0;
   z-index: 999999;
+  top: 35px
 }
 
 .top_menu_skin {
   padding: 3px 3px 4px;
   width: 42px;
   height: 38px;
-  border-radius: 8px;
+  border-radius: 6px;
   position: relative;
   text-align: center;
   line-height: 2;
 }
 
 .sun {
-  background: #2a1d5d;
+  background: #25126d;
 }
 
 .moon {
-  background: #2a1d5d;
+  background: #25126d;
 }
 
 .top_menu_skin img {
@@ -437,7 +443,7 @@ button.active.hiring_btn.mbl {
 }
 
 .navbar-header {
-  border-bottom: 1px solid #352a61;
+  border-bottom: 1px solid #27146b;
 }
 
 .market_top_header {
@@ -457,7 +463,7 @@ button.active.hiring_btn.mbl {
 
 .main_menu_header {
   padding: 0 !important;
-  margin: 0px 0 6px;
+  margin: 5px 0 6px;
 }
 
 .main_menu_header .navbar-right .header_button i {
@@ -471,9 +477,9 @@ button.active.hiring_btn.mbl {
 
 .main_menu_header .nav > li > a {
   text-transform: capitalize !important;
-  font-weight: 200;
+  font-weight: 100 !important;
   font-size: 15px;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: 'Space Grotesk';
   display: inline;
 }
 
@@ -491,7 +497,7 @@ a:hover {
 }
 
 .main_menu_header .navbar-right li {
-  padding: 10px 0 !important;
+  padding: 6px 0 9px !important;
   margin-left: 10px;
 }
 
@@ -511,7 +517,7 @@ a:hover {
 .email_notification_verify {
   font-size: 11px;
   color: #000;
-  font-weight: 200;
+  font-weight: 600;
   margin-bottom: 0 !important;
 }
 
@@ -528,7 +534,7 @@ a:hover {
   font-size: 14px ;
   padding: 7px 10px !important;
   display: block;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: 'Space Grotesk';
   margin: 0px !important;
 }
 
@@ -602,12 +608,11 @@ a:hover {
 }
 
 .header_button {
-  background-color: #2a1d5d;
-  border-radius: 8px;
+  background-color: #25126d;
+  border-radius: 6px;
   color: #fff;
-  padding: 6px 13px 6px;
+  padding: 6px 12px;
   margin-top: 0px;
-  box-shadow: 0 0 15px #251e44;
   outline: 0 !important;
 }
 
@@ -673,18 +678,19 @@ a:hover {
 
 .track_your_portfolio_desktop {
   display: inline-block;
-  background: #2b1e5b;
+  background: #25126d;
   color: #fff;
   font-size: 14px;
-  font-weight: 300 !important;
-  padding: 8px 10px;
+  font-weight: 200 !important;
+  padding: 7px 15px;
   border-radius: 8px;
-  margin-right: 15px;
+  margin-right: 10px;
+  margin-top: 2px;
 }
 
 .track_your_portfolio_desktop a {
   color: #fff;
-  font-weight: 400;
+  font-weight: 300;
 }
 
 .track_your_portfolio_desktop .growth_icon {
@@ -841,7 +847,7 @@ a:hover {
     color: #000;
     font-size: 12px;
     font-weight: 300 !important;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Space Grotesk';
   }
 
   .mobile_view_crypto h6 .green {
@@ -853,7 +859,7 @@ a:hover {
   }
 
   .market_top_header .connect_wallet_header .connect_wallet {
-    height: 32px;
+
     margin-right: 5px;
     margin-left: 5px;
     font-size: 12px;
@@ -892,6 +898,10 @@ a:hover {
     display: block;
   }
 
+  .navbar-expand-lg .navbar-nav .nav-link{
+    padding: 0 10px 5px !important; 
+  }
+
   .navbar-toggler-icon {
     margin-top: 3px;
   }
@@ -912,7 +922,14 @@ a:hover {
     border-radius: 2px !important;
   }
 
-  
+  .main_menu_header .result_hover {
+    margin-left: 54px !important;
+    border-left: 2px solid #261863 !important;
+    /* padding-left: 25px !important; */
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    background: transparent !important;
+  }
 
   .hiring_btn {
     padding: 25px 0px 23px !important;
@@ -1024,7 +1041,7 @@ a:hover {
     line-height: 22px;
     color: #fff;
     font-weight: 200;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Space Grotesk';
     -webkit-font-smoothing: antialiased;
   }
 
@@ -1240,6 +1257,13 @@ a:hover {
     position: relative;
     top: -2px;
     height: 24px;
+  }
+}
+
+@media(min-width: 769px) {
+  .container {
+    padding-right: 0;
+    padding-left: 0;
   }
 }
 

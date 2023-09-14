@@ -34,7 +34,7 @@ export default function MyFunction()
             <a href={e.yoast_head_json.canonical} title={e.yoast_head_json?.title} alt="price-analysis" target='_blank'>
         <div className='media'>
         <div className='media-left align-self-center'>
-          <img src={e.featured_image_sizes.medium?e.featured_image_sizes.medium:"https://image.coinpedia.org/wp-content/uploads/2023/05/17161211/xrp-1-300x157.webp"}/>
+          <img alt={e.yoast_head_json?.title} src={e.featured_image_sizes.medium?e.featured_image_sizes.medium:"https://image.coinpedia.org/wp-content/uploads/2023/05/17161211/xrp-1-300x157.webp"}/>
         </div>
         <div className='media-body align-self-center'>
           <div className='price_desc'>

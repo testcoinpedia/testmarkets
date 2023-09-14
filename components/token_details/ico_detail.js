@@ -3,300 +3,245 @@ import Link from 'next/link'
 import Head from 'next/head'
 import Axios from 'axios'
 import JsCookie from "js-cookie"
+import { getLaunchpadType } from '../../config/helper' 
+import { roundNumericValue, separator } from '../../components/constants' 
 import moment from 'moment'
 
-export default function MyFunction() {
-   
+export default function MyFunction({launchpads, today_date, token_symbol}) 
+{
+    // console.log("today_date", today_date)
+    // console.log("launchpads", launchpads)
+    const [collapse_value, set_collapse_value] = useState(false)
 
-    const [isOpen, setIsOpen] = useState(false);
-
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
     return (
         <>
-        <div className='ico_details'>
-            <div className='row'>
-                <div className='col-md-7 col-7'>
-                <h4 className='ico_heading' data-toggle="collapse" href="#data_ico">Polkadot (DOT)  ICO - Round 1,</h4>
+        {
+            launchpads.length ?
+            launchpads.map((item, i) =>
+            <div className={'ico_details'+(i > 0 ? " mt-3":"")} key={i}>
+                <div className='row'>
+                    <div className='col-md-7 col-6'>
+                    <h4 className='ico_heading' data-toggle="collapse" href={"#data_ico"+item._id} onClick={()=>set_collapse_value(item._id)}>
+                    {item.title} 
+                    </h4>
+                    {/* - Round 1, */}
+                    </div>
+                    <div className='col-md-5 col-6'>
+                        <div className='ico_status_button'>
+                            <div className={`dropdown `}>
+                                {
+                                    moment(today_date).isBefore(moment(item.start_date).format('ll')) ?
+                                    <button className='upcoming_button ico_button'  >Upcoming</button>
+                                    :
+                                    moment(today_date).isAfter(moment(item.start_date).format('ll')) && moment(today_date).isBefore(item.end_date) ?
+                                    <button className='live_button ico_button' >Live</button>
+                                    :
+                                    moment(moment(item.end_date).format('ll')).isSame(today_date) || moment(moment(item.start_date).format('ll')).isSame(today_date) ?
+                                    <button className='live_button ico_button' >Live</button>
+                                    :
+                                    moment(moment(item.end_date).format('ll')).isBefore(today_date) ?
+                                    <button className='completed_button ico_button'>Ended</button>
+                                    :
+                                    null
+                                }
+                                <img className='dropdown_ico collapsed ' src="/assets/img/dropdown_icon.png" data-toggle="collapse" href={"#data_ico"+item._id} alt="Dropdown" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className='col-md-5 col-5'>
-                <div className='ico_status_button'>
-                    <div className={`dropdown ${isOpen ? 'open' : ''}`}>
-            <button className='live_button ico_button' >Live</button>
-            <img className='dropdown_ico ' onClick={handleToggle} src="/assets/img/dropdown_icon.png" data-toggle="collapse" href="#data_ico" />
-            {/* <button className='upcoming_button ico_button' data-toggle="collapse" href="#data_ico" role="button" aria-expanded="false" aria-controls="collapseExample">Upcoming</button> */}
-            {/* <button className='completed_button ico_button'>Completed</button> */}
-            </div>
-            </div>
-                </div>
-            </div>
+                <h5 className="launchpad_type"><span>{ getLaunchpadType(item.launchpad_type) }</span></h5>
+                {
+                    item.start_date || item.end_date ?
+                    <h6 className='ico_dates'>
+                        {
+                            item.start_date ?
+                            <>
+                            <img src="/assets/img/calander.png" className="calander_vertical_align" alt="Calendar"/>
+                            {moment(item.start_date).utc().format('ll')}
+                            </>
+                            :
+                            ""
+                        }
 
-            
-            
-            <h6 className='ico_dates'>Start Date:  05-APR-2022
-            <span >End Date:  05-APR-2023</span>
-            </h6>
-            <div className='ico_prices'>
-            <div className='row'>
-                <div className='col-md-3'>
+                        {
+                            item.end_date ?
+                            <>
+                            &nbsp;  -  {moment(item.end_date).utc().format('ll')}
+                            </>
+                            :
+                            ""
+                        }
+                    </h6>
+                    :
+                    ""
+                }
+                
+                
+                
+                <div className='ico_prices'>
                     <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>ICO Price</p>
+                        <div className='col-md-3 col-6'>
+                            <div className="ico_detail_block">
+                                <p>ICO Price</p>
+                                <h5>
+                                    {
+                                        item.launchpad_price ?
+                                        <>
+                                            $ {item.launchpad_price}
+                                        </>
+                                        :
+                                        <>
+                                            TBA
+                                        </>
+                                    }
+                                </h5>
+                            </div>
                         </div>
-                        <div className='col-md-12 col-6'>
-                        <h5>$ 0.01</h5>
+                        
+                        
+                        <div className='col-md-3 col-6'>
+                            <div className="ico_detail_block">
+                                <p>Listing Price</p>
+                                <h5 className='values_growth'>
+                                    {
+                                        item.listing_price ?
+                                        <>
+                                        $ {item.listing_price} 
+                                        {
+                                        (((item.listing_price-item.launchpad_price)/item.listing_price)*100).toFixed(2)  > 0 ?
+                                        <span className="green"><img src="/assets/img/markets/high.png" alt="high price" />{(((item.listing_price-item.launchpad_price)/item.launchpad_price)*100).toFixed(2)} %</span>
+                                        :
+                                        (((item.listing_price-item.launchpad_price)/item.listing_price)*100).toFixed(2) < 0 ?
+                                        <span className="red"><img src="/assets/img/markets/low.png" alt="high price" />{(((item.listing_price-item.launchpad_price)/item.launchpad_price)*100).toFixed(2)} %</span>
+                                        :
+                                        ""
+                                        }
+                                        
+                                        </>
+                                        :
+                                        <>TBA</>
+                                    }
+                                </h5>
+                            </div>
                         </div>
+                        
+                        
+                        <div className='col-md-3 col-6'>
+                            <div className="ico_detail_block">
+                                <p>Soft Cap</p>
+                                <h5>
+                                    {
+                                        item.soft_cap ?
+                                        <>$ {item.soft_cap}</>
+                                        :
+                                        <>TBA</>
+                                    }
+                                </h5>
+                            </div>
+                        </div>
+
+                        <div className='col-md-3 col-6'>
+                            <div className="ico_detail_block">
+                                <p>Tokens for Sale</p>
+                                <h5>
+                                    {
+                                        item.tokens_for_sale ?
+                                        <>
+                                            {item.tokens_for_sale} {token_symbol}
+                                        </>
+                                        :
+                                        <>
+                                            TBA
+                                        </>
+                                    }
+                                </h5>
+                            </div>
+                        </div>
+
+                        <div className='col-md-3 col-6'>
+                            <div className='ico_detail_block'>
+                                <p>Access</p>
+                                <h5>
+                                   {
+                                       item.access_type == 1?
+                                       <>
+                                           Public 
+                                       </>
+                                       :
+                                       <>
+                                           Private
+                                       </>
+                                   }
+                                </h5>
+                            </div>
+                        </div>
+                        {
+                            item.percentage_of_total_supply ?
+                            <div className='col-md-3 col-6'>
+                                <div className='ico_detail_block'>
+                                    <p>Total Supply(%)</p>
+                                    <h5>{(item.percentage_of_total_supply).toFixed(2)}%</h5>
+                                </div>
+                            </div>
+                            :
+                            ""
+                        }
+                        
+                        {
+                            item.network_name ?
+                            <div className='col-md-3 col-6'>
+                                <div className='ico_detail_block'>
+                                    <p>Network</p>
+                                    <h5>{item.network_name}</h5>
+                                </div>
+                            </div>
+                            :
+                            ""
+                        }
+                        
+                        {
+                            item.accepts_payments ?
+                            item.accepts_payments[0] ?
+                            <div className='col-md-3  col-6'>
+                                <div className='ico_detail_block'>
+                                    <p>Accept payments</p>
+                                    <h5>
+                                        {
+                                            item.accepts_payments.map((inner, i) =>
+                                            <>
+                                            <span>{inner}{((item.accepts_payments.length-1) != i) ? ', ':""}</span>
+                                            </>
+                                            )
+                                        }
+                                    </h5>
+                                </div>
+                            </div>
+                                :
+                                ""
+                            :
+                            ""
+                        }
                     </div>
-                    
                 </div>
-                <div className='col-md-3'>
-                <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>Listing Price</p>
-                        </div>
-                        <div className='col-md-12 col-6'>
-                        <h5 className='values_growth'>$ 1.05 <span class="green"><img src="/assets/img/markets/high.png" alt="high price" />90.00 %</span></h5>
-                    {/* <h5 class="values_growth">$ 1.05 <span class="red"><img src="/assets/img/markets/low.png" alt="high price" />5.04%</span></h5> */}
-                        </div>
-                    </div>                
-                  
-                </div>
-                <div className='col-md-3'>
-                <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>Soft Cap</p>
-                        </div>
-                        <div className='col-md-12 col-6'>
-                        <h5>$ 9784511561</h5>
-                        </div>
-                    </div>               
-               
-                </div>
-                <div className='col-md-3'>
-                <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>Hard Cap</p>
-                        </div>
-                        <div className='col-md-12 col-6'>
-                        <h5>$ 561265126513</h5>
-                        </div>
-                    </div>
-                   
-                </div>
-                </div>
-            </div>
-            <div className='d-flex'>
-            <ul className='token_share_vote'>
-            <li>BNB</li>
-            <li>Solana</li>
-            <li>ETH</li>
-           <li className='detail_button_ico button_transition '>Buy Now </li>
-           
-            </ul>
-           
-            </div>
-            {/* <Link href="/ico_calendar/" >Ico Calendar </Link> */}
 
-            <div className='detail_airdrop_data collapse' id="data_ico">
-                <h3>
-                Register new for a chance to win DAO tokens
-                </h3>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not o
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not o</p>               
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not o
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not o</p>               
-            
-            </div>
-        </div>
-
-
-
-        <div className='ico_details mt-3'>
-            <div className='row'>
-                <div className='col-md-7 col-7'>
-                <h4 className='ico_heading'  data-toggle="collapse" href="#data_upcoming_ico">Polkadot (DOT)  ICO - Round 1</h4>
+                <div className='where_to_buy'>
+                    {
+                        item.where_to_buy_link ?
+                        <a href={item.where_to_buy_link} target="_blank"  className='detail_button button_transition '>Buy Now</a>
+                        :
+                        ""
+                    }
                 </div>
-                <div className='col-md-5 col-5'>
-                <div className='ico_status_button'>
-                <div className={`dropdown ${isOpen ? 'open' : ''}`}>
-            {/* <button className='live_button ico_button' data-toggle="collapse" href="#data_ico" role="button" aria-expanded="false" aria-controls="collapseExample">Live</button> */}
-            <button className='upcoming_button ico_button'  >Upcoming</button>
-            <img className='dropdown_ico' onClick={handleToggle} src="/assets/img/dropdown_icon.png" data-toggle="collapse" href="#data_upcoming_ico"/>
-            {/* <button className='completed_button ico_button'>Completed</button> */}
-            </div>
-            </div>
-                </div>
-            </div>
-            
-            <h6 className='ico_dates'>Start Date:  05-APR-2022
-            <span >End Date:  05-APR-2023</span>
-            </h6>
-            <div className='ico_prices'>
-            <div className='row'>
-                <div className='col-md-3'>
-                <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>ICO Price</p>
-                            </div>
-                            <div className='col-md-12 col-6'>
-                            <h5>$ 0.01</h5>
-                            </div>
-                            </div>
-                    
-                   
-                </div>
-                <div className='col-md-3'>
-                <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>Listing Price</p>
-                            </div>
-                            <div className='col-md-12 col-6'>
-                            <h5 className='values_growth'>$ 1.05 <span class="green"><img src="/assets/img/markets/high.png" alt="high price" />90.00 %</span></h5>
-                    {/* <h5 class="values_growth">$ 1.05 <span class="red"><img src="/assets/img/markets/low.png" alt="high price" />5.04%</span></h5> */}
-                            </div>
-                            </div>
-               
-                    
-                </div>
-                <div className='col-md-3'>
-                <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>Soft Cap</p>
-                            </div>
-                            <div className='col-md-12 col-6'>
-                            <h5>$ 9784511561</h5>
-                            </div>
-                            </div>
                 
-                    
-                </div>
-                <div className='col-md-3'>
-                <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>Hard Cap</p>
-                            </div>
-                            <div className='col-md-12 col-6'>
-                            <h5>$ 561265126513</h5>
-                            </div>
-                            </div>
-                </div>
+                <div className={'detail_airdrop_data collapse '+(collapse_value == item._id ? "show":"")} id={"data_ico"+item._id}>
+                    <h5>How to Participate?</h5>
+                    <div dangerouslySetInnerHTML={{__html:item.description}} />
                 </div>
             </div>
-            <div className='d-flex'>
-            <ul className='token_share_vote'>
-            <li>BNB</li>
-            <li>Solana</li>
-            <li>ETH</li>
-           <li className='detail_button_ico button_transition '>Buy Now </li>
-            </ul>
-           
-            </div>
-
-            <div className='detail_airdrop_data collapse' id="data_upcoming_ico">
-                <h3>
-               Upcoming details goes here
-                </h3>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not o
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not o</p>               
-            
-            </div>
-        </div>
-
-
-
-        <div className='ico_details mt-3'>
-            <div className='row'>
-                <div className='col-md-7 col-7'>
-                <h4 className='ico_heading' data-toggle="collapse" href="#data_completed_ico">Polkadot (DOT)  ICO - Round 1</h4>
-                </div>
-                <div className='col-md-5 col-5'>
-                <div className='ico_status_button'>
-                <div className={`dropdown ${isOpen ? 'open' : ''}`}>
-            {/* <button className='live_button ico_button' data-toggle="collapse" href="#data_ico" role="button" aria-expanded="false" aria-controls="collapseExample">Live</button> */}
-            {/* <button className='upcoming_button ico_button' data-toggle="collapse" href="#data_ico" role="button" aria-expanded="false" aria-controls="collapseExample">Upcoming</button> */}
-            <button className='completed_button ico_button' data-toggle="toggle" href="#"  >Completed</button>
-            <img className='dropdown_ico' onClick={handleToggle} src="/assets/img/dropdown_icon.png" data-toggle="collapse" href="#data_completed_ico"/>
-            </div>
-                </div>
-            </div>
-            </div>
-            
-            
-            
-            
-            <h6 className='ico_dates'>Start Date:  05-APR-2022
-            <span >End Date:  05-APR-2023</span>
-            </h6>
-            <div className='ico_prices'>
-            <div className='row'>
-                <div className='col-md-3'>
-                <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>ICO Price</p>
-                            </div>
-                            <div className='col-md-12 col-6'>
-                            <h5>$ 0.01</h5>
-                            </div>
-                            </div>                    
-                </div>
-                <div className='col-md-3'>
-                <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>Listing Price</p>
-                            </div>
-                            <div className='col-md-12 col-6'>
-                            {/* <h5 className='values_growth'>$ 1.05 <span class="green"><img src="/assets/img/markets/high.png" alt="high price" />90.00 %</span></h5> */}
-                    <h5 class="values_growth">$ 1.05 <span class="red"><img src="/assets/img/markets/low.png" alt="high price" />5.04%</span></h5>
-                            </div>
-                            </div>
-                    
-                </div>
-                <div className='col-md-3'>
-                <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>Soft Cap</p>
-                            </div>
-                            <div className='col-md-12 col-6'>
-                            <h5>$ 9784511561</h5>
-                            </div>
-                            </div>
-                
-                  
-                </div>
-                <div className='col-md-3'>
-                <div className='row'>
-                        <div className='col-md-12 col-6'>
-                        <p>Hard Cap</p>
-                            </div>
-                            <div className='col-md-12 col-6'>
-                            <h5>$ 561265126513</h5>
-                            </div>
-                            </div>
-               
-                   
-                </div>
-                </div>
-            </div>
-            <div className='d-flex'>
-            <ul className='token_share_vote'>
-            <li>BNB</li>
-            <li>Solana</li>
-            <li>ETH</li>
-           <li className='detail_button_ico button_transition '>Buy Now </li>
-            </ul>
-           
-            </div>
-
-            <div className='detail_airdrop_data collapse' id="data_completed_ico">
-                <h3>
-               Completed details goes here
-                </h3>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not o
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not o</p>               
-           
-            </div>
-        </div>
+            )
+            :
+            ""
+        }
         </>
     )
 }

@@ -11,10 +11,7 @@ export default function TokenDetail({token})
 {   
     const [line_graph_values, set_line_graph_values] = useState([])
     const [line_graph_days, set_line_graph_days] = useState([])
-
-   
     
-
     useEffect( async ()=>
     {
       const past7Days = [...Array(8).keys()].map(index => {

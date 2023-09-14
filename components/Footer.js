@@ -40,49 +40,69 @@ export default function Footer (){
                         <h5>Follow Us</h5>	
 
                         <ul className="social-icons">
-                           <li className="social-icons-item">
+                        <li className="social-icons-item">
                               <a className="social-link rss-social-icon" rel="external noopener nofollow" target="_blank" href="https://coinpedia.org/feed/">
-                                 <img src="/assets/img/social-icons/rss.svg" />
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/rss.svg" alt="rss" title="rss" />
                               </a>
                            </li>
                            <li className="social-icons-item">
                               <a className="social-link facebook-social-icon" rel="external noopener nofollow" target="_blank" href="https://www.facebook.com/Coinpedia.org/">
-                              <img src="/assets/img/social-icons/facebook.svg" />
+                              <img src="https://image.coinpedia.org/app_uploads/social_icons/facebook.svg" alt="Facebook" title="Facebook" />
                               </a>
                            </li>
                            <li className="social-icons-item">
                               <a className="social-link twitter-social-icon" rel="external noopener nofollow" target="_blank" href="https://twitter.com/Coinpedianews">
-                                 <img src="/assets/img/social-icons/twitter.svg" />
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/twitter.svg" alt="Twitter" title="Twitter" />
                               </a>
                            </li>
                            <li className="social-icons-item">
-                              <a className="social-link pinterest-social-icon" rel="external noopener nofollow" target="_blank" href="https://pin.it/2Dwfamj">
-                                 <img src="/assets/img/social-icons/pinterest.svg" />
+                              <a className="social-link pinterest-social-icon" rel="external noopener nofollow" target="_blank" href="https://in.pinterest.com/CoinpediaNews/">
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/pinterest.svg" alt="Pinterest" title="Pinterest" />
                               </a>
                            </li>
                            <li className="social-icons-item">
                               <a className="social-link linkedin-social-icon" rel="external noopener nofollow" target="_blank" href="https://in.linkedin.com/company/coinpedia">
-                                 <img src="/assets/img/social-icons/linkedin.svg" />
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/linkedin.svg" alt="Linkedin" title="Linkedin" />
                               </a>
                            </li>
-                           <li className="social-icons-item">
+                           {/* <li className="social-icons-item">
                               <a className="social-link reddit-social-icon" rel="external noopener nofollow" target="_blank" href="https://www.reddit.com/user/Coinpedia_news">
-                                 <img src="/assets/img/social-icons/reddit.svg" />
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/reddit.svg" alt="Reddit" title="Reddit" />
                               </a>
-                           </li>
+                           </li> */}
                            <li className="social-icons-item">
                               <a className="social-link instagram-social-icon" rel="external noopener nofollow" target="_blank" href="https://www.instagram.com/coinpedianews/">
-                                 <img src="/assets/img/social-icons/instagram.svg" />
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/instagram.svg" alt="Instagram" title="Instagram" />
                               </a>
                            </li>
                            <li className="social-icons-item">
-                              <a className="social-link medium-social-icon" rel="external noopener nofollow" target="_blank" href="https://coinpedianews.medium.com/">
-                                 <img src="/assets/img/social-icons/medium.svg" />
+                              <a className="social-link medium-social-icon" rel="external noopener nofollow" target="_blank" href="https://coinpediasfintechnews.medium.com/">
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/medium.svg" alt="Medium" title="Medium" />
                               </a>
                            </li>
                            <li className="social-icons-item">
                               <a className="social-link telegram-social-icon" rel="external noopener nofollow" target="_blank" href="https://t.me/CoinpediaMarket">
-                                 <img src="/assets/img/social-icons/telegram.svg" />
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/telegram.svg" alt="Telegram" title="Telegram" />
+                              </a>
+                           </li>
+                           <li className="social-icons-item">
+                              <a className="social-link telegram-social-icon" rel="external noopener nofollow" target="_blank" href="https://steemit.com/@coinpediacrypto">
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/steemit.svg" alt="Steemit" title="Steemit" />
+                              </a>
+                           </li>
+                           <li className="social-icons-item">
+                              <a className="social-link telegram-social-icon" rel="external noopener nofollow" target="_blank" href="https://www.quora.com/profile/Coinpedia-Fintech-News">
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/quora.svg" alt="Quora" title="Quora" />
+                              </a>
+                           </li>
+                           <li className="social-icons-item">
+                              <a className="social-link telegram-social-icon" rel="external noopener nofollow" target="_blank" href="https://coinpedian.substack.com/">
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/substack.svg" alt="Substack" title="Substack" />
+                              </a>
+                           </li>
+                           <li className="social-icons-item">
+                              <a className="social-link telegram-social-icon" rel="external noopener nofollow" target="_blank" href="https://gettr.com/user/coinpediafintechnews">
+                                 <img src="https://image.coinpedia.org/app_uploads/social_icons/gettr.svg" alt="Gettr" title="Gettr" />
                               </a>
                            </li>
                         </ul>
@@ -98,7 +118,7 @@ export default function Footer (){
                <li className="footer_menu_items"><a href="https://coinpedia.org/crypto-live-news/"><img src="https://image.coinpedia.org/wp-content/uploads/2022/11/09190601/footer_news.svg" alt="News" title="News" /><span className="footer_live_span">Live </span><span>News</span></a></li>
                <li className="center_fixed_menu_img"><img src="https://image.coinpedia.org/wp-content/uploads/2022/11/09190559/footer_logo.svg" alt="Icon" title="Icon" /></li>
                <li className="footer_menu_items"><a href="https://markets.coinpedia.org/"><img src="https://image.coinpedia.org/wp-content/uploads/2022/11/09190558/footer_market.svg" alt="Market" title="Market" /><span>Market</span></a></li>
-               <li className="footer_menu_items"><a href="https://app.coinpedia.org/"><img src="https://image.coinpedia.org/wp-content/uploads/2022/11/09190600/footer_portfolio.svg" alt="Portfolio" title="Portfolio" /><span>Portfolio</span></a></li>
+               <li className="footer_menu_items"><a href="https://markets.coinpedia.org/portfolio/"><img src="https://image.coinpedia.org/wp-content/uploads/2022/11/09190600/footer_portfolio.svg" alt="Portfolio" title="Portfolio" /><span>Portfolio</span></a></li>
             </ul>
          </div>
 
@@ -107,7 +127,7 @@ export default function Footer (){
                <div className="row">  
                   <div className="col-md-12">
                      <div className="copyright-text copyright-text-first">© Copyright {today. getFullYear()}, All Rights Reserved &nbsp;|&nbsp; 
-                        <img src="/assets/img/heart.svg" className="red_heart" /> 
+                        <img src="/assets/img/heart.svg" className="red_heart" alt="Red Heart"  /> 
                         <a href={coinpedia_url} target="_blank" rel="nofollow noopener">Coinpedia</a>
                      </div>  
                   

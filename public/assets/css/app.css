@@ -156,6 +156,8 @@ body.dark .notifications__input {
   color: #ffffff;
 }
 
+
+
 body.dark .notifications__start .icon {
   fill: #ffffff;
 }
@@ -442,6 +444,8 @@ body.dark .orders__price {
   -o-transition: all 0.2s;
   transition: all 0.2s;
 }
+
+
 
 .actions__link:hover {
   color: #11142d;
@@ -4919,6 +4923,8 @@ p{
   height: 40px;
   background: #e5eaee;
 }
+
+
 
 .token_list_table .form-control {
   border: 0;

@@ -83,3 +83,42 @@ export const USDFormatValue=(value, type)=>
   
   
 }
+
+export const getLaunchpadType = (launchpad_type) =>
+{
+  var newArray = launchpads_types_list.filter(function (el) {
+    return el._id == launchpad_type
+  })
+  return newArray[0]?.type_name
+}
+
+export const launchpads_types_list = [
+  {
+    _id:1,
+    type_name:"ICO"
+  },
+  {
+    _id:2,
+    type_name:"IDO"
+  },
+  {
+    _id:3,
+    type_name:"IEO"
+  },
+  {
+    _id:4,
+    type_name:"IGO"
+  },
+  {
+    _id:5,
+    type_name:"Presale"
+  },
+  {
+    _id:6,
+    type_name:"Private Sale"
+  },
+  {
+    _id:7,
+    type_name:"Seed Sale"
+  }
+]

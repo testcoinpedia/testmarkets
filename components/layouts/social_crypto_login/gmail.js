@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import Web3 from 'web3'  
 import { useRouter } from 'next/router'
 import { useSelector,useDispatch } from 'react-redux'
-import {API_BASE_URL, cookieDomainExtension, config, googleClientId, setLoginData} from '../../../components/constants'
+import {API_BASE_URL, cookieDomainExtension, config, googleClientId, setLoginData} from '../../constants'
 import JsCookie from "js-cookie" 
 import { GoogleLogin } from 'react-google-login'
 import Axios from 'axios'
@@ -32,37 +32,7 @@ export default function LoginWithGmail({prev_url})
             {   
                 setLoginData(res.data.message)
                 dispatch({type:'loginAccount', data:res.data.message})
-                if(prev_url)
-                {
-                    router.push(prev_url) 
-                }
-                else
-                {
-                    router.push('/')
-                }
-
-                // if(res.data.message.registered_status)
-                // {
-                    
-                //     JsCookie.set('register_type',3) 
-                    
-                // }
-                // else
-                // {
-                //     JsCookie.set('register_type',3) 
-                //     JsCookie.set("temp_email_id",response.profileObj.email)
-                //     JsCookie.set("temp_full_name",response.profileObj.name)
-                //     JsCookie.set("temp_google_id",response.profileObj.googleId)
-                //     if(prev_url)
-                //     {
-                //       router.push('/confirm-details?prev_url='+prev_url) 
-                //     }
-                //     else
-                //     {
-                //       router.push('/confirm-details')
-                //     }    
-                //     router.push()
-                // }
+                router.push('/')
           }
           else
           {
@@ -80,6 +50,7 @@ export default function LoginWithGmail({prev_url})
 
 return( 
     <>
+        <div className='gmail-section'>
         <GoogleLogin
             className="gmail-login-div "
             clientId={clientId}
@@ -101,6 +72,7 @@ return(
         </div>
    
         </GoogleLogin>
+        </div>
     </>  
  ) 
 }

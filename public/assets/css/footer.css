@@ -8,16 +8,16 @@
     color: #fff;
     font-size: 13px;
     font-weight: 200;
-    font-family: "Ubuntu";
+    font-family: 'Space Grotesk';
   }
   
   #footer .normal-side h5 {
     color: #fff;
     font-size: 15px;
     min-height: 15px;
-    font-weight: 400 !important;
-    font-family: "Ubuntu";
-    margin-bottom: 0 !important;
+    font-weight: 600 !important;
+    font-family: 'Space Grotesk';
+    /* margin-bottom: 0 !important; */
   }
   
   /* #footer .normal-side h5:after {
@@ -39,7 +39,7 @@
   #footer .twitter_side .media p {
     font-size: 13px !important;
     color: #fff !important;
-    font-family: "Ubuntu";
+    font-family: 'Space Grotesk';
     font-weight: 200 !important;
   }
   
@@ -84,7 +84,7 @@
   
   #footer .social-icons li {
     display: inline-block;
-    margin-right: 7px;
+    margin-right: 8px;
   }
   
   #footer .social-icons li img {
@@ -109,7 +109,7 @@
   .sticky_footer_menu ul .footer_menu_items a span {
     color: #fff;
     font-size: 11px;
-    font-family: "Ubuntu";
+    font-family: 'Space Grotesk';
     font-weight: 300;
   }
   
@@ -152,7 +152,7 @@
     font-size: 13px;
     font-weight: 200;
     float: left;
-    font-family: "Ubuntu";
+    font-family: 'Space Grotesk';
   }
   
   #footer #menu-footer-menu li {
@@ -164,7 +164,7 @@
     margin: 0 10px;
     font-size: 13px;
     font-weight: 200;
-    font-family: "Ubuntu";
+    font-family: 'Space Grotesk';
   }
   
   #site-info {

@@ -313,10 +313,15 @@ export default function TransactionFun({networks, addresses})
         <div className="companies_list">
             <div className="padding_div_for_web">
                 <div className="row">
-                    <div className="col-md-8 col-xl-8 col-lg-8 col-5">
-                        <h6 className='portfolio-sub-title'>Transactions </h6>
+                    <div className="col-md-8 col-xl-8 col-lg-8 col-6">
+                        {
+                            addresses.length > 0 ?
+                                <h6 className='portfolio-sub-title active_wallet_address_display'> Active Wallet Address: <span>{getShortWalletAddress(addresses[0])}</span></h6>
+                            :
+                                ""
+                        }
                     </div>
-                    <div className="col-md-4 col-xl-4 col-lg-4 col-7">
+                    <div className="col-md-4 col-xl-4 col-lg-4 col-6">
                         <div className="dropdown asset_view_dropdown">
                             <button className="dropdown-toggle" type="button" data-toggle="dropdown">
                                 {
@@ -330,8 +335,8 @@ export default function TransactionFun({networks, addresses})
                                 <img src="/assets/img/filter_dropdown.svg" /> 
                             </button>
                             <ul className="dropdown-menu">
-                                <li onClick={()=>set_toggle(true)} > <img src="/assets/img/recent_transaction.svg" width="18px" /> &nbsp; Recent </li>
-                                <li  onClick={()=>set_toggle(false)} > <img src="/assets/img/all_transaction.svg" width="18px" />  &nbsp; All </li>
+                                <li onClick={()=>set_toggle(true)} > <img src="/assets/img/recent_transaction.svg" width="18px" alt="Recent"/> &nbsp; Recent </li>
+                                <li  onClick={()=>set_toggle(false)} > <img src="/assets/img/all_transaction.svg" width="18px" alt="All"/>  &nbsp; All </li>
                             </ul>
                         </div>
                     </div>
@@ -339,12 +344,7 @@ export default function TransactionFun({networks, addresses})
                 {
                         toggle == true ?
                 <div className='new_page_table profile_page_table '>
-                    {
-                        addresses.length > 0 ?
-                        <h6 className="active_wallet_address"> Active Wallet Address: <span>{getShortWalletAddress(addresses[0])}</span></h6>
-                        :
-                        ""
-                    }
+                    
 
                   
                     
@@ -395,7 +395,7 @@ export default function TransactionFun({networks, addresses})
                                                     :
                                                 (e.txnType == 5) || (e.txnType == 6) ?
                                                 <>
-                                                <img className="txn-netwok" src="assets/img/portfolio/ftm.svg" alt="Token" title="Token" />
+                                                <img className="txn-netwok" src="/assets/img/portfolio/ftm.svg" alt="Token" title="Token" />
                                                 </>
                                                 :
                                                 (e.txnType == 7) || (e.txnType == 8) ?
@@ -533,7 +533,7 @@ export default function TransactionFun({networks, addresses})
                                         }
                                         </div>
                                         <div className='media-right align-self-center'>
-                                        <img src="/assets/img/info_icon.png"  className='info_icon_trans' onClick={()=>getTokenDetail(e)} />
+                                        <img src="/assets/img/info_icon.png" alt="info" className='info_icon_trans' onClick={()=>getTokenDetail(e)} />
                                         </div>
                                         </div>
                                             
@@ -578,7 +578,7 @@ export default function TransactionFun({networks, addresses})
                 <div className="modal-dialog " >
                     <div className="modal-content">
                         <div className="modal-body">
-                            <div className='transaction_detail_modal'><h4 >Transaction Details<span><button type="button" className="close close_wallet" onClick={()=> set_transaction_details_modal_status(false)} data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" /></button></span></h4></div>
+                            <div className='transaction_detail_modal'><h4>Transaction Details<span><button type="button" className="close close_wallet" onClick={()=> set_transaction_details_modal_status(false)} data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt="close" /></button></span></h4></div>
                             {
                                 transaction_detail ?
                                 <TransactionDetail transaction={transaction_detail} />

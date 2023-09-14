@@ -238,7 +238,7 @@ export default function AnalyticsFun({data})
 
     const walletTxnsList = async()=>
     {   
-//         network
+// network
 // wallet_address
 // token_allocation_values
 // token_allocation_names
@@ -356,70 +356,47 @@ export default function AnalyticsFun({data})
           </div>
         </div>
           <div className="row">
-              
-            <div className="col-md-6">
-              {
-                tokens_balance ?
-                  <div className="dex-donot-pichart charts_subtitle">
-                    <h6 >Chain Allocation</h6>
-                    <p>Diversify crypto portfolio by allocating across different blockchains. </p>
-                  <div className="row">
-                    <div className="col-md-12 col-lg-8 offset-lg-2 ">
-                          <div  >
-                            
-                              <div className="donot-pi-chart-section" id="chart">
-                                <ReactApexChart options={options} series={pi_chart_values} type="donut" />
-                              </div>
-                          </div>
-                        </div>
-                  </div>
-                  </div>
-                  :
-                  ""
-              }
-            </div>
-        
-            <div className="col-md-6">
-              {
-                tokens_balance ?
-                <div className="dex-donot-pichart charts_subtitle">
-                   <h6 >Token Allocation</h6>
-                   <p>Minimize risk through diversified asset allocation in investment portfolio.</p>
-                  <div className="row">
-                    <div className="col-md-12 col-lg-8 offset-lg-2 ">
-                      <div  >
-                     
-                        <div className="donot-pi-chart-section" id="chart">
-                        <ReactApexChart options={options2} series={token_allocation_values} type="donut" />
-                        </div>
-                    </div>
-                </div>
-                </div>
-                </div>
-                :
-                ""
-              }
-            </div>
-          </div>
-        
-        <div className="row">
-          
-          <div className="col-md-6">
+            <div className="col-md-8">
               <div className="line-chart-asset-worth charts_subtitle dex-donot-pichart">
                 <h6 >Asset Worth</h6>
                 <p>Last 7 days approximate assets value based on present token holdings</p>
                 <ReactApexChart options={line_chart_options} series={line_chart_series} type="area" height={350} />
               </div>
 
-            </div> 
-            <div className="col-md-6"> 
               <div className="line-chart-asset-worth charts_subtitle dex-donot-pichart">
                 <h6 >Daily Profits and Loss</h6>
                 <p>Daily profit and loss based on current token holdings</p>
                 <ReactApexChart options={profit_loss_options} series={profit_loss_series} type="bar" height={350} />
               </div>
-          </div>
-        
+            </div>
+            <div className="col-md-4">
+              {
+                tokens_balance ?
+                  <div className="dex-donot-pichart charts_subtitle">
+                    <h6 >Chain Allocation</h6>
+                    <p>Diversify crypto portfolio by allocating across different blockchains. </p>
+                    
+                    <div className="donot-pi-chart-section" id="chart">
+                      <ReactApexChart options={options} series={pi_chart_values} type="donut" />
+                    </div>
+                  </div>    
+                  :
+                  ""
+                }
+
+              {
+                tokens_balance ?
+                <div className="dex-donot-pichart charts_subtitle">
+                  <h6 >Token Allocation</h6>
+                  <p>Minimize risk through diversified asset allocation in investment portfolio.</p>
+                  <div className="donot-pi-chart-section" id="chart">
+                    <ReactApexChart options={options2} series={token_allocation_values} type="donut" />
+                  </div>
+                </div>
+                :
+                ""
+              }
+            </div>
           </div>
         
         </>

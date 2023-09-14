@@ -1,428 +1,417 @@
-
-
-import React , {useState, useEffect} from 'react';  
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import Axios from 'axios'; 
-import Head from 'next/head';
+import Head from 'next/head'
+import Axios from 'axios'
+import { getLaunchpadType } from '../../config/helper'
+import { API_BASE_URL, market_coinpedia_url, config, IMAGE_BASE_URL} from '../../components/constants'; 
 import cookie from 'cookie'
-import ReactPaginate from 'react-paginate' 
-import { API_BASE_URL,config, app_coinpedia_url, separator,IMAGE_BASE_URL,market_coinpedia_url, coinpedia_url} from '../../components/constants' 
-import TableContentLoader from '../../components/loaders/tableLoader'
 import moment from 'moment'
- 
-export default function UpcomingLaunchPad({userAgent}) 
-{ 
-  const [user_token] = useState(userAgent.user_token)
-  const [upcoming, setUpcoming] = useState([])
-  const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/")
-  const [apistatus, setapistatus] = useState(false)
-  const [watchlist, set_watchlist] = useState([])
- 
-  const [perPage, set_perPage] = useState(100)
-  const [currentPage, setCurrentPage] = useState(0);
-  const [pageCount, setPageCount] = useState(0)
-  const [count, setCount]=useState()
-  const [firstcount, setfirstcount] = useState(1)
-  const [finalcount, setfinalcount] = useState(perPage)
-  const [selectedPage, setSelectedPage] = useState(0) 
-  const [sl_no, set_sl_no]=useState(0)
+import JsCookie from "js-cookie"
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import ICO_header from '../../components/ico_calender/header'
 
-
-  useEffect(()=>{ 
-    GetAllUpcoming({selected:0})
-  },[perPage])
-
-  const GetAllUpcoming = async (page)=>
-  { 
-    let current_pages = 0 
-      if(page.selected) 
-      {
-         current_pages = ((page.selected) * perPage) 
-      } 
-
-    const response = await Axios.get(API_BASE_URL+"markets/launchpads/upcoming/"+current_pages+'/'+perPage, config(user_token))
-    if(response.data)
-    {
-        setapistatus(true)
-        if(response.data.status == true)
-        {  
-            setUpcoming(response.data.message) 
-            set_watchlist(response.data.watchlist)
-            setCount(response.data.count)
-            setPageCount(Math.ceil(response.data.count/perPage))
-            setCurrentPage(page.selected)
-            set_sl_no(current_pages)
-            setfirstcount(current_pages+1)
-            const presentPage = page.selected+1
-            const totalcompany = response.data.count
-            var sadf = presentPage*perPage
-            if((presentPage*perPage) > totalcompany)
-            {
-            sadf = totalcompany
-            }
-            const final_count=sadf
-            setfinalcount(final_count)
-          }
-      }
-  } 
-
-  const addToWatchlist = (param_token_id) =>
-  {
-    Axios.get(API_BASE_URL+"markets/token_watchlist/add_to_watchlist/"+param_token_id, config(user_token))
-    .then(res=>
-    { 
-      // console.log("add", res.data)
-      if(res.data.status)
-      {
-        var sdawatchlist = watchlist
-        set_watchlist([])
-        sdawatchlist.push(param_token_id)
-        set_watchlist(sdawatchlist)
-        // console.log("watchlist", watchlist)
-      }
-    })
-  }
-  
-  const removeFromWatchlist = (param_token_id) =>
-  {
-    Axios.get(API_BASE_URL+"markets/token_watchlist/remove_from_watchlist/"+param_token_id, config(user_token))
-    .then(res=>
-    {
-      // console.log("remove", res.data)
-      if(res.data.status)
-      {
-        var sdawatchlist = watchlist
-        set_watchlist([])
-        sdawatchlist.splice(sdawatchlist.indexOf(param_token_id), 1)
-        set_watchlist(sdawatchlist)
-        // console.log("watchlist", watchlist)
-      }
-    })
-  }
-
- 
-  const makeJobSchema=()=>
-  {  
-    return { 
-        "@context":"http://schema.org/",
-        "@type":"Organization",
-        "name":"Upcoming Launchpads",
-        "url":market_coinpedia_url,
-        "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
-        "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
-      }  
-  }
-
-  return(
-    <>
-      <Head>
-        <title>Explore Upcoming Crypto Launchpads | Coinpedia Markets </title>
-        <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
-        <meta name="description" content="Discover Upcoming Launchpad list. Explore and compare Top crypto launchpads. Have a glance on listed successful Launchpads." />
-        <meta name="keywords" content="Upcoming Crypto Launchpads, Crypto launchpad list , Crypto launchpad platforms, top launchpad crypto, crypto launchpad projects." />
-
-        <meta property="og:locale" content="en_US" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Explore Upcoming Crypto Launchpads | Coinpedia Markets " />
-        <meta property="og:description" content="Discover Upcoming Launchpad list. Explore and compare Top crypto launchpads. Have a glance on listed successful Launchpads." />
-        <meta property="og:url" content={market_coinpedia_url+"launchpad/upcoming"} />
-        <meta property="og:site_name" content="Explore Upcoming Crypto Launchpads | Coinpedia Markets " />
-        <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
-        <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
-        <meta property="og:image:width" content="400" />
-        <meta property="og:image:height" content="400" />  
-        
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@coinpedia" />
-        <meta name="twitter:creator" content="@coinpedia" />
-        <meta name="twitter:title" content="Explore Upcoming Crypto Launchpads | Coinpedia Markets " />
-        <meta name="twitter:description" content="Discover Upcoming Launchpad list. Explore and compare Top crypto launchpads. Have a glance on listed successful Launchpads." />
-        <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
-
-        <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
-        <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
-
-        <link rel="canonical" href={market_coinpedia_url+"launchpad/upcoming"} />
-
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
-      </Head>
-        <div className="page">
-          <div className=" launchpad">
-              <div className="container">
-              <div className="col-md-12">
-              {/* <div className="breadcrumb_block">
-              <Link href={coinpedia_url}>Home </Link> <span> &#62; </span> 
-              <Link href={market_coinpedia_url}>Live Market </Link><span> &#62; </span> Upcoming Launchpads
-               </div>  */}
-              <div className="row launchpad_list">
-                <div className="col-md-8 col-12">
-                  <h1 className="page_title">Upcoming launchpad List</h1>
-                  <p>Here’s the list of the top upcoming  crypto launchpads in 2022 you need to consider.</p>
-                </div>
-                <div className="col-md-4 col-12">
-                      <div className="launchpad-toke-button">
-                        {/* <Link href="/launchpad/create-token"><a><button className="wallets__btn btn_blue">
-                          <span className="btn__text"><img src="/assets/img/create-token-icon.png" />Create token</span>
-                        </button></a></Link> */}
-                        <Link href={user_token ? "/token/create-new":app_coinpedia_url+"login" }><button className="btn_create button_transition">
-                          <span className="btn__text">List your Token</span>
-                        </button> </Link>
-                      </div>
-                </div> 
-              </div>
-
-              <div className="row">
-                <div className="tabs_for_navigation">
-                  <ul className="nav nav-tabs">
-                    <li><Link href="/launchpad"> <span>Overview</span> </Link></li>
-                    <li><Link href="/launchpad/ongoing"> <span>Ongoing</span> </Link></li>
-                    <li><Link href="/launchpad/upcoming" className="active"><span>Upcoming</span> </Link></li>
-                    <li><Link href="/launchpad/ended"> <span>Completed</span> </Link></li>
-                  </ul>
-                </div>
-              </div>
- 
-              
-
-              <div className="completed_events">
-                <div className="row">
-                  <div className="col-md-9 col-6">
-                    <ul className="category_list">
-                      <li className="active_tab">All</li>
-                      {
-                              user_token?
-                              <li><Link href="/watchlist"> <img src="/assets/img/star.svg" alt="Watchlist"/> Watchlist </Link></li>
-                              :
-                              <li>
-                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/upcoming"} onClick={()=> Logout()}><img src="/assets/img/star.svg" alt="Watchlist"/> Watchlist </Link>
-                              </li>
-                            }
-                      {/* <li><Link href={app_coinpedia_url+"?active_watchlist_tab=2"}><a><img src="/assets/img/wishlist_star.svg" alt="Watchlist"/> Watchlist</a></Link></li> */}
-                      <li className="inactive"  data-toggle="modal" data-target="#comingSoon">DeFi</li>
-                      <li className="inactive" data-toggle="modal" data-target="#comingSoon">NFT</li>
-                      <li className="inactive" data-toggle="modal" data-target="#comingSoon">Metaverse</li>
-                      <li className="inactive" data-toggle="modal" data-target="#comingSoon">Polkadot</li>
-                      <li className="inactive" data-toggle="modal" data-target="#comingSoon">BSC</li>
-                      <li className="inactive" data-toggle="modal" data-target="#comingSoon">Solana</li>
-                      <li className="inactive" data-toggle="modal" data-target="#comingSoon">Avalanche</li>
-                    </ul>
-                  </div>
-
-                  {
-                  <div className="col-md-3 col-6">
-                    <ul className="filter_rows">
-                      <li>
-                        Show rows 
-                        <select onChange={(e)=>set_perPage(e.target.value)}>
-                        <option value={100}>100</option>
-                          <option value={50}>50</option>
-                          <option value={20}>20</option>
-                        </select>
-                      </li>
-                    </ul>
-                  </div>
-                  }
-                </div>
-
-                <div className="table-responsive">
-                  <table className="table table-borderless">
-                    <thead>
-                      <tr>
-                        <th style={{width: '40px'}} className="mobile_hide"></th>
-                        <th style={{width: '40px'}} className="mobile_hide">#</th>
-                        <th className="ongoing_token mobile_th_fixed">Project</th>
-                        <th>Price</th>
-                        <th className="">Network</th>
-                        {/* <th className="table_live_price">Total Supply</th> */}
-                        <th className="">Type</th>
-                        {/* <th className="">Holders</th>
-                        <th className="">Trading On</th> */}
-                        <th className="ongoing_date">Start Date</th>
-                        <th className="ongoing_date">End Date</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                       
-                   {     
-                      upcoming.length > 0 ?
-                         upcoming.map((e,i)=> 
-                                   
-                        <tr key={i}>
-                          <td className="mobile_hide">
-                          {
-                            user_token ?
-                            <>
-                            {
-                              watchlist.includes(e.token_row_id) ?
-                              <span onClick={()=>removeFromWatchlist(e.token_row_id)} ><img src="/assets/img/color.svg" alt="Watchlist"/></span>
-                              :
-                              <span onClick={()=>addToWatchlist(e.token_row_id)} ><img src="/assets/img/star.svg" alt="Watchlist"/></span>
-                              }
-                            </>
-                            :
-                            <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url+"launchpad/upcoming"}><a onClick={()=> Logout()}><img src="/assets/img/star.svg" alt="Watchlist"/></a></Link>
-                          }
-                          </td>
-                          <td className="mobile_hide">{sl_no+i+1}</td>
-                          <td className="mobile_td_fixed">
-                            <a href={"/"+e.token_id}>
-                              <div class="media">
-                              <div className='media-left align-self-center'>
-                                <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="Logo" />
-                                </div>
-                                <div class="media-body align-self-center">
-                                  <h5 className="launchpad_token_title">{e.token_name} <span>{e.symbol}</span></h5>
-                                </div>
-                              </div>
-                            </a>
-                          </td>
-                          <td>
-                            <a href={"/"+e.token_id}><h5>{e.price ? "$"+parseFloat(e.price) : "-"}</h5></a>
-                          </td>
-                          <td className="market_list_price">
-                                  <a href={"/"+e.token_id}><h5>
-                                    {/* <img src="/assets/img/bnb.svg" />  */}
-                                    {
-                                      e.network_type.length > 0 
-                                      ?
-                                        e.network_type.map((ntwrk,i)=>
-                                        {
-                                          if(ntwrk.network_type == 1)
-                                          {
-                                            return <>{i>0 ? "," : null} ETH</>
-                                          }
-                                          else if(ntwrk.network_type == 2)
-                                          {
-                                            return <>{i>0 ? "," : null} BSC</>
-                                          }
-                                          
-                                        }
-                                        )
-                                      :
-                                      "-"
-                                    }
-                                  </h5></a>
-                                </td>
-                          {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>{e.token_max_supply ? separator(parseFloat(e.token_max_supply)) : "-"}</h5></a></td> */}
-                          <td className="market_list_price"><a href={"/"+e.token_id}><h5><a>
-                          {
-                          e.launch_pad_type==1
-                          ?
-                          "ICO"
-                          :
-                          e.launch_pad_type==2
-                          ?
-                          "IDO"
-                          :
-                          e.launch_pad_type==3
-                          ?
-                          "IEO"
-                          :
-                          null
-                          }
-                      </a></h5></a>
-                          </td>
-                          {/* <td className="market_list_price"><a href={"/"+e.token_id}><h5>88778899</h5></a></td>
-                          <td className="market_list_price networks_type"><a href={"/"+e.token_id}><h5><img src="/assets/img/pancake.jpg" /><img src="/assets/img/sushi.jpg" /> +2 More</h5></a></td> */}
-                          <td className="table_date"><p>{moment.utc(e.start_date).format("MMM D, YYYY")}</p></td>
-                          <td className="table_date"><p>{moment.utc(e.end_date).format("MMM D, YYYY")}</p></td>
-                        </tr>
-
-                      )
-                            :
-                            <>
-                         {
-                           apistatus ?
-                            <tr key="1">
-                              <td className="text-lg-center text-md-left no_data_found" colSpan="8">
-                                Sorry, No related data found.
-                              </td>
-                            </tr>
-                            :
-                          <TableContentLoader row="5" col="8" />
-                         }
-                         </>
-                        } 
-                    </tbody>
-                  </table>
-                </div>
-
-                {
-                   
-                   <div className="col-md-12">
-                    <div className="pagination_block">
-                      <div className="row">
-                        <div className="col-lg-3 col-md-3  col-sm-3 col-12">
-                            <p className="page_range">{firstcount}-{finalcount} of {pageCount} Pages</p>
-                        </div>
-                        {
-                          count > perPage?
-                        <div className="col-lg-9 col-md-9 col-sm-9 col-12">
-                          <div className="pagination_div">
-                            <div className="pagination_element">
-                              <div className="pager__list pagination_element"> 
-                                <ReactPaginate 
-                                  previousLabel={currentPage+1 !== 1 ? "←" : ""}
-                                  nextLabel={currentPage+1 !== pageCount ? " →" : ""}
-                                  breakLabel={"..."}
-                                  breakClassName={"break-me"}
-                                  forcePage={selectedPage}
-                                  pageCount={pageCount}
-                                  marginPagesDisplayed={2} 
-                                  onPageChange={GetAllUpcoming}
-                                  containerClassName={"pagination"}
-                                  subContainerClassName={"pages pagination"}
-                                  activeClassName={"active"} />
-                              </div> 
-                            </div>
-                          </div>
-                        </div>
-                        :
-                        ""
-                        }
-                      </div>
-                    </div>
-                  </div>
-                   
-                }
-
-                <div className="launchpad_overview_data">
-                    <h3>Upcoming</h3>
-                    <p>Discover upcoming ICOs, IEOs, IDOs, and STOs that will be launching soon. These are the best upcoming launchpad list available for you to keep an eye on before actual crowd sales or pre-sales. If you find any of the projects interesting, visit the respective website and social media profiles for more information.</p>
-                    {/* <p><a href="#">Read More</a></p> */}
-                  </div>
-              </div>
-            </div>
-          </div>
-      </div>
-      <div className="coming_soon_modal">
-        <div className="modal" id="comingSoon">
-          <div className="modal-dialog modal-sm">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h4 className="modal-title coming_soon_title">Coming Soon !!</h4>
-                <button type="button" className="close" data-dismiss="modal">&times;</button>
-              </div>
-              <div className="modal-body">
-                <p className="coming_soon_subtext">This feature will be available soon</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    </>
-  )
-}
-export async function getServerSideProps({req}) 
+export default function MyFunction() 
 {
-    const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
-    if(userAgent.user_token) 
-    {
-        return { props: { userAgent: userAgent } }
-    }
-    else 
-    {
-      return { props: { userAgent: {} } }
+   
+  const [ico_list, set_ico_list] = useState([]) 
+  const [image_base_url] = useState(IMAGE_BASE_URL+'/markets/cryptocurrencies/')
+  const [cmc_image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
+  const [category_modal, set_category_modal] = useState({status:false, message:[]}) 
+  const [search_value, set_search_value] = useState("")
+  const [search_networks, set_search_networks] = useState("")
+  const [category_id, set_category_id] = useState("")
+  const [content_loader_status, set_content_loader_status] = useState(true)
+  const [overview_counts, set_overview_counts] = useState({}) 
+  const [crypto_networks, set_crypto_networks] = useState([])
+
+  useEffect(() => 
+  {
+    getICOList()
+  } , [search_value, search_networks])
+
+  const getICOList = async () => 
+  {
+    set_content_loader_status(true)
+    const res = await Axios.get(API_BASE_URL+"markets/launchpads/upcoming/0/100"+"?search="+search_value+"&search_networks="+search_networks, config(""))
+    if(res.data.status) 
+    {   
+        set_content_loader_status(false)
+        set_ico_list(res.data.message) 
     }
   }
+
+  useEffect(() => 
+  {
+    getOverviewCounts()
+  } , [])
+
+  const getOverviewCounts = async () => 
+  {
+        const res = await Axios.get(API_BASE_URL+"markets/launchpads/overview", config(""))
+        if(res.data.status) 
+        {   
+            set_crypto_networks(res.data.message.crypto_networks) 
+            set_overview_counts(res.data.message) 
+        }
+  }
+
+  const resetFilter = async () => 
+  {
+    set_search_networks("")
+    set_search_value("")
+  }
+
+  return (
+        <>
+        <Head>
+         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+         <title>CoinPedia’s List Of Upcoming Coin/Token Launches  </title>
+         <meta name="description" content="Find upcoming crypto ICO, IDE, IEO, IGO, and Presales, verified by CoinPedia. Get details and direct links to participate. "/>
+         <meta name="keywords" content={"Upcoming icos, upcoming presales, next presales, Coinpedia coin launch calendar, coin launch, ico calendar, best crypto icos,  ICO, IDE, IEO, IGO, Presales, crypt "+moment().format('YYYY')+", crypto news, crypto launchpad, best crypto to buy, new presales."} />
+         <meta property="og:locale" content="en_US" />
+         <meta property="og:type" content="website" />
+         <meta property="og:title" content="CoinPedia’s List Of Upcoming Coin/Token Launches " />
+         <meta property="og:description" content="Find upcoming crypto ICO, IDE, IEO, IGO, and Presales, verified by CoinPedia. Get details and direct links to participate. " />
+         <meta property="og:url" content={market_coinpedia_url+"launchpad/upcoming/"} />
+         <link rel="canonical" href={market_coinpedia_url+"launchpad/upcoming/"}/>
+         <meta property="og:site_name" content="Coinpedia Cryptocurrency Markets" />
+         <meta property="og:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
+         <meta property="og:image:secure_url" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
+         <meta property="og:image:width" content="400" />
+         <meta property="og:image:height" content="400" />
+         <meta property="og:image:type" content="image/png" />
+         <meta name="twitter:card" content="summary" />
+         <meta name="twitter:site" content="@coinpedia" />
+         <meta name="twitter:creator" content="@coinpedia" />
+         <meta name="twitter:title" content="CoinPedia’s List Of Upcoming Coin/Token Launches " />
+         <meta name="twitter:description" content="Find upcoming crypto ICO, IDE, IEO, IGO, and Presales, verified by CoinPedia. Get details and direct links to participate. " />
+         <meta name="twitter:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
+
+        
+         <script type="application/ld+json"  
+          dangerouslySetInnerHTML={{
+            __html: `{"@context":"http://schema.org","@type":"Table","about":"Upcomings Coin Launches"}`,
+          }}
+        />
+
+        <script type="application/ld+json"  
+          dangerouslySetInnerHTML={{
+            __html: `{
+              "@context": "http://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Cryptocurrencies",
+                  "item": "https://markets.coinpedia.org/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Upcomings Coin Launches",
+                  "item": "https://markets.coinpedia.org/launchpad/upcoming/"
+                }
+              ]
+            }`,
+          }}
+        />
+      </Head>
+    <div className="page ico_calendar">
+        <ICO_header active_tab={2} overview_counts={overview_counts}/>
+
+        <div className=''>
+            <div className='container'>
+            <div className=' header_tabs_row mt-3'>
+                <div className='row'>
+                    <div className='col-md-8 col-xl-9 col-lg-9 col-12'>
+                        <div className='ico_header_lists'>
+                            <ul>
+                                <li onClick={()=>set_search_networks("")}  className={search_networks == "" ? " active":""}>All</li>
+                                {
+                                    crypto_networks.length ?
+                                    crypto_networks.map((item, i) =>
+                                    <li onClick={()=>set_search_networks(item._id)} key={i} className={search_networks == item._id ? " active":""}>{item.network_name}</li>
+                                    )
+                                    :
+                                    ""
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    {/* <li className='image_fire'><img src="/assets/img/fire_icon.svg" /></li> */}
+                    {/* <button className='button_blue_transition kyc_button'>KYC &nbsp;<span><img src="/assets/img/finger_print.svg" /></span></button> */}
+
+                    <div className='col-md-4 col-xl-3 col-lg-3 col-12'>
+                        <div class="input-group search_filter new_design_serach">
+                            <input value={search_value} onChange={(e)=> set_search_value(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search" />
+                            <div class="input-group-prepend ">
+                                <span class="input-group-text">
+                                    <img src="/assets/img/search_large.svg" alt="search-box" width="100%" height="100%" />
+                                </span>
+                                <span class="input-group-text" onClick={()=>resetFilter()}>
+                                    <img src="/assets/img/reset.svg" alt="search-box" width="100%" height="100%" />
+                                </span>
+                            </div>
+                        </div>  
+                    </div>
+
+                    
+                </div>
+                </div>
+                <div className='border_bottom_ico'></div>
+                </div>
+            </div>
+            
+            <div className='container'>
+
+            <div className='conatiner'>
+            <div className=''>
+                <div className='row'>
+                    {
+                        !content_loader_status ?
+                        ico_list.length ?
+                        ico_list.map((item, i) =>
+                        <div className='col-lg-6 col-xl-4 col-md-6 col-12'>
+                            <div className='ico_cards'>
+                                <div className="card">
+                                    <div className="card-body">
+                                    <div className='media'>
+                                        <div className='media-left align-self-center'>
+                                        <img src={(item.token_image ? image_base_url+item.token_image: item.coinmarketcap_id ? cmc_image_base_url+item.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  />
+                                        </div>
+                                        <div className='media-body align-self-center'>
+                                            <h4 style={{textTransform:"capitalize"}}>{item.title}
+                                                <span className='launchpad-type'>
+                                                {getLaunchpadType(item.launchpad_type)}
+                                                </span>
+                                            </h4>
+                                            <p>{item.launchpad_price ? "$"+item.launchpad_price:""}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    {
+                                        item.categories_names?
+                                        item.categories_names[0] != "" ?
+                                        <div className='icos_tags_detail'>
+                                        <ul>
+                                            {
+                                                    item.categories_names ?
+                                                <>
+                                                    {
+                                                    item.categories_names.map((innerItem, i) => 
+                                                    i < 2 ?
+                                                    <li key={i}><Link href={"/category/"+innerItem.category_id}>{innerItem.category_name}</Link></li>
+                                                    :
+                                                    ""
+                                                    )
+                                                    }
+                                                    {
+                                                    item.categories_names.length > 2 ?
+                                                    <li onClick={()=>set_category_modal({status:true, message:(item.categories_names ? item.categories_names:[])})}>+{item.categories_names.length-2}</li>
+                                                    :
+                                                    ""
+                                                    }
+                                                </>
+                                                    :
+                                                    ""
+                                            }
+    
+                                           
+                                        </ul>
+                                        </div>
+                                        :
+                                        ""
+                                        :
+                                        ""
+                                    }
+                                    
+                                    <div className='ico_prices_details'>
+                                    <div className='row'>
+                                        <div className='col-md-6 col-6'>
+                                            <p>Listing Price: </p>
+                                            <h6>{item.listing_price ? "$"+item.listing_price:"TBA"}</h6>
+                                        </div>
+                                        <div className='col-md-6 col-6'>
+                                            <p>Sale Tokens:</p>
+                                            <h6>
+                                                {item.tokens_for_sale ? 
+                                                <>
+                                            
+                                                {"$"+item.tokens_for_sale}
+                                                ({item.percentage_of_total_supply ? +(item.percentage_of_total_supply).toFixed(2)+"%":""})
+                                                </>:"TBA"}
+                                            </h6>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    
+                                   
+
+                                    <div className='ico_prices_details'>
+                                    <div className='row'>
+                                        {
+                                            item.network_name ?
+                                            <div className='col-md-6 col-6'>
+                                                <p>Network: </p>
+                                                <h6>{item.network_name}</h6>
+                                            </div>
+                                            :
+                                            ""
+                                        }
+
+                                        
+                                            <div className='col-md-6 col-6'>
+                                                <p>Accept Payment: </p>
+                                                <h6>
+                                                    {
+                                                        item.accepts_payments ?
+                                                        item.accepts_payments[0] ?
+                                                        item.accepts_payments.map((inner, i) =>
+                                                        <>
+                                                        {
+                                                            i < 2 ?
+                                                            <span>{inner}{((item.accepts_payments.length-1) != i) ? ', ':""}</span>
+                                                            :
+                                                            ""
+                                                        }
+                                                        </>
+                                                        )
+                                                        :
+                                                        "TBA"
+                                                        :
+                                                        "TBA"
+                                                    }
+
+                                                    {
+                                                        item.accepts_payments.length > 2 ?
+                                                        <>
+                                                        
+                                                        <OverlayTrigger
+                                                            delay={{ hide: 450, show: 300 }}
+                                                                overlay={(props) => (
+                                                                <Tooltip {...props} className="custom_pophover">
+                                                                    <div>
+                                                                    {
+                                                                            item.accepts_payments ?
+                                                                            item.accepts_payments[0] ?
+                                                                            item.accepts_payments.map((inner, i) =>
+                                                                            <span>{inner}{((item.accepts_payments.length-1) != i) ? ', ':""}</span>
+                                                                            )
+                                                                            :
+                                                                            "TBA"
+                                                                            :
+                                                                            "TBA"
+                                                                        }
+                                                                    </div>
+                                                                </Tooltip>
+                                                                )}
+                                                                placement="bottom"
+                                                            ><span>+{item.accepts_payments.length-2} Other</span>
+                                                            </OverlayTrigger>
+                                                        </>
+                                                        
+                                                        :
+                                                        ""
+                                                    }   
+                                                </h6>
+                                            </div>  
+                                       
+                                        </div>
+                                    </div>
+                                    </div>
+
+                                    <div className="card-footer">
+                                        <div className='row'>
+                                        <div className='col-md-11 col-10'>
+                                                {
+                                                   item.start_date ?
+                                                   <p><img src="/assets/img/calander-ico.svg" alt="Calander" className="ico_calander_icon" />  
+                                                   {
+                                                     moment(item.start_date).utc().format('YYYY') == moment(item.start_date).utc().format('YYYY') ?
+                                                     <>
+                                                     {moment(item.start_date).utc().format('MMM D')} - {moment(item.end_date).utc().format('MMM D YYYY')}
+                                                     </>
+                                                     :
+                                                     <>
+                                                     {moment(item.start_date).utc().format('MMM D YYYY')} - {moment(item.end_date).utc().format('MMM D YYYY')}
+                                                     </>
+                                                   }
+                                                   </p>
+                                                   :
+                                                   <p><img src="/assets/img/calander-ico.svg" alt="Calander" className="ico_calander_icon" />  TBA</p> 
+                                                }
+                                                
+                                            </div>
+                                            <div className='col-md-1 col-2 text-right p-0'>
+                                            <Link href={"/"+item.token_id+"?tab=ico&tab_id="+item._id}><img src="/assets/img/ico_view.svg" alt="Calander" className="ico_airdrop_arrow" /></Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        ) 
+                        :
+                        <>
+                        <div className='col-md-12 text-center'>
+                            Currently, We don't have any Upcoming ICO's in our Listing..
+                        </div>
+                        </>
+                         :
+                        <>
+                        <div className='col-md-12 text-center'>
+                           Please Wait...
+                        </div>
+                        </>
+                    }
+                    
+                </div>
+            </div>
+        </div>
+
+            {/* <div className="tab-content">
+                    <div id="active_icos" className="tab-pane fade show in active">
+                        <div className=''>
+                            <ICO_active />
+                        </div>
+                    </div>
+                    <div id="upcoming_icos" className="tab-pane fade">
+
+                        <ICO_completed />
+                    </div>
+                    <div id="completed_icos" className="tab-pane fade">
+                        <ICO_upcoming />
+                    </div>
+                   
+                </div> */}
+            </div>
+            </div>
+
+            <div className={"modal " + (category_modal.status ? " modal_show" : " ")} >
+                <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-header">
+                    <h4 className="modal-title">Categories</h4>
+                    <button type="button" className="close" data-dismiss="modal" onClick={() => set_category_modal({status:false, message:[]})}><span><img src="/assets/img/close_icon.svg" alt="Close"/></span></button>
+                    </div>
+                    <div className="modal-body">
+                    
+                    <ul className='category-ul '>
+                        {
+                        category_modal.message.map((item, i) => 
+                        
+                        <li key={i} className='mb-2'><Link href={"/category/"+item.category_id}>{item.category_name}</Link></li>
+                        
+                        )
+                        }
+                    </ul>
+                
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            </> 
+    )
+}

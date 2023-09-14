@@ -1,23 +1,26 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Link from 'next/link' 
 import cookie from "cookie"
 import ReactPaginate from 'react-paginate'  
 import { API_BASE_URL, roundNumericValue, config, separator, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, strLenTrim, count_live_price, Logout} from '../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
-import SearchContractAddress from '../components/searchContractAddress'
+import SearchContractAddress from '../components/search_token'
 import CategoriesTab from '../components/categoriesTabs'
 import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
-
+import JsCookie from "js-cookie"
+import LoginModal from '../components/layouts/auth/loginModal'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 // import Select from 'react-select'
 import { useRouter } from 'next/navigation'
 
-export default function Companies({user_token, config, userAgent})
+export default function Companies({userAgent})
 { 
   
     const router = useRouter()
+    const myRef = useRef(null)
     //const { active_category_tab } = router.query
     const active_category_tab = ''
     const [tokens_list, set_tokens_list] = useState([]) 
@@ -30,7 +33,8 @@ export default function Companies({user_token, config, userAgent})
     const [firstcount, setfirstcount] = useState(1)
     const [finalcount, setfinalcount] = useState(per_page_count)
     const [selectedPage, setSelectedPage] = useState(0) 
-    const [image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
+    const [image_base_url] = useState(IMAGE_BASE_URL+'/markets/cryptocurrencies/')
+    const [cmc_image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
     const [count, setCount]=useState(0)
     const [voting_status, set_voting_status] = useState(false)
     const [loader_status, set_loader_status] = useState(false)
@@ -48,23 +52,53 @@ export default function Companies({user_token, config, userAgent})
     const [other_category_list, set_other_category_list] = useState([])
     const [category_name, set_category_name] = useState("")
     const [category_row_id, set_category_row_id] = useState((active_category_tab > 0) ? active_category_tab : "") 
-    
     const [business_tab_status, set_business_tab_status] = useState((active_category_tab > 0) ? 2 :"")
+
+    const [user_token, set_user_token] = useState(userAgent.user_token? userAgent.user_token:"");
+    const [login_modal_status, set_login_modal_status] = useState(false)
+    const [request_config, set_request_config] = useState(config(userAgent.user_token ? userAgent.user_token : ""))
+    const [action_row_id, set_action_row_id] = useState("")
+   
+
+    const getDataFromChild = async (pass_object) => 
+    {
+      await set_login_modal_status(false)
+      await set_user_token(JsCookie.get("user_token"))
+      await set_request_config(JsCookie.get("user_token"))
+      await addToWatchlist(action_row_id)
+    }
+
+    const login_props = {
+      status: true,
+      request_config: request_config,
+      callback: getDataFromChild
+    }
+
+    //1:add to watchlist, 2:remove from watchlist
+    const loginModalStatus = async (pass_id) => 
+    {
+      await set_login_modal_status(false)
+      await set_login_modal_status(true)
+      await set_action_row_id(pass_id)
+    }
     
     useEffect(()=>
     {  
-      tokensList({selected : 0})
+      tokensList({selected : 0}, 1)
     },[per_page_count, search_title]) 
 
-    const tokensList = async (page) =>
+    const tokensList = async (page, pass_from) =>
     {  
         let current_pages = 0 
         if(page.selected) 
         {
             current_pages = ((page.selected) * per_page_count) 
         } 
-
-        const res = await Axios.get(API_BASE_URL+"markets/cryptocurrency/trending/"+current_pages+'/'+per_page_count+"?search="+search_title+"&category_row_id="+category_row_id, config)
+        if(!pass_from)
+        {
+          myRef.current.scrollIntoView()
+        }
+        const res = await Axios.get(API_BASE_URL+"markets/cryptocurrency/trending/"+current_pages+'/'+per_page_count+"?search="+search_title+"&category_row_id="+category_row_id, config(JsCookie.get('user_token')))
         if(res.data)
         {
             if(res.data.status === true)
@@ -95,7 +129,7 @@ export default function Companies({user_token, config, userAgent})
    
     const addToWatchlist = async (param_token_id) =>
     {
-        const res = await Axios.get(API_BASE_URL+"markets/cryptocurrency/add_to_watchlist/"+param_token_id, config)
+        const res = await Axios.get(API_BASE_URL+"markets/cryptocurrency/add_to_watchlist/"+param_token_id, config(JsCookie.get('user_token')))
         if(res.data.status)
         {
           var list = []
@@ -113,11 +147,17 @@ export default function Companies({user_token, config, userAgent})
           }
           set_tokens_list(list)
         }
+
+        if(action_row_id)
+        {
+          await tokensList({selected : currentPage}, 1)
+          await set_action_row_id("")
+        }
     }
     
     const removeFromWatchlist = (param_token_id) =>
     {
-      Axios.get(API_BASE_URL+"markets/cryptocurrency/remove_from_watchlist/"+param_token_id, config).then(res=>
+      Axios.get(API_BASE_URL+"markets/cryptocurrency/remove_from_watchlist/"+param_token_id, config(JsCookie.get('user_token'))).then(res=>
       {
         if(res.data.status)
         {
@@ -139,47 +179,65 @@ export default function Companies({user_token, config, userAgent})
       })
     } 
 
-    const makeJobSchema=()=>
-    {  
-        return { 
-            "@context":"http://schema.org/",
-            "@type":"Organization",
-            "name":"Coinpedia",
-            "url":"https://pro.coinpedia.org",
-            "logo":"http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
-            "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
-        } 
-    }
+    
    
 return (
    <>
       <Head>
-         <title>Trending Cryptocurrencies | Coinpedia </title>
-         <meta name="description" content="Coinpedia’s Market bring you with a list of top cryptocurrencies with real timeprices, including percentage change, charts, history, volume and more."/>
-         <meta name="keywords" content="crypto market, crypto market tracker, Crypto tracker live, Cryptocurrency market, crypto market insights , Live crypto insights, crypto price alerts, Live crypto alerts." />
+         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+         <title>Trending Cryptocurrencies on Coinpedia Markets </title>
+         <meta name="description" content="Discover the trending coins today on Coinpedia markets, sorted as per the search volume, most views of the news, and market behavior."/>
+         <meta name="keywords" content="Trending coins, top trending crypto coins, trending cryptocurrencies,  coinpedia markets, bitcoin price, Ethereum price, live prices, top gainers in crypto, top losers crypto, trending coins, meme coins, defi coins, crypto price prediction, crypto price analysis." />
          <meta property="og:locale" content="en_US" />
          <meta property="og:type" content="website" />
-         <meta property="og:title" content="New Cryptocurrencies | Coinpedia" />
-         <meta property="og:description" content="Coinpedia company listing page offers quick view of all listed companies of Fintech, Blockchain and Finance category. Get Exchages, Wallets, Coins, Tools, Trading forms and more. " />
-         <meta property="og:url" content={market_coinpedia_url} />
-         <meta property="og:site_name" content="List of Fintech Companies | CoinPedia Pro Account. " />
+         <meta property="og:title" content="Trending Cryptocurrencies on Coinpedia Markets" />
+         <meta property="og:description" content="Discover the trending coins today on Coinpedia markets, sorted as per the search volume, most views of the news, and market behavior." />
+         <meta property="og:url" content={market_coinpedia_url + "trending/"} />
+         <meta property="og:site_name" content="Coinpedia Cryptocurrency Markets" />
          <meta property="og:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
          <meta property="og:image:secure_url" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
          <meta property="og:image:width" content="400" />
          <meta property="og:image:height" content="400" />
-
+         <meta property="og:image:type" content="image/png" />
          <meta name="twitter:card" content="summary" />
          <meta name="twitter:site" content="@coinpedia" />
          <meta name="twitter:creator" content="@coinpedia" />
-         <meta name="twitter:title" content="New Cryptocurrencies | Coinpedia" />
-         <meta name="twitter:description" content="Here's a list of the leading fintech companies in the country across the various sub-sectors.We are extending and updating the list regularly." />
+         <meta name="twitter:title" content="Trending Cryptocurrencies on Coinpedia Markets" />
+         <meta name="twitter:description" content="Discover the trending coins today on Coinpedia markets, sorted as per the search volume, most views of the news, and market behavior." />
          <meta name="twitter:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
 
-         <link rel="canonical" href={market_coinpedia_url}/>
-         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
+         <link rel="canonical" href={market_coinpedia_url + "trending/"} />
+         <script type="application/ld+json"  
+          dangerouslySetInnerHTML={{
+            __html: `{"@context":"http://schema.org","@type":"Table","about":"Trending Coins"}`,
+          }}
+        />
+
+        <script type="application/ld+json"  
+          dangerouslySetInnerHTML={{
+            __html: `{
+              "@context": "http://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Cryptocurrencies",
+                  "item": "https://markets.coinpedia.org/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Trending",
+                  "item": "https://markets.coinpedia.org/trending/"
+                }
+              ]
+            }`,
+          }}
+        />
       </Head>
 
-      <div className="page new_markets_index min_height_page markets_new_design">
+      <div className="page new_markets_index min_height_page markets_new_design" ref={myRef}>
       <div className="market-page">
 
 
@@ -189,9 +247,9 @@ return (
             <div className="col-md-12">
               <div className="row market_insights ">
                 <div className="col-md-6 col-lg-6">
-                <h1 className="page_title">Trending Coins & Tokens</h1>
+                <h1 className="page_title">Trending Coins and Tokens on CoinPedia Markets</h1>
                   {/* by Market Cap */}
-                  <p>Trending Coins & Tokens by Market Cap.</p>
+                  <p>Find the most viewed and explored cryptocurrencies on Coinpedia markets today.</p>
                 </div>
                 <div className="col-md-1 col-lg-2"></div>
                 <div className="col-md-5 col-lg-4 " >
@@ -217,12 +275,12 @@ return (
                 <div className="row">
                   <div className="col-md-12 col-12">
                   <div className="row">
-                  <div className="col-md-12 col-lg-8 col-12">
+                  <div className="col-md-12 col-lg-9 col-12">
                         <h4 className="markets_subtitle">Trending</h4>
                       </div>
-                       <div className="col-md-12 col-lg-4 col-12 filter-category-section">
+                       <div className="col-md-12 col-lg-3 col-12 filter-category-section">
                        <div className='row'>
-                    <div className='col-md-6 col-lg-8 col-12'>
+                    <div className='col-md-12 col-lg-12 col-12'>
                           <div className="input-group search_filter">
                             <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token" />
                               <div className="input-group-prepend ">
@@ -232,7 +290,7 @@ return (
                          
                           </div>
 
-                          <div className="col-md-4 col-lg-4 col-4 mobile_hide_view">
+                          {/* <div className="col-md-4 col-lg-4 col-4 mobile_hide_view">
                             <ul className="filter_rows">
                                 <li>
                                   <select className="form-select" onChange={(e)=>set_per_page_count(e.target.value)} >
@@ -243,7 +301,8 @@ return (
                                   </select>
                                 </li>
                             </ul>
-                          </div>   </div></div> 
+                          </div>    */}
+                          </div></div> 
                  </div>   
                 </div>
                    
@@ -263,9 +322,42 @@ return (
                                 <th className=" " style={{minWidth: 'unset'}}>1h</th>
                                 <th className=" " style={{minWidth: 'unset'}}>24h</th>
                                 <th className=" " style={{minWidth: 'unset'}}>7d</th>
-                                <th className=" table_circulating_supply">Market Cap</th> 
-                                <th className=" ">Volume(24H)</th>  
-                                <th className=" table_circulating_supply">Circulating Supply</th>  
+                                <th className=" table_circulating_supply">Market Cap&nbsp;
+                                  <OverlayTrigger
+                                    delay={{ hide: 450, show: 300 }}
+                                      overlay={(props) => (
+                                        <Tooltip {...props} className="custom_pophover">
+                                          <p>Market capitalization is a measure used to determine the total value of a publicly traded cryptocurrency. It is calculated by multiplying the current market price of a single coin/token X total supply of the coin/token.</p>
+                                        </Tooltip>
+                                      )}
+                                      placement="bottom"
+                                    ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
+                                  </OverlayTrigger>
+                                </th> 
+                                <th className="volume_24h">Volume(24H)&nbsp;
+                                  <OverlayTrigger
+                                    // delay={{ hide: 450, show: 300 }}
+                                    overlay={(props) => (
+                                      <Tooltip {...props} className="custom_pophover">
+                                      <p>The 24-hour volume, also known as trading volume or trading activity, refers to the total amount of a specific coin/token that has been bought and sold within a 24-hour period. It represents the total number of coins/tokens traded during that time frame.</p>
+                                      </Tooltip>
+                                    )}
+                                    placement="bottom"
+                                  ><span className='info_col' ><img src="/assets/img/info.png" alt="info"  /></span>
+                                  </OverlayTrigger>
+                                </th>  
+                                <th className=" table_circulating_supply">Circulating Supply&nbsp;
+                                  <OverlayTrigger
+                                    delay={{ hide: 450, show: 300 }}
+                                    overlay={(props) => (
+                                      <Tooltip {...props} className="custom_pophover">
+                                        <p>Circulating supply refers to the total number of coins/tokens that are currently in circulation and available to the public. It represents the portion of the total supply of a cryptocurrency that is actively being traded or held by investors.</p>
+                                      </Tooltip>
+                                    )}
+                                    placement="bottom"
+                                  ><span className='info_col' ><img src="/assets/img/info.png" alt="info"  /></span>
+                                  </OverlayTrigger>
+                                </th>  
                                 <th className="last_data">Last 7 Days</th>
                             </tr>
                          </thead>
@@ -288,13 +380,13 @@ return (
                                           <>
                                           {
                                             e.watchlist_status== true ?
-                                            <span onClick={()=>removeFromWatchlist(e._id)} ><img src=" /assets/img/color.svg" alt="Watchlist" width={17} height={17} /></span>
+                                            <span onClick={()=>removeFromWatchlist(e._id)} ><img src=" /assets/img/wishlist_star_selected.svg" alt="Watchlist" width={17} height={17} /></span>
                                             :
                                             <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/star.svg" alt="Watchlist" width={17} height={17} /></span>
                                             }
                                           </>
                                           :
-                                          <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url} onClick={()=> Logout()}><img src="/assets/img/star.svg" alt="Watchlist"/></Link>
+                                          <span className='login-watchlist' onClick={()=>loginModalStatus(e._id)}><img src="/assets/img/star.svg" alt="Watchlist"/></span>
                                       }
                                      
                                      </td>
@@ -305,7 +397,7 @@ return (
                                          
                                           <div className="media">
                                             <div className="media-left align-self-center">
-                                              <img src={image_base_url+(e.coinmarketcap_id ? e.coinmarketcap_id+".png" : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                            <img src={(e.token_image ? image_base_url+e.token_image: e.coinmarketcap_id ? cmc_image_base_url+e.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
                                             </div>
                                             <div className="media-body align-self-center">
                                               <h4 className="media-heading">{strLenTrim(e.token_name, 14)} </h4>
@@ -321,14 +413,19 @@ return (
                                      </td> */}
                
                                      <td className="market_list_price"> 
-                                       <Link href={"/"+e.token_id}>
-                                         
-                                         <span className="block_price">{roundNumericValue(e.price)}</span>
-                                           {/* <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(9)):"-"}</span> */}
-                                          {/* <br/> {e.price} <br/> */}
-                                           {e.updated_on ? moment(e.updated_on).fromNow():null} 
-                                         
-                                         </Link>
+                                      <Link href={"/"+e.token_id}>
+                                      {
+                                        e.price ? 
+                                        <>
+                                          <span className="block_price">
+                                          {"$"+roundNumericValue(e.price)}
+                                          </span>
+                                            { moment(e.updated_on).fromNow() }
+                                        </>
+                                        :
+                                        ""
+                                        }
+                                      </Link>
                                     </td>
                                     
                                     
@@ -338,7 +435,7 @@ return (
                                         e.percent_change_1h?e.percent_change_1h>0?
                                         <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_1h.toFixed(2)+"%"}</span></h6>
                                         :
-                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_1h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="low price"/>{(e.percent_change_1h.toFixed(2)).replace('-', '')+"%"}</span></h6>
                                         :
                                         "--"
                                         }
@@ -352,7 +449,7 @@ return (
                                         e.percent_change_24h?e.percent_change_24h>0?
                                         <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
                                         :
-                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="low price"/>{(e.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
                                         :
                                         "--"
                                         }
@@ -365,7 +462,7 @@ return (
                                         e.percent_change_7d?e.percent_change_7d>0?
                                         <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_7d.toFixed(2)+"%"}</span></h6>
                                         :
-                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="low price"/>{(e.percent_change_7d.toFixed(2)).replace('-', '')+"%"}</span></h6>
                                         :
                                         "--"
                                         }
@@ -463,7 +560,7 @@ return (
               
                 <div className="modal-header">
               
-                  <button type="button" className="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" /></span></button>
+                  <button type="button" className="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg"  alt = " Close"  /></span></button>
                 </div>
                 
                 <div className="modal-body">
@@ -485,6 +582,7 @@ return (
             </div>
           </div>
     </div>
+    {login_modal_status ? <LoginModal name={login_props} sendDataToParent={getDataFromChild} /> : null}
 </>
 )
 } 

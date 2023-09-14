@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic'
 
 import { app_coinpedia_url, graphqlApiURL, graphqlApiKEY} from '../../components/constants' 
 
+
 export const crypto_networks_list = [
   {
     _id:1,
@@ -124,6 +125,8 @@ export const cryptoNetworksList = ({ethereum, bsc, polygon, fantom, avalanche}) 
     // }
   ]
 }
+
+
 
 
 

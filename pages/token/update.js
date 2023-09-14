@@ -33,19 +33,20 @@ export default function Create_token({config})
     console.log("token_id",token_id)    
     const [token_row_id] = useState(token_id ? token_id:"")
     const [wallet_address, setWalletAddress] = useState('')
-    const [contract_address, setContractAddress] = useState([{network_type: "0", contract_address: ""}])
+    const [contract_addresses, set_contract_addresses] = useState([{ contract_address: "", network_name: "", network_row_id: "", token_row_id: "" }])
     const [live_price, setLivePrice] = useState("")
     const [market_cap, set_market_cap] = useState("") 
     const [err_contract_address, setErrContractAddress] = useState("")
     const [loader, set_loader] = useState("")
-    const [image_base_url] = useState(IMAGE_BASE_URL+"/tokens/") 
+    const [image_base_url] = useState(IMAGE_BASE_URL+"/markets/cryptocurrencies/") 
     const [display_image, set_display_image] = useState("")
+    const [list_type, set_list_type] = useState("")
     
     const [symbol, setSymbol] = useState('')  
     const [token_name, setTokenName] = useState('')
     const [website_link, setWebsiteLink] = useState('')
     const [whitepaper, setWhitepaper] = useState('')
-    const [token_max_supply, setTokenMaxSupply] = useState('')
+    const [token_supply, setTokenMaxSupply] = useState('')
     const [circulating_supply, setCirculatingSupply] = useState('') 
     const [token_description, setTokenDescription] = useState('')
     const [token_image, setTokenImage] = useState('')
@@ -57,16 +58,17 @@ export default function Create_token({config})
     const [err_token_name, setErrTokenName] = useState('')
     const [err_website_link, setErrWebsiteLink] = useState('')
     const [err_whitepaper, setErrWhitepaper] = useState('')
-    const [err_token_max_supply, setErrTokenMaxSupply] = useState('')
+    const [err_total_supply, set_err_total_supply] = useState('')
     const [err_market_cap, setErr_market_cap] = useState('') 
     const [err_token_description, setErrTokenDescription] = useState('')
     const [err_token_image, setErrTokenImage] = useState('')
     const [categories, set_categories] = useState([])
     const [category_name, set_category_name]= useState([])
     const [category_name_ids, set_category_name_ids]= useState([])  
+    const [crypto_networks, set_crypto_networks] = useState([])
 
-    const [err_wallet_network, setErrWalletNetwork] = useState(false)
-    const [err_wallet_connection, setErrWalletConnection] = useState(false)
+    const [err_list_type, set_err_list_type] = useState(false)
+    const [approval_status, set_approval_status] = useState("")
     const [alert_message, setAlertMessage] = useState([])
 
     const [explorer, setExplorersList] = useState([""])
@@ -112,6 +114,15 @@ export default function Create_token({config})
             }
         })
     }
+
+    const getCryptoNetworks = async () => 
+  {
+    const res = await Axios.get(API_BASE_URL + "app/crypto_networks", config)
+    if(res.data.status) 
+    {
+      set_crypto_networks(res.data.message)
+    }
+  }
  
     const imageCropModalClose = () => 
     {
@@ -205,8 +216,9 @@ export default function Create_token({config})
   
     const clearform = () =>
     {   
-        setContractAddress([{network_type: "0", contract_address: ""}])
+        set_contract_addresses([{ contract_address: "", network_name: "", network_row_id: "", token_row_id: "" }])
         setSymbol("")
+        set_list_type("")
         setTokenName("")
         setWebsiteLink("")
         setWhitepaper("")
@@ -219,34 +231,45 @@ export default function Create_token({config})
         setExplorersList("")
         setExchangesList("")
         setCommunitysList("")
+        set_err_list_type("")
+        set_err_total_supply("")
     }
 
 const createNewToken = () =>
 {   
     let formValid = true
-    if(contract_address.length === 2)
-    { 
-      let list = err_contract_address
-      list = ""
-      setErrContractAddress(list)
-    }
-    else
-    {
-      let list = err_contract_address
-      list = ""
-      setErrContractAddress(list)    
-    } 
+    console.log("asdf", contract_addresses)
+    // if(contract_address.length === 2)
+    // { 
+    //   let list = err_contract_address
+    //   list = ""
+    //   setErrContractAddress(list)
+    // }
+    // else
+    // {
+    //   let list = err_contract_address
+    //   list = ""
+    //   setErrContractAddress(list)    
+    // } 
   
     setModalData({icon: "", title: "", content:""})
     setErrSymbol('') 
     setErrTokenName('')
     setErrWebsiteLink('')
     setErrWhitepaper('')
-    setErrTokenMaxSupply('')
+    
     setErr_market_cap('') 
     setErrTokenDescription('')
     setErrTokenImage('')  
+    set_err_list_type("")
+    set_err_total_supply("")
 
+    if(!list_type)
+    {
+        set_err_list_type('The List Type field is required.')
+        formValid = false
+    } 
+    
     if(symbol === '')
     {
       setErrSymbol('The Symbol field is required.')
@@ -261,82 +284,88 @@ const createNewToken = () =>
     {
       setErrSymbol('The Symbol must be less than 25 characters in length.')
       formValid = false
-    }   
-
-    if(with_contract_address === true)
-    {
-    if(contract_address.length === 2)
-    {   
-      let list = err_contract_address
-
-      if(contract_address[0].network_type === "0" && contract_address[0].contract_address === "")
-      {  
-        list = "The Contract address network type field is required."
-        formValid = false
-      }   
-      else if(contract_address[0].network_type === "0"){  
-        list = "The  network type field is required."
-        formValid = false
-      }   
-      else if(contract_address[0].contract_address === ""){   
-        list = "The Contract address field is required."
-        formValid = false
-      }
-      else if((contract_address[0].contract_address).length !== 42){  
-        list = "The Contract address field must be equal to 42 characters."
-        formValid = false
-      }
-      else if(contract_address[1].network_type === "0" || contract_address[1].network_type === 0){  
-        list = "The Contract address network type field is required." 
-        formValid = false  
-      }  
-      else if(contract_address[1].contract_address === ""){ 
-        list = "The Contract address field is required."
-        formValid = false   
-      }
-      else if((contract_address[1].contract_address).length !== 42){
-        list = "The Contract address field must be equal to 42 characters."
-        formValid = false
-      }  
-      // else if(contract_address[0].contract_address === contract_address[1].contract_address){
-      //   list = "Both Contract addresses must not be same."
-      //   formValid = false
-      // }  
-      else if(contract_address[0].network_type === contract_address[1].network_type){
-        list = "Both Contract addresses network type must not be same."
-        formValid = false
-      }   
-      else{
-        list = ""
-      }
-      setErrContractAddress(list)
-    } 
-    else if(contract_address.length === 1){
-      
-      let list = err_contract_address 
-
-        if(contract_address[0].network_type === "0" && contract_address[0].contract_address === ""){  
-          list = "The Contract address and network type field is required."
-          formValid = false
-        }  
-        else if(contract_address[0].network_type === "0"){  
-          list = "The  network type field is required."
-          formValid = false
-        }  
-        else if(contract_address[0].contract_address === ""){   
-          list = "The Contract address field is required."
-          formValid = false
-        }
-        else if((contract_address[0].contract_address).length !== 42){  
-          list = "The Contract address field must be equal to 42 characters."
-          formValid = false
-        }
-        else{ 
-          list = ""   
-        } 
-        setErrContractAddress(list)  
-      }
     }  
+    
+    if(!token_supply)
+    {
+      set_err_total_supply('The Total Supply field is required.')
+      formValid = false
+    }
+
+    // if(with_contract_address === true)
+    // {
+    // if(contract_address.length === 2)
+    // {   
+    //   let list = err_contract_address
+
+    //   if(contract_address[0].network_type === "0" && contract_address[0].contract_address === "")
+    //   {  
+    //     list = "The Contract address network type field is required."
+    //     formValid = false
+    //   }   
+    //   else if(contract_address[0].network_type === "0"){  
+    //     list = "The  network type field is required."
+    //     formValid = false
+    //   }   
+    //   else if(contract_address[0].contract_address === ""){   
+    //     list = "The Contract address field is required."
+    //     formValid = false
+    //   }
+    //   else if((contract_address[0].contract_address).length !== 42){  
+    //     list = "The Contract address field must be equal to 42 characters."
+    //     formValid = false
+    //   }
+    //   else if(contract_address[1].network_type === "0" || contract_address[1].network_type === 0){  
+    //     list = "The Contract address network type field is required." 
+    //     formValid = false  
+    //   }  
+    //   else if(contract_address[1].contract_address === ""){ 
+    //     list = "The Contract address field is required."
+    //     formValid = false   
+    //   }
+    //   else if((contract_address[1].contract_address).length !== 42){
+    //     list = "The Contract address field must be equal to 42 characters."
+    //     formValid = false
+    //   }  
+    //   // else if(contract_address[0].contract_address === contract_address[1].contract_address){
+    //   //   list = "Both Contract addresses must not be same."
+    //   //   formValid = false
+    //   // }  
+    //   else if(contract_address[0].network_type === contract_address[1].network_type){
+    //     list = "Both Contract addresses network type must not be same."
+    //     formValid = false
+    //   }   
+    //   else{
+    //     list = ""
+    //   }
+    //   setErrContractAddress(list)
+    // } 
+    // else if(contract_address.length === 1){
+      
+    //   let list = err_contract_address 
+
+    //     if(contract_address[0].network_type === "0" && contract_address[0].contract_address === ""){  
+    //       list = "The Contract address and network type field is required."
+    //       formValid = false
+    //     }  
+    //     else if(contract_address[0].network_type === "0"){  
+    //       list = "The  network type field is required."
+    //       formValid = false
+    //     }  
+    //     else if(contract_address[0].contract_address === ""){   
+    //       list = "The Contract address field is required."
+    //       formValid = false
+    //     }
+    //     else if((contract_address[0].contract_address).length !== 42){  
+    //       list = "The Contract address field must be equal to 42 characters."
+    //       formValid = false
+    //     }
+    //     else{ 
+    //       list = ""   
+    //     } 
+    //     setErrContractAddress(list)  
+    //   }
+    // }  
 
     if(website_link)
     {
@@ -349,23 +378,23 @@ const createNewToken = () =>
 
     if(token_name === '')
     {
-        setErrTokenName('The token name field is required.')
+        setErrTokenName('The Token Name field is required.')
         formValid = false
     } 
     else if(token_name.length < 2)
     {
-        setErrTokenName('The token name must be atleast 2 characters.')
+        setErrTokenName('The Token Name must be atleast 2 characters.')
         formValid = false
     }
     else if(token_name.length > 50)
     {
-        setErrTokenName('The token name must be less than 25 characters in length.')
+        setErrTokenName('The Token Name must be less than 25 characters in length.')
         formValid = false
     }
     
-   let communities_address = []
-
-    if(community_address.length > 0){ 
+    let communities_address = [""]
+    if(community_address.length > 0)
+    { 
       community_address.map((e, i)=>{
         if(e !== ""){ 
           communities_address.push(e) 
@@ -374,8 +403,7 @@ const createNewToken = () =>
       setCommunitysList(communities_address) 
     } 
 
-    let explorers = []
-    
+    let explorers = [""]
     if(explorer.length > 0){
       explorer.map((e, i)=>{
         if(e !== ""){
@@ -385,8 +413,7 @@ const createNewToken = () =>
       setExplorersList(explorers)
     }  
 
-    let exchanges_link = []
- 
+    let exchanges_link = [""]
     if(exchange_link.length > 0){
       exchange_link.map((e, i)=>{
         if(e !== ""){
@@ -418,7 +445,7 @@ const createNewToken = () =>
     }
     set_loader(true)
     const reqObj = {
-      list_type : with_contract_address === false ? 3 : 2,
+      list_type : list_type,
       wallet_address : wallet_address, 
       symbol : symbol, 
       token_row_id:token_row_id,
@@ -426,13 +453,13 @@ const createNewToken = () =>
       token_image : token_image,
       website_link : website_link,
       whitepaper : whitepaper,
-      total_supply : token_max_supply,
+      total_supply : token_supply,
       description : token_description,
       source_code_link : source_code_link,
       explorers : explorer,
       exchanges : exchange_link,
       communities : community_address,
-      contract_addresses : with_contract_address === false ? [] : contract_address,
+      contract_addresses : parseInt(list_type) == 2 ? contract_addresses : [],
       meta_keywords : meta_keywords,
       meta_description : meta_description,
       categories:category_name_ids,
@@ -469,8 +496,8 @@ const createNewToken = () =>
         //   setErrTokenDescription(response.data.message.token_description)
         // }
         
-        if(response.data.message.token_max_supply){  
-          setErrTokenMaxSupply(response.data.message.token_max_supply)
+        if(response.data.message.token_supply){  
+          set_err_total_supply(response.data.message.token_supply)
         }
         
         if(response.data.message.market_cap){  
@@ -697,14 +724,6 @@ const createNewToken = () =>
   {
     setExchangesList(exchange_link.filter((s, sindex) => index !== sindex))
   } 
-
-  const AddMoreContractAddress = ()=>{  
-    setContractAddress(prev => [...prev, {network_type: 0, contract_address: ""}]) 
-  }
-
-  const removeContractAddress=(index)=>{ 
-    setContractAddress(contract_address.filter((s, sindex) => index !== sindex)) 
-  }
   
   const handleExchangeChange = (e, index) => {
     const {value } = e.target
@@ -753,6 +772,7 @@ const createNewToken = () =>
   useEffect(()=>
   {
     getBusinessModels() 
+    getCryptoNetworks() 
     if(token_row_id){
       getTokenDetails()
     }
@@ -762,31 +782,23 @@ const createNewToken = () =>
     // }
   },[]) 
   
-  useEffect(()=>
-  {
-    // setSymbol("")
-    // setTokenName("")
-    // setTokenMaxSupply("")
-    // set_market_cap("")
-    // setContractAddress([{network_type: "0", contract_address: ""}])
-  },[with_contract_address])
 
   const makeJobSchema=()=> 
   {  
     return { 
-        "@context":"http://schema.org/",
-        "@type":"Organization",
-        "name":"Coinpedia",
-        "url":"https://markets.coinpedia.org",
+        "@context" : "http://schema.org/",
+        "@type" : "Organization",
+        "name" : "Update Coin/Token",
+        "url" : market_coinpedia_url + "token/update/",
         "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
-        "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
+        "sameAs" :["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
       }  
   } 
   const checkContractAddress=(data, index)=>{ 
           const { name, value } = data.target
           const list = [...contract_address]
           list[index][name] = value.toLowerCase()  
-          setContractAddress(list)
+          set_contract_addresses(list)
   }  
 
   const getTokenDetails=()=>
@@ -796,13 +808,23 @@ const createNewToken = () =>
       if(response.data.status)
       { 
         console.log(response.data) 
-        if(response.data.message.list_type !== 3){
-          setContractAddress(response.data.message.contract_addresses)
+        if(response.data.message.list_type == 2)
+        {
+          if(response.data.message.contract_addresses.length)
+          {
+            set_contract_addresses(response.data.message.contract_addresses)
+          }
+          else
+          {
+            set_contract_addresses([{ contract_address: "", network_name: "", network_row_id: "", token_row_id: "" }])
+          }
         }
         else
         {
-          setContractAddress([{network_type: "0", contract_address: ""}])
+          set_contract_addresses([{ contract_address: "", network_name: "", network_row_id: "", token_row_id: "" }])
         }
+
+        
         setErrContractAddress("")  
         setSymbol(response.data.message.symbol) 
         setTokenName(response.data.message.token_name)
@@ -815,15 +837,12 @@ const createNewToken = () =>
         set_meta_description(response.data.message.meta_description)
         set_category_name(response.data.message.categories_array)
         set_category_name_ids(response.data.message.categories)
-        if(response.data.message.list_type == 3)
-        {
-          set_with_contract_address(false)
-        }
+        set_approval_status((response.data.message.approval_status) ? parseInt(response.data.message.approval_status):0)
         if(response.data.message.token_image)
         {
             set_display_image(response.data.message.token_image)
         }
-        // set_list_type(response.data.message.list_type)
+        set_list_type(response.data.message.list_type)
 
         // if(response.data.message.token_image)
         // {
@@ -838,36 +857,38 @@ const createNewToken = () =>
         // set_category_name(response.data.message.category_name)
         seSourceCodeLink(response.data.message.source_code_link) 
 
-        if(response.data.message.explorer)
+
+        
+        if(response.data.message.explorers)
         {
-          if(response.data.message.explorer.length < 1)
+          if(response.data.message.explorers.length < 1)
           {
             setExplorersList([""])
           }
           else
           {
-            setExplorersList(response.data.message.explorer)
+            setExplorersList(response.data.message.explorers)
           }
         }
         
 
-        if(response.data.message.exchange_link){
-          if(response.data.message.exchange_link.length < 1){
+        if(response.data.message.exchanges){
+          if(response.data.message.exchanges.length < 1){
             setExchangesList([""])
           }
           else{
-            setExchangesList(response.data.message.exchange_link)
+            setExchangesList(response.data.message.exchanges)
           }
           
         }
         
 
-        if(response.data.message.community_address){
-          if(response.data.message.community_address.length < 1){ 
+        if(response.data.message.communities){
+          if(response.data.message.communities.length < 1){ 
             setCommunitysList([""])
           }
           else{
-            setCommunitysList (response.data.message.community_address)
+            setCommunitysList (response.data.message.communities)
           }
         }
         
@@ -881,119 +902,191 @@ const createNewToken = () =>
       // }
     })
   }
-  const getTokenData =(data,type, index, address)=>{  
-    checkContractAddress(data, index)
-    getTokenAddress(type, address)
+
+  //type 1:network , 2:contract address
+  const getTokenData = (type, index, pass_value) => 
+  { 
+    const list = [...contract_addresses]
+    if(type == 1)
+    {
+      const { network_name, token_row_id, _id } = crypto_networks[pass_value]
+      
+      list[index] = {
+        contract_address : list[index].contract_address,
+        network_name : network_name,
+        network_row_id :_id,
+        token_row_id:token_row_id
+      }
+      set_contract_addresses(list)
+    }
+    else if(type == 2)
+    {
+      list[index] = {
+        contract_address : pass_value,
+        network_name : list[index].network_name,
+        network_row_id :list[index].network_row_id,
+        token_row_id:list[index].token_row_id
+      }
+      set_contract_addresses(list)
+    }
+  }
+
+
+  const AddMoreContractAddress = () => 
+  {
+    set_contract_addresses(prev => [...prev, { contract_address: "", network_name: "", network_row_id: "", token_row_id:"" }])
+  }
+
+  const removeContractAddress = (index) => {
+    set_contract_addresses(contract_addresses.filter((s, sindex) => index !== sindex))
+  }
+
+  // const getTokenData =(data,type, index, address)=>{  
+  //   checkContractAddress(data, index)
+  //   getTokenAddress(type, address)
     
-  }
+  // }
   
   
-  const getTokenAddress = (type, address) =>{  
+  // const getTokenAddress = (type, address) =>{  
 
-      let network_type = ""
+  //     let network_type = ""
 
-      if(type === "1"){ 
-        network_type = "ethereum"
-      }
-      else if(type === "2"){ 
-        network_type = "bsc"
-      }
-      else{
-        return null
-      }
+  //     if(type === "1"){ 
+  //       network_type = "ethereum"
+  //     }
+  //     else if(type === "2"){ 
+  //       network_type = "bsc"
+  //     }
+  //     else{
+  //       return null
+  //     }
    
-      const query = `
-                  query
-                  { 
-                    ethereum(network: `+network_type+`) {
-                      address(address: {is: "`+address+`"}){
+  //     const query = `
+  //                 query
+  //                 { 
+  //                   ethereum(network: `+network_type+`) {
+  //                     address(address: {is: "`+address+`"}){
   
-                        annotation
-                        address
+  //                       annotation
+  //                       address
   
-                        smartContract {
-                          contractType
-                          currency{
-                            symbol
-                            name
-                            decimals
-                            tokenType
-                          }
-                        }
-                        balance
-                      }
-                    } 
-                }
-            ` ;
+  //                       smartContract {
+  //                         contractType
+  //                         currency{
+  //                           symbol
+  //                           name
+  //                           decimals
+  //                           tokenType
+  //                         }
+  //                       }
+  //                       balance
+  //                     }
+  //                   } 
+  //               }
+  //           ` ;
   
-      const url = "https://graphql.bitquery.io/";
-      const opts = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY":graphqlApiKEY
-        },
-        body: JSON.stringify({
-          query
-        })
-      }; 
-      fetch(url, opts)
-        .then(res => res.json())
-        .then(result => {    
-            if(result.data.ethereum.address[0].smartContract){
-            if (result.data.ethereum.address[0].smartContract.currency) { 
-              setErrContractAddress("")
-              getTokenUsdPrice(address,type) 
-              setSymbol(result.data.ethereum.address[0].smartContract.currency.symbol) 
-              setTokenName(result.data.ethereum.address[0].smartContract.currency.name) 
-              getTotalMaxSupply(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
+  //     const url = "https://graphql.bitquery.io/";
+  //     const opts = {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "X-API-KEY":graphqlApiKEY
+  //       },
+  //       body: JSON.stringify({
+  //         query
+  //       })
+  //     }; 
+  //     fetch(url, opts)
+  //       .then(res => res.json())
+  //       .then(result => {    
+  //           if(result.data.ethereum.address[0].smartContract){
+  //           if (result.data.ethereum.address[0].smartContract.currency) { 
+  //             setErrContractAddress("")
+  //             getTokenUsdPrice(address,type) 
+  //             setSymbol(result.data.ethereum.address[0].smartContract.currency.symbol) 
+  //             setTokenName(result.data.ethereum.address[0].smartContract.currency.name) 
+  //             getTotalMaxSupply(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
               
-              // getMarketCap(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
-            } 
-            else { 
-              setErrContractAddress("Invalid contract address or network type.")
-              setSymbol('') 
-              setTokenName('')
-            } 
-          }
-          else{
-            setErrContractAddress("Invalid contract address or network type.")
-            setTokenName('')
-          }
-        })
-        .catch(console.error);
+  //             // getMarketCap(address,result.data.ethereum.address[0].smartContract.currency.decimals,type)
+  //           } 
+  //           else { 
+  //             setErrContractAddress("Invalid contract address or network type.")
+  //             setSymbol('') 
+  //             setTokenName('')
+  //           } 
+  //         }
+  //         else{
+  //           setErrContractAddress("Invalid contract address or network type.")
+  //           setTokenName('')
+  //         }
+  //       })
+  //       .catch(console.error);
    
-  }
+  // }
 
 
   return(
     <>
-      <Head>
-        <title>Create New Token</title>
-        <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
-        <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
-        <meta property="og:locale" content="en_US" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-        <meta property="og:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta property="og:url" content={market_coinpedia_url} />
-        <meta property="og:site_name" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-        <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
-        <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
-        <meta property="og:image:width" content="400" />
-        <meta property="og:image:height" content="400" />  
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@coinpedia" />
-        <meta name="twitter:creator" content="@coinpedia" />
-        <meta name="twitter:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-        <meta name="twitter:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
-        <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
-        <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
-        <link rel="canonical" href={market_coinpedia_url} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
-      </Head>
+      { 
+        token_row_id ?
+        <Head>
+          <title>Update Coin/Token Details | Coinpedia markets</title>
+          <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
+          <meta name="description" content="Update coin details is your page to edit, update any details to your listed coin/token detail page." />
+          <meta name="keywords" content="List token, List token on coinpedia markets, list token, token listing, listing on coinmarketcap, token listing." />
+          <meta property="og:locale" content="en_US" />
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content="Update Coin/Token Details | Coinpedia markets" />
+          <meta property="og:description" content="Update coin details is your page to edit, update any details to your listed coin/token detail page. " />
+          <meta property="og:url" content={market_coinpedia_url + "token/update/"} />
+          <meta property="og:site_name" content="Coinpedia Cryptocurrency Markets" />
+          <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
+          <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
+          <meta property="og:image:width" content="400" />
+          <meta property="og:image:height" content="400" />  
+          <meta property="og:image:type" content="image/png" />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:site" content="@coinpedia" />
+          <meta name="twitter:creator" content="@coinpedia" />
+          <meta name="twitter:title" content="Update Coin/Token Details | Coinpedia markets" />
+          <meta name="twitter:description" content="Update coin details is your page to edit, update any details to your listed coin/token detail page." />
+          <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
+          <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
+          <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
+          <link rel="canonical" href={market_coinpedia_url + "token/update/"} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
+        </Head>
+        :
+        <Head>
+          <title>List Your Coin/Token | CoinPedia Markets</title>
+          <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
+          <meta name="description" content="Token listing on Coinpedia markets can be done by submitting your details in this form, followed by team verification and listing." />
+          <meta name="keywords" content="List token on coinpedia markets, list token, token listing, listing on coinmarketcap, token listing." />
+          <meta property="og:locale" content="en_US" />
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content="List Your Coin/Token | CoinPedia Markets" />
+          <meta property="og:description" content="Token listing on Coinpedia markets can be done by submitting your details in this form, followed by team verification and listing." />
+          <meta property="og:url" content={market_coinpedia_url + "token/update/"} />
+          <meta property="og:site_name" content="Coinpedia Cryptocurrency Markets" />
+          <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
+          <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
+          <meta property="og:image:width" content="400" />
+          <meta property="og:image:height" content="400" />  
+          <meta property="og:image:type" content="image/png" />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:site" content="@coinpedia" />
+          <meta name="twitter:creator" content="@coinpedia" />
+          <meta name="twitter:title" content="List Your Coin/Token | CoinPedia Markets" />
+          <meta name="twitter:description" content="Token listing on Coinpedia markets can be done by submitting your details in this form, followed by team verification and listing." />
+          <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
+          <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
+          <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
+          <link rel="canonical" href={market_coinpedia_url + "token/update/"} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
+        </Head>
+      }
+      
       <div className="page">
         <div className="create_airdrop create_launchpad">
           <div className="container">
@@ -1001,9 +1094,21 @@ const createNewToken = () =>
               <div> 
                 <div className="token_form">
                   <div className='market_token_tabs'>
-                    <h1 className='page_main_heading'>{token_row_id?"Update":"Create"} Token Details</h1>
+                  { token_row_id ?
+                    <>
+                      <h1 className='page_main_heading'> Update Coin/Token Details</h1>
+                      <p>Edit details of your coins/tokens listed on Coinpedia markets</p>
+                    </>
+                  :
+                    <>
+                      <h1 className='page_main_heading'> List Your Coin/Token On CoinPedia Markets </h1>
+                      <p>Submit your coin/token details in the form below, we will verify and list it on the markets page. </p>
+                      <br/>
+                    </>
+                  }
+                    
                     {token_row_id?
-                      <Top_header active_tab={1} token_id={token_row_id}/>
+                      <Top_header active_tab={1} token_id={token_row_id} approval_status={approval_status}/>
                     :""}
                         {/* <h5>Create Token</h5>
                         <p>Enter all these fields to create token</p> */}
@@ -1023,18 +1128,13 @@ community_address
 explorer
 exchange_link 
 */}
- <div className='create_token_details'>
- <div className='form_headings'>
-                    <h5>Create Token</h5>
-                    <p >Enter all these fields to create token</p>
-                        </div>  
+                <div className='create_token_details'>
                   <div className="row">
-                  
                     {/* <div className="col-lg-3 col-md-4">
                       <div className="token_steps_list">
                         <ul>
                           <li>Token Basic <img src={"/assets/img/"+(token_name ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/> </li>
-                          <li>Token Supply <img src={"/assets/img/"+(token_max_supply ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
+                          <li>Token Supply <img src={"/assets/img/"+(token_supply ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
                           <li>Exchange <img src={"/assets/img/"+(exchange_link[0] ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
                           <li>Explorer <img src={"/assets/img/"+(explorer[0] ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
                           <li>Community <img src={"/assets/img/"+(community_address[0] ? "create_token_check_completed.svg":"create_token_check_pending.svg")}/></li>
@@ -1048,83 +1148,81 @@ exchange_link
                         <div className="col-lg-10 col-md-12">
                             <div className="form-custom">
                           <div className="row">
-                            <div className="col-md-4">
+                            <div className="col-md-5">
                             <label htmlFor="email">List Type<span className="label_star">*</span></label>
                             </div>
-                            <div className="col-md-8">
-                              <div className="input-appearance">
-                                <label><input type="radio" value={with_contract_address} checked={with_contract_address === true} onChange={()=>set_with_contract_address(true)} style={{appearance:'auto'}} />&nbsp;&nbsp;With Contract Address</label>
-                                <br></br><label ><input type="radio" value={with_contract_address} checked={with_contract_address === false} onChange={()=>set_with_contract_address(false)} style={{appearance:'auto'}} />&nbsp;&nbsp;Without Contract Address</label>
-                                <br></br>
-                              </div>
+                            <div className="col-md-7">
+                            <div className="form-group input_block_outline">
+                            <select className="form-control" value={list_type} onChange={(e) => set_list_type(e.target.value)} >
+                              <option value="" disabled>Select Type</option>
+                              <option value={1} >Coin</option>
+                              <option value={2} >Token</option>
+                            </select>
+                            </div>
+                            <div className="error">{err_list_type}</div>
                             </div>
                           </div>
                           </div>
                         </div>
                       </div>
-                      <br></br>
+              
                       {
-                          with_contract_address === true ?
+                          parseInt(list_type) == 2 ?
                           <div className="row">
-                      { 
-                        contract_address.length > 0
-                        ?
-                        contract_address.map((e, i)=>
-                        <div className="col-lg-10 col-md-12" key={i}>
-                          <div className="form-custom">
-                            <div className="row">
-                              <div className="col-md-5">
-                                <label htmlFor="email">Contract address<span className="label_star">*</span></label>
-                              </div>
-                              <div className="col-md-7">
-                                <div className="input_block_outline" style={{marginBottom: '0'}}>
-                                  <div className="input-group">
-                                    <div className="input-group-prepend">
-                                      <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}  onChange={(item)=> getTokenData(item, item.target.value, i, e.contract_address)} >
-                                            <option value="0">Type</option> 
-                                            <option value="1">ETH</option>
-                                            <option value="2">BSC</option>
-                                      </select>
-                                    </div>
-                                    
-                                    {
-                                      i === 0 && e.network_type !== "0"
-                                      ?
-                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=> getTokenData(item, e.network_type , i, (item.target.value).toLowerCase())}   />
-                                      :
-                                      <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item)=>checkContractAddress(item, i)} />
-                                    }
-                                    </div>
-            
-                                    {
-                                      i== 1 ?
-                                      <>
-                                        <button className="addmore_ico create-token-res" style={{float: "right", marginBottom: "10px"}} onClick={()=> removeContractAddress(i)}><span>- Remove Contract address</span></button>
-                                      </>
-                                    :
-                                    null
-                                  } 
-                                </div>  
-                                <>
-                                  {
-                                    contract_address.length !== 2 ?
+                          { 
+                            contract_addresses.length > 0 ?
+                            contract_addresses.map((e, i)=>
+                            <div className="col-lg-10 col-md-12" key={i}>
+                              <div className="form-custom">
+                                <div className="row contract_address">
+                                  <div className="col-md-5">
+                                    <label htmlFor="email">Contract address<span className="label_star">*</span></label>
+                                  </div>
+                                  <div className="col-md-7">
+                                    <div className="input_block_outline" style={{marginBottom: '0'}}>
+                                      <div className="input-group">
+                                        <div className="input-group-prepend">
+                                          <select name="network_type" placeholder="Eg.,0x0000" value={e.network_type}   onChange={(item) => getTokenData(1, i, item.target.value)} >
+                                                <option value="">Type</option> 
+                                                {
+                                                    crypto_networks.length ?
+                                                    crypto_networks.map((item, inner_i) =>
+                                                    <>
+                                                    <option value={inner_i} selected={item._id==e.network_row_id}>{item.network_name}</option>
+                                                    </>
+                                                    )
+                                                    :
+                                                    ""
+                                                  }
+                                          </select>
+                                        </div>
+                                        <input type="text" className="form-control" placeholder="Enter Address" value={e.contract_address} name="contract_address" onChange={(item) => getTokenData(2, i, (item.target.value).toLowerCase())}   />
+                                        </div>
+                
+                                       
+                                    </div>  
                                     <>
-                                      <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.svg" /> Add More Contract addresses</span></button>
+                                      {
+                                        i== 0 ?
+                                        <>
+                                         <button className="addmore_ico create-token-res" onClick={()=>AddMoreContractAddress()}><span><img src="/assets/img/add-more.svg" alt="Add" /> Add More </span></button>  
+                                        </>
+                                        :
+                                        <>
+                                        <button className="addmore_ico create-token-res" style={{ marginBottom: "10px"}} onClick={()=> removeContractAddress(i)}><span> <img src="/assets/img/circle-minus.svg" alt="Remove"></img> Remove </span></button>
+                                        </>
+                                      }                    
                                     </>
-                                    :
-                                    null
-                                  }
-                                </>
-                                <div className="error">{err_contract_address}</div>
+                                    <div className="error">{err_contract_address}</div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
+                            )
+                            :
+                            null
+                            }
                           </div>
-                        </div>
-                        )
-                        :
-                        null
-                        }
-                      </div>
                       :
                       null
                   }
@@ -1140,12 +1238,7 @@ exchange_link
                             <div className="form-custom"> 
                             
                             <div className="form-group input_block_outline">
-                            {
-                              with_contract_address === true ?
-                              <input type="text" className="form-control" placeholder="Token Name" value={token_name} readOnly />
-                              :
-                              <input type="text" className="form-control" placeholder="Token Name" value={token_name} onChange={(e)=>setTokenName(e.target.value)}/>
-                            }
+                            <input type="text" className="form-control" placeholder="Token Name" value={token_name} onChange={(e)=>setTokenName(e.target.value)}/>
                             </div>
                             <div className="error">{err_token_name}</div>
                           </div>
@@ -1163,12 +1256,7 @@ exchange_link
                             <div className="col-md-7">
                               <div className="form-custom"> 
                                 <div className="form-group input_block_outline">
-                                {
-                                    with_contract_address === true ?
-                                    <input type="text" className="form-control" placeholder="Symbol" value={symbol}  readOnly/>
-                                    :
-                                    <input type="text" className="form-control" placeholder="Symbol" value={symbol}  onChange={(e)=>setSymbol(e.target.value)}/>
-                                }
+                                <input type="text" className="form-control" placeholder="Symbol" value={symbol}  onChange={(e)=>setSymbol((e.target.value).toUpperCase())}/>
                                   
                                 </div>
                                 <div className="error">{err_symbol}</div>
@@ -1187,7 +1275,7 @@ exchange_link
                               <div className='input_multiselector'>
                               <div className="form-custom">
                                 <div className="form-group input_block_outline ">
-                                <Multiselect   placeholder="Select Event Tags"
+                                <Multiselect   placeholder="Select Category"
                                     selectedValues={category_name}
                                     options={categories} // Options to display in the dropdown
                                     onSelect={onSelect} // Function will trigger on select event
@@ -1244,24 +1332,19 @@ exchange_link
                         <div className="col-lg-10 col-md-12">
                           <div className="row">
                             <div className="col-md-5">
-                              <label htmlFor="email">Token Supply</label>
+                              <label htmlFor="email">Token Supply<span className="label_star">*</span></label>
                             </div>
                             <div className="col-md-7">
                               <div className="form-custom">
                                 <div className="form-group input_block_outline">
                                   <div className="input-group">
-                                  {
-                                      with_contract_address === true ?
-                                      <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)} readOnly/>
-                                      :
-                                      <input type="number" placeholder="Token Max Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_max_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)}/>
-                                  }
-                                    
+                                    <input type="number" placeholder="Token Supply" className="form-control" aria-label="Username" aria-describedby="basic-addon1"  value={token_supply} onChange={(e)=>setTokenMaxSupply(e.target.value)}/>
                                     <div className="input-group-prepend">
                                       <span className="input-group-text">{symbol}</span>
                                     </div>
                                   </div>
                                 </div>
+                                <div className="error">{err_total_supply}</div>
                               </div>
                             </div>
                           </div>
@@ -1313,7 +1396,7 @@ exchange_link
                         <div className="col-lg-10 col-md-12">
                           <div className="row">
                             <div className="col-md-5">
-                              <label htmlFor="email">Logo</label>
+                              <label htmlFor="email">Token Image</label>
                             </div>
                             <div className="col-md-7">
                               <form id="imageUploadForm" >
@@ -1321,7 +1404,7 @@ exchange_link
                                   <div className="form-group input_block_outline">
                                     <label className='m-0'> 
                                         <input className="choose_logo form-control" type="file" accept="image/*" onChange={onSelectFile} />
-                                        <span >Choose Logo </span> 
+                                        <span >Choose Image </span> 
                                       </label> 
                                   </div>
                                   <div className="error">{err_token_image}</div>
@@ -1379,13 +1462,13 @@ exchange_link
                         </div>
                       </div>
 
-                      <div className="row">
+                      <div className="row" >
                         <div className="col-lg-10 col-md-12">
                           <div className="row">
                             <div className="col-md-5">
-                              <label htmlFor="email">Exchange URL</label>
+                              <label htmlFor="email">Exchanges</label>
                             </div>
-                            <div className="col-md-7">
+                            <div className="col-md-7 mr_bottom">
                             {
                               exchange_link.length > 0 ?
                               exchange_link.map((item, i) => 
@@ -1393,9 +1476,9 @@ exchange_link
                                 <div key={i}>
                                   <div className="form-custom create_token_no_space">
                                     <div className="form-group input_block_outline">
-                                      <input autoComplete="off" type="text" className="form-control" placeholder="Exchange URL" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
+                                      <input autoComplete="off" type="text" className="form-control" placeholder="Exchange Link" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
                                     </div>
-                                    <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.svg" /> Add More Exchange</span></button>
+                                    <button className="addmore_ico create-token-res" onClick={addMoreExchange}><span><img src="/assets/img/add-more.svg" alt="Add"/> Add More Exchange</span></button>
                                   </div>
                                 </div>
                             
@@ -1404,9 +1487,9 @@ exchange_link
                                     <div >
                                       <div className="form-custom create_token_top_space">
                                         <div className="form-group input_block_outline">
-                                          <input autoComplete="off" type="text" className="form-control" placeholder="Exchange URL" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
+                                          <input autoComplete="off" type="text" className="form-control" placeholder="Exchange Link" name="link" value={item} onChange={e => handleExchangeChange(e, i)} />
                                         </div>
-                                        <p className="remove_block"><span onClick={() =>{clickOnDelete(i)}}>Remove</span></p>
+                                        <p className="remove_block"><span onClick={() =>{clickOnDelete(i)}}> <img src="/assets/img/circle-minus.svg" alt="Remove"></img>Remove</span></p>
                                       </div>
                                     </div> 
                                   
@@ -1415,7 +1498,7 @@ exchange_link
                                   <div>
                                   <div className="form-custom create_token_no_space">
                                     <div className="form-group input_block_outline">
-                                      <input autoComplete="off" type="text" className="form-control" name="link" placeholder="Exchange URL" value={exchange_link} onChange={e => handleExchangeChange(e, 0)} />
+                                      <input autoComplete="off" type="text" className="form-control" name="link" placeholder="Exchange Link" value={exchange_link} onChange={e => handleExchangeChange(e, 0)} />
                                     </div>
                                   </div>
                                 </div>
@@ -1429,9 +1512,9 @@ exchange_link
                         <div className="col-lg-10 col-md-12">
                           <div className="row">
                             <div className="col-md-5">
-                              <label htmlFor="email">Explorer URL</label>
+                              <label htmlFor="email">Explorers</label>
                             </div>
-                            <div className="col-md-7">
+                            <div className="col-md-7 mr_bottom">
                             {
                               explorer.length > 0 ?
                               explorer.map((item, i) => 
@@ -1440,10 +1523,10 @@ exchange_link
                                     <div >
                                       <div className="form-custom create_token_no_space">
                                         <div className="form-group input_block_outline">
-                                          <input autoComplete="off" className="form-control" type="text" placeholder="Explorer URL" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
+                                          <input autoComplete="off" className="form-control" type="text" placeholder="Explorer Link" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
                                         </div>
                                       
-                                        <button className="addmore_ico create-token-res" onClick={addMoreExplorers}><span><img src="/assets/img/add-more.svg" /> Add More Explorer</span></button>
+                                        <button className="addmore_ico create-token-res" onClick={addMoreExplorers}><span><img src="/assets/img/add-more.svg" alt="Add"/> Add More Explorer</span></button>
                                       </div>
                                     </div>
                                 </div>
@@ -1451,9 +1534,9 @@ exchange_link
                                   <div >
                                     <div className="form-custom create_token_top_space">
                                       <div className="form-group input_block_outline">
-                                        <input autoComplete="off" type="text" className="form-control" placeholder="Explorer URL" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
+                                        <input autoComplete="off" type="text" className="form-control" placeholder="Explorer Link" name="link" value={item} onChange={e => handleExplorersChange(e, i)} />
                                       </div>
-                                      <p className="remove_block"><span onClick={() =>{clickOnExplorerDelete(i)}}>Remove</span></p>
+                                      <p className="remove_block"><span onClick={() =>{clickOnExplorerDelete(i)}}> <img src="/assets/img/circle-minus.svg" alt="Remove"></img>Remove</span></p>
                                     </div>
                                   </div>
                                   
@@ -1462,7 +1545,7 @@ exchange_link
                               <div >
                                       <div className="form-custom create_token_no_space">
                                         <div className="form-group input_block_outline">
-                                          <input autoComplete="off" type="text" className="form-control" placeholder="Explorer URL" name="link" value={explorer} onChange={e => handleExplorersChange(e, 0)} />
+                                          <input autoComplete="off" type="text" className="form-control" placeholder="Explorer Link" name="link" value={explorer} onChange={e => handleExplorersChange(e, 0)} />
                                         </div>
                                       </div>
                                     </div>
@@ -1477,9 +1560,9 @@ exchange_link
                         <div className="col-lg-10 col-md-12">
                           <div className="row">
                             <div className="col-md-5">
-                              <label htmlFor="email">Community URL</label>
+                              <label htmlFor="email">Communities</label>
                             </div>
-                            <div className="col-md-7">
+                            <div className="col-md-7 mr_bottom">
                             {
                               community_address.length > 0 ?
                               community_address.map((item, i) => 
@@ -1488,9 +1571,9 @@ exchange_link
                                   <div >
                                     <div className="form-custom create_token_no_space">
                                       <div className="form-group input_block_outline">
-                                        <input autoComplete="off" type="text" className="form-control" placeholder="Community URL" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
+                                        <input autoComplete="off" type="text" className="form-control" placeholder="Community Link" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
                                       </div>
-                                      <button className="addmore_ico create-token-res" onClick={addMoreCommunity}><span><img src="/assets/img/add-more.svg" /> Add More Community</span></button>
+                                      <button className="addmore_ico create-token-res" onClick={addMoreCommunity}><span><img src="/assets/img/add-more.svg" alt="Add"/> Add More Community</span></button>
                                     </div>
                                   </div>
                               </div>
@@ -1499,9 +1582,9 @@ exchange_link
                                   <div>
                                     <div className="form-custom create_token_top_space">
                                       <div className="form-group input_block_outline">
-                                        <input autoComplete="off" type="text" className="form-control" placeholder="Community URL" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
+                                        <input autoComplete="off" type="text" className="form-control" placeholder="Community Link" name="link" value={item} onChange={e => handleCommunityChange(e, i)} />
                                       </div>
-                                      <p className="remove_block"><span onClick={() =>{clickOnCommunityDelete(i)}}>Remove</span></p>
+                                      <p className="remove_block"><span onClick={() =>{clickOnCommunityDelete(i)}}> <img src="/assets/img/circle-minus.svg" alt="Remove"></img>Remove</span></p>
                                     </div>
                                   </div> 
                                 </div>
@@ -1510,7 +1593,7 @@ exchange_link
                               <div>
                                 <div className="form-custom create_token_no_space">
                                   <div className="form-group input_block_outline">
-                                    <input autoComplete="off" type="text" className="form-control" placeholder="Community URL" name="link" value={community_address} onChange={e => handleCommunityChange(e, 0)} />
+                                    <input autoComplete="off" type="text" className="form-control" placeholder="Community Link" name="link" value={community_address} onChange={e => handleCommunityChange(e, 0)} />
                                   </div>
                                 </div>
                               </div>
@@ -1520,7 +1603,7 @@ exchange_link
                         </div>
                       </div>
 
-                      <div className="row">
+                      {/* <div className="row">
                         <div className="col-lg-10 col-md-12">
                           <div className="row">
                             <div className="col-md-5">
@@ -1537,8 +1620,8 @@ exchange_link
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="row">
+                      </div> */}
+                      {/* <div className="row">
                         <div className="col-lg-10 col-md-12">
                           <div className="row">
                             <div className="col-md-5">
@@ -1552,17 +1635,11 @@ exchange_link
                                   </div>
                                 </div>
                              </div>
-                              {/* <div>
-                                  <div className="form-custom create_token_no_space">
-                                    <div className="form-group input_block_outline">
-                                      <input autoComplete="off" type="text" className="form-control" placeholder="Meta Description"  value={meta_description} onChange={(e) => set_meta_description(e.target.value)}/>
-                                    </div>
-                                  </div>
-                                </div> */}
+                             
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
 
                       <div className="row">
                         <div className="col-lg-10 col-md-12">

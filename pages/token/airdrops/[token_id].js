@@ -9,14 +9,13 @@ import Head from 'next/head'
 import JsCookie from "js-cookie" 
 import cookie from 'cookie'
 import dynamic from 'next/dynamic'
-import moment from "moment";
-
+import moment from "moment"
 // import "react-datetime/css/react-datetime.css"
 import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,  market_coinpedia_url,config,graphqlApiKEY,separator} from '../../../components/constants'; 
 import Select from 'react-select'
 import Popupmodal from '../../../components/popupmodal'
 import Top_header from '../../../components/manage_token/top_header' 
-  
+import { Tooltip, OverlayTrigger } from 'react-bootstrap'; 
  
 // import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 // import 'react-image-crop/dist/ReactCrop.css';
@@ -36,12 +35,12 @@ export default function Create_token({config,token_id})
     const [contract_address, setContractAddress] = useState([{network_type: "0", contract_address: ""}])
     const [live_price, setLivePrice] = useState("")
     const [market_cap, set_market_cap] = useState("") 
-  const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
+    const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
 
     const [err_contract_address, setErrContractAddress] = useState("")
     const [loader, set_loader] = useState("")
     const [title, set_title] = useState("")
-    const [sub_title, set_sub_title] = useState("")
+    const [participating_users, set_participating_users] = useState("")
     const [winner_price, set_winner_price] = useState("")
     const [start_date, set_start_date] = useState("")
     const [end_date, set_end_date] = useState("")
@@ -51,9 +50,10 @@ export default function Create_token({config,token_id})
     const [airdrop_list, set_airdrop_list] = useState([])
     const [api_loader, set_api_loader] = useState(false)
     const [elements, set_elements] = useState([]);
+    const [approval_status, set_approval_status] = useState("")
 
     const [err_title, set_err_title] = useState("")
-    const [err_sub_title, set_err_sub_title] = useState("")
+    const [err_participating_users, set_err_participating_users] = useState("")
     const [err_winner_price, set_err_winner_price] = useState("")
     const [err_start_date, set_err_start_date] = useState("")
     const [err_end_date, set_err_end_date] = useState("")
@@ -68,13 +68,28 @@ export default function Create_token({config,token_id})
 
     useEffect(() => {
       airdropList();
+      getTokenDetails()
     }, []);
+
+
+    const getTokenDetails=()=>
+    {
+    
+      Axios.get(API_BASE_URL+"markets/users/manage_crypto/individual_details/"+token_id, config)
+      .then(response=>{
+        if(response.data.status){ 
+          // console.log(response.data) 
+          // set_supply(response.data.message.total_supply)
+          set_approval_status((response.data.message.approval_status) ? parseInt(response.data.message.approval_status):0)
+        }
+      })
+    }
 
 
     const clearform = () =>
     {   
         set_title("")
-        set_sub_title("")
+        set_participating_users("")
         set_winner_price("")
         set_start_date("")
         set_end_date("")
@@ -84,12 +99,14 @@ export default function Create_token({config,token_id})
         set_airdrop_row_id("")
        
     }
+
+    
     const createAirdrop = () =>
     { 
       let formValid = true
       setModalData({ icon: "", title: "", content: "" })
       set_err_title('')
-      set_err_sub_title('') 
+      set_err_participating_users('') 
       set_err_winner_price('')
       set_err_start_date('')
       set_err_end_date('')
@@ -108,27 +125,24 @@ export default function Create_token({config,token_id})
         formValid = false
       } 
      
-   
-
   
-      if(sub_title === '')
+      if(!participating_users)
       {
-        set_err_sub_title('The sub title field is required.')
-          formValid = false
-      }
-      else if(sub_title.length<15)
-      {
-        set_err_sub_title('The sub title field should be atleast 15 characters.')
-          formValid = false
+        set_err_participating_users('The Participating Users field is required.')
+        formValid = false
       }
       
       
-      // if(winner_price === '')
-      // {
-      //   set_err_winner_price('The winner price field is required.')
-      //     formValid = false
-      // }
-  
+      if(winner_price === '')
+      {
+        set_err_winner_price('The winner price field is required.')
+        formValid = false
+      }
+      else if(winner_price < 0)
+      {
+        set_err_winner_price('The winner price field must be contain greater than 0.')
+      }
+    
   
       
       if(start_date === '')
@@ -180,73 +194,80 @@ export default function Create_token({config,token_id})
       //   set_err_how_to_participate('The participate field should be atleast 4 characters in length.')
       //   formValid = false
       // }
+      
+
+      if(!formValid)
+      {
+        return
+      }
       set_loader(true)
       const reqObj = {
         token_row_id:token_id,
         airdrop_row_id:airdrop_row_id,
         title: title,
-        sub_title: sub_title, 
+        participating_users: participating_users, 
         winner_price: winner_price,
-        start_date: moment(start_date).utc().format(),
-        end_date: moment(end_date).utc().format(),
+        start_date:start_date ? moment(start_date).format("YYYY-MM-DD"):"",
+        end_date:end_date ? moment(end_date).format("YYYY-MM-DD"):"",
         participate_link: participate_link,
         description: description,
         how_to_participate: how_to_participate,
         
       } 
-      if(formValid)
+
+      Axios.post(API_BASE_URL+"markets/users/manage_airdrops/update_n_save_details/", reqObj, config)
+      .then(response=> 
       { 
-        
-        Axios.post(API_BASE_URL+"markets/users/manage_airdrops/update_n_save_details/", reqObj, config).then(response=> { 
-          set_loader(false)
-          if(response.data.status)
-          { 
-            clearform()
-            setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: response.data.message.alert_message})
-            airdropList();
-          } 
-          { 
-    
-            if(response.data.message.title)
-            {
-              set_err_title(response.data.message.title)   
-            }
-            
-            if(response.data.message.sub_title)
-            {
-              set_err_sub_title(response.data.message.sub_title)
-            } 
-    
-            if(response.data.message.winner_price)
-            {  
-              set_err_winner_price(response.data.message.winner_price)
-            }
-            
-            if(response.data.message.start_date)
-            {  
-              set_err_start_date(response.data.message.start_date)
-            }
-            
-            if(response.data.message.end_date)
-            {  
-              _(response.data.message.end_date)
-            }
-            
-            if(response.data.message.participate_link)
-            {  
-              set_err_participate_link(response.data.message.participate_link)
-            }  
-            if(response.data.message.description)
-            {
-              set_err_description(response.data.message.description)
-            } 
-            if(response.data.message.how_to_participate)
-            {
-              set_err_how_to_participate(response.data.message.how_to_participate)
-            } 
+        set_loader(false)
+        if(response.data.status)
+        { 
+          clearform()
+          setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: response.data.message.alert_message})
+          airdropList();
+        } 
+        else
+        { 
+  
+          if(response.data.message.title)
+          {
+            set_err_title(response.data.message.title)   
           }
-        })
-      }
+          
+          if(response.data.message.participating_users)
+          {
+            set_err_participating_users(response.data.message.participating_users)
+          } 
+  
+          if(response.data.message.winner_price)
+          {  
+            set_err_winner_price(response.data.message.winner_price)
+          }
+          
+          if(response.data.message.start_date)
+          {  
+            set_err_start_date(response.data.message.start_date)
+          }
+          
+          if(response.data.message.end_date)
+          {  
+            _(response.data.message.end_date)
+          }
+          
+          if(response.data.message.participate_link)
+          {  
+            set_err_participate_link(response.data.message.participate_link)
+          }  
+          if(response.data.message.description)
+          {
+            set_err_description(response.data.message.description)
+          } 
+          if(response.data.message.how_to_participate)
+          {
+            set_err_how_to_participate(response.data.message.how_to_participate)
+          } 
+        }
+      })
+      
       
     }  
     const airdropList = () => 
@@ -267,10 +288,10 @@ export default function Create_token({config,token_id})
       
    
           set_title(e.title)
-          set_sub_title(e.sub_title)
+          set_participating_users(e.participating_users)
           set_winner_price(e.winner_price)
-          set_start_date(moment(e.start_date).format("YYYY-MM-DDTHH:mm"))
-          set_end_date(moment(e.end_date).format("YYYY-MM-DDTHH:mm"))
+          set_start_date(moment(e.start_date).utc().format("YYYY-MM-DD"))
+          set_end_date(moment(e.end_date).utc().format("YYYY-MM-DD"))
           set_participate_link(e.participate_link)
           set_description(e.description)
           set_how_to_participate(e.how_to_participate)
@@ -284,9 +305,9 @@ export default function Create_token({config,token_id})
           <div className="modal-dialog modal-sm">
           <div className="modal-content">
               <div className="modal-body">
-              <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" /></button>
+              <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt="Close"/></button>
               <div className="text-center">
-              <div className=""><img src="/assets/img/cancel.png" className="prop_modal_img"/></div>
+              <div className=""><img src="/assets/img/cancel.png" alt="Cancel"className="prop_modal_img"/></div>
                   <h4 className="">Delete Airdrop!</h4>
                   <p>Do you really want to delete this Airdrop detail?</p>
               </div>  
@@ -330,8 +351,8 @@ export default function Create_token({config,token_id})
       return { 
           "@context":"http://schema.org/",
           "@type":"Organization",
-          "name":"Coinpedia",
-          "url":"https://markets.coinpedia.org",
+          "name":"Manage Your Airdrops",
+          "url":market_coinpedia_url+"token/airdrops/"+token_id+ "/",
           "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
           "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
         }  
@@ -341,16 +362,16 @@ export default function Create_token({config,token_id})
   return(
     <>
       <Head>
-        <title>Manage Airdrops</title>
+        <title>Manage Your Airdrops | CoinPedia Markets</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
-        <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
+        <meta name="description" content="Create a new airdrop or edit an existing one from your tokens list of Active, upcoming or completed airdrops list of coinpedia markets." />
+        <meta name="keywords" content={"Airdrop, crypto airdrops "+moment().format('MMMM YYYY')+" airdrops, crypto airdrop, crypto airdrops, best crypto airdrops, latest airdrops, latest crypto airdrop, NFT airdrops."} />
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-        <meta property="og:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta property="og:url" content={market_coinpedia_url} />
-        <meta property="og:site_name" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
+        <meta property="og:title" content="Manage Your Airdrops | CoinPedia Markets" />
+        <meta property="og:description" content="Create a new airdrop or edit an existing one from your tokens list of Active, upcoming or completed airdrops list of coinpedia markets." />
+        <meta property="og:url" content={market_coinpedia_url+"token/airdrops/"+token_id+ "/"} />
+        <meta property="og:site_name" content="Coinpedia Cryptocurrency Markets" />
         <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:width" content="400" />
@@ -358,12 +379,12 @@ export default function Create_token({config,token_id})
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@coinpedia" />
         <meta name="twitter:creator" content="@coinpedia" />
-        <meta name="twitter:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-        <meta name="twitter:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
+        <meta name="twitter:title" content="Manage Your Airdrops | CoinPedia Markets" />
+        <meta name="twitter:description" content="Create a new airdrop or edit an existing one from your tokens list of Active, upcoming or completed airdrops list of coinpedia markets." />
         <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
         <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
         <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
-        <link rel="canonical" href={market_coinpedia_url} />
+        <link rel="canonical" href={market_coinpedia_url+"token/airdrops/"+token_id+ "/"} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
       <div className="page">
@@ -374,8 +395,9 @@ export default function Create_token({config,token_id})
                 <div className="token_form">
 
                 <div className='market_token_tabs'>
-                <h1 className='page_main_heading'>Manage Airdrops</h1>
-                <Top_header active_tab={3} token_id={token_id}/>
+                <h1 className='page_main_heading'>Manage Airdrops On CoinPedia</h1>
+                <p>Create, Edit, or Remove airdrops of your token from here.</p>
+                <Top_header active_tab={3} token_id={token_id} approval_status={approval_status}/>
                     {/* <div className="row">
                         <div className="col-lg-3 col-md-4">
                         </div>  
@@ -388,12 +410,26 @@ export default function Create_token({config,token_id})
                   <div className="row">
                     <div className="col-lg-5 col-md-5 ">
                     <div className='form_headings'>
-                    <h5>{airdrop_row_id?"Update":"Create"} Airdrop</h5>
-                    {airdrop_row_id?<p>Edit airdrop details for your tokens.</p>:<p>You can create airdrops for your tokens.</p>}
+
+                    {
+                        !airdrop_row_id ?
+                        <>
+                          <h5>Add Airdrop Details</h5>
+                          <p>You can create airdrops for your tokens.</p>
+                        </>
+                        :
+                        <>
+                          <h5>
+                            Update Airdrop Details
+                            <span style={{float:"right"}} className='text-right pull-right' onClick={()=>clearform()}><button className='btn btn-primary btn-sm'>Go Back</button></span>
+                          </h5>
+                          <p>Edit airdrop details for your tokens.</p>
+                        </>
+                      }
                     </div>
                       <div className='create_token_details'>
                       <div className="row">
-                        <div className="col-lg-12 col-md-12">
+                        <div className="col-lg-6 col-md-6">
                             <div className="form-custom">
                             <label htmlFor="email">Title <span className="label_star">*</span></label>
                               <div className="form-group input_block_outline">
@@ -404,13 +440,13 @@ export default function Create_token({config,token_id})
                           </div>
                         </div>
 
-                        <div className="col-lg-12 col-md-12">
+                        <div className="col-lg-6 col-md-6">
                           <div className="form-custom">
-                              <label htmlFor="email">Sub title <span className="label_star">*</span></label>
+                              <label htmlFor="email">Participating Users <span className="label_star">*</span></label>
                               <div className="form-group input_block_outline">
-                                <input type="text" className="form-control" placeholder="Airdrop subtitle" value={sub_title} onChange={(e) => set_sub_title(e.target.value)}/>
+                                <input type="text" min="0" className="form-control" placeholder="Number of Participating Users" value={participating_users} onChange={(e) => set_participating_users(e.target.value)}/>
                               </div>
-                            <div className="error">{err_sub_title}</div>
+                            <div className="error">{err_participating_users}</div>
 
                           </div>
                         </div>
@@ -420,9 +456,9 @@ export default function Create_token({config,token_id})
                       <div className="row">
                           <div className="col-lg-6 col-md-6">
                             <div className="form-custom">
-                              <label htmlFor="email">Winner amount ($)</label>
+                              <label htmlFor="email">Winner amount ($) <span className="label_star">*</span></label>
                                 <div className="form-group input_block_outline">
-                                  <input type="number" className="form-control" placeholder="Winner amount $" value={winner_price} onChange={(e) => set_winner_price(e.target.value)}/>
+                                  <input type="number" min="0" className="form-control" placeholder="Winner amount $" value={winner_price} onChange={(e) => set_winner_price(e.target.value)}/>
                               </div>
                             <div className="error">{err_winner_price}</div>
 
@@ -448,7 +484,7 @@ export default function Create_token({config,token_id})
                           <label htmlFor="email">Start date <span className="label_star">*</span></label>
                           <div className="form-custom">
                             <div className="form-group input_block_outline">
-                              <input type="datetime-local" className="form-control" placeholder="Total Supply"value={start_date} onChange={(e) => set_start_date(e.target.value)}/>
+                              <input type="date" className="form-control" placeholder="Total Supply"value={start_date} onChange={(e) => set_start_date(e.target.value)}/>
                             </div>
                             <div className="error">{err_start_date}</div>
 
@@ -459,7 +495,7 @@ export default function Create_token({config,token_id})
                           <label htmlFor="email">End date <span className="label_star">*</span></label>
                           <div className="form-custom">
                             <div className="form-group input_block_outline">
-                              <input type="datetime-local" className="form-control" placeholder="Total Supply" value={end_date} onChange={(e) => set_end_date(e.target.value)}/>
+                              <input type="date" className="form-control" placeholder="Total Supply" value={end_date} onChange={(e) => set_end_date(e.target.value)}/>
                             </div>
                             <div className="error">{err_end_date}</div>
 
@@ -528,10 +564,11 @@ export default function Create_token({config,token_id})
                 <table className="table  ">
                 <thead>
                 <tr>
-                    <th >Sl No.</th>
-                    <th >Airdrop title</th>
-                    <th >Amount</th>
-                    <th >Start date-end date</th>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Amount/Participates</th>
+                    <th>Start-End</th>
+                    <th>Status</th>
                     <th >Action</th>
                 </tr>
                 </thead>
@@ -542,21 +579,82 @@ export default function Create_token({config,token_id})
                     airdrop_list.map((e, i) =>
                     <tr key={i}>
                         <td>{i+1}</td>
-                        {e.participate_link?<a href={participate_link} title={e.title} target='_blank'><td>{e.title}</td></a>
-                        :<td>{e.title}</td>}
-                        
-                        <td>{e.winner_price?e.winner_price:"--"}</td>
-                        <td>{e.start_date
-                                ? moment(e.start_date).format(
-                                    "ll"
-                                  )
-                                : "-"}-{e.end_date
-                                  ? moment(e.end_date).format(
-                                      "ll"
-                                    )
-                                  : "-"}</td>
                         <td>
-                        <button type="submit" title="Edit" onClick={() => getAirdrop(e)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
+                          {
+                            e.participate_link ?
+                            <a href={participate_link} title={e.title} target='_blank'>{e.title}</a>
+                            :
+                            e.title
+                          }
+                        </td>
+                        <td>
+                          {
+                            e.winner_price && e.participating_users ?
+                            <>
+                              ${(e.winner_price).toFixed(2)}/
+                              
+                              {e.participating_users} Users
+                            </>
+                            :
+                            e.winner_price ?
+                            <>
+                              ${(e.winner_price).toFixed(2)}
+                            </>
+                            :
+                            ""
+                          }
+                        </td>
+                        <td>
+                          {
+                            e.start_date ? 
+                            moment(e.start_date).utc().format("ll")
+                            :
+                            "-"
+                          }
+                          <br/>
+                          {
+                            e.end_date? 
+                            moment(e.end_date).utc().format("ll")
+                            : 
+                            "-"
+                          }
+                        </td>
+                        <td>
+                          {
+                            e.approval_status == 0 ?
+                            <span className="badge_pending">
+                            Pending
+                            </span>
+                            :
+                            e.approval_status == 1 ?
+                            <span className="badge_approved">
+                            Approved
+                            </span>
+                            :
+                            e.approval_status == 2 ?
+                            <>
+                              <span className="badge_rejected">
+                                Rejected 
+                                
+                              </span>
+                              <OverlayTrigger
+                                // delay={{ hide: 450, show: 300 }}
+                                overlay={(props) => (
+                                  <Tooltip {...props} className="custom_pophover">
+                                     <p className="rejected_reason"><b>Rejected On:</b> {moment(e.rejected_on).utc().format("lll")} </p>
+                                      <p className="rejected_reason"><b>Reason:</b> {e.rejected_reason}</p>
+                                  </Tooltip>
+                                )}
+                                placement="bottom"
+                              ><span className='info_col ml-2' ><img src="/assets/img/info.png" alt="Info" /></span>
+                              </OverlayTrigger>
+                            </>
+                            :
+                            ""
+                          }
+                        </td>
+                        <td>
+                        <button type="submit" title="Edit" onClick={() => getAirdrop(e)} className="tn btn-primary btn-sm" name="disable_job"  >Edit</button>
                         <button type="submit" title="delete" onClick={() => btndelete(e._id)} className="tn btn-danger btn-sm ml-1" name="delete" data-toggle="modal" data-target="#removeConnection" >Delete</button>
                         </td> 
                     </tr>

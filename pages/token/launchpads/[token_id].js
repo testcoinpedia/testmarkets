@@ -2,50 +2,21 @@ import React , {useState, useEffect,useRef} from 'react';
 import Axios from 'axios';
 import Link from 'next/link' 
 import Head from 'next/head';
+import { launchpads_types_list, getLaunchpadType } from '../../../config/helper' 
 import {x_api_key, API_BASE_URL,separator, app_coinpedia_url, coinpedia_url,market_coinpedia_url,config} from '../../../components/constants'
 import Popupmodal from '../../../components/popupmodal' 
 import Top_header from '../../../components/manage_token/top_header'
 import { useRouter } from 'next/router'
 import moment from 'moment' 
-import dynamic from 'next/dynamic'; 
 import cookie from "cookie"
 import JsCookie from "js-cookie"
 import { Editor } from '@tinymce/tinymce-react';
+import { Tooltip, OverlayTrigger } from 'react-bootstrap'; 
 // import Datetime from "react-datetime"
 // import "react-datetime/css/react-datetime.css"
 
 export default function CreateLauchPad({config,token_id}) 
 {  
-
-  // const router = useRouter()
-  // const {token_id}= router.query
-  // console.log(token_id)
-
-  const Multiselect = dynamic(
-    () => import('multiselect-react-dropdown').then(module => module.Multiselect),
-    {
-        ssr: false
-    }
-  )
- 
-var object =  {
-  launchpad_type :"", 
-  title: "",
-  start_date : "",
-  end_date: "",
-  tokens_for_sale: "",
-  price: "",
-  soft_cap: "", 
-  title: "",
-  where_to_buy_link: "", 
-  percentage_of_total_supply: "",
-  accept_payment_type: [],
-  access_type: "",
-  description: "",
- 
-} 
-
-  
 
   const editorRef = useRef(null) 
   const [loader, set_loader] = useState("")
@@ -56,13 +27,14 @@ var object =  {
   const [accept_payment_type_ids, set_accept_payment_type_ids]= useState([])
   const [payment_types_list,set_payment_types_list]=useState([])
   const [launch_pad, setLaunchPadList] = useState([])
-  const [err_launch_pad, set_err_launch_pad] = useState([])
+  const [approval_status, set_approval_status] = useState("")
   const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
   const [empty_alert_message, setEmptyAlertMessage]= useState("")
   const [launchpad_type, set_launchpad_type]= useState("")
   const [supply, set_supply ] = useState('')
   const [api_loader, set_api_loader] = useState(false)
-
+  const [network_row_id, set_network_row_id] = useState('')
+  
 
   const [start_date, setStartDate] = useState("")
   const [end_date, setEndDate] = useState("")
@@ -72,7 +44,9 @@ var object =  {
   const [launchpad_list, set_launchpad_list]= useState("")
   const [percentage,set_percentage]=useState(0)
   const [elements, set_elements] = useState([]);
-
+  const [crypto_networks, set_crypto_networks] = useState([])
+  const [token_symbol, set_token_symbol]= useState("")
+  
   const [user_token, set_user_token]= useState(JsCookie.get('user_token'))
   const [soft_cap, set_soft_cap]= useState("")
   const [title, set_title]= useState("")
@@ -81,8 +55,8 @@ var object =  {
   const [access_type, set_access_type]= useState("")
   const [description, set_description]= useState("")
   const [accept_payment_type, set_accept_payment_type]= useState([])
-  const [accept_payment_names, set_accept_payment_names]= useState([])
-  const [confirm_remove_modal, set_confirm_remove_modal]=useState(false)
+  const [err_launchpad_price, set_err_launchpad_price]= useState("")
+  const [err_listing_price, set_err_listing_price]=useState("")
   const [today_date, set_today_date]= useState("")
   const [active_launchpad_row_id, set_active_launchpad_row_id]= useState("")
   // const [token_id,set_token_id]= useState(token_id)
@@ -101,78 +75,38 @@ var object =  {
   const [err_access_type, set_err_access_type]= useState("")
   const [err_airdrop, set_err_airdrop]= useState("")
  
- 
   const [edit_launchpad_row_id, set_edit_launchpad_row_id] = useState('')
   const [edit_launchpad_object, set_edit_launchpad_object] = useState('')
 
 
-//   title
-// launchpad_type
-// tokens_for_sale
-// percentage_of_total_supply
-// start_date
-// end_date
-// launchpad_price
-// listing_price
-// where_to_buy_link
-// soft_cap
-// payment_types
-// access_type
-// description
+  const [accepts_payments, set_accepts_payments] = useState([""])
+  
+  const addAcceptPayments = () => 
+  {
+    set_accepts_payments(prev => [...prev, ""])
+  }
+
+  const removeAcceptPayments = (index) => {
+    set_accepts_payments(accepts_payments.filter((s, sindex) => index !== sindex))
+  }
+
+  const saveAcceptPaymentDetails = (e, index) => 
+  {
+    const { value } = e.target
+    const list = [...accepts_payments]
+    list[index] = value.toUpperCase()
+    set_accepts_payments(list)
+  }
+
 
   useEffect(()=>
   { 
-    acceptPaymentType()
     getTokenDetail()
+    getCryptoNetworks()
     lanchpadList()
   },[token_id])
 
-  var yesterday = moment().subtract( 1, 'day' )
-  var valid = function( current ) {
-    return current.isAfter( yesterday )
-  }
 
-  var valid2 = function( current ) {
-    return current.isAfter( yesterday )
-  }
-
-  let inputProps = {
-    placeholder: 'Complete work within',
-    name: 'end_date_n_time',
-    className: 'field__input',
-    useref: 'end_date_n_time', 
-    readOnly:true
-  }
-
-  let inputProps2 = {
-    placeholder: 'Complete work within',
-    name: 'end_date_n_time',
-    className: 'field__input',
-    useref: 'end_date_n_time', 
-    readOnly:true
-  }
-
-  const editLaunchpadDetails = (object)=>
-  {
-    // console.log(object)
-    set_edit_launchpad_object(object)
-    set_edit_launchpad_row_id(parseInt(object._id))
-    set_launchpad_type(object.launchpad_type)
-
-    setStartDate(moment.utc(object.start_date).format("YYYY-MM-DD"))
-    setEndDate(moment.utc(object.end_date).format("YYYY-MM-DD"))
-
-    set_tokens_for_sale(parseInt(object.tokens_for_sale))
-    set_access_type(object.access_type)
-    set_soft_cap(object.soft_cap)
-    set_price(parseFloat(object.price))
-    set_title(object.title)
-    set_where_to_buy_link(object.where_to_buy_link)
-    set_percentage_of_total_supply(parseFloat(object.percentage_of_total_supply))
-    set_description(object.description)
-    set_accept_payment_type_ids(object.accept_payment_type)
-    set_accept_payment_type(object.accept_payment_names)
-  }
   
   const removeLaunchpad = (id)=>
   {
@@ -197,31 +131,6 @@ var object =  {
     })
 
   }
-  
-  const btnremove=(id)=>
-  { 
-    let ele= <div className="remove_modal">
-      <div className="modal" id="removeConnection" data-backdrop="static" data-keyboard="false">
-        <div className="modal-dialog modal-sm">
-          <div className="modal-content">
-            <div className="modal-body">
-            <button type="button" className="close"   data-dismiss="modal">&times;</button>
-              <div className="text-center">
-                <img src="/assets/img/cancel.png" />
-                <h4 className="modal-title mb-2">Launch Pad!</h4>
-                <p>Do you really want to remove this Launchpad ?</p>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn" onClick={() => removeLaunchpad(id)} data-dismiss="modal"> Remove </button>
-            </div>
-
-          </div>
-        </div>
-      </div> 
-    </div>
-    set_element(ele)
-  }   
 
   const getTokenDetail=()=>
   {
@@ -231,6 +140,8 @@ var object =  {
       if(response.data.status){ 
         // console.log(response.data) 
         set_supply(response.data.message.total_supply)
+        set_token_symbol(response.data.message.symbol)
+        set_approval_status((response.data.message.approval_status) ? parseInt(response.data.message.approval_status):0)
       }
   
     })
@@ -274,29 +185,33 @@ var object =  {
     );
   };
 
-  const getLaunchpad = (row_id) => {
-    Axios.get(API_BASE_URL + "markets/users/manage_launchpads/individual_details/"+row_id, config).then(
-      (response) => 
-      {
-    if(response.data.status) 
+  const getLaunchpad = (row_id) => 
+  {
+    Axios.get(API_BASE_URL + "markets/users/manage_launchpads/individual_details/"+row_id, config).then((response) => 
     {
-      console.log("indi",response.data.message)
-        set_launchpad_type(response.data.message.launchpad_type)
-        setStartDate(moment(response.data.message.start_date).format("YYYY-MM-DD"))
-        setEndDate(moment(response.data.message.end_date).format("YYYY-MM-DD"))
-        set_tokens_for_sale(response.data.message.tokens_for_sale)
-        set_launchpad_price(response.data.message.launchpad_price)
-        set_listing_price(response.data.message.listing_price)
-        set_soft_cap(response.data.message.soft_cap)
-        set_title(response.data.message.title)
-        set_where_to_buy_link(response.data.message.where_to_buy_link)
-        set_percentage_of_total_supply(response.data.message.percentage_of_total_supply)
-        set_access_type(response.data.message.access_type)
-        set_description(response.data.message.description)
-        set_payment_types(response.data.message.payment_types_list)
-        set_accept_payment_type_ids(response.data.message.payment_types)
-        set_edit_launchpad_row_id(response.data.message._id)
-
+        if(response.data.status) 
+        {
+            console.log("indi",response.data.message)
+            set_launchpad_type(response.data.message.launchpad_type)
+            setStartDate(moment(response.data.message.start_date).utc().format("YYYY-MM-DD"))
+            setEndDate(moment(response.data.message.end_date).utc().format("YYYY-MM-DD"))
+            set_tokens_for_sale(response.data.message.tokens_for_sale)
+            set_launchpad_price(response.data.message.launchpad_price)
+            set_listing_price(response.data.message.listing_price)
+            set_soft_cap(response.data.message.soft_cap)
+            set_title(response.data.message.title)
+            set_where_to_buy_link(response.data.message.where_to_buy_link)
+            set_percentage_of_total_supply(response.data.message.percentage_of_total_supply)
+            set_access_type(response.data.message.access_type)
+            set_description(response.data.message.description)
+            set_edit_launchpad_row_id(response.data.message._id)
+            set_network_row_id(response.data.message.network_row_id)
+            if(response.data.message.accepts_payments)
+            {
+              set_accepts_payments(response.data.message.accepts_payments)
+            }
+            
+           
         }
       })
   };
@@ -308,9 +223,9 @@ var object =  {
         <div className="modal-dialog modal-sm">
         <div className="modal-content">
             <div className="modal-body">
-            <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" /></button>
+            <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt="Close" /></button>
             <div className="text-center">
-            <div className=""><img src="/assets/img/cancel.png" className="prop_modal_img"/></div>
+            <div className=""><img src="/assets/img/cancel.png" alt="Cancel" className="prop_modal_img"/></div>
                 <h4 className="">Delete Launchpad!</h4>
                 <p>Do you really want to delete this Launchpad detail?</p>
             </div>  
@@ -350,19 +265,23 @@ var object =  {
     });
   };
 
-    const acceptPaymentType = ()=>
+    
+    const getCryptoNetworks = async () => 
     {
-        Axios.get(API_BASE_URL+"app/payment_type", config).then(res=>
-        {
-            if(res.data.status)
-            {
-            set_payment_types_list(res.data.message)
-            }
-        })
+      const res = await Axios.get(API_BASE_URL + "app/crypto_networks", config)
+      if(res.data.status) 
+      {
+        set_crypto_networks(res.data.message)
+      }
     }
   
-    const clearForm = () => {
-    
+    const clearForm = () => 
+    {     
+          set_err_launchpad_price("")
+          set_err_listing_price("")
+          set_err_title("")
+          set_edit_launchpad_object([])
+          set_edit_launchpad_row_id("")
           set_launchpad_type("")
           setStartDate("")
           setEndDate("")
@@ -375,16 +294,16 @@ var object =  {
           set_percentage_of_total_supply("")
           set_access_type("")
           set_description("")
-          set_accept_payment_type("")
-          set_payment_types("")
-          set_edit_launchpad_row_id("")
-       
-    };
+          set_network_row_id("")
+          set_accepts_payments([""])
+          document.getElementById("myForm").reset() 
+    }
   
   const createLaunchpad = () =>
   {   
-    set_edit_launchpad_object([])
-    set_edit_launchpad_row_id("")
+    set_err_launchpad_price("")
+    set_err_listing_price("")
+    set_err_title("")
     set_launchpad_type([])
     setStartDate(new Date())
     setEndDate(new Date())
@@ -398,7 +317,6 @@ var object =  {
     set_description("")
     set_accept_payment_type_ids([])
     set_accept_payment_type([])
-    document.getElementById("myForm").reset() 
   }
 
   const OnSubmitData = ()=>
@@ -416,20 +334,25 @@ var object =  {
     set_err_accept("")
     set_err_access_type("")
     set_err_airdrop("")
+    set_err_launchpad_price("")
+    set_err_listing_price("")
+    set_err_title("")
    
      if(launchpad_type==="")
     {
       formIsValid=false
-      set_err_launchpad("The Launch Type field is required. ")
+      set_err_launchpad("The Launchpad Type field is required. ")
     }
-    else if(title === '')
+    
+    
+    if(title === '')
     {
-      set_err_launchpad('The title field is required.')
+      set_err_title('The title field is required.')
       formIsValid = false
     }
     else if(title.length < 4)
     {
-      set_err_launchpad('The title must be atleast 4 characters.')
+      set_err_title('The title must be atleast 4 characters.')
       formIsValid = false
     } 
    
@@ -461,16 +384,30 @@ var object =  {
       set_err_end_date("Please select valid End date .");
     }
 
+    if(launchpad_price=="")
+    {
+      formIsValid=false
+      set_err_launchpad_price("The ICO Price field is required.")
+    }
+    else if(launchpad_price <=0 )
+    {
+      formIsValid=false
+      set_err_launchpad_price("The ICO Price field should not be zero")
+    }
+
     if(listing_price=="")
     {
       formIsValid=false
-      set_err_price("The Price field is required.")
+      set_err_listing_price("The Listing Price field is required.")
     }
     else if(listing_price <=0 )
     {
       formIsValid=false
-      set_err_price("The Price field should not be zero")
+      set_err_listing_price("The Listing Price field should not be zero")
     }
+
+    
+
    
 
     if(where_to_buy_link=="")
@@ -499,11 +436,11 @@ var object =  {
     {
       set_err_total_supply("")
     }
-    if(payment_types=="")
-    {
-      formIsValid=false
-      set_err_accept("The Accept payment type field is required.")
-    }
+    // if(payment_types=="")
+    // {
+    //   formIsValid=false
+    //   set_err_accept("The Accept payment type field is required.")
+    // }
    
     if(!description)
     {
@@ -542,13 +479,14 @@ var object =  {
       launchpad_type: launchpad_type,
       tokens_for_sale: tokens_for_sale,
       percentage_of_total_supply:percentage_of_total_supply,
-      start_date:moment(start_date).utc().format(),
-      end_date:moment(end_date).utc().format(),
+      start_date:start_date ? moment(start_date).format("YYYY-MM-DD"):"",
+      end_date:end_date ? moment(end_date).format("YYYY-MM-DD"):"",
       launchpad_price:launchpad_price,
       listing_price:listing_price,
       where_to_buy_link:where_to_buy_link,
       soft_cap:soft_cap,
-      payment_types:accept_payment_type_ids,
+      accepts_payments:accepts_payments,
+      network_row_id:network_row_id,
       access_type:access_type,
       description:description
     } 
@@ -641,56 +579,47 @@ var object =  {
         return { 
             "@context":"http://schema.org/",
             "@type":"Organization",
-            "name":"Create or Edit Launchpad",
-            "url":"https://markets.coinpedia.org",
+            "name":"Manage Launchpads Details",
+            "url":market_coinpedia_url+"token/launchpads/"+token_id,
             "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
             "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
         }  
     } 
 
 
-    const onSelect =(selectedList, selectedItem)=> {  
-        accept_payment_type_ids.push(selectedItem._id)
-        payment_types.push(selectedItem) 
-    }
-
-    const onRemove = (selectedList, removedItem) => {
-        accept_payment_type_ids.splice(accept_payment_type_ids.indexOf(removedItem._id), 1)
-        payment_types.splice(payment_types.indexOf(removedItem), 1)
-    }
-
+   
 
  
   return(
     <>
       <Head>
-        <title>Manage Launchpad</title>
+        <title>Manage Launchpads Details</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
-        <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
+        <meta name="description" content="Manage all your coin launch events of your token." />
+        <meta name="keywords" content="Mange coin/token launch , ICO, IGO, IEO, IPO, Presale of your coin/token" />
 
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-        <meta property="og:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta property="og:url" content={market_coinpedia_url}/>
-        <meta property="og:site_name" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
+        <meta property="og:title" content="Manage Launchpads Details" />
+        <meta property="og:description" content="Manage all your coin launch events of your token." />
+        <meta property="og:url" content={market_coinpedia_url+"token/launchpads/"+token_id}/>
+        <meta property="og:site_name" content="Coinpedia Cryptocurrency Markets" />
         <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:width" content="400" />
         <meta property="og:image:height" content="400" />  
-        
+        <meta property="og:image:type" content="image/png" />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@coinpedia" />
         <meta name="twitter:creator" content="@coinpedia" />
-        <meta name="twitter:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-        <meta name="twitter:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
+        <meta name="twitter:title" content="Manage Launchpads Details" />
+        <meta name="twitter:description" content="Manage all your coin launch events of your token." />
         <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
 
         <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
         <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
 
-        <link rel="canonical" href={market_coinpedia_url} />
+        <link rel="canonical" href={market_coinpedia_url+"token/launchpads/"+token_id} />
 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
@@ -699,8 +628,9 @@ var object =  {
           <div className="container">
           <div className="for_padding">
           <div className='market_token_tabs'>
-              <h1 className='page_main_heading'>Manage Launchpads</h1>
-              <Top_header active_tab={2} token_id={token_id}/>
+              <h1 className='page_main_heading'>Manage Coin Launchpads</h1>
+              <p>Create, Edit, or Remove the launchpad of your token from here.</p>
+              <Top_header active_tab={2} token_id={token_id} approval_status={approval_status}/>
               <div className="row">
                   <div className="col-lg-3 col-md-4">
                   </div>  
@@ -718,15 +648,18 @@ var object =  {
                   !edit_launchpad_row_id ? 
                   <>
                   <h5 >Create Launchpad</h5>
-                  <p>You can create launchpads for your tokens</p>
+                  <p>Submit details of your upcoming or live details, made live after admin approval</p>
                   </>
                   :
                   <>
-                  <h5 className="create-token-res">Update Launchpad</h5>
+                  <h5 className="create-token-res">Update Launchpad
+                  <span style={{float:"right"}} className='text-right pull-right' onClick={()=>clearForm()}><button className='btn btn-primary btn-sm'>Go Back</button></span>
+                  </h5>
                   <p className="token_form_sub_text">Edit launchpad details for your tokens.</p>
                   </>
                 }
                 </div>
+                
 
                         {/* {
                             edit_launchpad_row_id ? 
@@ -740,43 +673,102 @@ var object =  {
 
                 <form id="myForm" >
                 <div>
-                  <div className=" create_token_details">
+                  <div className="create_token_details">
                     <div className="row">
-                      <div className="col-md-12">
+                      <div className="col-md-6">
+                          <div className="form-custom">
+                            <label htmlFor="email">Type<span className="label_star">*</span></label>
+                            <div className="form-group input_block_outline">
+                            <select name="launchpad_type" className="form-control " value={launchpad_type} onChange={(e)=>set_launchpad_type(e.target.value)}>
+                              <option value="">Type</option>
+                              {
+                                launchpads_types_list.length ?
+                                launchpads_types_list.map((item, i) =>
+                                <option value={item._id}>{item.type_name}</option>
+                                )
+                                :
+                                ""
+                              }
+                            </select>
+                            </div>
+                            <div className="error">{err_launchpad} </div>
+                          </div>
+                      </div>
+                      <div className="col-md-6">
                           <div className="form-custom">
                             <label htmlFor="email">Title<span className="label_star">*</span></label>
                             <div className="form-group input_block_outline">
-                            <div className="input-group">
-                              <div className="input-group-append">
-                              <select  name="launchpad_type" className="form-control select_launchpad_type" value={launchpad_type} onChange={(e)=>set_launchpad_type(e.target.value)}>
-                                      <option value="">Type</option>
-                                      <option value="1">ICO</option>
-                                      <option value="2">IDO</option>
-                                      <option value="3">IEO</option>
-                                    </select>
-                              </div>
-                              <input autoComplete="off" type="text" placeholder="Title"   value={title} onChange={(e)=>set_title(e.target.value)} />
+                            <input autoComplete="off" type="text" placeholder="Title" value={title} onChange={(e)=>set_title(e.target.value)} />
                             </div>
-                            </div>
-                            <div className="error">{err_launchpad} </div>
-                           
+                            <div className="error">{err_title} </div>
                           </div>
                       </div>
+                    </div>  
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="form-custom">
+                          <label htmlFor="access_type">Access Type<span className="label_star">*</span></label>
+                            <div className="form-group input_block_outline">
+                              <select className='form-control' name="access_type"  value={access_type} onChange={(e)=>set_access_type(e.target.value)} >
+                                <option value="">Select Access Type</option>
+                                <option value="1" selected={access_type==1}>Public</option>
+                                <option value="2" selected={access_type==2}>Private</option> 
+                              </select>
+                            </div>
+                            <div className="error">{err_access_type}</div>
+                        </div>
+                      </div>
+
+                      <div className="col-md-6">
+                        <div className="form-custom">
+                          <label htmlFor="price">Network</label>
+                          <div className="form-group input_block_outline">
+                            <select className="form-control" onChange={(e)=>set_network_row_id(e.target.value)}>
+                                <option value="">Select Network</option>
+                                  {
+                                    crypto_networks.length ?
+                                    crypto_networks.map((item) =>
+                                    <>
+                                    <option value={item._id} selected={item._id==network_row_id}>{item.network_name}</option>
+                                    </>
+                                    )
+                                    :
+                                    ""
+                                  }
+                            </select>
+                          </div>
+                        </div>
+                      </div>
                     </div> 
-                    
 
                     <div className="row">
                       <div className="col-md-6"> 
                         <div className="form-custom">
                           <label htmlFor="email">Tokens For sale<span className="label_star">*</span></label>
                           <div className="form-group input_block_outline">
-                            <input type="number" className="form-control" placeholder="Number of Tokens(Hardcap)" value={tokens_for_sale} onChange={(e)=>tokenSale(e.target.value)}/>
+                            <input type="number" min="0" className="form-control" placeholder="Number of Tokens(Hardcap)" value={tokens_for_sale} onChange={(e)=>tokenSale(e.target.value)}/>
                           </div>
                           <div className="error">{err_tokens_sale}</div>
-                          <div>
-                            <span className='total_supply'>{percentage_of_total_supply?percentage_of_total_supply:0} % of Total Supply</span>
-                          </div>
+                          {
+                            supply ?
+                            <div>
+                              <span className='total_supply'>{percentage_of_total_supply?percentage_of_total_supply:0} % of Total Supply</span>
+                            </div>
+                            :
+                            ""
+                          }
+                          
                         </div>
+                      </div>
+
+                      <div className="col-md-6">
+                          <div className="form-custom">
+                          <label htmlFor="price">Soft Cap($)</label>
+                            <div className="form-group input_block_outline">
+                              <input type="number" min="0" placeholder="Soft cap"  value={soft_cap} onChange={(e)=>set_soft_cap(e.target.value)}  />
+                            </div>
+                            <div className="error"></div>
+                          </div>
                       </div>
 
                       {/* <div className="col-md-6">
@@ -788,41 +780,9 @@ var object =  {
                             <div className="error">{err_wheretobuy}</div>
                           </div>
                       </div> */}
-
-                      <div className="col-md-6 ">
-                        <div className="form-custom">
-                          <label htmlFor="access_type">Access Type<span className="label_star">*</span></label>
-                            <div className="form-group input_block_outline">
-                            <select className='form-control' name="access_type"  value={access_type} onChange={(e)=>set_access_type(e.target.value)} >
-                              <option value="">Select Access Type</option>
-                              <option value="1">Public</option>
-                              <option value="2">Private</option> 
-                            </select>
-                            
-                            </div>
-                            <div className="error">{err_access_type}</div>
-                        </div>
-                      </div>
+                      
                     </div>
 
-                    <div className='row'>
-                      <div className="col-md-12">
-                          <div className="form-custom">
-                          <label htmlFor="accept_payment_type">Accept<span className="label_star">*</span></label>
-                            <div className="form-group input_block_outline" >
-                              <Multiselect   style={{border:"0px"}}
-                                selectedValues={payment_types}
-                                options={payment_types_list} // Options to display in the dropdown
-                                onSelect={onSelect} // Function will trigger on select event
-                                onRemove={onRemove} // Function will trigger on remove event
-                                displayValue="payment_name" // Property name to display in the dropdown options
-                                /> 
-                            </div>
-                            <div className="error">{err_accept}</div>
-                          </div>
-                      </div>
-                     
-                    </div>
                     <div className='row'>
                       <div className="col-md-6">
                           <div className="form-custom">
@@ -850,18 +810,18 @@ var object =  {
                           <div className="form-custom">
                           <label htmlFor="price">ICO Price<span className="label_star">*</span></label>
                             <div className="form-group input_block_outline">
-                              <input type="number" placeholder="Eg.,$00.00"  value={launchpad_price} onChange={(e)=>set_launchpad_price(e.target.value)}  />
+                              <input type="number" min="0" placeholder="Eg.,$00.00"  value={launchpad_price} onChange={(e)=>set_launchpad_price(e.target.value)}  />
                             </div>
-                            <div className="error">{err_price}</div>
+                            <div className="error">{err_launchpad_price}</div>
                           </div>
                       </div>
                       <div className="col-md-6">
                       <div className="form-custom">
                           <label htmlFor="price">Listing Price<span className="label_star">*</span></label>
                             <div className="form-group input_block_outline">
-                              <input type="number" placeholder="Eg.,$00.00"  value={listing_price} onChange={(e)=>set_listing_price(e.target.value)}  />
+                              <input type="number" min="0" placeholder="Eg.,$00.00"  value={listing_price} onChange={(e)=>set_listing_price(e.target.value)}  />
                             </div>
-                            <div className="error">{err_price}</div>
+                            <div className="error">{err_listing_price}</div>
                             {/* <div>
                               <span style={{float:"right"}}>13% Change</span>
                             </div> */}
@@ -872,16 +832,8 @@ var object =  {
                    
 
                     <div className='row'>
-                      <div className="col-md-6">
-                          <div className="form-custom">
-                          <label htmlFor="price">Soft Cap</label>
-                            <div className="form-group input_block_outline">
-                              <input type="number" placeholder="Soft cap"  value={soft_cap} onChange={(e)=>set_soft_cap(e.target.value)}  />
-                            </div>
-                            <div className="error"></div>
-                          </div>
-                      </div>
-                      <div className="col-md-6">
+                      
+                      <div className="col-md-12">
                           <div className="form-custom">
                           <label htmlFor="where_to_buy_link">Where to Buy Link<span className="label_star">*</span></label>
                           <div className="form-group input_block_outline">
@@ -890,6 +842,42 @@ var object =  {
                           <div className="error">{err_wheretobuylink}</div>
                           </div>
                       </div>
+                    </div>
+
+                    <div className='row'>
+                    <div className="col-md-12">
+                      <label htmlFor="where_to_buy_link">Accept Payments</label>
+                      <table className="table table-borderedless" >
+                        
+                        <tbody>
+                          {
+                            accepts_payments.length > 0 ?
+                            accepts_payments.map((item, i) =>
+                            <tr id="attribute-explorer">
+                              <td>
+                                <input type="text" autoComplete="off" placeHolder='Ex: BUSD, USDT, ETH, BTC, BNB' className="form-control " name="explorer[]" value={item} onChange={e => saveAcceptPaymentDetails(e, i)} />
+                              </td>
+                              <td>
+                               
+                                {
+                                  i == 0 ?
+                                  <>
+                                    <span onClick={addAcceptPayments} className="token_accept_payments_add">Add</span>
+                                  </>
+                                  :
+                                  <>
+                                    <span onClick={() =>removeAcceptPayments(i)} className="token_accept_payments_add">Remove</span>
+                                  </>
+                                }
+                              </td>
+                            </tr>
+                            )
+                            :
+                            ""
+                          }
+                        </tbody>
+                      </table>           
+                    </div>
                     </div>
 
                     <div className='row'>
@@ -936,17 +924,17 @@ var object =  {
                               !edit_launchpad_row_id ? 
                                 <button type="button" onClick={()=> OnSubmitData()}>
                                   {loader ? (
-                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Create Launch pad</div>
+                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Create Launchpad</div>
                                         ) : (
-                                            <>Create Launch pad</>
+                                            <>Create Launchpad</>
                                         )}
                                 </button>
                               :
                               <button type="button" onClick={()=> OnSubmitData()}>
                                 {loader ? (
-                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Update Launch pad</div>
+                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Update Launchpad</div>
                                         ) : (
-                                            <>Update Launch pad</>
+                                            <>Update Launchpad</>
                                         )}
                               </button>
                             }
@@ -969,18 +957,20 @@ var object =  {
                 <div className="col-lg-7 col-md-12">
                 <div className='form_headings'>
                 <h5 className="create-token-res">Launchpad List ({launchpad_list.length})</h5>
-                    <p>List of Ongoing, Upcoming and Completed launchpads</p> 
+                    <p>Manage your launch events, edit, remove, or add new ones.</p> 
                     </div> 
                         <div className='market_page_data token_tables'>      
                           <div className="table-responsive">
                             <table className="table">
                                 <thead>
                                 <tr>
-                                <th >Sl No.</th>
-                                    <th >Type</th>
-                                    <th >Sale Tokens (%)</th>
-                                    <th >Start-End</th>
-                                    <th >Action</th>
+                                <th >#</th>
+                                    <th >Type/Network</th>
+                                    <th >Sale Tokens(%) 
+                                    </th>
+                                    <th>Start-End</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -991,21 +981,69 @@ var object =  {
                                   launchpad_list.map((e, i) =>
                                     <tr key={i}>
                                         <td>{i+1}</td>
-                                        <td>{e.launchpad_type==1?"ICO":e.launchpad_type==2?"IDO":"IEO"}</td>
-                                        {e.tokens_for_sale?<a href={e.where_to_buy_link} title={e.title} target='_blank'><td>{e.tokens_for_sale} ({e.percentage_of_total_supply+"%"})</td></a>
-                                        :<td>{e.tokens_for_sale} ({e.percentage_of_total_supply+"%"})</td>}
-                                        
+                                        <td>
+                                          {getLaunchpadType(e.launchpad_type)}
+                                          /
+                                          {
+                                            e.network_name ?
+                                            e.network_name
+                                            :
+                                            "-"
+                                          }
+                                        </td>
+                                        <td>{e.tokens_for_sale}  <br/> <small>{e.percentage_of_total_supply ? (e.percentage_of_total_supply).toFixed(2)+"%":""}</small></td>
                                         <td>{e.start_date
-                                                ? moment(e.start_date).format(
+                                                ? moment(e.start_date).utc().format(
                                                     "ll"
                                                   )
-                                                : "-"}-{e.end_date
-                                                  ? moment(e.end_date).format(
+                                                : "-"}
+                                                <br/>
+                                                {e.end_date
+                                                  ? moment(e.end_date).utc().format(
                                                       "ll"
                                                     )
-                                                  : "-"}</td>
+                                                  : "-"}
+                                          </td>
+
                                         <td>
-                                        <button type="submit" title="Edit" onClick={() => getLaunchpad(e._id)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
+                                          {
+                                            e.approval_status == 0 ?
+                                            <span className="badge_pending">
+                                              Pending
+                                            </span>
+                                            :
+                                            e.approval_status == 1 ?
+                                            <span className="badge_approved">
+                                              Approved
+                                            </span>
+                                            :
+                                            e.approval_status == 2 ?
+                                            <>
+                                            <span className="badge_rejected">
+                                              Rejected
+                                              
+                                            </span>
+
+                                            
+
+                                              <OverlayTrigger
+                                                // delay={{ hide: 450, show: 300 }}
+                                                overlay={(props) => (
+                                                  <Tooltip {...props} className="custom_pophover ">
+                                                    <p className="rejected_reason"><b>Rejected On:</b> {moment(e.rejected_on).utc().format("lll")} </p>
+                                                    <p className="rejected_reason"><b>Reason:</b> {e.rejected_reason}</p>
+                                                  </Tooltip>
+                                                )}
+                                                placement="bottom"
+                                              ><span className='info_col ml-2' ><img src="/assets/img/info.png" alt="Info" /></span>
+                                              </OverlayTrigger>
+                                            </>
+                                            :
+                                            ""
+                                          }
+                                        </td>
+                                        <td>
+                                        <button type="submit" title="Edit" onClick={() => getLaunchpad(e._id)} className="tn btn-primary btn-sm" name="disable_job"  >Edit</button>
                                         <button type="submit" title="delete" onClick={() => btndelete(e._id)} className="tn btn-danger btn-sm ml-1" name="delete" data-toggle="modal" data-target="#removeConnection" >Delete</button>
                                         </td> 
                                     </tr>

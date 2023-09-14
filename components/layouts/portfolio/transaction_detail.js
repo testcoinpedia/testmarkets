@@ -78,7 +78,7 @@ export default function TransactionDetail({transaction})
                   arrowOffsetTop={20}
                   show={showTooltip1}>
                     <span onClick={()=>copyAddress(transaction.hash, 1)}  >
-                        <img src="/assets/img/copy_img.svg" className='ml-2' style={{width:"auto"}}/>
+                        <img src="/assets/img/copy_img.svg" alt = "Copy" className='ml-2' style={{width:"auto"}}/>
                     </span>
                   </OverlayTrigger> &nbsp;
                  
@@ -126,7 +126,7 @@ export default function TransactionDetail({transaction})
                     :
                 (transaction.txnType == 5) || (transaction.txnType == 6) ?
                 <>
-                <img className="txn-netwok" src="assets/img/portfolio/ftm.svg" alt="Token" title="Token" />
+                <img className="txn-netwok" src="/assets/img/portfolio/ftm.svg" alt="Token" title="Token" />
                 </>
                 :
                 (transaction.txnType == 7) || (transaction.txnType == 8) ?
@@ -204,7 +204,7 @@ export default function TransactionDetail({transaction})
                   overlay={tooltip2}
                   show={showTooltip2}>
                     <span onClick={()=>copyAddress(transaction.from, 2)} >
-                    <img src="/assets/img/copy_img.svg" className='ml-2' />  
+                    <img src="/assets/img/copy_img.svg" alt = "Copy" />  
                 </span></OverlayTrigger> &nbsp;
                 {getShortWalletAddress(transaction.from)}
               </td>
@@ -219,7 +219,7 @@ export default function TransactionDetail({transaction})
                   overlay={tooltip3}
                   show={showTooltip3}>
                     <span onClick={()=>copyAddress(transaction.to, 3)} >
-                    <img src="/assets/img/copy_img.svg" className='ml-2' />  
+                    <img src="/assets/img/copy_img.svg" alt = "Copy" />  
                 </span></OverlayTrigger> &nbsp;
                 {getShortWalletAddress(transaction.to)}
               </td>

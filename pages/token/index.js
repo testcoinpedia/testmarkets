@@ -5,16 +5,16 @@ import ReactPaginate from 'react-paginate';
 import { API_BASE_URL, convertvalue, app_coinpedia_url, market_coinpedia_url ,coinpedia_url,config,IMAGE_BASE_URL,graphqlApiKEY} from '../../components/constants'; 
 import TableContentLoader from '../../components/loaders/tableLoader'
 import Axios from 'axios';
+import moment from 'moment' 
 import cookie from 'cookie'
-
-
+import { Tooltip, OverlayTrigger } from 'react-bootstrap'; 
 
 export default function WalletTokensList({userAgent, config}) 
  {
   
   const [rejectreason, setRejectReason] = useState("")
   const [loader_status, set_loader_status]= useState(false)
-  const [image_base_url]=useState(IMAGE_BASE_URL+"/tokens/")
+  const [image_base_url]=useState(IMAGE_BASE_URL+"/markets/cryptocurrencies/")
   const [pageCount, setPageCount] = useState(0)
   const [perPage] = useState(10)
   const [currentPage, setCurrentPage] = useState(0)
@@ -72,6 +72,8 @@ export default function WalletTokensList({userAgent, config})
    
    const getSearchData=(searchValue, type) =>
    {  
+      if(token_list.length)
+      {
         setsearchTokens((searchValue-1)) 
         if(parseInt(searchValue) > 0)
         {  
@@ -92,6 +94,7 @@ export default function WalletTokensList({userAgent, config})
           getTokensCurrentList(token_list, 0) 
           set_token_counts(token_list.length)
         }
+      } 
    }
 
 const getTokensCurrentList=(items, offset)=>
@@ -105,61 +108,69 @@ const getTokensCurrentList=(items, offset)=>
     return ( 
       <>
       <Head>
-        <title>Manage Your Tokens</title>
+        <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
+        <title>List Of Your Assets | CoinPedia Markets </title>
+        <meta name="description" content="This is your one-page to manage all your listed or pending coins/tokens on Coinpedia markets." />
+        <meta name="keywords" content="List token, List token on coinpedia markets, list token, token listing, listing on coinmarketcap, token listing." />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="List Of Your Assets | CoinPedia Markets" />
+        <meta property="og:description" content="This is your one-page to manage all your listed or pending coins/tokens on Coinpedia markets." />
+        <meta property="og:url" content={market_coinpedia_url+"token/"} />
+        <meta property="og:site_name" content="Coinpedia Cryptocurrency Markets" />
+        <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
+        <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
+        <meta property="og:image:width" content="400" />
+        <meta property="og:image:height" content="400" />  
+        <meta property="og:image:type" content="image/png" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@coinpedia" />
+        <meta name="twitter:creator" content="@coinpedia" />
+        <meta name="twitter:title" content="List Of Your Assets | CoinPedia Markets" />
+        <meta name="twitter:description" content="This is your one-page to manage all your listed or pending coins/tokens on Coinpedia markets." />
+        <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
+        <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
+        <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
+        <link rel="canonical" href={market_coinpedia_url+"token/"} />
+        {/* <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} />  */}
       </Head>
       <div className="container token-list-pd-rm">
         <div className="prices transaction_table_block token-pg-height">
-        <div className="col-md-12">
-        {/* <div className="breadcrumb_block">
-        <Link href={coinpedia_url}>Home</Link> <span> &#62; </span> 
-        <Link href={market_coinpedia_url}>Live Market</Link><span> &#62; </span> Tokens
-        </div> */}
-        </div>
           <div className="col-md-12">
             <div className="row">
               <div className="col-md-6 col-lg-8 col-sm-7 col-12">
-                <div className="prices__title h5"><h1>Manage your Tokens ({token_counts})</h1>
-                  <p className="token_form_sub_text">List of token displayed here</p>
+                <div className="prices__title h5"><h1>My Coins/Tokens ({token_counts})</h1>
+                  <p className="token_form_sub_text">List of your coins/tokens listed on Coinpedia markets</p>
                 </div>
               </div>
               <div className="col-md-6 col-lg-4 col-sm-5 col-12">                
-                <ul className="manage_token_filter_create_token">
-                  <div className="row">
-                    <div className="col-md-6">
-                  <li>
-                    <form id="formID">
-                      <div className="input-group search_filter">
-                        <select className="form-control" onChange={(e)=> getSearchData(e.target.value)}>
-                          <option value="" >Select Type</option>
-                          <option value="1">Pending</option>
-                          <option value="2">Approved</option>
-                          <option value="3">Rejected</option>
-                        </select>
-                        {/* <div className="input-group-prepend">
-                          <span className="input-group-text reset_filter" onClick={()=> resetFilter()}>
-                            <img src="/assets/img/reset.png" />
-                          </span>
-                        </div> */}
-                      </div>
-                    </form>
-                  </li>
-                  </div>
-
-                  <div className="col-md-6">
-                  <li>
-                    <div className="quick_block_links main_page_coin_filter create_token_btn"> 
-                      <Link href="/token/update"><img src="/assets/img/create-token.svg" />Create Token</Link>
+                <div className="manage_token_filter_create_token manage_token_select">
+                  <form id="formID">
+                    <div className="input-group search_filter">
+                      <select className="form-control" onChange={(e)=> getSearchData(e.target.value)}>
+                        <option value="" >Select Type</option>
+                        <option value="1">Pending</option>
+                        <option value="2">Approved</option>
+                        <option value="3">Rejected</option>
+                      </select>
+                      {/* <div className="input-group-prepend">
+                        <span className="input-group-text reset_filter" onClick={()=> resetFilter()}>
+                          <img src="/assets/img/reset.png" />
+                        </span>
+                      </div> */}
                     </div>
-                  </li>
+                  </form>
+                 
+                  <div className="quick_block_links main_page_coin_filter create_token_btn"> 
+                    <Link href="/token/update">Create Token</Link>
                   </div>
-                  </div>
-                </ul>
+                </div>
               </div>
             </div>
           </div>
 
 
-          <div>
+       
             <div className="col-md-12">
               <div className="row market_insights ">
                 {/* <div className="col-md-5 col-lg-5"></div> */}
@@ -177,14 +188,13 @@ const getTokensCurrentList=(items, offset)=>
                       <tr>
                           {/* <th></th> */}
                           <th>#</th>
-                          <th className="manage_token_name">Token</th>
-                          <th>Max Supply</th>
-                          <th>Market Cap</th>
-                          <th>Token Type</th>
+                          <th className="manage_token_name">Details</th>
+                          <th>Total Supply</th>
                           <th>Status</th> 
-                          <th className="manage_token_action">Actions</th> 
+                          <th className="manage_token_action">Action</th> 
                       </tr> 
                 </thead>
+                
                 <tbody>
                 {
                   loader_status 
@@ -192,92 +202,106 @@ const getTokensCurrentList=(items, offset)=>
                   currentPageArray.length > 0 ?
                   currentPageArray.map((e, i)=>
                    <tr key={i}>
-                        {/* <td>
-                        {
-                           
-                            <>
-                               {
-                                   watchlist.includes(e._id) ?
-                                   <span onClick={()=>removeFromWatchlist(e._id)} ><img src="/assets/img/color.svg" alt="Watchlist" /></span>
-                                   :
-                                   e.approval_status == 1 && e.active_status == 1 ?
-                                   <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/star.svg" alt="Watchlist"/></span>
-                                   :
-                                   ""
-                               }
-                              </>
-                          }
-                        </td> */}
                         <td>{sl_no+i+1}</td>
                         <td>
                           <div className="media">
                             <div className='media-left align-self-center'>
-                            <img src={image_base_url+(e.token_image ? e.token_image : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="token" className="rounded-circle"  />
+                            <img src={image_base_url+(e.token_image ? e.token_image : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt="token" className="rounded-circle"  />
                             </div>
                             <div className="media-body  align-self-center">
-                              <h4 className="media-heading">{e.token_name} <span>{e.symbol}</span></h4>
+                              <h4 className="media-heading">
+                                {
+                                  e.approval_status == 1 && e.active_status == 1 ?
+                                  <Link href={'/'+e.token_id}>
+                                  {e.token_name} <small>({e.symbol})</small>
+                                  </Link>
+                                  :
+                                  <>
+                                  {e.token_name} <small>({e.symbol})</small>
+                                  </>
+                                }
+                              </h4>
+                              <p>{
+                            e.list_type ==1  ?
+                            <>
+                            Coin</>
+                            :
+                            <>
+                            Token
+                            </>
+                          }</p>
                             </div>
                           </div>
                         </td>
                         {/* <td> ${e.token_max_supply ? convertvalue(parseFloat(e.token_max_supply).toFixed(2)) : "-"}</td>
                         <td> ${e.circulating_supply ? convertvalue(parseFloat(e.circulating_supply).toFixed(2)) : "-"} {e.symbol}</td> */}
-                        <td> {e.total_max_supply ? convertvalue(parseFloat(e.total_max_supply).toFixed(2)) : "-"}</td>
-                        <td> {e.market_cap ? convertvalue(parseFloat(e.market_cap).toFixed(2)) : "-"}</td>
-                        <td>
-                            {
-                              e.contract_addresses?
-                              e.contract_addresses.length > 0 
-                              ?
-                                e.contract_addresses.map((ntwrk,i)=>
-                                {
-                                  if(parseInt(ntwrk.network_type)=== 1)
-                                  {
-                                      return <>{i>0 ? "," : null} ETH</>
-                                  }
-                                  else if(parseInt(ntwrk.network_type) === 2)
-                                  {
-                                    return <>{i>0 ? "," : null} BSC</>
-                                  }
-                                  
-                                }
-                                )
-                              :
-                              "-"
-                              :
-                              "-"
-                            } 
+                        <td> 
+                          {e.total_supply ? 
+                          <>
+                          {parseFloat(e.total_supply).toFixed(0) } <span>{e.symbol}</span>
+                          </>
+                        : "-"}
                         </td>
+                        
+                        
                         <td className="comp_establish_date">
                           {
-                            parseInt(e.approval_status) === 0 ?
-                            <div style={{color: '#f1b50a'}}>Pending</div>
+                            parseInt(e.active_status) === 0 ?
+                            <>
+                            <span className="badge_rejected">Disabled</span>
+                            <OverlayTrigger
+                                overlay={(props) => (
+                                  <Tooltip {...props} className="custom_pophover ">
+                                      <p className="rejected_reason"><b>Reason:</b> {e.disable_reason}</p>
+                                  </Tooltip>
+                                )}
+                                placement="bottom"
+                              ><span className='info_col ml-2' ><img src="/assets/img/info.png" alt="Info" /></span>
+                              </OverlayTrigger>
+                            </>
                             :
-                            parseInt(e.approval_status) === 1 ?
-                            <div style={{color: '#339e00'}}>Approved</div>
-                            :
-                            parseInt(e.approval_status) === 2 ?
-                            <div style={{color: '#fb2c10'}}>Rejected</div>
-                            :
-                            null
+                            <>
+                            {
+                                parseInt(e.approval_status) === 0 ?
+                                <span className="badge_pending">Pending</span>
+                                :
+                                parseInt(e.approval_status) === 1 ?
+                                <span className="badge_approved">Approved</span>
+                                :
+                                parseInt(e.approval_status) === 2 ?
+                                <>
+                                <span className="badge_rejected">Rejected</span>
+                                  <OverlayTrigger
+                                    overlay={(props) => (
+                                      <Tooltip {...props} className="custom_pophover ">
+                                          <p className="rejected_reason"><b>Rejected On:</b> {moment(e.rejected_on).utc().format("lll")} </p>
+                                          <p className="rejected_reason"><b>Reason:</b> {e.rejected_reason}</p>
+                                      </Tooltip>
+                                    )}
+                                    placement="bottom"
+                                  ><span className='info_col ml-2' ><img src="/assets/img/info.png" alt="Info" /></span>
+                                  </OverlayTrigger>
+                                </>
+                                :
+                                null
+                              }
+                            </>
                           }
-                           {
-                              parseInt(e.active_status) === 0 ?
-                              "Disable"
-                              :
-                              "Enable"
-                           }
+                          
                         </td>
+
+                        
                 
                         <td>
                             {
-                                parseInt(e.approval_status) !== 2 ?
+                                e.active_status == 1 ?
                                 <Link href={market_coinpedia_url + "token/update?token_id="+e._id}>
-                                  <span className="manage_tokens_edit">Edit Token</span>
+                                  <span className="manage_tokens_edit">Manage Details</span>
                                 </Link>
                                 :
                                 ""
                             }
-                            {
+                            {/* {
                               parseInt(e.approval_status) === 0 ?
                               <>
                                <span className="manage_tokens_edit_disbale">Edit Launchpad</span>
@@ -289,14 +313,10 @@ const getTokensCurrentList=(items, offset)=>
                                <Link href={market_coinpedia_url+"token/launchpads/"+e.token_id}>
                                  <span className="manage_tokens_edit">Edit Launchpad</span>
                               </Link>
-{/*                 
-                              <Link href={market_coinpedia_url + e.token_id}>
-                                <span className="manage_tokens_edit">View</span>
-                              </Link> */}
                               </>
                               :
                               null
-                            }
+                            } */}
                        </td> 
                     </tr>
                   ) 
@@ -307,7 +327,7 @@ const getTokensCurrentList=(items, offset)=>
                       </td>
                     </tr>
                   :
-                  <TableContentLoader row="10" col="8" />
+                  <TableContentLoader row="10" col="7" />
                   }
                 </tbody>
               </table>
@@ -352,7 +372,7 @@ const getTokensCurrentList=(items, offset)=>
               </div> 
           </div>
         </div> 
-      </div>
+  
       </>
     )
 } 

@@ -5,7 +5,7 @@ import ReactPaginate from 'react-paginate'
 import { API_BASE_URL, roundNumericValue, config, separator, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY, count_live_price, Logout} from '../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
-import SearchContractAddress from '../components/searchContractAddress'
+import SearchContractAddress from '../components/search_token'
 import CategoriesTab from '../components/categoriesTabs'
 import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
@@ -23,13 +23,14 @@ export default function Companies({user_token, config, userAgent})
     const [voting_ids, setvoting_ids] = useState([])  // commented
     const [watchlist, set_watchlist] = useState([])
     const [currentPage, setCurrentPage] = useState(0)
-    const [per_page_count, set_per_page_count] = useState(100)
+    const [per_page_count, set_per_page_count] = useState(50)
     const [pageCount, setPageCount] = useState(0)
     const [sl_no, set_sl_no]=useState(0)
     const [firstcount, setfirstcount] = useState(1)
     const [finalcount, setfinalcount] = useState(per_page_count)
     const [selectedPage, setSelectedPage] = useState(0) 
-    const [image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
+    const [image_base_url] = useState(IMAGE_BASE_URL+'/markets/cryptocurrencies/')
+    const [cmc_image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
     const [count, setCount]=useState(0)
     const [voting_status, set_voting_status] = useState(false)
     const [loader_status, set_loader_status] = useState(false)
@@ -52,18 +53,21 @@ export default function Companies({user_token, config, userAgent})
     
     useEffect(()=>
     {  
-        tokensList({selected : 0})
+        tokensList({selected : 0}, 1)
     },[per_page_count, search_title, category_row_id]) 
 
 
-    const tokensList = async (page) =>
+    const tokensList = async (page, pass_from) =>
     {  
         let current_pages = 0 
         if(page.selected) 
         {
             current_pages = ((page.selected) * per_page_count) 
         }
-        // myRef.current.scrollIntoView()
+        if(!pass_from)
+        {
+          myRef.current.scrollIntoView()
+        }
         set_loader_status(false)  
         const res = await Axios.get(API_BASE_URL+"markets/cryptocurrency/categories/"+current_pages+'/'+per_page_count+"?search="+search_title, config)
         if(res.data)
@@ -91,53 +95,67 @@ export default function Companies({user_token, config, userAgent})
             } 
         }
     }
-
-    
-
-    const makeJobSchema=()=>
-    {  
-        return { 
-            "@context":"http://schema.org/",
-            "@type":"Organization",
-            "name":"Coinpedia",
-            "url":"https://pro.coinpedia.org",
-            "logo":"http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
-            "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
-        } 
-    }
    
  
 return (
     
    <>
       <Head>
-         <title>Cryptocurrency Categories | Coinpedia </title>
-         <meta name="description" content="Coinpedia’s Market bring you with a list of top cryptocurrencies with real timeprices, including percentage change, charts, history, volume and more."/>
-         <meta name="keywords" content="crypto market, crypto market tracker, Crypto tracker live, Cryptocurrency market, crypto market insights , Live crypto insights, crypto price alerts, Live crypto alerts." />
+         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+         <title>Trending Categories on Coinpedia Markets</title>
+         <meta name="description" content="Discover the trending categories today on Coinpedia markets, sorted as per the search volume, most views of the news, and market behavior."/>
+         <meta name="keywords" content="Trending categories, top trending crypto categories, trending crypto categories, meme, defi, blockchain, AI, DAO, Dapps, web3 gaming, exchange coinpedia markets, bitcoin price, Ethereum price, live prices, top gainers in crypto, top losers crypto, trending coins, meme coins, defi coins, crypto price prediction, crypto price analysis." />
          <meta property="og:locale" content="en_US" />
          <meta property="og:type" content="website" />
-         <meta property="og:title" content="Cryptocurrency Categories | Coinpedia" />
-         <meta property="og:description" content="Coinpedia company listing page offers quick view of all listed companies of Fintech, Blockchain and Finance category. Get Exchages, Wallets, Coins, Tools, Trading forms and more. " />
-         <meta property="og:url" content={market_coinpedia_url} />
-         <meta property="og:site_name" content="List of Fintech Companies | CoinPedia Pro Account. " />
+         <meta property="og:title" content="Trending Categories on Coinpedia Markets" />
+         <meta property="og:description" content="Discover the trending categories today on Coinpedia markets, sorted as per the search volume, most views of the news, and market behavior." />
+         <meta property="og:url" content={market_coinpedia_url + "categories/"} />
+         <meta property="og:site_name" content="Coinpedia Cryptocurrency Markets" />
          <meta property="og:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
          <meta property="og:image:secure_url" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
          <meta property="og:image:width" content="400" />
          <meta property="og:image:height" content="400" />
-
+         <meta property="og:image:type" content="image/png" />
          <meta name="twitter:card" content="summary" />
          <meta name="twitter:site" content="@coinpedia" />
          <meta name="twitter:creator" content="@coinpedia" />
-         <meta name="twitter:title" content="Cryptocurrency Categories | Coinpedia" />
-         <meta name="twitter:description" content="Here's a list of the leading fintech companies in the country across the various sub-sectors.We are extending and updating the list regularly." />
+         <meta name="twitter:title" content="Trending Categories on Coinpedia Markets" />
+         <meta name="twitter:description" content="Discover the trending categories today on Coinpedia markets, sorted as per the search volume, most views of the news, and market behavior." />
          <meta name="twitter:image" content="http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
 
-         <link rel="canonical" href={market_coinpedia_url}/>
-         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
+         <link rel="canonical" href={market_coinpedia_url + "categories/"}/>
+         <script type="application/ld+json"  
+          dangerouslySetInnerHTML={{
+            __html: `{"@context":"http://schema.org","@type":"Table","about":"Categories"}`,
+          }}
+        />
+
+        <script type="application/ld+json"  
+          dangerouslySetInnerHTML={{
+            __html: `{
+              "@context": "http://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Cryptocurrencies",
+                  "item": "https://markets.coinpedia.org/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Categories",
+                  "item": "https://markets.coinpedia.org/categories/"
+                }
+              ]
+            }`,
+          }}
+        />
       </Head>
 
       {/* <div className="page new_markets_index min_height_page markets_new_design" ref={myRef}> */}
-      <div className="page new_markets_index min_height_page markets_new_design">
+      <div className="page new_markets_index min_height_page markets_new_design" ref={myRef}>
       <div className="market-page">
 
 
@@ -147,8 +165,8 @@ return (
             <div className="col-md-12">
               <div className="row market_insights ">
                 <div className="col-md-6 col-lg-6">
-                  <h1 className="page_title">Cryptocurrency Categories</h1>
-                  <p>View the various digital assets present within the category.</p>
+                  <h1 className="page_title">Trending Categories on CoinPedia Markets</h1>
+                  <p>Find the most viewed and explored categories on Coinpedia markets today.</p>
                 </div>
                 <div className="col-md-1 col-lg-2"></div>
                 <div className="col-md-5 col-lg-4 " >
@@ -177,22 +195,21 @@ return (
                 <div className="row">
                   <div className="col-md-12 col-12">
                   <div className="row">
-                         <div className="col-md-12 col-lg-8 col-12">
+                         <div className="col-md-12 col-lg-9 col-12">
                         <h4 className="markets_subtitle">Categories</h4>
                       </div>
-                       <div className="col-md-12 col-lg-4 col-12 filter-category-section">
+                       <div className="col-md-12 col-lg-3 col-12 filter-category-section">
                        <div className='row'>
-                    <div className='col-md-6 col-lg-8 col-12'>
+                      <div className='col-md-12 col-lg-12 col-12'>
                           <div className="input-group search_filter">
                             <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Category" />
                               <div className="input-group-prepend ">
                                   <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                                 </div>
-                          </div> 
-                         
+                          </div>
                           </div>
 
-                          <div className="col-md-4 col-lg-4 col-4 mobile_hide_view">
+                          {/* <div className="col-md-4 col-lg-4 col-4 mobile_hide_view">
                             <ul className="filter_rows">
                                 <li>
                                   <select className="form-select" onChange={(e)=>set_per_page_count(e.target.value)} >
@@ -203,7 +220,8 @@ return (
                                   </select>
                                 </li>
                             </ul>
-                          </div>  </div></div>
+                          </div>   */}
+                          </div></div>
                  </div>   
                 </div>
                    
@@ -214,10 +232,11 @@ return (
                        <table className="table table-borderless">
                          <thead>
                             <tr>
-                                <th className="mobile_hide_view" style={{minWidth: '35px'}}>#</th>
+                                <th className="mobile_hide_view" style={{minWidth: '15px'}}>#</th>
                                 <th className="mobile_fixed_first table-cell-shadow-right">Category</th>
                                 {/* <th className="">Title</th> */}
                                 <th className="">Top Gainers</th>
+                                <th className=""></th>
                                 {/* <th className="mobile_hide_table_col" style={{minWidth: 'unset'}}>Tokens</th> */}
                                 {/* <th className="mobile_hide_table_col" style={{minWidth: 'unset'}}>Total Gainers</th>
                                 <th className="mobile_hide_table_col" style={{minWidth: 'unset'}}>Total losers</th> */}
@@ -253,32 +272,55 @@ return (
                                             {e.title}
                                         </Link>
                                     </td> */}
+
+                                    <td>
+                                      {
+                                        e.token_gainer.length ?
+                                        <Link href={"/"+e.token_gainer[0].token_id}>
+                                            <div className="media">
+                                              <div className="media-left">
+                                                <img src={(e.token_gainer[0].token_image ? image_base_url+e.token_gainer[0].token_image: e.token_gainer[0].coinmarketcap_id ? cmc_image_base_url+e.token_gainer[0].coinmarketcap_id+".png" : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_gainer[0].token_name} width="100%" height="100%" className="media-object" />
+                                              </div>
+                                              <div className="media-body">
+                                                <h4 className="media-heading mt-0">{e.token_gainer[0].token_name} <span>({(e.token_gainer[0].symbol)?.toUpperCase()})</span></h4>
+                                                {
+                                                  e.token_gainer[0].percent_change_24h?
+                                                  e.token_gainer[0].percent_change_24h>0?
+                                                  <h6><span className="green"><img src="/assets/img/markets/high.png" alt="high price" style={{width:"10px"}}/>{e.token_gainer[0].percent_change_24h.toFixed(2)+"%"}</span></h6>
+                                                  :
+                                                  <h6><span className="red"><img src="/assets/img/markets/low.png" alt="Low price"  style={{width:"10px"}}/>{(e.token_gainer[0].percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                                  :
+                                                  "--"
+                                                }
+                                              </div>
+                                              </div>
+                                        </Link>
+                                        :
+                                        "-"
+                                      }
+                                   
+                                    </td>
                                     <td className='top_gainers_tab'>
-                                       <Link href={"/"+e.token_gainer.token_id}>
-                                         
-                                          <div className="media">
-                                            <div className="media-left">
-                                              <img src={image_base_url+(e.token_gainer.coinmarketcap_id ? e.token_gainer.coinmarketcap_id+".png" : "default.png")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_gainer.token_name} width="100%" height="100%" className="media-object" />
-                                            </div>
-                                            <div className="media-body">
-                                              <h4 className="media-heading mt-0">{e.token_gainer.token_name} </h4>
-                                             
-                                              <p className=' top_gainers_para'>{(e.token_gainer.symbol)?.toUpperCase()}</p>
-                                              {
-                                            e.token_gainer.percent_change_24h?
-                                            e.token_gainer.percent_change_24h>0?
-                                            <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price" style={{width:"10px"}}/>{e.token_gainer.percent_change_24h.toFixed(2)+"%"}</span></h6>
-                                            :
-                                            <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"  style={{width:"10px"}}/>{(e.token_gainer.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
-                                            :
-                                            "--"
-                                            }
-                                            </div>
-                                            </div>
-                                         
-                                         
-                                       </Link>
+                                      {
+                                        e.token_gainer ?
+                                          e.token_gainer.length > 1 ?
+                                            e.token_gainer.map((item, i) =>
+                                              i > 0 ?
+                                              <Link href={"/"+item.token_id}>
+                                                <img src={(item.token_image ? image_base_url+item.token_image: item.coinmarketcap_id ? cmc_image_base_url+item.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="category-token-image" />
+                                              </Link>
+                                              :
+                                              ""
+                                            )
+                                          :
+                                          "-"
+                                        :
+                                        "-"
+                                      }
                                      </td> 
+
+                                     
+    
                                     {/* <td className="mobile_hide_table_col">
                                        <Link href={"/category/"+e.category_id}> 
                                        {e.total_tokens}
@@ -287,33 +329,35 @@ return (
 
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/category/"+e.category_id}> 
-                                       {e.gainer_counts}
+                                       {e.total_gainers}
                                         </Link>
                                      </td> */}
+                                     
+
                                      <td className="mobile_hide_table_col">
                                        {/* <Link href={"/category/"+e.category_id}> 
-                                       {e.total_tokens-e.gainer_counts}
+                                       {e.total_tokens-e.total_gainers}
                                         </Link> */}
                                         <div style={{maxWidth:"177px"}}>
                                         <div className="progress gainer-progress">
                                             <div
                                                 className="progress-bar progress-bar-success"
                                                 role="progressbar"
-                                                style={{ width: ((e.gainer_counts*100)/e.total_tokens)+"%" }}
+                                                style={{ width: ((e.total_gainers*100)/e.total_tokens)+"%" }}
                                             >
-                                                {/* {e.gainer_counts} Gainers */}
+                                                {/* {e.total_gainers} Gainers */}
                                             </div>
                                             <div
                                                 className="progress-bar progress-bar-danger"
                                                 role="progressbar"
-                                                style={{ width: (100-((e.gainer_counts*100)/e.total_tokens))+"%" }}
+                                                style={{ width: (100-((e.total_gainers*100)/e.total_tokens))+"%" }}
                                             >
-                                                {/* {e.total_tokens-e.gainer_counts} Losers */}
+                                                {/* {e.total_tokens-e.total_gainers} Losers */}
                                             </div>
                                             </div>
                                         <div>
-                                            <span><strong>{e.gainer_counts}</strong> <small>({((e.gainer_counts*100)/e.total_tokens).toFixed(0)}%)</small></span>
-                                            <span style={{float:"right"}}><strong>{e.total_tokens-e.gainer_counts}</strong> <small>({(100-((e.gainer_counts*100)/e.total_tokens)).toFixed(0)}%)</small></span>
+                                            <span><strong>{e.total_gainers}</strong> <small>({((e.total_gainers*100)/e.total_tokens).toFixed(0)}%)</small></span>
+                                            <span style={{float:"right"}}><strong>{e.total_tokens-e.total_gainers}</strong> <small>({(100-((e.total_gainers*100)/e.total_tokens)).toFixed(0)}%)</small></span>
                                         </div>
                                         </div>
                                      </td>
@@ -335,7 +379,7 @@ return (
                            }
                              </>
                              :
-                             <TableContentLoader row="10" col="5" />  
+                             <TableContentLoader row="10" col="6" />  
                           }
                            
                          </tbody>
@@ -414,7 +458,7 @@ return (
               
                 <div class="modal-header">
               
-                  <button type="button" class="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" /></span></button>
+                  <button type="button" class="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" alt="Close" /></span></button>
                 </div>
                 
                 <div class="modal-body">
@@ -423,10 +467,10 @@ return (
                     <li><img src="/assets/img/markets/trending.png" alt="trending"/> Trending Coin:</li>
                     <li><img src="/assets/img/markets/bitcoin.png" alt="bitcoin"/> Bitcoin (BTC) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="text-green">03.56%</span></li>
                     <li><img src="/assets/img/markets/arbitrum.png" alt="arbitrum"/> Arbitrum (ARB) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="text-green">04.06%</span></li>
-                    <li><img src="/assets/img/markets/shiba.png" alt="shiba"/> Shiba (INU) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="text-green">0.98%</span></li>
-                    <li><img src="/assets/img/markets/ethereum.png" alt="ethereum"/> Ethereum (ETH) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="text-green">03.84%</span></li>
-                    <li><img src="/assets/img/markets/dogecoin.png" alt="dogecoin"/> Dogecoin (DOGE) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="text-green">0.98%</span></li>
-                    <li><img src="/assets/img/markets/dogecoin.png" alt="dogecoin"/> Dogecoin (DOGE) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="text-green">0.98%</span></li>
+                    <li><img src="/assets/img/markets/shiba.png" alt="shiba"/> Shiba(INU) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="text-green">0.98%</span></li>
+                    <li><img src="/assets/img/markets/ethereum.png" alt="ethereum"/> Ethereum(ETH) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="text-green">03.84%</span></li>
+                    <li><img src="/assets/img/markets/dogecoin.png" alt="dogecoin"/> Dogecoin(DOGE) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="text-green">0.98%</span></li>
+                    <li><img src="/assets/img/markets/dogecoin.png" alt="dogecoin"/> Dogecoin(DOGE) <span><img src="/assets/img/markets/up.png" alt="up" /></span><span className="text-green">0.98%</span></li>
                   </ul>
 
                 </div>

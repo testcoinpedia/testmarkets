@@ -304,12 +304,12 @@ export default function TransactionFun({networks, addresses})
     return(
         <>
          <div className='new_page_table profile_page_table '>
-                {
+                {/* {
                     addresses.length > 0 ?
                     <h6 className="active_wallet_address"> Active Wallet Address: <span>{getShortWalletAddress(addresses[0])}</span></h6>
                     :
                     ""
-                }
+                } */}
         <div className="table-responsive">
         <table className="table">
                                 <thead>
@@ -355,7 +355,7 @@ export default function TransactionFun({networks, addresses})
                                                     :
                                                 (e.txnType == 5) || (e.txnType == 6) ?
                                                 <>
-                                                <img className="txn-netwok" src="assets/img/portfolio/ftm.svg" alt="Token" title="Token" />
+                                                <img className="txn-netwok" src="/assets/img/portfolio/ftm.svg" alt="Token" title="Token" />
                                                 </>
                                                 :
                                                 (e.txnType == 7) || (e.txnType == 8) ?
@@ -489,7 +489,7 @@ export default function TransactionFun({networks, addresses})
                                             }
                                              </div>
                                         <div className='media-right align-self-center'>
-                                        <img src="/assets/img/info_icon.png"  className='info_icon_trans' onClick={()=>getTokenDetail(e)} />
+                                        <img src="/assets/img/info_icon.png"  className='info_icon_trans' alt="Info" onClick={()=>getTokenDetail(e)} />
                                         </div>
                                         </div>
                                         </td>
@@ -519,7 +519,7 @@ export default function TransactionFun({networks, addresses})
                 <div className="modal-dialog " >
                     <div className="modal-content">
                         <div className="modal-body">
-                            <div className='transaction_detail_modal'><h4 >Transaction Details<span><button type="button" className="close close_wallet" onClick={()=> set_transaction_details_modal_status(false)} data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" /></button></span></h4></div>
+                            <div className='transaction_detail_modal'><h4 >Transaction Details<span><button type="button" className="close close_wallet" onClick={()=> set_transaction_details_modal_status(false)} data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt="Close" /></button></span></h4></div>
                             {
                                 transaction_detail ?
                                 <TransactionDetail transaction={transaction_detail} />

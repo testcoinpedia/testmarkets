@@ -3,19 +3,25 @@ import Head from 'next/head';
 import App from 'next/app';
 import Topmenu from '../components/Topmenu'
 import Footer from '../components/Footer'
+import { Provider } from "react-redux";
 import {favicon} from '../components/constants'
-// import rootReducer from '../components/redux/store'
+import rootReducer from '../components/redux/store'
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
+function MyApp({ Component, pageProps }) {
+  const router = useRouter();
 
-class MyApp extends App{ 
+  useEffect(() => {
+    // Remove Google Analytics tracking parameters from the URL
+    // const cleanUrl = window.location.pathname;
+    // if (window.location.search) {
+    //   router.replace(cleanUrl);
+    // }
+  }, []);
 
-  componentDidMount(){    
-    document.body.classList.add('home', 'page-template-default', 'page', 'template-slider', 'color-custom', 'style-default', 'layout-full-width', 'no-content-padding', 'header-classic', 'sticky-header', 'sticky-tb-color', 'ab-show','subheader-both-center', 'menu-link-color', 'menuo-right', 'mobile-tb-hide', 'mobile-side-slide', 'mobile-mini-mr-ll');
-  }
- 
-  render(){
-    
-  const {Component, pageProps} = this.props; 
+  
+
 
     return ( 
       <>
@@ -37,35 +43,50 @@ class MyApp extends App{
 
           <link rel="preconnect" href="https://fonts.googleapis.com"></link>
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin></link>
-          <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet"></link>
+          <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"></link>
 
-          <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet" />          
-          
           <link rel="stylesheet" media="all" href="/assets/css/darktheme.css" />
           
-          <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-100404206-1"></script>
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-RE1GG3FGQW"></script>
+          {/* <script
+                    dangerouslySetInnerHTML={{
+                      __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
 
-        
+            gtag('config', 'G-RE1GG3FGQW');
+            `,
+          }}
+          /> */}
+       
+       {/* <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "i17ihm5vtw");
+          `,
+        }}
+        ></script> */}
       
           
-        <script src="https://kit.fontawesome.com/215157a960.js" crossOrigin="anonymous"></script>
+          <script src="https://kit.fontawesome.com/215157a960.js" crossOrigin="anonymous"></script>
           <script src="/assets/js/jquery.min.js"></script>
           <script src="/assets/js/popper.min.js" crossOrigin="anonymous"></script>
           <script src="/assets/js/bootstrap.min.js" crossOrigin="anonymous"></script>
           <script src="/static/datafeeds/udf/dist/bundle.js" />
         </Head>
-        {/* <Provider store={rootReducer}> */}
-        <Topmenu />
+        <Provider store={rootReducer}> 
+          <Topmenu />
           <Component {...pageProps} />
-        
-          
           <Footer /> 
-          {/* </Provider> */}
+         </Provider>
       </> 
-      )
-  }
+);
+  
 }
 
-
 export default MyApp;
-

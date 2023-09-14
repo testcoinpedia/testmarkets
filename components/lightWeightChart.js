@@ -5,7 +5,7 @@ import Axios from 'axios'
 import JsCookie from "js-cookie"   
 import moment from 'moment'
 import { count_live_price, graphqlApiKEY} from '../components/constants'
-import { graphQlURL, fromNToDate } from '../components/tokenDetailsFunctions' 
+import { graphQlURL, fromNToDate } from './token_details/tokenDetailsFunctions' 
 import dynamic from 'next/dynamic';
 import { createChart, ColorType } from 'lightweight-charts';
 

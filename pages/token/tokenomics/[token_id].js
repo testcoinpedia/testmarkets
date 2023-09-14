@@ -37,6 +37,7 @@ export default function Create_token({config, token_id})
     const [live_price, setLivePrice] = useState("")
     const [market_cap, set_market_cap] = useState("") 
     const [err_contract_address, setErrContractAddress] = useState("")
+    const [approval_status, set_approval_status] = useState("")
     const [loader, set_loader] = useState("")
     const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
     const [tokenomics_list, set_tokenomics_list ] = useState([])
@@ -62,30 +63,38 @@ export default function Create_token({config, token_id})
     }, []);
 
 
-    const percentageSupply=(value)=>{
+    const percentageSupply=(value)=>
+    {
       set_percentage_of_total_supply(value)
       set_err_percentage_of_total_supply("")
       let formValid = true
       if(value<0 ||value>100)
       {
-        set_err_percentage_of_total_supply('The percentage supply should be 1%-100%.')
-        set_total_supply("")
+          set_err_percentage_of_total_supply('The percentage supply should be 1%-100%.')
+          set_total_supply("")
           formValid = false
       }
-      if(formValid){
-    var sdf=supply/value
-    set_total_supply(sdf.toFixed(2))
-  }
+      else
+      {
+        if(value == 100)
+        {
+          set_total_supply(supply)
+        }
+        else
+        {
+          set_total_supply(((supply*value)/100).toFixed(2))
+        }
+      }
+
+      
     }
 
     const clearform = () =>
     {   
-        set_tokenomics_name("")
-        set_percentage_of_total_supply("")
-        set_total_supply("")
-        set_tokenomics_row_id("")
-       
-       
+      set_tokenomics_name("")
+      set_percentage_of_total_supply("")
+      set_total_supply("")
+      set_tokenomics_row_id("")
     }
     const createTokenomic = () =>
     { 
@@ -115,9 +124,15 @@ export default function Create_token({config, token_id})
       if(total_supply === '')
       {
         set_err_total_supply('The total supply field is required.')
-          formValid = false
+        formValid = false
       }
-  
+      
+
+      if(!formValid)
+      { 
+        return
+      }
+
       set_loader(true)
       const reqObj = {
         token_row_id:token_id,
@@ -127,37 +142,33 @@ export default function Create_token({config, token_id})
         total_supply: total_supply
       } 
      
-      if(formValid)
-      { 
-        
-        Axios.post(API_BASE_URL+"markets/users/manage_tokenomics/update_n_save_details", reqObj, config).then(response=> { 
-          set_loader(false)
-          if(response.data.status)
-          { 
-            setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: response.data.message.alert_message})
-            clearform();
-            tokenomicList()
-          } 
-          { 
-    
-            if(response.data.message.tokenomics_name)
-            {
-              set_err_tokenomics_name(response.data.message.tokenomics_name)   
-            }
-            
-            if(response.data.message.percentage_of_total_supply)
-            {
-              set_err_percentage_of_total_supply(response.data.message.percentage_of_total_supply)
-            } 
-    
-            if(response.data.message.total_supply)
-            {  
-              set_err_total_supply(response.data.message.total_supply)
-            }
-            
+      Axios.post(API_BASE_URL+"markets/users/manage_tokenomics/update_n_save_details", reqObj, config).then(response=> { 
+        set_loader(false)
+        if(response.data.status)
+        { 
+          setModalData({icon: "/assets/img/update-successful.png", title: "Thank you ", content: response.data.message.alert_message})
+          clearform();
+          tokenomicList()
+        } 
+        { 
+  
+          if(response.data.message.tokenomics_name)
+          {
+            set_err_tokenomics_name(response.data.message.tokenomics_name)   
           }
-        })
-      }
+          
+          if(response.data.message.percentage_of_total_supply)
+          {
+            set_err_percentage_of_total_supply(response.data.message.percentage_of_total_supply)
+          } 
+  
+          if(response.data.message.total_supply)
+          {  
+            set_err_total_supply(response.data.message.total_supply)
+          }
+          
+        }
+      })
       
     }  
 
@@ -169,6 +180,7 @@ export default function Create_token({config, token_id})
       if(response.data.status){ 
         // console.log(response.data) 
         set_supply(response.data.message.total_supply)
+        set_approval_status((response.data.message.approval_status) ? parseInt(response.data.message.approval_status):0)
       }
   
     })
@@ -179,11 +191,11 @@ export default function Create_token({config, token_id})
         <div className="modal-dialog modal-sm">
         <div className="modal-content">
             <div className="modal-body">
-            <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" /></button>
+            <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt = "Close" /></button>
             <div className="text-center">
             <div className=""><img src="/assets/img/cancel.png" className="prop_modal_img"/></div>
-                <h4 className="">Delete Tockenomic!</h4>
-                <p>Do you really want to delete this Tockenomic detail?</p>
+                <h4 className="">Delete Tokenomics</h4>
+                <p>Do you really want to delete this Tokenomics detail ?</p>
             </div>  
             </div>
             <div className="modal-footer">
@@ -248,8 +260,8 @@ export default function Create_token({config, token_id})
       return { 
           "@context":"http://schema.org/",
           "@type":"Organization",
-          "name":"Coinpedia",
-          "url":"https://markets.coinpedia.org",
+          "name":"Update Tokenomics",
+          "url":market_coinpedia_url + "token/tokenomics/" + token_id + "/",
           "logo":"https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
           "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
         }  
@@ -258,29 +270,30 @@ export default function Create_token({config, token_id})
   return(
     <>
       <Head>
-        <title>Manage Tockenomics</title>
+        <title>Update Tokenomics | Coinpedia markets</title>
         <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'/> 
-        <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
+        <meta name="description" content="Update tokenomics or edit or remove from your listed token on coinpedia markets." />
+        <meta name="keywords" content="Update tokenomics on coinpedia, tokenomics, coinpedia markets." />
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-        <meta property="og:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-        <meta property="og:url" content={market_coinpedia_url} />
-        <meta property="og:site_name" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
+        <meta property="og:title" content="Update Tokenomics | Coinpedia markets" />
+        <meta property="og:description" content="Update tokenomics or edit or remove from your listed token on coinpedia markets." />
+        <meta property="og:url" content={market_coinpedia_url + "token/tokenomics/" + token_id + "/"} />
+        <meta property="og:site_name" content="Coinpedia Cryptocurrency Markets" />
         <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
         <meta property="og:image:width" content="400" />
         <meta property="og:image:height" content="400" />  
+        <meta property="og:image:type" content="image/png" />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@coinpedia" />
         <meta name="twitter:creator" content="@coinpedia" />
-        <meta name="twitter:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-        <meta name="twitter:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
+        <meta name="twitter:title" content="Update Tokenomics | Coinpedia markets" />
+        <meta name="twitter:description" content="Update tokenomics or edit or remove from your listed token on coinpedia markets." />
         <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" /> 
         <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
         <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png"/>
-        <link rel="canonical" href={market_coinpedia_url} />
+        <link rel="canonical" href={market_coinpedia_url + "token/tokenomics/" + token_id + "/"} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} /> 
       </Head>
       <div className="page">
@@ -291,14 +304,27 @@ export default function Create_token({config, token_id})
                 <div className="token_form">
                 <div className='market_token_tabs'>
                 <h1 className='page_main_heading'>Manage Tokenomics</h1>
-                <Top_header active_tab={4} token_id={token_id}/>
+                <p>Update and Edit the tokenomics of your token from here.</p>
+                <Top_header active_tab={4} token_id={token_id} approval_status={approval_status}/>
                 </div>
                   <div className=" token_steps">
                   <div className="row">
                     <div className="col-lg-5 col-md-5">
                     <div className='form_headings'>
-                    <h5>{tokenomics_row_id?"Update":"Create"} Tokenomics</h5>
-                    <p >{!tokenomics_row_id?"You can create tokenomics for your tokens.":"Edit tokenomic details for your tokens."}</p>
+                    {
+                      !tokenomics_row_id ? 
+                      <>
+                      <h5 >Create Tokenomics</h5>
+                      <p>You can create tokenomics for your tokens.</p>
+                      </>
+                      :
+                      <>
+                      <h5 className="create-token-res">Update Tokenomics
+                      <span style={{float:"right"}} className='text-right pull-right' onClick={()=>clearform()}><button className='btn btn-primary btn-sm'>Go Back</button></span>
+                      </h5>
+                      <p className="token_form_sub_text">Edit tokenomic details for your tokens.</p>
+                      </>
+                    }
                     </div>
                     <div className='create_token_details'>
                         <div className="form-custom">
@@ -353,7 +379,7 @@ export default function Create_token({config, token_id})
                 <table className="table">
                 <thead>
                 <tr>
-                    <th >Sl No.</th>
+                    <th >#</th>
                     <th >Tokenomics Name</th>
                     <th >% Value</th>
                     <th >Total Supply</th>
@@ -373,7 +399,7 @@ export default function Create_token({config, token_id})
                         <td>{e.percentage_of_total_supply?e.percentage_of_total_supply+"%":"--"}</td>
                         <td>{e.total_supply?e.total_supply.toFixed(2):""}</td>
                         <td>
-                        <button type="submit" title="Edit" onClick={() => getTokenomic(e)} className="tn btn-info btn-sm" name="disable_job"  >Edit</button>
+                        <button type="submit" title="Edit" onClick={() => getTokenomic(e)} className="tn btn-primary btn-sm" name="disable_job"  >Edit</button>
                         <button type="submit" title="delete" onClick={() => btndelete(e._id)} className="tn btn-danger btn-sm ml-1" name="delete" data-toggle="modal" data-target="#removeConnection" >Delete</button>
                         </td> 
                     </tr>

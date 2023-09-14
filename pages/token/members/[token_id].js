@@ -55,6 +55,7 @@ export default function Create_token({ config, token_id }) {
     const [manual_input_status, set_manual_input_status] = useState(false)
     const [member_id, set_member_id] = useState('')
     const [elements, set_elements] = useState([]);
+    const [approval_status, set_approval_status] = useState("")
 
     console.log("team_member", team_member)
     const [add_manual_full_name, set_add_manual_full_name] = useState('')
@@ -91,7 +92,22 @@ export default function Create_token({ config, token_id }) {
     
     useEffect(() => {
         teammemberList()
+        getTokenDetails()
     }, [token_id])
+
+    const getTokenDetails=()=>
+    {
+    
+      Axios.get(API_BASE_URL+"markets/users/manage_crypto/individual_details/"+token_id, config)
+      .then(response=>{
+        if(response.data.status){ 
+          // console.log(response.data) 
+          // set_supply(response.data.message.total_supply)
+          set_approval_status((response.data.message.approval_status) ? parseInt(response.data.message.approval_status):0)
+        }
+      })
+    }
+
 
     const SuggestedListUser = (e) => {
 
@@ -331,7 +347,7 @@ const btndelete = (row_id) => {
         <div className="modal-dialog modal-sm">
         <div className="modal-content">
             <div className="modal-body">
-            <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" /></button>
+            <button type="button" className="close"  data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt = "Close" /></button>
             <div className="text-center">
             <div className=""><img src="/assets/img/cancel.png" className="prop_modal_img"/></div>
                 <h4 className="">Delete Team Member!</h4>
@@ -377,8 +393,8 @@ const btndelete = (row_id) => {
         return {
             "@context": "http://schema.org/",
             "@type": "Organization",
-            "name": "Coinpedia",
-            "url": "https://markets.coinpedia.org",
+            "name": "Manage Team Details",
+            "url": market_coinpedia_url+"token/members/"+token_id+ "/",
             "logo": "https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
             "sameAs": ["http://www.facebook.com/Coinpedia.org/", "https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
         }
@@ -388,29 +404,30 @@ const btndelete = (row_id) => {
     return (
         <>
             <Head>
-                <title>Manage Team Members</title>
+                <title>Manage Team Details | CoinPedia Markets</title>
                 <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
-                <meta name="description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-                <meta name="keywords" content="Cryptocurrency Market, cryptocurrency market sentiments, crypto market insights, cryptocurrency Market Analysis, NFT Price today, DeFi Token price, Top crypto gainers, top crypto loosers, Cryptocurrency market, Cryptocurrency Live market Price, NFT Live Chart, Cryptocurrency analysis tool." />
+                <meta name="description" content="Add new team members, edit or remove your listed token on coinpedia markets." />
+                <meta name="keywords" content="Manage team details, token listing, coinpedia markets, how to add team details on  coinpedia." />
                 <meta property="og:locale" content="en_US" />
                 <meta property="og:type" content="website" />
-                <meta property="og:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-                <meta property="og:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
-                <meta property="og:url" content={market_coinpedia_url} />
-                <meta property="og:site_name" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
+                <meta property="og:title" content="Manage Team Details | CoinPedia Markets" />
+                <meta property="og:description" content="Add new team members, edit or remove your listed token on coinpedia markets." />
+                <meta property="og:url" content={market_coinpedia_url+"token/members/"+token_id+ "/"} />
+                <meta property="og:site_name" content="Coinpedia Cryptocurrency Markets" />
                 <meta property="og:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
                 <meta property="og:image:secure_url" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
                 <meta property="og:image:width" content="400" />
                 <meta property="og:image:height" content="400" />
+                <meta property="og:image:type" content="image/png" />
                 <meta name="twitter:card" content="summary" />
                 <meta name="twitter:site" content="@coinpedia" />
                 <meta name="twitter:creator" content="@coinpedia" />
-                <meta name="twitter:title" content="Cryptocurrency Market Insights - Live Price, Charts, Trading Volume and Market Cap" />
-                <meta name="twitter:description" content="Get the cryptocurrency market sentiments and insights. Explore real-time price, market-cap, price-charts, historical data and more. Bitcoin, Altcoin, DeFi tokens and NFT tokens." />
+                <meta name="twitter:title" content="Manage Team Details | CoinPedia Markets" />
+                <meta name="twitter:description" content="Add new team members, edit or remove your listed token on coinpedia markets." />
                 <meta name="twitter:image" content="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
                 <link rel="shortcut icon" type="image/x-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
                 <link rel="apple-touch-icon" href="https://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png" />
-                <link rel="canonical" href={market_coinpedia_url} />
+                <link rel="canonical" href={market_coinpedia_url+"token/members/"+token_id+ "/"} />
                 <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(makeJobSchema()) }} />
             </Head>
             <div className="page">
@@ -420,8 +437,9 @@ const btndelete = (row_id) => {
                             <div>
                                 <div className="token_form">
                                     <div className='market_token_tabs'>
-                                        <h1 className='page_main_heading'>Manage Team Members</h1>
-                                        <Top_header active_tab={5} token_id={token_id} />
+                                        <h1 className='page_main_heading'>Manage Team Details</h1>
+                                        <p>Create, Edit, or Remove team details of your token from here.</p>
+                                        <Top_header active_tab={5} token_id={token_id} approval_status={approval_status}/>
                                     </div>
                                     <div className=" token_steps">
                                         <div className="row">
@@ -459,7 +477,7 @@ const btndelete = (row_id) => {
                                                                 <div className="manual_add_speakers">
                                                                    
                                                                     <div className="form-custom">
-                                                                        <label htmlFor="email">full Name<span className="label_star">*</span></label>
+                                                                        <label htmlFor="email">Full Name<span className="label_star">*</span></label>
                                                                         <div className="form-group input_block_outline">
                                                                             <div className="input-group">
                                                                                 <div className="input-group-append country_select" >
@@ -577,7 +595,7 @@ const btndelete = (row_id) => {
                                                                                 </div>
                                                                                 <div className="media-body align-self-center">
                                                                                     <h5 className="media-heading">{item.full_name} <span>{item.user_name?(item.user_name):""}</span></h5>
-                                                                                    <h6 className="speakers-suggestions-list_h6">{item.work_position} {item.work_position && item.company_name ? " @ " : ""} {item.company_name}</h6>
+                                                                                    <h6 className="speakers-suggestions-list_h6">{item.work_position ? item.work_position.replace(/\&amp;/g, 'and'):""} {item.work_position && item.company_name ? " @ " : ""} {item.company_name}</h6>
                                                                                     {
                                                                                         item.email_id ?
                                                                                             <h6 className="speakers-suggestions-list_h6 ">{item.email_id}</h6>
@@ -647,12 +665,12 @@ const btndelete = (row_id) => {
                                                                           </div>
                                                                             <div className='media-body align-self-center m-0'>
                                                                                 <h4 className='media-heading'>{e.full_name}</h4>
-                                                                                <p>{e.work_position?e.work_position:""} @ <span>{e.company_name}</span></p>
+                                                                                <p>{e.work_position?<>{e.work_position.replace(/\&amp;/g, 'and')}</>:""} {e.work_position & e.company_name ? "@":""} <span>{e.company_name}</span></p>
                                                                             </div>
                                                                         </div></td>
                                                                         
                                                                         <td>{e.email_id?e.email_id: "-"}</td>
-                                                                        <td>{e.member_type==1?"Reagistered":"Manually Registered"}</td>
+                                                                        <td>{e.member_type==1?"Registered":"Manual"}</td>
                                                                         <td>
                                                                         <button type="submit" title="delete" onClick={() => btndelete(e._id)} className="tn btn-danger btn-sm ml-1" name="delete" data-toggle="modal" data-target="#removeConnection" >Delete</button>
                                                                         </td> 
