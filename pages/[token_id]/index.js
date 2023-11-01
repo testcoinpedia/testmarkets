@@ -4394,7 +4394,7 @@ close_24h */}
                                                   <span className="bearish sell">Sell</span>
                                                   :
                                                   roc > 0 ?
-                                                  <span className="bearish buy">Buy</span>
+                                                  <span className="bullish buy">Buy</span>
                                                   :
                                                   <span className="neutral">Neutral</span>
                                                 } 
