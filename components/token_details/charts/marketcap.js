@@ -4,7 +4,7 @@ import JsCookie from "js-cookie"
 import moment from 'moment'
 import dynamic from 'next/dynamic';
 import { createChart, ColorType } from 'lightweight-charts'
-import { cmcArrageGraphData, cmc_graph_ranges} from '../tokenDetailsFunctions' 
+import { cmcArrageGraphData, cmc_graph_ranges} from '../custom_functions' 
 import { roundNumericValue, separator } from '../../constants' 
 import Price from './price'
 

@@ -7,7 +7,7 @@ import "react-datetime/css/react-datetime.css"
 import JsCookie from "js-cookie"   
 import moment from 'moment'
 import { count_live_price, graphqlApiKEY} from '../components/constants'
-import { graphQlURL, fromNToDate } from './token_details/tokenDetailsFunctions' 
+import { graphQlURL, fromNToDate } from './token_details/custom_functions' 
 import dynamic from 'next/dynamic';
 
 

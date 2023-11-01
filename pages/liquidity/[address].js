@@ -16,7 +16,7 @@ import Price_prediction from '../../components/token_details/price_prediction'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import ReactPaginate from 'react-paginate'
 import Price_chart from '../../components/search_contract_address/charts/price'
-import { bitgquery_graph_ranges } from '../../components/token_details/tokenDetailsFunctions' 
+import { bitgquery_graph_ranges } from '../../components/token_details/custom_functions' 
 
 export default function WalletDetails({address}) 
 {   

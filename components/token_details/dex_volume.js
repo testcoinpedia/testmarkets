@@ -4,6 +4,7 @@ import { tokenBasic, otherDetails, volume24Hrs, getHighLow24h, sevenDaysDetails 
 import Axios from 'axios'
 import JsCookie from "js-cookie"
 import moment from 'moment'
+import { useSelector, useDispatch } from 'react-redux'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 export default function MyFunction({reqData}) 
@@ -81,6 +82,21 @@ export default function MyFunction({reqData})
         }
     }
 
+    const active_currency = useSelector(state => state.active_currency)
+
+    const convertCurrency = (token_price) =>
+    {
+      if(active_currency.currency_value)
+      {
+        return active_currency.currency_symbol+" "+roundNumericValue(token_price*(active_currency.currency_value))
+      }
+      else
+      {
+        return roundNumericValue(token_price)
+      }
+    }
+
+    
     return (
         <div>
             {
@@ -103,7 +119,7 @@ export default function MyFunction({reqData})
                                 </OverlayTrigger> :
                                 </h4>
                                 <h5>
-                                    {(volume && dex_24h_volume) ? "$"+roundNumericValue(volume-dex_24h_volume):"-"}
+                                    {(volume && dex_24h_volume) ? convertCurrency(volume-dex_24h_volume):"-"}
                                 </h5>
                             </div>
                         </div>
@@ -122,7 +138,7 @@ export default function MyFunction({reqData})
                                 </OverlayTrigger> :
                                 </h4>
                                 <h5>
-                                    {dex_24h_volume ? "$"+roundNumericValue(dex_24h_volume):"-"}
+                                    {dex_24h_volume ? convertCurrency(dex_24h_volume):"-"}
                                 </h5>
                             </div>
                         </div>
@@ -167,7 +183,7 @@ export default function MyFunction({reqData})
 
                         <div className='volume-item'>
                             <div className='volume-value'> Vol 
-                            <span className='volume-span'>{dex_volume ? "$"+roundNumericValue(dex_volume):"-"}</span>
+                            <span className='volume-span'>{dex_volume ? convertCurrency(dex_volume):"-"}</span>
                             </div>
                         </div>
                         </div>

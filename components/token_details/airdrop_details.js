@@ -1,13 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Axios from 'axios'
 import JsCookie from "js-cookie"
-import { IMAGE_BASE_URL} from '../constants'
+import { IMAGE_BASE_URL, roundNumericValue} from '../constants'
 import moment from 'moment'
+import { useSelector, useDispatch } from 'react-redux'
 
 export default function MyFunction({airdrops, token_symbol, token_image, coinmarketcap_id, today_date}) 
 {   
     const [image_base_url] = useState(IMAGE_BASE_URL+'/markets/cryptocurrencies/')
     const [cmc_image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/128x128/')
+
+    const active_currency = useSelector(state => state.active_currency)
+
+    const convertCurrency = (token_price) =>
+    {
+      if(active_currency.currency_value)
+      {
+        return active_currency.currency_symbol+" "+roundNumericValue(token_price*(active_currency.currency_value))
+      }
+      else
+      {
+        return roundNumericValue(token_price)
+      }
+    }
    
     return (
         <>
@@ -38,14 +53,14 @@ export default function MyFunction({airdrops, token_symbol, token_image, coinmar
                                     null
                                 }
                         </h4>
-                        <p>${(item.winner_price*item.participating_users).toFixed(0)} worth of {token_symbol} to {item.participating_users} Lucky Winners</p>
+                        <p>{convertCurrency(item.winner_price*item.participating_users)} worth of {token_symbol} to {item.participating_users} Lucky Winners</p>
                     </div>
                 </div>
                 <div className='details_airdrop_card'>
                     <div className='row'>
                         <div className='col-md-4'>
                             <p>Amount</p>
-                            <h6>${item.winner_price} of {token_symbol}/winner</h6>
+                            <h6>{convertCurrency(item.winner_price)} of {token_symbol}/winner</h6>
                         </div>
                         <div className='col-md-4 col-6 airdrop_col'>
                             <p>Start Date</p>

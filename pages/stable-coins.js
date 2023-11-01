@@ -5,6 +5,8 @@ import ReactPaginate from 'react-paginate'
 import { API_BASE_URL, roundNumericValue, config, separator, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, strLenTrim, count_live_price, Logout} from '../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
+
+import { useSelector, useDispatch } from 'react-redux'
 import SearchContractAddress from '../components/search_token'
 import CategoriesTab from '../components/categoriesTabs'
 import TableContentLoader from '../components/loaders/tableLoader'
@@ -16,8 +18,9 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 // import Select from 'react-select'
 import { useRouter } from 'next/navigation'
 
-export default function Companies({userAgent})
+export default function Companies({userAgent,modalprops})
 { 
+  console.log("modalprops",modalprops)
   
     const router = useRouter()
     const myRef = useRef(null)
@@ -61,13 +64,24 @@ export default function Companies({userAgent})
     const [request_config, set_request_config] = useState(config(userAgent.user_token ? userAgent.user_token : ""))
     const [action_row_id, set_action_row_id] = useState("")
    
-
+    useEffect(() => {
+   
+      if(modalprops.login_data){
+        getDataFromChild(modalprops)
+      }
+    
+    }, [modalprops]);
     const getDataFromChild = async (pass_object) => 
     {
       await set_login_modal_status(false)
       await set_user_token(JsCookie.get("user_token"))
       await set_request_config(JsCookie.get("user_token"))
-      await addToWatchlist(action_row_id)
+       if(action_row_id){
+        await addToWatchlist(action_row_id)
+        }
+        else{
+          tokensList({selected : 0}, 1)
+        }
     }
 
     const login_props = {
@@ -83,6 +97,27 @@ export default function Companies({userAgent})
       await set_login_modal_status(true)
       await set_action_row_id(pass_id)
     }
+
+    const active_currency = useSelector(state => state.active_currency)
+
+    const convertCurrency = (token_price) =>
+        {
+          if(token_price)
+          {
+            if(active_currency.currency_value)
+            {
+              return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
+            }
+            else
+            {
+              return roundNumericValue(token_price)
+            }
+          }
+          else
+          {
+            return '-'
+          }
+        }
 
     
     useEffect(()=>
@@ -422,7 +457,8 @@ return (
                
                                      <td className="market_list_price"> 
                                       <Link href={"/"+e.token_id}>
-                                        <span className="block_price">{e.price ? "$"+roundNumericValue(e.price):""}</span>
+                                        {/* <span className="block_price">{e.price ? "$"+roundNumericValue(e.price):""}</span> */}
+                                        <span className="block_price">{e.price ? convertCurrency(e.price) : ""}</span>
                                         {e.updated_on ? moment(e.updated_on).fromNow():null} 
                                       </Link>
                                     </td>
@@ -471,13 +507,16 @@ return (
 
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/"+e.token_id}>
-                                       {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"}
+                                       {/* {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"} */}
+                                       {e.circulating_supply ? convertCurrency(e.circulating_supply*e.price): ""}
+                                       
                                        </Link>
                                      </td>  
                                      
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/"+e.token_id}>
-                                       {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"}
+                                       {/* {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"} */}
+                                       {e.volume ? convertCurrency(e.volume): ""}
                                        </Link>
                                      </td>
 

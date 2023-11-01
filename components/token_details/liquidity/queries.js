@@ -533,3 +533,121 @@ export const tradeHistoryForTV = async (pass_array)=>
 
 //Getting Liquidity Address Trade History Ends Here
 
+//Search By Contract Address - starts here
+//{network_type, liquidity_address}
+const tradeHistoryQueryForsTV = ({network_type, contract_address, limit, offset}) =>
+{   
+    var network_id = ''
+    if(network_type == 6)
+    {
+        network_id = 'ethereum'
+    }
+    else if(network_type == 14)
+    {
+        network_id = 'matic'
+    }
+    else if(network_type == 2)
+    {
+        network_id = 'bsc'
+    }
+
+    if(network_id)
+    {
+        return  `   
+            {
+                ethereum(network: `+network_id+`) 
+                {
+                    dexTrades(
+                        options: {desc: "block.timestamp.time", limit:`+limit+`, offset:`+offset+`}
+                        any: {baseCurrency: {is: "`+contract_address+`"}}
+                    ) 
+                    {
+                        buyCurrency {
+                        address
+                        }
+                        sellCurrency {
+                        address
+                        }
+                        baseCurrency {
+                        address
+                        }
+                        quoteCurrency {
+                        address
+                        }
+                        block {
+                            timestamp {
+                                time(format: "%Y-%m-%dT%H:%M:%SZ")
+                            }
+                        }
+                        price(calculate: average)
+                        quotePrice(calculate: average)
+                        buyAmount(calculate: sum)
+                        sellAmount(calculate: sum)
+                        baseAmount(calculate: sum)
+                        quoteAmount(calculate: sum)
+                        buyAmountUSD: buyAmount(calculate: sum, in: USD)
+                        sellAmountUSD: sellAmount(calculate: sum, in: USD)
+                        baseAmountUSD: baseAmount(calculate: sum, in: USD)
+                        quoteAmountUSD: quoteAmount(calculate: sum, in: USD)
+                        sell_rate: expression(get: "sellAmountUSD / buyAmount")
+                        buy_rate: expression(get: "buyAmountUSD / sellAmount")
+                        transaction {
+                        hash
+                        txFrom {
+                            address
+                        }
+                        }
+                    }
+                }
+            }
+            `
+    }
+
+}
+
+const tradeHistoryFetchQueryForSTV = async (pass_array) =>
+{   
+    const query = tradeHistoryQueryForsTV(pass_array)
+    const opts = {
+        method: "POST",
+        headers : graphql_headers,
+        body: JSON.stringify({query})
+    }
+    const res = await fetch(graphqlApiURL, opts)
+    const result = await res.json()
+
+    var final_array = {}
+    if(!result.errors)
+    {   
+        if(result.data.ethereum) 
+        {   
+            if(result.data.ethereum.dexTrades)
+            {   
+                return {status:true, message:(result.data.ethereum.dexTrades).reverse()}
+            }
+        }
+    }
+    return {status:false, message:{}}
+}
+
+
+export const tradeHistoryForSTV = async (pass_array)=> 
+{
+    try
+    {  
+        const check_query = await tradeHistoryFetchQueryForSTV(pass_array)
+        if(check_query.status)
+        {   
+            return check_query
+        }
+        else
+        {
+            return {status:false, message:{}}  
+        }
+    }
+    catch(err)
+    {
+        return {status:false, message:{}}    
+    }
+}
+//Search By Contract Address - ends here

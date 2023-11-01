@@ -1,7 +1,6 @@
 import { reduxData } from '../constants'
 
 const loginAccount=(data)=> {
-   //console.log(data);
     return {
         type:reduxData.login,
         data:data
@@ -16,8 +15,15 @@ const logoutAccount=(data)=> {
 }
 
 
+const currencyConverter=(data)=> {
+    return {
+        type:reduxData.converter,
+        data:data
+    }
+}
 
 
 
 
-export {loginAccount, logoutAccount, }
+
+export {loginAccount, logoutAccount, currencyConverter}

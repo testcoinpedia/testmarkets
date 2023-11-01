@@ -7,15 +7,15 @@ import Axios from 'axios'
 import cookie from 'cookie'
 import JsCookie from "js-cookie"
 import { useSelector, useDispatch } from 'react-redux'
+import Currency_search from '../components/layouts/headers/currency_search'
+import LoginModal from '../components/layouts/auth/loginModal'
 // import $ from 'jquery';
 // import "slick-carousel/slick/slick.css";
 // import "slick-carousel/slick/slick-theme.css";
 // import Slider from 'react-slick';
-import { USDFormatValue } from '../config/helper'
-import { API_BASE_URL, events_coinpedia_url, app_coinpedia_url, market_coinpedia_url, coinpedia_url, Logout, separator, logo, config, api_url, cookieDomainExtension, IMAGE_BASE_URL } from '../components/constants'
-import Popupmodal from './popupmodal'
+import { API_BASE_URL, events_coinpedia_url, app_coinpedia_url, market_coinpedia_url, coinpedia_url, Logout, separator, logo, config, api_url, cookieDomainExtension, IMAGE_BASE_URL, roundNumericValue, convertvalue } from '../components/constants'
 
-export default function Topmenu() 
+export default function Topmenu({callback}) 
 {
   const router = useRouter()
   const pathname = router.pathname
@@ -26,11 +26,89 @@ export default function Topmenu()
   const [current_page_url] = useState(market_coinpedia_url+"/portfolio")
   // console.log("current_page_url", pathname)
   const [login_dropdown, set_login_dropdown] = useState(0)
+  const [currency_modal_status, set_currency_modal_status] = useState(false)
   const [live_prices_list, set_live_prices_list] = useState({})
   const [light_dark_mode, set_light_dark_mode] = useState("")
   const [image_base_url] = useState(IMAGE_BASE_URL + "/profile/")
   const check_in_array = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SCUSDT', 'XRPUSDT']
   const [display_tokens_balance, set_display_tokens_balance] = useState(0) 
+  const [search_currency, set_search_currency] = useState("") 
+  const [country_currencies, set_country_currencies] = useState([]) 
+  const [country_currencies_filters_list, set_country_currencies_filters_list] = useState([]) 
+  const [country_currency, set_country_currency] = useState({country_flag:"us.png",currency_code:"USD", currency_value:1, _id: 32, currency_name:"", currency_symbol:"$"}) 
+ 
+  const [login_modal_status, set_login_modal_status] = useState(false)
+
+  const [user_token, set_user_token] = useState();
+
+  const [request_config, set_request_config] = useState()
+  const currencyModalStatus = async () => 
+  {
+    await set_currency_modal_status(false)
+    await set_currency_modal_status(true)
+  }
+
+  const currency_props = {
+    status: true
+  }
+
+
+      const convertCurrency = (token_price) =>
+      {
+        if(token_price)
+        {
+          if(active_currency.currency_value)
+          {
+            return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
+          }
+          else
+          {
+            return roundNumericValue(token_price)
+          }
+        }
+        else
+        {
+          return '-'
+        }
+      }
+
+      const shortConvertCurrency = (token_price) =>
+      {
+        if(token_price)
+        {
+          if(active_currency.currency_value)
+          {
+            return active_currency.currency_symbol+" "+convertvalue(token_price*active_currency.currency_value)
+          }
+          else
+          {
+            return roundNumericValue(token_price)
+          }
+        }
+        else
+        {
+          return '-'
+        }
+      }
+      
+  useEffect(() => 
+  {
+    if(JsCookie.get('active_currency'))
+    {
+      
+      dispatch({
+        type: 'currencyConverter', data: JSON.parse(JsCookie.get("active_currency"))
+      })
+    }
+    else
+    {
+      dispatch({
+        type: 'currencyConverter', data: country_currency
+      })
+    }
+
+
+  }, [JsCookie.get('display_tokens_balance')])
 
   useEffect(() => 
   {
@@ -40,10 +118,11 @@ export default function Topmenu()
     }
   }, [JsCookie.get('display_tokens_balance')])
 
+  const active_currency = useSelector(state => state.active_currency)
 
   useEffect(() => {
     getLivePricesList()
-
+    getCountryCurriencies()
     if (JsCookie.get('user_token') || JsCookie.get('user_full_name')) {
       dispatch({
         type: 'loginAccount', data: {
@@ -119,17 +198,27 @@ export default function Topmenu()
   //   }
   // }
 
+  const getCountryCurriencies = async () => 
+  {
+    const res = await Axios.get(API_BASE_URL + "markets/cryptocurrency/country_currencies", config(""))
+    if(res.data) 
+    {
+      set_country_currencies(res.data.message)
+      set_country_currencies_filters_list(res.data.message)
+      // console.log("country_currencies", res)
+    }
+  }
 
   const getLivePricesList = async () => {
     var my_array = []
-    const res = await Axios.get(API_BASE_URL + "main/tokens/live_prices", config(""))
+    const res = await Axios.get(API_BASE_URL + "markets/tokens/live_prices", config(""))
     if (res.data) {
       if (res.data.status === true) {
         for (var key of res.data.message) {
           var createObj = {}
           createObj['symbol'] = key.symbol
           createObj['price'] = key.price
-          createObj['usd_24h_change'] = key.usd_24h_change
+          createObj['usd_24h_change'] = key.percent_change_24h
           createObj['token_id'] = key.token_id
           createObj['token_name'] = key.token_name
 
@@ -235,6 +324,27 @@ export default function Topmenu()
       window.location= market_coinpedia_url
     }
   }
+  const loginModalStatus = async () => {
+    await set_login_modal_status(false)
+    await set_login_modal_status(true)
+    
+  }
+
+  const getDataFromChild = async (name) => {
+    // await set_login_modal_status(false)
+    // await set_user_token(JsCookie.get("user_token"))
+    // await set_request_config(JsCookie.get("user_token"))
+   
+    // router.reload("pass_object",pass_object)
+    console.log("name",name)
+    callback(name)
+  }
+
+  const login_props = {
+    status: true,
+    request_config: request_config,
+    callback: getDataFromChild
+  }
 
   const setDarkMode = () => {
     if (JsCookie.get('light_dark_mode') === "dark") {
@@ -278,7 +388,7 @@ export default function Topmenu()
                                     {/* <Link href={market_coinpedia_url+e.token_id}> */}
                                     <a href={market_coinpedia_url + e.token_id+"/"}>
                                       <h4 className="text-uppercase">{e.symbol}</h4>
-                                      <h6>${separator(((parseFloat(e.price))).toFixed(2))} <span className={(parseFloat(e.usd_24h_change) >= 0 ? "green" : "red")}>({(parseFloat(e.usd_24h_change)).toFixed(2)}%)</span></h6>
+                                      <h6>{convertCurrency(((parseFloat(e.price))).toFixed(2))} <span className={(parseFloat(e.usd_24h_change) >= 0 ? "green" : "red")}>({(parseFloat(e.usd_24h_change)).toFixed(2)}%)</span></h6>
                                     </a>
                                     {/* </Link> */}
                                   </li>
@@ -310,7 +420,7 @@ export default function Topmenu()
                                 display_tokens_balance > 0 ?
                                 <a href={market_coinpedia_url + "portfolio/"}>
                                   <img className="growth_icon" src="https://image.coinpedia.org/wp-content/uploads/2023/03/20130900/line-chart.png" alt="Growth Icon" title="Growth Icon"/> 
-                                  &nbsp;Portfolio: {USDFormatValue(display_tokens_balance)}
+                                  &nbsp;Portfolio: {shortConvertCurrency(display_tokens_balance)}
                                   <img className="portfolio_right" src="https://image.coinpedia.org/wp-content/uploads/2023/03/20130902/right-arrow-1.png" alt="Right Arrow" title="Right Arrow"/>
                                 </a>
                                 :
@@ -376,18 +486,20 @@ export default function Topmenu()
                                 {/* <a className="header_reg_btn" href="/register">Verify</a> */}
                                 {/* <Link href="/connections"><a className="dropdown-item"><img src="/assets/img/drop_referral_list.png" /> Connections</a></Link> */}
                                 <h6>Other</h6>
-                                <Link href={events_coinpedia_url+"my-events/"} onClick={() => customToggle()} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2022/12/30183750/desk-manage.svg" title=" Manage Events" alt=" Manage Events" className="manageevent_icon"/> Manage Events</Link>
+                                <Link href={events_coinpedia_url+"my-events/"} onClick={() => customToggle()} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/09/22163647/menu_manage_event.svg" title=" Manage Events" alt=" Manage Events" className="manageevent_icon"/> Manage Events</Link>
                                 <a className="dropdown-item" onClick={() => logoutFunction()} style={{ color: '#fe4b4b' }}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/21160229/sidemenu-logout.svg" title="Logout" alt="Logout" /> Logout</a>
 
                               </div>
                             </div>
                             :
-                            <div className=" connect_wallet_header">
-                              <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}>
-                                <button className="connect_wallet" type="button">
+                            <div className=" connect_wallet_header"onClick={() => loginModalStatus()}>
+                              {/* <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}> */}
+                              {/* <button className="connect_wallet" type="button" > */}
+                              <span  className="btn connect_wallet" role="button">
                                   <img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17161416/connect-wallet-header.svg" className="login_img" title="Login" alt="Login" /> Login
-                                </button>
-                              </Link>
+                                  </span>
+                                {/* </button> */}
+                              {/* </Link> */}
                             </div>
                           }
                         </div>
@@ -408,7 +520,7 @@ export default function Topmenu()
                         <h4>
                           <a href={market_coinpedia_url + "portfolio/"}>
                             <img className="growth_icon" src="https://image.coinpedia.org/wp-content/uploads/2023/03/10152629/track-portfolio.svg" alt="Growth Icon" title="Growth Icon" /> 
-                            Portfolio: $  {USDFormatValue(display_tokens_balance)}
+                            Portfolio: {shortConvertCurrency(display_tokens_balance)}
                             <img className="portfolio_right" src="https://image.coinpedia.org/wp-content/uploads/2023/03/10171148/right-arrow.png" alt="Right Arrow" title="Right Arrow" />
                           </a>
                         </h4>
@@ -519,18 +631,18 @@ export default function Topmenu()
                           <li><a href={market_coinpedia_url + "token/update"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17134908/mobile-menu-list-token.svg" alt="Menu List" /> List a Token</a></li>
                           {/* <li><a href={app_coinpedia_url + "profile/my-nft-collection"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17134908/mobile-menu-nft-collections.svg" alt="Menu Collection" /> My NFT Collection</a></li> */}
                           <li className="menu_company_list">Other</li>
-                          <li><a href={events_coinpedia_url + "my-events"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/12/30183750/menu-company-1.svg" alt="Menu Company" className="manageevent_icon" /> Manage Events</a></li>
+                          <li><a href={events_coinpedia_url + "my-events"}><img src="https://image.coinpedia.org/wp-content/uploads/2023/09/22163650/menu_manage_event_white.svg" alt="Menu Company" className="manageevent_icon" /> Manage Events</a></li>
                         </ul>
                       </li>
                       :
-                      <li className="dropdown mobile_login_block">
-                        <Link href={app_coinpedia_url + "login?prev_url="+market_coinpedia_url}>
+                      <li className="dropdown mobile_login_block"onClick={() => loginModalStatus()}>
+                        {/* <Link href={app_coinpedia_url + "login?prev_url="+market_coinpedia_url}> */}
 
-                       
+                        <a onClick={() => customToggle()}>
                           <img src="https://image.coinpedia.org/wp-content/uploads/2021/10/25180324/footer-logo.svg" alt="Footer Logo"  className="login_icon" /> Login / Create Account
                           {/* <span className="caret"></span> */}
-                        
-                        </Link>
+                        </a>
+                        {/* </Link> */}
                         <ul className="dropdown-menu">
                         </ul>
                       </li>
@@ -706,9 +818,35 @@ export default function Topmenu()
 
                 </ul>
                 <ul className="nav navbar-nav navbar-right ml-auto markets_new_design ">
-                 <li>
-                 {/* <SearchContractAddress /> */}
-                </li> 
+                <li>
+                <button className="country_currency header_button">
+                      
+                      {
+                        active_currency._id ?
+                        <>
+                        <div className="media" onClick={()=>currencyModalStatus()}>
+                          <div className="media-left">
+                            <img className='country-active-flag' src={"/assets/img/flags/"+active_currency.country_flag}  alt="UserIcon" />
+                          </div>
+                          <div className="media-body ">
+                          <span className="currency-item">{active_currency.currency_code}</span>
+                          </div>
+                          <div className="media-right ml-1 ">
+                            <img src="https://image.coinpedia.org/wp-content/uploads/2022/02/07180108/caret-down.svg" className="currency_caret_down" title="" alt="drop down" />
+                          </div>
+                        </div>
+                        </>
+                        
+                        : 
+                        ""
+                      } 
+                    </button>
+                </li>
+                <li className="dropdown">
+                  <a data-toggle="dropdown" href="#">
+                   
+                  </a>
+                </li>
                   <li className="dark_theme_toggle" onClick={() => setDarkMode()} id="theme_color">
                     {/* <img src="https://api.coinpedia.org/uploads/tokens/1636636942618d190eb91f9.png" /> */}
                     {
@@ -734,6 +872,10 @@ export default function Topmenu()
           </div>
         </nav>
       </div>
+
+      {currency_modal_status ? <Currency_search reqData={currency_props}  /> : null}
+      {login_modal_status ? <LoginModal name={login_props} sendDataToParent={getDataFromChild} /> : null}
+      
     </>
   )
 } 

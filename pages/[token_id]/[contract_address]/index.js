@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from 'react'
-import { graphql_headers, graphqlApiURL, separator, graphqlApiKEY, app_coinpedia_url, market_coinpedia_url } from '../../components/constants'
-import { tokenBasic, otherDetails, getVolume24h, getHighLow24h } from '../../components/search_contract_address/live_price'
-import Search_token from '../../components/search_token'
+import { API_BASE_URL,config,graphql_headers, graphqlApiURL, separator, graphqlApiKEY, app_coinpedia_url, market_coinpedia_url, roundNumericValue, } from '../../../components/constants'
+import { tokenBasic, otherDetails, getVolume24h, getHighLow24h, getNetworkId } from '../../../components/search_contract_address/live_price'
+import Search_token from '../../../components/search_token'
 import { ethers } from 'ethers'
 import Web3 from 'web3'
 import Head from 'next/head'
 import Axios from 'axios'
 import moment from 'moment'
 import Link from 'next/link'
-import News from '../../components/token_details/news'
-import Events from '../../components/token_details/events'
-import Price_analysis from '../../components/token_details/price_analysis'
-import Price_prediction from '../../components/token_details/price_prediction'
+import News from '../../../components/token_details/news'
+import Events from '../../../components/token_details/events'
+import Dex_overview from '../../../components/search_contract_address/dex_overview'
+import Liquidity_pools_list from '../../../components/search_contract_address/liquidity_pools_list'
+import Trade_history from '../../../components/search_contract_address/trade_history'
+import Price_analysis from '../../../components/token_details/price_analysis'
+import Price_prediction from '../../../components/token_details/price_prediction'
+import TradingView from '../../../components/search_contract_address/charts/tradingview/dex_pairs'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 // import SideBarExchangeDetails from "../../components/sideBarExchangeBlock"
 // import Search_Contract_Address from '../../components/searchContractAddress'
 import ReactPaginate from 'react-paginate'
-import Price_chart from '../../components/search_contract_address/charts/price'
-import { bitgquery_graph_ranges } from '../../components/token_details/tokenDetailsFunctions' 
+import Price_chart from '../../../components/search_contract_address/charts/price'
+import { bitgquery_graph_ranges } from '../../../components/token_details/custom_functions' 
 
 
 let inputProps = {
@@ -32,9 +36,10 @@ let inputProps2 = {
   readOnly: true
 }
 
-export default function TokenDetails({post, address, tokenData}) 
+export default function TokenDetails({network_id, address, tokenData}) 
 {
    console.log("tokenData", tokenData)
+   console.log("network_id", network_id)
   
   // post.smartContract.currency.symbol
   const [percentage_change_24h, set_percentage_change_24h] = useState(false)
@@ -87,9 +92,17 @@ export default function TokenDetails({post, address, tokenData})
   
 
 
+  const [converter_pair_currencies, set_converter_pair_currencies] = useState([])
+  const [token_converter_value, set_token_converter_value] = useState("")
+  const [usd_converter_value, set_usd_converter_value] = useState("")
+  const [converter_pair_currency, set_converter_pair_currency] = useState(1)
+
   useEffect(() => 
   {
+    tokenOtherDetails()
+    
     getTokenDetails()
+    
     // getTokendetails(window.location.pathname.substring(5))
     // getTokenTransactions(window.location.pathname.substring(5))
     // getexchangedata(window.location.pathname.substring(5))
@@ -106,9 +119,10 @@ export default function TokenDetails({post, address, tokenData})
 
  const getTokenDetails = async () =>
  {  
+ 
     await set_main_tab("")
     await set_main_tab(1)
-    await getexchangedata(address)
+    //await getexchangedata(address)
 
     const response2 = await getVolume24h(tokenData.contract_type, address)
     if(response2.status)
@@ -169,6 +183,74 @@ export default function TokenDetails({post, address, tokenData})
     }
     
  }
+
+
+//  usd converter
+
+
+
+const tokenConverter = async (pass_value, pass_type, pass_pair_value) => 
+{
+  console.log("tokenConverter",pass_pair_value)
+  console.log("tokenConverter1",pass_value)
+  await set_converter_pair_currency(pass_pair_value)
+  if(pass_value > 0) 
+  {
+    if(pass_type == 1) 
+    {
+      await set_token_converter_value(pass_value)
+      if(((live_price*pass_value)/pass_pair_value) >= 0.1) 
+      {
+        await set_usd_converter_value(((live_price * pass_value)/ pass_pair_value).toFixed(2))
+
+      }
+      else 
+      {
+        await set_usd_converter_value(roundNumericValue((live_price * pass_value)/ pass_pair_value))
+      }
+    }
+    else 
+    {
+      await set_usd_converter_value(pass_value)
+      if(((pass_value*pass_pair_value) / live_price) >= 0.1) 
+      {
+        await set_token_converter_value(((pass_value*pass_pair_value) / live_price).toFixed(2))
+      }
+      else 
+      {
+        await set_token_converter_value(roundNumericValue((pass_value*pass_pair_value) / live_price))
+      }
+    }
+  }
+  else {
+    await set_token_converter_value("")
+    await set_usd_converter_value("")
+  }
+
+}
+const tokenOtherDetails = async () =>
+{
+   const response = await Axios.get(API_BASE_URL + "markets/cryptocurrency/converter_currencies", config(""))
+ 
+    console.log("tokenOtherDetails",response)
+    if(response.data)
+    {
+        if(response.data.message)
+        {
+          set_converter_pair_currencies(response.data.message)
+        }
+    }
+    
+    
+  
+}
+
+//converter_currencies
+
+
+// liquidity 
+
+
 
 const totalLiquidity = async () =>
 {
@@ -547,6 +629,7 @@ const getMarketCap = async (id, decval, usd_price) =>
 
 
 
+    
 
   }
   const getTokenTransactions = (id) => {
@@ -1604,15 +1687,9 @@ const getMarketCap = async (id, decval, usd_price) =>
 
   return (
     <>
-      {/* {
-        metadata.smartContract.currency.name.symbol
-          ?
-          <Head>
-            <title>{metadata.smartContract.currency.name.symbol.toUpperCase()}</title>
-          </Head>
-          :
-          null
-      } */}
+     <Head>
+      <title>{tokenData.name} | {tokenData.symbol ? tokenData.symbol.toUpperCase() : "-"} Live Price, Chart & News | Coinpedia Markets</title>
+    </Head>
 
     <div className="page">
     <div className="market_token_details">
@@ -1625,7 +1702,7 @@ const getMarketCap = async (id, decval, usd_price) =>
                         <div className="token_main_details">
                             <div className="media">
                               <div className="media-left align-self-center">
-                                <img src={"/assets/img/"+(tokenData.contract_type == 1 ? "ethereum.svg": "binance.svg")} className="token_img" alt={tokenData.contract_type == 1 ? "Ethereum": "BSC"} width="100%" height="100%" />
+                                <img src={"/assets/img/"+(tokenData.contract_type == 1 ? "default.png": "binance.svg")} className="token_img" alt={tokenData.contract_type == 1 ? "Ethereum": "BSC"} width="100%" height="100%" />
                               </div>
 
                               <div className="media-body align-self-center">
@@ -1761,13 +1838,45 @@ const getMarketCap = async (id, decval, usd_price) =>
                 <div className="col-md-12">
                   <div className="coin_details">
                     <div className="row">
-                      <div className="col-md-5">
-                       
-                      </div>
-                      <div className="col-md-7">
+                    <div className="col-md-3">
+                    <div>
+                          <div className='row'>
+                            <div className='col-12'>
+                              <h5 className='converter-title mt-2 mb-2'>{tokenData.symbol} to USD Converter</h5>
+                              <div className="input-group">
+                                <div className="input-group-prepend converter-label">
+                                  <span className="input-group-text">{tokenData.symbol}</span>
+                                </div>
+                                <input type="number" value={token_converter_value} onChange={(e) => tokenConverter(e.target.value, 1, converter_pair_currency)} step="0.000001" min="0.000001" className="form-control converter-input" placeholder="0" />
+                                <div className="input-group-append converter-label">
+                                  <span className="input-group-text converter-second-span">
+                                    <select class="form-no-border" onChange={(e) => tokenConverter(token_converter_value, 1, e.target.value)}>
+                                      {
+                                         converter_pair_currencies.map((item, i) =>
+                                          item.currency_name != data.symbol ?
+                                          <option value={item.currency_value} selected={converter_pair_currency == item.currency_value}>{item.currency_name}</option>
+                                          :
+                                          ""
+                                        )
+                                      }
+                                    </select>
+                                  </span>
+                                </div>
+                                <input type="number" value={usd_converter_value} onChange={(e) => tokenConverter(e.target.value, 2, converter_pair_currency)} step="0.000001" min="0.000001" className="form-control converter-input" placeholder="0" />
+                              </div>
+                              
+                               {/* <Community_scrore reqData={{token_row_id:data._id, my_voting_status:data.voting_status ? data.voting_status:0, total_voting_count:data.total_voting_count, positive_voting_counts:data.positive_voting_counts, parent_user_token:user_token, request_config}}/>  */}
+                              
+                            </div>
+                          </div>
+                        </div>
+                      
+                    </div>
+
+                      <div className="col-md-6">
                         <div className="row">
                           <div className="col-md-4 col-6">
-                            <div className="token_left_border">
+                            <div className="">
                               <div className="token_list_values">
                                 <h4>Total Supply</h4>
                                 <h5>
@@ -1842,6 +1951,10 @@ const getMarketCap = async (id, decval, usd_price) =>
 
                         </div>
                       </div>
+
+                      <div className="col-md-3">
+                      <Dex_overview reqData={{ contract_address: address, contract_type:tokenData.contract_type, token_symbol: tokenData.symbol, volume: 1232 }} />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1855,9 +1968,17 @@ const getMarketCap = async (id, decval, usd_price) =>
                         <li className="nav-item">
                           <a data-toggle="tab" onClick={()=>setMainTab(1)} className={"nav-link "+(main_tab == 1? " active":"")} ><span>Chart</span></a>
                         </li>
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                           <a data-toggle="tab" onClick={()=>set_main_tab(2)} className={"nav-link "+(main_tab == 2 ? " active":"")} ><span>Exchange</span></a>
+                        </li> */}
+
+                        <li className="nav-item" >
+                          <a className={"nav-link " + (main_tab == 9 ? "active" : "")} onClick={() => set_main_tab(9)}>Liquidity Pools</a>
                         </li>
+                        <li className="nav-item" >
+                          <a className={"nav-link " + (main_tab == 10 ? "active" : "")} onClick={() => set_main_tab(10)}>Trade History</a>
+                        </li>
+
                         {/* <li className="nav-item">
                           <a data-toggle="tab" onClick={()=>set_main_tab(3)} className={"nav-link "+(main_tab == 3 ? " active":"")} ><span>Transactions</span></a>
                         </li> */}
@@ -1868,6 +1989,7 @@ const getMarketCap = async (id, decval, usd_price) =>
                         <li className="nav-item" >
                           <a className={"nav-link "+(main_tab == 8 ? "active":"")} onClick={()=>set_main_tab(5)}>Price Prediction</a>
                         </li>
+                        
                       </ul>            
                     </div>
                    
@@ -1875,7 +1997,7 @@ const getMarketCap = async (id, decval, usd_price) =>
                 <div className={"tab-pane fade "+(main_tab == 1 ? " show active":"")}>
                 
                   <div className="tokendetail_charts" style={{minHeight:"456px", marginBottom:"30px"}}>
-                      <div className="row">
+                      {/* <div className="row">
                           <div className="col-md-6 col-12">
                               <div className="charts_date_tab float-left charts_price_tabs">
                               <ul className="nav nav-tabs">
@@ -1906,21 +2028,23 @@ const getMarketCap = async (id, decval, usd_price) =>
                                 </ul>
                               </div>
                           </div>
-                      </div>  
-                      
+                      </div>   */}
+                                  
                         {
-                          main_tab ?
+                          main_tab==1 ?
                             graph_date_type ?
-                            <Price_chart reqData={{address:address, contract_type:tokenData.contract_type, graph_date_type:graph_date_type}}/>
+                            <>
+                            <TradingView reqData={{symbol: (tokenData.symbol).toLowerCase(), network_row_id: tokenData.network_row_id, contract_address: address }} />
+                            {/* <Price_chart reqData={{address:address, contract_type:tokenData.contract_type, graph_date_type:graph_date_type}}/> */}
+                            
+                            <br/>
+                            </>
                             :
                             ""
                           :
                           ""
                         }          
-                  </div>
-
-                 
-                                   
+                  </div>          
                 </div>
 
                 <div className={"tab-pane fade "+(main_tab == 2 ? " show active":"")}>
@@ -2024,12 +2148,21 @@ const getMarketCap = async (id, decval, usd_price) =>
                 <div id="priceprediction" className={"tab-pane fade "+(main_tab == 5 ? "show active":"")}>
                     <Price_prediction/>
                 </div>
+
+                <div id="LiquidityPoollist" className={"tab-pane fade " + (main_tab == 9 ? "show active" : "")}>
+                  <Liquidity_pools_list reqData={{ fetch_data_type: data.fetch_data_type ? data.fetch_data_type : 1, network_row_id: tokenData.network_row_id, network_name: tokenData.name, token_image: tokenData.contract_type == 1 ? "ethereum.svg" : "binance.svg", contracts_address: address, token_symbol: tokenData.symbol, token_price: tokenData.live_price }} crypto_type={1} />
+                </div>
+
+
+                <div id="tradehistory" className={"tab-pane fade " + (main_tab == 10 ? "show active" : "")}>
+                  <Trade_history reqData={{ network_row_id: tokenData.network_row_id, contracts_address: address, token_symbol: tokenData.symbol, token_price: live_price }} />
+                </div>
               </div>              
 
          </div>
 
                   <div className="col-md-12 col-sm-12 col-12 col-lg-4 col-xl-4">
-                      <div className='token_details_tabs_row'>
+                      <div className='token_details_tabs_row '>
                         <ul className="nav nav-tabs token_events_tabs">
                             <li className="nav-item" >
                               <a className="nav-link active" data-toggle="tab" href="#news"><span>News</span></a>
@@ -2055,7 +2188,7 @@ const getMarketCap = async (id, decval, usd_price) =>
               </div>
             </div>
 
-            <div className="token_details_tabs">
+            <div className="token_details_tabs mt-5">
            
             
 
@@ -2251,10 +2384,25 @@ const getMarketCap = async (id, decval, usd_price) =>
 export async function getServerSideProps({ query }) 
 {
   const token_address = query.contract_address
+  const network_name = query.token_id
+  const network_id = await getNetworkId(network_name)
+  const getData = await tokenBasic(token_address, network_id)
+    return { props: { post: {}, address: token_address, network_id:network_id, tokenData:getData.message} }
+  // if(network_id)
+  // {
+    
+  // }
+  // else
+  // {
+  //   return {
+  //     redirect: {
+  //       permanent: false,
+  //       destination: "/error"
+  //     }
+  //   }
+  // }
+} 
   
-  const getData = await tokenBasic(token_address)
-
-  return { props: { post: {}, address: token_address, tokenData:getData.message} }
 
   // if(getData.status)
   // {
@@ -2347,4 +2495,4 @@ export async function getServerSideProps({ query })
   //       }
   //     }
   //   })
-}
+

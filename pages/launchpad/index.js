@@ -3,9 +3,10 @@ import Link from 'next/link'
 import Head from 'next/head'
 import Axios from 'axios'
 import { getLaunchpadType } from '../../config/helper' 
-import { API_BASE_URL, market_coinpedia_url, config, IMAGE_BASE_URL} from '../../components/constants'; 
+import { API_BASE_URL, market_coinpedia_url, config, IMAGE_BASE_URL, roundNumericValue} from '../../components/constants'; 
 import cookie from 'cookie'
 import moment from 'moment'
+import { useSelector, useDispatch } from 'react-redux'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import JsCookie from "js-cookie"
 import ICO_header from '../../components/ico_calender/header'
@@ -23,6 +24,27 @@ export default function MyFunction()
   const [content_loader_status, set_content_loader_status] = useState(true)
   const [overview_counts, set_overview_counts] = useState({}) 
   const [crypto_networks, set_crypto_networks] = useState([])
+
+  const active_currency = useSelector(state => state.active_currency)
+
+    const convertCurrency = (token_price) =>
+    {
+      if(token_price)
+      {
+        if(active_currency.currency_value)
+        {
+          return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
+        }
+        else
+        {
+          return roundNumericValue(token_price)
+        }
+      }
+      else
+      {
+        return '-'
+      }
+    }
 
   useEffect(() => 
   {
@@ -189,7 +211,7 @@ export default function MyFunction()
                                                     {getLaunchpadType(item.launchpad_type)}
                                                 </span>
                                             </h4>
-                                            <p>{item.launchpad_price ? "$"+item.launchpad_price:""}</p>
+                                            <p>{item.launchpad_price ? convertCurrency(item.launchpad_price):""}</p>
                                         </div>
                                     </div>
                                     
@@ -234,15 +256,14 @@ export default function MyFunction()
                                     <div className='row'>
                                         <div className='col-md-6 col-6'>
                                             <p>Listing Price:</p>
-                                            <h6>{item.listing_price ? "$"+item.listing_price:"TBA"}</h6>
+                                            <h6>{item.listing_price ? convertCurrency(item.listing_price):"TBA"}</h6>
                                         </div>
                                         <div className='col-md-6 col-6'>
                                             <p>Sale Tokens: </p> 
                                             <h6>
                                                 {item.tokens_for_sale ? 
                                                 <>
-                                            
-                                                {"$"+item.tokens_for_sale}
+                                                {roundNumericValue(item.tokens_for_sale)} {item.token_symbol}
                                                 ({item.percentage_of_total_supply ? +(item.percentage_of_total_supply).toFixed(2)+"%":""})
                                                 </>:"TBA"}
                                             </h6>

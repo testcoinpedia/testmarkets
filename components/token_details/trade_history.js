@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Axios from 'axios'  
 import moment from 'moment'
+
+import { useSelector, useDispatch } from 'react-redux'
 import { API_BASE_URL, config, roundNumericValue, getShortWalletAddress, separator, graphqlApiKEY, app_coinpedia_url, IMAGE_BASE_URL } from '../constants'
 import { tokenBasic, otherDetails, getVolume24h, getHighLow24h } from '../search_contract_address/live_price'
 import { getLiquidityAddresses, getBalanceAddresses, tradeHistory } from './liquidity/queries'
@@ -50,6 +52,19 @@ export default function Exchange({reqData})
         set_api_loader_status(true)
     }
     
+    const active_currency = useSelector(state => state.active_currency)
+
+    const convertCurrency = (token_price) =>
+    {
+      if(active_currency.currency_value)
+      {
+        return active_currency.currency_symbol+" "+roundNumericValue(token_price*(active_currency.currency_value))
+      }
+      else
+      {
+        return roundNumericValue(token_price)
+      }
+    }
 
     useEffect(() => 
     {   
@@ -62,7 +77,7 @@ export default function Exchange({reqData})
     
     const getTradeHistory = async (update_type) =>
     {   
-        console.log("update_type", update_type)
+        // console.log("update_type", update_type)
         if(has_more)
         {
             await set_api_loader_status(true)
@@ -210,13 +225,13 @@ export default function Exchange({reqData})
                                                         (innerItem.sellCurrency.address).toLowerCase() == (contracts_array[0].contract_address).toLowerCase()  ?
                                                         <>
                                                         {
-                                                            "$"+roundNumericValue(innerItem.buyAmountUSD / innerItem.sellAmount)
+                                                            convertCurrency(innerItem.buyAmountUSD / innerItem.sellAmount)
                                                         }
                                                         </>
                                                         :
                                                         <>
                                                         {
-                                                            "$"+roundNumericValue(innerItem.sellAmountUSD / innerItem.buyAmount)
+                                                            convertCurrency(innerItem.sellAmountUSD / innerItem.buyAmount)
                                                         }
                                                         </>
                                                     }
@@ -227,13 +242,13 @@ export default function Exchange({reqData})
                                                         (innerItem.sellCurrency.address).toLowerCase() == (contracts_array[0].contract_address).toLowerCase()  ?
                                                         <>
                                                         {
-                                                            "$"+roundNumericValue((innerItem.buyAmountUSD / innerItem.sellAmount)*innerItem.sellAmount)
+                                                            convertCurrency((innerItem.buyAmountUSD / innerItem.sellAmount)*innerItem.sellAmount)
                                                         }
                                                         </>
                                                         :
                                                         <>
                                                         {
-                                                            "$"+roundNumericValue((innerItem.sellAmountUSD / innerItem.buyAmount)*innerItem.buyAmount)
+                                                            convertCurrency((innerItem.sellAmountUSD / innerItem.buyAmount)*innerItem.buyAmount)
                                                         }
                                                         </>
                                                     } 
@@ -285,13 +300,13 @@ export default function Exchange({reqData})
                                                     (innerItem.sellCurrency.address).toLowerCase() == (contracts_array[0].contract_address).toLowerCase()  ?
                                                     <>
                                                     {
-                                                        "$"+roundNumericValue(innerItem.buyAmountUSD / innerItem.sellAmount)
+                                                        convertCurrency(innerItem.buyAmountUSD / innerItem.sellAmount)
                                                     }
                                                     </>
                                                     :
                                                     <>
                                                     {
-                                                        "$"+roundNumericValue(innerItem.sellAmountUSD / innerItem.buyAmount)
+                                                        convertCurrency(innerItem.sellAmountUSD / innerItem.buyAmount)
                                                     }
                                                     </>
                                                 }
@@ -302,13 +317,13 @@ export default function Exchange({reqData})
                                                     (innerItem.sellCurrency.address).toLowerCase() == (contracts_array[0].contract_address).toLowerCase()  ?
                                                     <>
                                                     {
-                                                        "$"+roundNumericValue((innerItem.buyAmountUSD / innerItem.sellAmount)*innerItem.sellAmount)
+                                                        convertCurrency((innerItem.buyAmountUSD / innerItem.sellAmount)*innerItem.sellAmount)
                                                     }
                                                     </>
                                                     :
                                                     <>
                                                     {
-                                                        "$"+roundNumericValue((innerItem.sellAmountUSD / innerItem.buyAmount)*innerItem.buyAmount)
+                                                        convertCurrency((innerItem.sellAmountUSD / innerItem.buyAmount)*innerItem.buyAmount)
                                                     }
                                                     </>
                                                 } 

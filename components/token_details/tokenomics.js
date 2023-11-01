@@ -24,7 +24,7 @@ export default function  MyFunction({tokenomics_list, total_supply, tokenomics_p
   }, [])
 
 
-  // console.log("series", series_values)
+   // console.log("series", tokenomics_list)
   // console.log("labels", labels_values)
   var value = {
     options: {},

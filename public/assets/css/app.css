@@ -2126,6 +2126,8 @@ tbody td {
 .markets_list_quick_links {
   text-align: left;
   overflow-x: scroll;
+  margin-top: 15px;
+  border-bottom: 1px solid rgba(230, 231, 233, 1);
 }
 
 .markets_list_quick_links::-webkit-scrollbar {

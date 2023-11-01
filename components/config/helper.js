@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import moment from 'moment'
 import dynamic from 'next/dynamic' 
 
-import { app_coinpedia_url, graphqlApiURL, graphqlApiKEY} from '../../components/constants' 
+import { app_coinpedia_url, graphqlApiURL, portfolio_graphql_api_key, separator} from '../../components/constants' 
 
 
 export const crypto_networks_list = [
@@ -148,6 +148,8 @@ export const getValueShortForm=(labelValue)=>
 } 
 
 
+
+
 export const getZeroAppendValues=(pass_value)=>
 {
   if(pass_value == 0)
@@ -242,63 +244,123 @@ export const getZeroAppendValues=(pass_value)=>
 
 
 
-export  const roundNumericValue=(value) =>
-{
-  var return_value = 0
-  
+export const roundNumericValue=(value, pass_type=0) =>
+{ 
   if(value)
   {
-    if(parseFloat(value) >= 0.1)
+    if(value > 0)
     {
-      return_value = parseFloat((parseFloat(value)).toFixed(2))
-    }
-    else if((parseFloat(value) < 0.1) && (parseFloat(value) >= 0.01))
-    {
-      return_value = (parseFloat(value)).toFixed(3)
-    }
-    else if((parseFloat(value) < 0.01) && (parseFloat(value) >= 0.001))
-    {
-      return_value = (parseFloat(value)).toFixed(4)
-    }
-    else if((parseFloat(value) < 0.001) && (parseFloat(value) > 0.0001))
-    {
-      return_value = (parseFloat(value)).toFixed(5)
-    }
-    else if((parseFloat(value) < 0.0001) && (parseFloat(value) > 0.00001))
-    {
-      return_value = (parseFloat(value)).toFixed(6)
-    }
-    else if((parseFloat(value) < 0.00001) && (parseFloat(value) > 0.000001))
-    {
-      return_value = (parseFloat(value)).toFixed(7)
-    }
-    else if((parseFloat(value) < 0.000001) && (parseFloat(value) > 0.0000001))
-    {
-      return_value = (parseFloat(value)).toFixed(8)
-    }
-    else if((parseFloat(value) < 0.0000001) && (parseFloat(value) > 0.00000001))
-    {
-      return_value = (parseFloat(value)).toFixed(9)
-    }
-    else if((parseFloat(value) < 0.00000001) && (parseFloat(value) > 0.000000001))
-    {
-      return_value = (parseFloat(value)).toFixed(11)
-    }
-    else if((parseFloat(value) < 0.000000001) && (parseFloat(value) > 0.0000000001))
-    {
-      return_value = (parseFloat(value)).toFixed(12)
+        if(parseFloat(value) >= 1000000)
+        {
+          if(pass_type)
+          {
+            return ((parseFloat(value)).toFixed(0))
+          }
+          else
+          {
+            return separator((parseFloat(value)).toFixed(0))
+          }
+          
+        }
+        else if(parseFloat(value) >= 0.1)
+        {
+          if(pass_type)
+          {
+            return ((parseFloat(value)).toFixed(2))
+          }
+          else
+          {
+            return separator((parseFloat(value)).toFixed(2))
+          }
+          
+        }
+        else if((parseFloat(value) < 0.1) && (parseFloat(value) >= 0.01))
+        {
+          return (parseFloat(value)).toFixed(5)
+        }
+        else if((parseFloat(value) < 0.01) && (parseFloat(value) >= 0.001))
+        {
+          return (parseFloat(value)).toFixed(6)
+        }
+        else if((parseFloat(value) < 0.001) && (parseFloat(value) > 0.0001))
+        {
+          return (parseFloat(value)).toFixed(6)
+        }
+        else if((parseFloat(value) < 0.0001) && (parseFloat(value) > 0.00001))
+        {
+          return (parseFloat(value)).toFixed(8)
+        }
+        else if((parseFloat(value) < 0.00001) && (parseFloat(value) > 0.000001))
+        {
+          return (parseFloat(value)).toFixed(9)
+        }
+        else if((parseFloat(value) < 0.000001) && (parseFloat(value) > 0.0000001))
+        {
+          return (parseFloat(value)).toFixed(10)
+        }
+        else if((parseFloat(value) < 0.0000001) && (parseFloat(value) > 0.00000001))
+        {
+          return (parseFloat(value)).toFixed(11)
+        }
+        else if((parseFloat(value) < 0.00000001) && (parseFloat(value) > 0.000000001))
+        {
+          return (parseFloat(value)).toFixed(12)
+        }
+        else if((parseFloat(value) < 0.000000001) && (parseFloat(value) > 0.0000000001))
+        {
+          return (parseFloat(value)).toFixed(12)
+        }
+        else
+        {
+          return ((parseFloat(value)).toFixed(13))
+        }
     }
     else
-    {
-      return_value = ((parseFloat(value)).toFixed(13))
+    { 
+      if(parseFloat(value) <= -0.1)
+      {
+        return ((parseFloat(value)).toFixed(2))
+      }
+      else if((parseFloat(value) > -0.1) && (parseFloat(value) <= -0.01))
+      {
+        return (parseFloat(value)).toFixed(3)
+      }
+      else if((parseFloat(value) > -0.01) && (parseFloat(value) <= -0.001))
+      {
+        return (parseFloat(value)).toFixed(6)
+      }
+      else if((parseFloat(value) > -0.001) && (parseFloat(value) <= -0.0001))
+      {
+        return (parseFloat(value)).toFixed(6)
+      }
+      else if((parseFloat(value) > -0.0001) && (parseFloat(value) <= -0.00001))
+      {
+        return (parseFloat(value)).toFixed(6)
+      }
+      else if((parseFloat(value) > -0.00001) && (parseFloat(value) <= -0.000001))
+      {
+        return (parseFloat(value)).toFixed(7)
+      }
+      else if((parseFloat(value) > -0.000001) && (parseFloat(value) <= -0.0000001))
+      {
+        return (parseFloat(value)).toFixed(8)
+      }
+      else if((parseFloat(value) > -0.0000001) && (parseFloat(value) <= -0.00000001))
+      {
+        return (parseFloat(value)).toFixed(9)
+      }
+      else
+      {
+        return ((parseFloat(value)).toFixed(13))
+      }
     }
   }
   else
   {
-    return_value = 0
+    return "-"
   }
-  return return_value
 }
+
 
 export const getSevenDaysValues = async (sparkline_data, balance) =>
 { 
@@ -333,7 +395,7 @@ export const USDFormatValue=(value, type)=>
     {
       if(value > 0.0999)
       {
-        return (roundNumericValue(value)).toLocaleString('en-US', {
+        return (roundNumericValue(value, 1)).toLocaleString('en-US', {
           style: 'currency',
           currency: 'USD',
         })
@@ -341,13 +403,13 @@ export const USDFormatValue=(value, type)=>
       else
       {
         
-        return "$"+roundNumericValue(value)
+        return "$"+roundNumericValue(value, 1)
       }
       
     }
     else
     {
-      return new Intl.NumberFormat().format(roundNumericValue(value))
+      return new Intl.NumberFormat().format(roundNumericValue(value, 1))
     }
   }
   else
@@ -374,7 +436,7 @@ export const getShortAddress=(wallet_address, length)=>
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-KEY": graphqlApiKEY
+        "X-API-KEY": portfolio_graphql_api_key
       },
       body: JSON.stringify({
         query

@@ -99,6 +99,20 @@ const fetchQuery = async (type, pass_address) =>
     {   
         var final_array = {}
         final_array['contract_type'] = type
+        
+        if(type == 1)
+        {
+            final_array['network_row_id'] = 6
+        }
+        else if(type == 14)
+        {
+            
+            final_array['network_row_id'] = 14
+        }
+        else
+        {
+            final_array['network_row_id'] = 2
+        }
         if(result.data.ethereum) 
         {
             if(result.data.ethereum.address)
@@ -158,7 +172,7 @@ const fetchQuery = async (type, pass_address) =>
                         } 
                        
                         console.log("last_trade_price", last_trade_price)
-                        final_array['live_price'] = result.data.ethereum.dexTrades[0].quote
+                        final_array['live_price'] = last_trade_price
                     }
                     else if (result.data.ethereum.dexTrades.length == 2) 
                     {
@@ -616,7 +630,6 @@ const checkContractFetchFun = async (type, pass_address) =>
     }
     return {status:false, message:{}}
     //get type 
-    
 }
 
 export const checkContractAddress = async (pass_address)=> 
@@ -862,6 +875,26 @@ export const volume24Hrs = async (pass_array)=>
 }
 //24hrs Volume Ends Here
 
+
+export const getNetworkId = (network_name) =>
+{
+    if(network_name == 'ethereum')
+    {
+        return 1
+    }
+    else if(network_name == 'bsc')
+    {
+        return 2
+    }
+    else if(network_name == 'matic')
+    {
+        return 14
+    }
+    else
+    {   
+        return 0
+    }
+}
 
 // //get Last Trade price starts here
 // const getLastTradeValues = (type, pass_address) =>

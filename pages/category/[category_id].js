@@ -5,6 +5,7 @@ import ReactPaginate from 'react-paginate'
 import { API_BASE_URL, roundNumericValue, config, separator, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, strLenTrim, count_live_price, Logout} from '../../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
+import { useSelector, useDispatch } from 'react-redux'
 import SearchContractAddress from '../../components/search_token'
 import CategoriesTab from '../../components/categoriesTabs'
 import TableContentLoader from '../../components/loaders/tableLoader'
@@ -16,7 +17,7 @@ import Select from 'react-select'
 import { useRouter } from 'next/router'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
-export default function Companies({data, userAgent, category_id, errorCode})
+export default function Companies({data, userAgent, category_id, errorCode,modalprops})
 { 
     console.log("category_id",category_id)
     if(errorCode) { return <Error /> }
@@ -48,13 +49,24 @@ export default function Companies({data, userAgent, category_id, errorCode})
     const [request_config, set_request_config] = useState(config(userAgent.user_token ? userAgent.user_token : ""))
     const [action_row_id, set_action_row_id] = useState("")
    
-
+    useEffect(() => {
+   
+      if(modalprops.login_data){
+        getDataFromChild(modalprops)
+      }
+    
+    }, [modalprops]);
     const getDataFromChild = async (pass_object) => 
     {
       await set_login_modal_status(false)
       await set_user_token(JsCookie.get("user_token"))
       await set_request_config(JsCookie.get("user_token"))
-      await addToWatchlist(action_row_id)
+      if(action_row_id){
+        await addToWatchlist(action_row_id)
+        }
+        else{
+           tokensList({selected : 0}, 1, data._id)
+        }
     }
 
     const login_props = {
@@ -69,6 +81,20 @@ export default function Companies({data, userAgent, category_id, errorCode})
       await set_login_modal_status(false)
       await set_login_modal_status(true)
       await set_action_row_id(pass_id)
+    }
+
+    const active_currency = useSelector(state => state.active_currency)
+
+    const convertCurrency = (token_price) =>
+    {
+      if(active_currency.currency_value)
+      {
+        return active_currency.currency_symbol+" "+roundNumericValue(token_price*(active_currency.currency_value))
+      }
+      else
+      {
+        return "$ "+roundNumericValue(token_price)
+      }
     }
 
 
@@ -151,7 +177,7 @@ export default function Companies({data, userAgent, category_id, errorCode})
 
         if(action_row_id)
         {
-          await tokensList({selected : currentPage}, 1)
+          await tokensList({selected : currentPage}, 1, data._id)
           await set_action_row_id("")
         }
     }
@@ -396,7 +422,7 @@ return (
                
                                      <td className="market_list_price"> 
                                        <Link href={"/"+e.token_id}>
-                                         <span className="block_price">{e.price ? "$"+roundNumericValue(e.price):""}</span>
+                                         <span className="block_price">{e.price ? convertCurrency(e.price) : ""}</span>
                                            {e.updated_on ? moment(e.updated_on).fromNow():null} 
                                          
                                          </Link>
@@ -446,13 +472,14 @@ return (
 
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/"+e.token_id}>
-                                       {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"}
+                                       {/* {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"} */}
+                                       {e.circulating_supply ? convertCurrency(e.circulating_supply*e.price): " "}
                                        </Link>
                                      </td>  
                                      
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/"+e.token_id}>
-                                       {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"}
+                                        {e.volume ? convertCurrency(e.volume): " "}
                                        </Link>
                                      </td>
 
@@ -460,6 +487,8 @@ return (
                                       <div className='circulating-supply'>
                                       <Link href={"/"+e.token_id}>
                                        {e.circulating_supply ? separator((e.circulating_supply).toFixed(0))+" "+(e.symbol).toUpperCase() : "-"}
+                                       {/* {e.circulating_supply ? convertCurrency(e.circulating_supply * e.price) : ` ${e.symbol.toUpperCase()}`} */}
+
                                        </Link>
                                       </div>
                                      </td>

@@ -2,9 +2,10 @@ import React, {useEffect, useState,useRef} from 'react'
 import Link from 'next/link' 
 import cookie from "cookie"
 import ReactPaginate from 'react-paginate'  
-import { API_BASE_URL, roundNumericValue, config, separator, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY, count_live_price, Logout} from '../components/constants' 
+import { API_BASE_URL, roundNumericValue, config, separator, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY, count_live_price, Logout, convertvalue} from '../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
+import { useSelector, useDispatch } from 'react-redux'
 import CategoriesTab from '../components/categoriesTabs'
 import Search_Contract_Address from '../components/search_token'
 import TableContentLoader from '../components/loaders/tableLoader'
@@ -14,8 +15,9 @@ import JsCookie from "js-cookie"
 import LoginModal from '../components/layouts/auth/loginModal'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
  
-export default function GainersLosers({userAgent})
+export default function GainersLosers({userAgent,modalprops})
 {  
+  console.log("modalprops",modalprops)
     const [watch_list_status, set_watch_list_status] = useState(false)
     const [watchlist, set_watchlist] = useState([])
     const [image_base_url] = useState(IMAGE_BASE_URL+'/markets/cryptocurrencies/')
@@ -56,13 +58,25 @@ export default function GainersLosers({userAgent})
     const [request_config, set_request_config] = useState(config(userAgent.user_token ? userAgent.user_token : ""))
     const [action_row_id, set_action_row_id] = useState("")
    
-
+    useEffect(() => {
+   
+      if(modalprops.login_data){
+        getDataFromChild(modalprops)
+      }
+    
+    }, [modalprops]);
     const getDataFromChild = async (pass_object) => 
     {
       await set_login_modal_status(false)
       await set_user_token(JsCookie.get("user_token"))
       await set_request_config(JsCookie.get("user_token"))
-      await addToWatchlist(action_row_id)
+        if(action_row_id){
+        await addToWatchlist(action_row_id)
+        }
+        else{
+          topGainners()
+          topLosers()
+        }
     }
 
     const login_props = {
@@ -79,7 +93,45 @@ export default function GainersLosers({userAgent})
       await set_action_row_id(pass_id)
     }
 
+    const active_currency = useSelector(state => state.active_currency)
 
+const convertCurrency = (token_price) =>
+    {
+      if(token_price)
+      {
+        if(active_currency.currency_value)
+        {
+          return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
+        }
+        else
+        {
+          return roundNumericValue(token_price)
+        }
+      }
+      else
+      {
+        return '-'
+      }
+    }
+
+    const shortConvertCurrency = (token_price) =>
+    {
+      if(token_price)
+      {
+        if(active_currency.currency_value)
+        {
+          return active_currency.currency_symbol+" "+convertvalue(token_price*active_currency.currency_value)
+        }
+        else
+        {
+          return roundNumericValue(token_price)
+        }
+      }
+      else
+      {
+        return '-'
+      }
+    }
     
 
  
@@ -319,7 +371,7 @@ export default function GainersLosers({userAgent})
                             <div className="row market_insights ">
                             <div className="col-md-6 col-lg-6">
                                 <h1 className="page_title">Top Gainers and Losers</h1>
-                                <p>Today's List of coins with significant volume movement of $50K+ gain or loss in 24 hours.</p>
+                                <p>Today's List of coins with significant volume movement of {shortConvertCurrency(500000)}+ gain or loss in 24 hours.</p>
                                 </div>
                             <div className="col-md-1 col-lg-2"></div>
                             <div className="col-md-5 col-lg-4 ">
@@ -695,7 +747,7 @@ export default function GainersLosers({userAgent})
                                                         {
                                                             e.price ?
                                                             <>
-                                                            <span className="block_price">{"$"+roundNumericValue(e.price)}</span>
+                                                           <span className="block_price"> {convertCurrency(e.price)}</span>
                                                             {e.updated_on ? moment(e.updated_on).fromNow():null} 
                                                             </>
                                                             :
@@ -756,18 +808,21 @@ export default function GainersLosers({userAgent})
                                                     </td>
                                                 <td className="mobile_hide_table_col">
                                                     <Link href={"/"+e.token_id}>
-                                                    {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"}
+                                                    {/* {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"} */}
+                                                    {e.circulating_supply ? convertCurrency(e.circulating_supply*e.price): ""}
                                                     </Link>
                                                 </td>  
 
                                                 <td className="mobile_hide_table_col">
                                                     <Link href={"/"+e.token_id}>
-                                                        {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"}
+                                                        {/* {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"} */}
+                                                        {e.volume ? convertCurrency(e.volume): "-"}
                                                     </Link>
                                                 </td>
                                                 <td className="mobile_hide_table_col">
                                                     <Link href={"/"+e.token_id}>
-                                                    {e.circulating_supply ? separator((e.circulating_supply).toFixed(0)) +" "+(e.symbol).toUpperCase(): "-"} 
+                                                   
+                                                     {e.circulating_supply ? separator((e.circulating_supply).toFixed(0)) +" "+(e.symbol).toUpperCase(): "-"} 
                                                     </Link>
                                                 </td> 
                                                 
@@ -833,7 +888,7 @@ export default function GainersLosers({userAgent})
                                                         {
                                                             e.price ?
                                                             <>
-                                                            <span className="block_price">{"$"+roundNumericValue(e.price)}</span>
+                                                            <span className="block_price">{convertCurrency(e.price)}</span>
                                                             {e.updated_on ? moment(e.updated_on).fromNow():null} 
                                                             </>
                                                             :
@@ -882,20 +937,24 @@ export default function GainersLosers({userAgent})
                                                       </Link>
                                                     </td>
                                                     <td className="mobile_hide_table_col">
-                                                        <Link href={"/"+e.token_id}>
-                                                        {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"}
-                                                        </Link>
-                                                    </td>
-                                                    <td className="mobile_hide_table_col">
-                                                        <Link href={"/"+e.token_id}>
-                                                        {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"}
-                                                        </Link>
-                                                    </td>
-                                                    <td className="mobile_hide_table_col">
-                                                        <Link href={"/"+e.token_id}>
-                                                            {e.circulating_supply ? separator((e.circulating_supply).toFixed(0)) +" "+(e.symbol).toUpperCase(): "-"} 
-                                                        </Link>
-                                                    </td>  
+                                                    <Link href={"/"+e.token_id}>
+                                                    {/* {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"} */}
+                                                    {e.circulating_supply ? convertCurrency(e.circulating_supply*e.price): ""}
+                                                    </Link>
+                                                </td>  
+
+                                                <td className="mobile_hide_table_col">
+                                                    <Link href={"/"+e.token_id}>
+                                                        {/* {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"} */}
+                                                        {e.volume ? convertCurrency(e.volume): "-"}
+                                                    </Link>
+                                                </td>
+                                                <td className="mobile_hide_table_col">
+                                                    <Link href={"/"+e.token_id}>
+                                                   
+                                                     {e.circulating_supply ? separator((e.circulating_supply).toFixed(0)) +" "+(e.symbol).toUpperCase(): "-"} 
+                                                    </Link>
+                                                </td> 
                                                     <td className="mobile_hide_table_col">
                                                       {
                                                         percent_change == 3 ?

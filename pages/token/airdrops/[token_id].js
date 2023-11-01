@@ -10,8 +10,9 @@ import JsCookie from "js-cookie"
 import cookie from 'cookie'
 import dynamic from 'next/dynamic'
 import moment from "moment"
+import { useSelector, useDispatch } from 'react-redux'
 // import "react-datetime/css/react-datetime.css"
-import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,  market_coinpedia_url,config,graphqlApiKEY,separator} from '../../../components/constants'; 
+import {API_BASE_URL, x_api_key, app_coinpedia_url, coinpedia_url,  market_coinpedia_url,config,graphqlApiKEY,separator, roundNumericValue} from '../../../components/constants'; 
 import Select from 'react-select'
 import Popupmodal from '../../../components/popupmodal'
 import Top_header from '../../../components/manage_token/top_header' 
@@ -62,6 +63,8 @@ export default function Create_token({config,token_id})
     const [err_how_to_participate, set_err_how_to_participate] = useState("")
 
     const [airdrop_row_id, set_airdrop_row_id] = useState(0)
+
+    const active_currency = useSelector(state => state.active_currency)
 
     console.log("token_id",token_id)
     // API_BASE_URL+"markets/users/manage_airdrops/list
@@ -358,6 +361,25 @@ export default function Create_token({config,token_id})
         }  
     } 
 
+    const convertCurrency = (token_price) =>
+    {
+      if(token_price)
+      {
+        if(active_currency.currency_value)
+        {
+          return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
+        }
+        else
+        {
+          return roundNumericValue(token_price)
+        }
+      }
+      else
+      {
+        return '-'
+      }
+    }
+
 
   return(
     <>
@@ -591,14 +613,14 @@ export default function Create_token({config,token_id})
                           {
                             e.winner_price && e.participating_users ?
                             <>
-                              ${(e.winner_price).toFixed(2)}/
+                              {convertCurrency(e.winner_price)}/
                               
                               {e.participating_users} Users
                             </>
                             :
                             e.winner_price ?
                             <>
-                              ${(e.winner_price).toFixed(2)}
+                              {convertCurrency(e.winner_price)}
                             </>
                             :
                             ""

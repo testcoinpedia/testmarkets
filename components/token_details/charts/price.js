@@ -3,8 +3,9 @@ import Axios from 'axios'
 import JsCookie from "js-cookie"   
 import moment from 'moment'
 import dynamic from 'next/dynamic';
+import { useSelector, useDispatch } from 'react-redux'
 import { createChart, ColorType } from 'lightweight-charts'
-import { cmcArrageGraphData, cmc_graph_ranges} from '../tokenDetailsFunctions' 
+import { cmcArrageGraphData, cmc_graph_ranges} from '../custom_functions' 
 import { roundNumericValue, separator } from '../../constants' 
 import MarketCapChart from './marketcap'
 
@@ -19,6 +20,20 @@ export default function Tokenchart({reqData})
     // const [time_name, set_time_name] = useState("1D")
     // const [intervals, set_intervals] = useState("15m")
     // const [count, set_count] = useState("96")
+
+    const active_currency = useSelector(state => state.active_currency)
+
+    const convertCurrency = (token_price) =>
+    {
+      if(active_currency.currency_value)
+      {
+        return active_currency.currency_symbol+" "+roundNumericValue(token_price*(active_currency.currency_value))
+      }
+      else
+      {
+        return "$ "+roundNumericValue(token_price)
+      }
+    }
     
     useEffect(() => 
     {
@@ -270,7 +285,7 @@ export default function Tokenchart({reqData})
             :
             (live_price > 0) && show_message_status ?
             <div className='price-chart-content mt-2'>
-                The live price of {token_name} is at {"$"+roundNumericValue(live_price)} USD{volume ? <>, having 24 hours volume of {"$"+roundNumericValue(volume)} USD.</>:"."} 
+                The live price of {token_name} is at {convertCurrency(live_price)} {volume ? <>, having 24 hours volume of {convertCurrency(volume)}.</>:"."} 
                 {
                     percentage_change_24h ?
                     <>
@@ -284,7 +299,7 @@ export default function Tokenchart({reqData})
                 circulating_supply > 0 ?
                 <>
                     {/* &nbsp;The Market cap is {"$ "+separator(((circulating_supply*live_price)).toFixed(0))}. */}
-                    &nbsp;The total circulating supply of {token_name} is {"$"+separator(circulating_supply.toFixed(0))}
+                    &nbsp;The total circulating supply of {token_name} is {convertCurrency(circulating_supply.toFixed(0))}
                 </>
                 :
                 ""

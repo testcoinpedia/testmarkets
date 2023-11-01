@@ -268,7 +268,7 @@ export default function CreateLauchPad({config,token_id})
     
     const getCryptoNetworks = async () => 
     {
-      const res = await Axios.get(API_BASE_URL + "app/crypto_networks", config)
+      const res = await Axios.get(API_BASE_URL + "static/crypto_networks", config)
       if(res.data.status) 
       {
         set_crypto_networks(res.data.message)
@@ -559,6 +559,7 @@ export default function CreateLauchPad({config,token_id})
     }) 
 
   }
+  
   const tokenSale=(e)=>
   {
     set_tokens_for_sale(e)

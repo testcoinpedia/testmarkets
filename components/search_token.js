@@ -179,7 +179,7 @@ export default function Details()
         trendingCoins()
     }, [])
 
-    const trendingCoins=async ()=>
+    const trendingCoins = async ()=>
     {
         const res = await Axios.get(API_BASE_URL+"markets/cryptocurrency/trending_assets/", config(""))
         if(res.data)
@@ -274,8 +274,19 @@ export default function Details()
 
     const searchContract = async (param)=>
     {   
+        const contract_address = (param.contract_address).toLowerCase()
+        
+        var network_name = ""
+        if(param.contract_type == 1)
+        {
+            network_name = "ethereum"
+        }
+        else if(param.contract_type == 2)
+        {
+            network_name = "bsc"
+        }
         set_search_container_status(false)
-        window.location = "/address/"+(param).toLowerCase()
+        window.location = "/"+network_name+"/"+contract_address
     }
 
 
@@ -308,7 +319,7 @@ return (
                 null
             }
 
-            
+{/* We couldn't locate any results that match your search query. Please consider using an alternative term and try your search again.   */}
             
             
             {
@@ -484,10 +495,13 @@ return (
                             {
                                 searched_contract_details ?
                                 <div>
-                                    <p className='searchbox_titles'>Searched Contracts</p>
+                                    <p className='searchbox_titles'>Searched Dex Contract</p>
                                     <ul className="search-tokens">
-                                        <li key={233} onClick={()=>searchContract(searched_contract_details.contract_address)}> 
+                                        <li key={233} onClick={()=>searchContract(searched_contract_details )}> 
                                             <div className="media">
+                                                <div className="media-left">
+                                                    <img className="media-object token-img" src={"/assets/img/"+(searched_contract_details.contract_type == 1 ? "ethereum.svg": "binance.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={searched_contract_details.name} />
+                                                </div>
                                                 <div className="media-body">
                                                     <p className="media-heading">{searched_contract_details.name} <small>({searched_contract_details.symbol})</small></p>
                                                 </div>

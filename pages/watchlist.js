@@ -6,6 +6,7 @@ import ReactPaginate from 'react-paginate'
 import { API_BASE_URL, roundNumericValue, config, separator, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, graphqlApiKEY, count_live_price, Logout} from '../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
+import { useSelector, useDispatch } from 'react-redux'
 // import SearchContractAddress from '../components/searchContractAddress'
 import CategoriesTab from '../components/categoriesTabs'
 import TableContentLoader from '../components/loaders/tableLoader'
@@ -38,6 +39,27 @@ export default function Companies({user_token, config, userAgent})
     const [cmc_image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
     const [category_row_id, set_category_row_id] = useState((active_category_tab > 0) ? active_category_tab : "") 
     
+
+    const active_currency = useSelector(state => state.active_currency)
+
+    const convertCurrency = (token_price) =>
+        {
+          if(token_price)
+          {
+            if(active_currency.currency_value)
+            {
+              return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
+            }
+            else
+            {
+              return roundNumericValue(token_price)
+            }
+          }
+          else
+          {
+            return '-'
+          }
+        }
     
     useEffect(()=>
     {  
@@ -354,7 +376,7 @@ return (
                                      <td className="market_list_price"> 
                                        <Link href={"/"+e.token_id}>
                                          
-                                         <span className="block_price">{e.price ? "$"+roundNumericValue(e.price):""}</span>
+                                         <span className="block_price">{e.price ? convertCurrency(e.price) : ""}</span>
                                         
                                          {e.updated_on ? moment(e.updated_on).fromNow():null}
                                            {/* <span className="block_price">{e.price?"$":null}{e.price?parseFloat((e.price).toFixed(9)):"-"}</span> */}
@@ -450,19 +472,22 @@ return (
 
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/"+e.token_id}>
-                                       {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"}
+                                       {/* {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : "-"} */}
+                                        {e.circulating_supply ? convertCurrency(e.circulating_supply*e.price): ""}
                                        </Link>
                                      </td>  
                                      
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/"+e.token_id}>
-                                       {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"}
+                                       {/* {e.volume ?"$"+separator((e.volume).toFixed(0)) : "-"} */}
+                                       {e.volume ? convertCurrency(e.volume): ""}
                                        </Link>
                                      </td>
 
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/"+e.token_id}>
                                        {e.circulating_supply ? separator((e.circulating_supply).toFixed(0))+" "+(e.symbol).toUpperCase() : "-"}
+                                     
                                        </Link>
                                      </td>
 

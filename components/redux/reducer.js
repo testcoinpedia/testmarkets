@@ -4,12 +4,12 @@ var initialState = {
     userData:[],
     companyData:"",
     profieData:"",
+    active_currency:{},
     eventCount:[]
 }
 
 export default function reducer(state=initialState, action) 
 {   
-    // console.log(action)
     switch(action.type)
     {
         case reduxData.login:
@@ -24,7 +24,12 @@ export default function reducer(state=initialState, action)
                 userData: action.data
             }
             break;
-        
+        case reduxData.converter:
+            return {
+                ...state,
+                active_currency: action.data
+            }
+            break;
          default:
          return state   
     }

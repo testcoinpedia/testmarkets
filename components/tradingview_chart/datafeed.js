@@ -1,5 +1,5 @@
 import Axios from 'axios' 
-import { arrangeData } from '../token_details/tokenDetailsFunctions' 
+import { arrangeData } from '../token_details/custom_functions' 
 import moment from 'moment'
 
 const configurationData = {

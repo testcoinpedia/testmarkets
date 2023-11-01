@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
 import Axios from 'axios'
-import { API_BASE_URL, market_coinpedia_url, config, IMAGE_BASE_URL} from '../../components/constants'; 
+import { API_BASE_URL, market_coinpedia_url, config, IMAGE_BASE_URL, roundNumericValue} from '../../components/constants'; 
 import cookie from 'cookie'
 import moment from 'moment'
+import { useSelector, useDispatch } from 'react-redux'
 import JsCookie from "js-cookie"
 import Airdrops_header from '../../components/airdrops/header'
 
@@ -59,6 +60,26 @@ export default function MyFunction()
     set_search_value("")
   }
 
+  const active_currency = useSelector(state => state.active_currency)
+
+  const convertCurrency = (token_price) =>
+      {
+        if(token_price)
+        {
+          if(active_currency.currency_value)
+          {
+            return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
+          }
+          else
+          {
+            return roundNumericValue(token_price)
+          }
+        }
+        else
+        {
+          return '-'
+        }
+      }
   return (
         <>
         <Head>
@@ -172,7 +193,7 @@ export default function MyFunction()
                                         <img style={{width:"45px", marginRight:"10px"}} src={(item.token_image ? image_base_url+item.token_image: item.coinmarketcap_id ? cmc_image_base_url+item.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  />
                                             <div class="media-body">
                                                 <h4 style={{textTransform:"capitalize"}}>{item.title} ({item.symbol})</h4>
-                                                <p style={{fontSize:"13px"}}>${(item.winner_price*item.participating_users).toFixed(0)} worth of {item.symbol} to {item.participating_users} Lucky Winners</p>
+                                                <p style={{fontSize:"13px"}}>{convertCurrency(item.winner_price*item.participating_users)} worth of {item.symbol} to {item.participating_users} Lucky Winners</p>
                                             </div>
                                         </div>
                                     </div>
@@ -220,7 +241,7 @@ export default function MyFunction()
                                     </div>
                                     <div className="col-md-6 col-6">
                                         <p><img src="/assets/img/medal.svg" style={{width:"15px"}}  /> Winner </p>
-                                        <h6>${item.winner_price}</h6>
+                                        <h6>{convertCurrency(item.winner_price)}</h6>
                                     </div>
                                 </div>
 

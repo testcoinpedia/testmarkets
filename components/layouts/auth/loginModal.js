@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { GoogleLogin } from 'react-google-login'
 import AppleLogin from 'react-apple-login'
 import Popupmodal from '../../popupmodal'
-import { setLoginData, country_list, API_BASE_URL, cookieDomainExtension, config, app_coinpedia_url, coinpedia_url, googleClientId } from '../../constants'
+import { setLoginData, country_list, MAIN_API_BASE_URL, cookieDomainExtension, market_coinpedia_url,config, app_coinpedia_url, coinpedia_url, googleClientId } from '../../constants'
 
 export default function LoginPopupmodal(props) 
 {
@@ -28,6 +28,7 @@ export default function LoginPopupmodal(props)
     const [country_list_status, set_country_list_status] = useState(false)
     const [country_search_value, set_country_search_value] = useState("")
     const [page_type, set_page_type] = useState(props.name.un_registered_guest_email_id ? 2:0) //0:login, 1: verify OTP, 2:confirm details, 3: confirm popup
+    const [keep_me_login_status, set_keep_me_login_status] = useState(false)
 
     // OTP Page
     const [registered_status, set_registered_status] = useState(false)
@@ -64,6 +65,7 @@ export default function LoginPopupmodal(props)
 
     const [gmail_loader_status, set_gmail_loader_status] = useState(false)
     const [apple_loader_status, set_apple_loader_status] = useState(false)
+    const [current_page_url] = useState(market_coinpedia_url+((router.asPath).substring(1)))
 
     let sendData = {}
 
@@ -92,10 +94,12 @@ export default function LoginPopupmodal(props)
 
                 const req_obj = {
                     full_name : full_name,
-                    email_id: email_id
+                    email_id: email_id,
+                    domain_row_id:2,
+                    page:current_page_url
                 }
 
-                const res = await Axios.post(API_BASE_URL+'app/auth/user_login_with_apple', req_obj, config(id_token))
+                const res = await Axios.post(MAIN_API_BASE_URL+'app/auth/user_login_with_apple', req_obj, config(id_token))
                 console.log(res.data)  
                 if(res.data)
                 {   
@@ -127,10 +131,13 @@ export default function LoginPopupmodal(props)
             email_id : response.profileObj.email,
             full_name: response.profileObj.name,
             google_id: response.profileObj.googleId,
-            user_name: response.profileObj.givenName
+            user_name: response.profileObj.givenName,
+            domain_row_id:2,
+            page:current_page_url
+
         }
         
-        Axios.post(API_BASE_URL+'app/auth/user_login_with_gmail', reqObj, config("")).then(res => 
+        Axios.post(MAIN_API_BASE_URL+'app/auth/user_login_with_gmail', reqObj, config("")).then(res => 
         {  
             set_gmail_loader_status(false)
             console.log(res.data)  
@@ -206,13 +213,23 @@ export default function LoginPopupmodal(props)
         {
             return
         }
-
+        let keep_me_status = 1
+        if (keep_me_login_status) {
+            keep_me_status = 2
+        }
+        
+       
         set_login_loader_status(true)
         const login_data = {
-            email_id: login_id
+            email_id: login_id,
+            keepme_status:keep_me_status,
+           
+            domain_row_id:2,
+            page:current_page_url
+
         }
 
-        Axios.post(API_BASE_URL + 'app/auth/login_with_email', login_data, config("")).then(response => 
+        Axios.post(MAIN_API_BASE_URL + 'app/auth/login_with_email', login_data, config("")).then(response => 
         {
             set_login_loader_status(false)
             if(response.data.status==true) 
@@ -309,10 +326,12 @@ export default function LoginPopupmodal(props)
         }
 
         var reqObj = {
-            otp_number: pass_otp_number
+            otp_number: pass_otp_number,
+            domain_row_id:2,
+            page:current_page_url
         }
 
-        Axios.post(API_BASE_URL + "app/auth/verify_otp_via_email", reqObj, config(temp_token)).then(async (res) => 
+        Axios.post(MAIN_API_BASE_URL + "app/auth/verify_otp_via_email", reqObj, config(temp_token)).then(async (res) => 
         {
             set_loader(false)
             // console.log("login_data", res.data)
@@ -345,10 +364,20 @@ export default function LoginPopupmodal(props)
     }
 
     const reSendOTP = () => {
-        const login_data = {
-            email_id: email_id
+        let keep_me_status = 1
+        if (keep_me_login_status) {
+            keep_me_status = 2
         }
-        Axios.post(API_BASE_URL + "app/auth/login_with_email", login_data, config("")).then(res => {
+        const login_data = {
+            email_id: email_id,
+            keepme_status:keep_me_status,
+        
+            domain_row_id:2,
+            page:current_page_url
+
+
+        }
+        Axios.post(MAIN_API_BASE_URL + "app/auth/login_with_email", login_data, config("")).then(res => {
             // console.log(res)
             if (res.data.status) {
                 JsCookie.set('verify_end_n_time', Date.now() + 600000)
@@ -467,7 +496,7 @@ export default function LoginPopupmodal(props)
             gender:parseInt(gender)
         }
 
-        Axios.post(API_BASE_URL + 'app/auth/create_account', reqObj, config("")).then(res => 
+        Axios.post(MAIN_API_BASE_URL + 'app/auth/create_account', reqObj, config("")).then(res => 
         {   
             set_register_loader_status(false)
 
@@ -586,9 +615,12 @@ export default function LoginPopupmodal(props)
     {
         setErrWalletAddress("")
         var reqObj = {
-            wallet_address: connectedaddress
+            wallet_address: connectedaddress,
+           
+            domain_row_id:2,
+            page:current_page_url
         }
-        Axios.post(API_BASE_URL + 'app/auth/login_using_wallet_address', reqObj, config("")).then(async (res) => {
+        Axios.post(MAIN_API_BASE_URL + 'app/auth/login_using_wallet_address', reqObj, config("")).then(async (res) => {
             if(res.data.status == true) 
             {
                 if(type == 0) 
@@ -706,6 +738,14 @@ export default function LoginPopupmodal(props)
                                                         </div>
                                                     </div>
                                                     <div className="error">{err_login_id}</div>
+
+                                                    <div className='button_logged_in'>
+                                                        <label className="switch">
+                                                            <input type="checkbox"   onClick={() => set_keep_me_login_status(!keep_me_login_status)} checked={keep_me_login_status}/>
+                                                            <span className="slider"></span>
+                                                        </label> <span className='text_content'>Keep me logged in</span>
+                                                    </div>
+
                                                     <div className='button_wallet'>
                                                     {
                                                         login_loader_status ?
@@ -721,7 +761,66 @@ export default function LoginPopupmodal(props)
 
                                                     <div className="login_with_social">
                                                         <h5 className="hr-border"><span>Or Continue With</span></h5>
-                                                        <div className="row">
+
+                                                        <div className='social_media_icons_hover'>
+                                                            <div class='social-links'>
+                                                                <div class='social-btn flex-center' id="metamask_icon" onClick={() => connectToWallet(1)}>
+                                                                    <img src="/assets/img/meta_login_icon.svg" alt="Metamask" title="Metamask" />
+                                                                    <span>Metamask</span>
+                                                                </div>
+
+                                                               
+
+                                                                    {/* <img src="/assets/img/google_login_icon.svg" alt="Google" title="Google" />
+                                                                <span>Google</span> */}
+                                                                    {/* </div> */}
+
+                                                                   
+
+                                                                    <GoogleLogin
+                                                                        clientId={googleClientId}
+                                                                        icon={false}
+                                                                        onSuccess={onGmailLoginSuccess}
+                                                                        onFailure={onGmailFailureSuccess}
+                                                                        cookiePolicy={'single_host_origin'}
+                                                                        scope={"email"}
+                                                                        plugin_name={"App Working Login with Gmail"}
+                                                                        render={renderProps => (
+                                                                            
+                                                                            <>
+                                                                             <div class='social-btn flex-center' id="google_icon">
+                                                                                <img src="/assets/img/google_login_icon.svg" alt="Google" title="Google" onClick={renderProps.onClick} />
+                                                                                <span onClick={renderProps.onClick} >Google</span></div></>
+                                                                        )}
+                                                                    >
+
+                                                                        
+
+                                                                    </GoogleLogin>
+                                                                <div class='social-btn flex-center' id="apple_icon">
+
+                                                                <AppleLogin 
+                                                                clientId="sign.coinpedia.services" 
+                                                                redirectURI="https://markets.coinpedia.org"
+                                                                responseType="form_post"
+                                                                responseMode="query"
+                                                                scope="name email"
+                                                                state="12345"
+                                                                callback={(data) => checkAppleLogin(data)}
+                                                                usePopup={true}
+                                                                render={renderProps => ( 
+                                                                    <>
+                                                                    <img src="/assets/img/apple_login_icon.svg" alt="Apple" title="Apple"  onClick={renderProps.onClick}/>
+                                                                    <span onClick={renderProps.onClick}>Apple</span>
+                                                                    </>
+                                                                )}
+                                                            />
+                                                                  
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="row" style={{display:"none"}}>
 
                                                             <div className="col-md-12 col-12">
                                                                 {/* <Metamask ref_link={"/events/"+props.name.event_url} wallet_type={1}/> */}
@@ -780,7 +879,7 @@ export default function LoginPopupmodal(props)
                                                             
 
                                                             <div className="col-md-6 col-6" >
-                                                            <AppleLogin 
+                                                            {/* <AppleLogin 
                                                                 clientId="sign.coinpedia.services" 
                                                                 redirectURI="https://markets.coinpedia.org"
                                                                 responseType="form_post"
@@ -805,7 +904,7 @@ export default function LoginPopupmodal(props)
                                                                     </div>
                                                                 </div>
                                                                 )}
-                                                            />
+                                                            /> */}
                                                             </div>
                                                         </div>
                                                     </div>

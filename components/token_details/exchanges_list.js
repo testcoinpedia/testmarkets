@@ -3,6 +3,7 @@ import { live_price_graphql } from './graphql'
 import {  count_live_price, API_BASE_URL, config, roundNumericValue} from '../constants'
 import Axios from 'axios'  
 import moment from 'moment'
+import { useSelector, useDispatch } from 'react-redux'
 
 
 export default function Exchange({exchange_list_new, crypto_type, token_id, ath_price_date})
@@ -119,6 +120,20 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
 
   }
 
+  const active_currency = useSelector(state => state.active_currency)
+
+  const convertCurrency = (token_price) =>
+  {
+    if(active_currency.currency_value)
+    {
+      return active_currency.currency_symbol+" "+roundNumericValue(token_price*(active_currency.currency_value))
+    }
+    else
+    {
+      return "$ "+roundNumericValue(token_price)
+    }
+  }
+
 
   return(
     <>
@@ -172,8 +187,8 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
                                     </div>
                                     </div></td>
                                 <td >{e.pair_one_name}/{e.pair_two_name}</td>
-                                <td>{e.price ? "$" + e.price : "--"}</td>
-                                <td>{e.volume ? "$" + e.volume.toFixed(2) : "--"}</td>
+                                <td>{e.price ? convertCurrency(e.price) : "--"}</td>
+                                <td>{e.volume ? convertCurrency(e.volume.toFixed(2)) : "--"}</td>
                                 <td>{e.volume_percentage ? e.volume_percentage.toFixed(2) + "%" : "--"}</td>
                                 {/* <td>{moment(e.last_traded_at).fromNow()}</td> */}
                             {
@@ -221,8 +236,8 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
                                     </div>
                                     </div></td>
                                 <td >{e.pair_one_name}/{e.pair_two_name}</td>
-                                <td>{e.price ? "$" + e.price : "--"}</td>
-                                <td>{e.volume ? "$" + e.volume.toFixed(2) : "--"}</td>
+                                <td>{e.price ? convertCurrency(e.price) : "--"}</td>
+                                <td>{e.volume ? convertCurrency(e.volume.toFixed(2)) : "--"}</td>
                                 <td>{e.volume_percentage ? e.volume_percentage.toFixed(2) + "%" : "--"}</td>
                                 {/* <td>{moment(e.last_traded_at).fromNow()}</td> */}
                             {

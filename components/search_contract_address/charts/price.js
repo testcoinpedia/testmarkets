@@ -4,7 +4,7 @@ import JsCookie from "js-cookie"
 import moment from 'moment'
 import dynamic from 'next/dynamic';
 import { createChart, ColorType } from 'lightweight-charts'
-import { cmcArrageGraphData, cmc_graph_ranges} from '../../token_details/tokenDetailsFunctions' 
+import { cmcArrageGraphData, cmc_graph_ranges} from '../../token_details/custom_functions' 
 import { graphql_headers, separator, graphqlApiURL } from '../../constants' 
 
 

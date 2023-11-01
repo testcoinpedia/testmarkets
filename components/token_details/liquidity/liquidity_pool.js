@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Axios from 'axios'  
 import moment from 'moment'
+import { useSelector, useDispatch } from 'react-redux'
 import { API_BASE_URL, config, graphql_headers, getShortWalletAddress, separator, roundNumericValue, app_coinpedia_url, IMAGE_BASE_URL } from '../../constants'
 import { tokenBasic, otherDetails, getVolume24h, getHighLow24h } from '../../search_contract_address/live_price'
 import { getLiquidityAddresses, getBalanceAddresses, tradeHistory } from '../liquidity/queries'
@@ -12,6 +13,7 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 export default function Exchange({reqData})
 {   
+    // console.log("reqData",reqData)
     const {token_id, contracts_array, token_image, token_name, token_symbol, token_price, fetch_data_type} = reqData
     const [liquidity_pools, set_liquidity_pools] = useState([])
     const [token_basic, set_token_basic] = useState({})
@@ -71,6 +73,20 @@ export default function Exchange({reqData})
         return await {series, labels}
     }
 
+    const active_currency = useSelector(state => state.active_currency)
+
+    const convertCurrency = (token_price) =>
+    {
+      if(active_currency.currency_value)
+      {
+        return active_currency.currency_symbol+" "+separator(token_price*(active_currency.currency_value))
+      }
+      else
+      {
+        return "$ "+separator(token_price)
+      }
+    }
+
     const copyContract = (data) => 
     {
         set_contract_copy_status(data)
@@ -113,7 +129,7 @@ export default function Exchange({reqData})
                     const network_image = pass_obj.token_image
 
                     const response = await getLiquidityAddresses(network_row_id, contract_address)
-                    console.log("get liquidity addresses", response)
+                    // console.log("get liquidity addresses", response)
                    
                     if(response.status)
                     {   
@@ -239,7 +255,7 @@ export default function Exchange({reqData})
             })
             
             await set_liquidity_pools(final_result)
-            console.log("grand_liquidity_value", grand_liquidity_value)
+            // console.log("grand_liquidity_value", grand_liquidity_value)
             const {series, labels} = await arrangePiChartData({list_data:final_result, grand_liquidity_value})
             await set_series_values(series)
             await set_labels_values(labels)
@@ -449,13 +465,13 @@ export default function Exchange({reqData})
                                     {
                                         item.token_price ?
                                         <>
-                                        $ {separator(((item.pair_token_balance && item.pair_token_price ? item.pair_token_balance*item.pair_token_price:0)+(item.token_balance && item.token_price ? item.token_price*item.token_balance:0)).toFixed(2))
+                                         {convertCurrency(((item.pair_token_balance && item.pair_token_price ? item.pair_token_balance*item.pair_token_price:0)+(item.token_balance && item.token_price ? item.token_price*item.token_balance:0)).toFixed(2))
                                         }
                                         </>
                                         :
                                         <>
-                                        $ {
-                                        separator(((item.pair_token_balance && item.pair_token_price ? item.pair_token_balance*item.pair_token_price:0)+(item.pair_token_balance && item.pair_token_price ? item.pair_token_balance*item.pair_token_price:0)).toFixed(2))
+                                         {
+                                        convertCurrency(((item.pair_token_balance && item.pair_token_price ? item.pair_token_balance*item.pair_token_price:0)+(item.pair_token_balance && item.pair_token_price ? item.pair_token_balance*item.pair_token_price:0)).toFixed(2))
                                         }
                                         </>
                                     }

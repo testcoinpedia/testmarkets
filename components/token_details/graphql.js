@@ -1,6 +1,6 @@
 import React from 'react';
 import {  graphqlApiKEY } from '../constants'
-import { graphQlURL } from './tokenDetailsFunctions' 
+import { graphQlURL } from './custom_functions' 
 import Axios from 'axios'
 import { ethers } from 'ethers'
 

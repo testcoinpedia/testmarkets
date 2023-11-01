@@ -3,15 +3,36 @@ import React , {useState, useEffect} from 'react'
 import Axios from 'axios'
 import moment from 'moment'
 import dynamic from 'next/dynamic' 
+import { useSelector, useDispatch } from 'react-redux'
 import { USDFormatValue, roundNumericValue, getNetworkImageNameByID, getNetworkNameByID, getValueShortForm, setActiveNetworksArray, getShortAddress,fetchAPIQuery,makeJobSchema,graphqlBasicTokenData,graphqlPricingTokenData, getSevenDaysValues} from '../../../components/config/helper'
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 
 export default function TokenDetail({token}) 
 {   
+    const active_currency = useSelector(state => state.active_currency)
     const [line_graph_values, set_line_graph_values] = useState([])
     const [line_graph_days, set_line_graph_days] = useState([])
     
+    const convertCurrency = (token_price) =>
+    {
+        if(token_price)
+        {
+          if(active_currency.currency_value)
+          {
+            return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
+          }
+          else
+          {
+            return roundNumericValue(token_price)
+          }
+        }
+        else
+        {
+          return '-'
+        }
+    }
+
     useEffect( async ()=>
     {
       const past7Days = [...Array(8).keys()].map(index => {
@@ -97,7 +118,7 @@ export default function TokenDetail({token})
           <p>Your Token Balance</p>
           <h5>{(token.price) ? 
           <>
-            { USDFormatValue(token.price*token.balance, 1) } 
+            { convertCurrency(token.price*token.balance) } 
             
             {
                 token.change_24h ? 
@@ -107,13 +128,13 @@ export default function TokenDetail({token})
                     <span className="growth_up">
                       <span>
                         <img src="/assets/img/growth_up.svg" />
-                         &nbsp;{USDFormatValue(((token.price*token.balance*token.change_24h)/100), 1)} </span>
+                         &nbsp;{convertCurrency(((token.price*token.balance*token.change_24h)/100))} </span>
                     </span>
                     :
                     <span className="growth_down">
                       <span>
                         <img src="/assets/img/growth_down.svg" />
-                        &nbsp;{(((token.price*token.balance*token.change_24h)/100).toFixed(2)).replace('-', "-$")}  </span>
+                        &nbsp;{convertCurrency(((token.price*token.balance*token.change_24h)/100).toFixed(2))}  </span>
                     </span>
                     }
                 </>
@@ -137,7 +158,7 @@ export default function TokenDetail({token})
           <tbody>
             <tr>
               <td><label className='token-type-name'>Live Price</label></td>
-              <td className='token-value-details'>{USDFormatValue(token.price, 1)}&nbsp;
+              <td className='token-value-details'>{convertCurrency(token.price, 1)}&nbsp;
                 {
                   token.change_24h ? 
                   <>
@@ -169,12 +190,12 @@ export default function TokenDetail({token})
 
             <tr>
               <td><label className='token-type-name'>All-time High</label></td>
-              <td className='token-value-details'> {(token.ath) ? USDFormatValue(token.ath, 1) : "-"} </td>
+              <td className='token-value-details'> {(token.ath) ? convertCurrency(token.ath, 1) : "-"} </td>
             </tr>
 
             <tr>
               <td><label className='token-type-name'>All-time Low</label></td>
-              <td className='token-value-details'> {(token.atl) ? USDFormatValue(token.atl, 1) : "-"} </td>
+              <td className='token-value-details'> {(token.atl) ? convertCurrency(token.atl, 1) : "-"} </td>
             </tr>
 
             <tr>

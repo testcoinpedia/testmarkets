@@ -88,14 +88,7 @@
   min-height: 70vh;
 }
 
-.markets_list_quick_links ul {
-  border-bottom: 0;
-  padding-bottom: 5px;
-}
 
-.markets_list_quick_links ul li {
-  display: inline-block;
-}
 
 .select_launchpad_type {
   /* height: 30px !important; */
@@ -307,7 +300,7 @@ button.active.hiring_btn.mbl {
 .connect_wallet_header .dropdown_wallet_header {
   right: 0;
   left: auto;
-  /* top: 60px; */
+  top: 55px;
   border: 0;
   padding: 10px 15px;
   min-width: 224px;
@@ -709,6 +702,160 @@ a:hover {
   text-align: right;
 }
 
+
+/* country_currency code starts here */
+
+.country_currency .currency_caret_down
+{
+  width: 12px !important;
+  margin: 0px !important;
+  padding-bottom: 4px;
+}
+
+.country-currency-ul .selected
+{
+  background: #eff2f5;
+}
+
+
+
+
+
+
+.country-currency-ul
+{
+  height: 269px;
+  overflow-y: auto;
+margin-top: 12px !important;
+}
+
+.country-currency-menu
+{
+  background: white !important;
+  border-top: 0px !important;
+  margin-top: 14px !important;
+  padding: 0px 0px !important;
+  min-width: 200px !important; 
+
+}
+
+.country-active-flag
+{
+  width: 20px !important;
+  margin: 0px !important;
+  margin-right: 5px !important;;
+  padding-bottom: 5px;
+}
+
+.country-currency-ul::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+.country-currency-ul::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+.country-currency-ul::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+.country-currency-ul::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+.country-currency-ul li
+{
+  border-bottom: 1px solid #f3eeee;
+  margin-right: 10px;
+}
+
+.country-currency-ul li h6
+{
+  font-size: 14px;
+} 
+
+
+.country-currency-menu li p 
+{
+  font-size: 14px;
+  cursor: pointer;
+  font-size: 13px;
+  color: gray;
+  font-weight: 500;
+} 
+
+.country-currency-menu .input-group{
+  padding: 0px !important;
+  margin-bottom: 0px;
+  margin: 5px 0px 2px !important;
+}
+
+.country-currency-menu .input-group input{
+background: #EFF2F5 !important;
+border-radius: 6px;
+font-family: 'Space Grotesk';
+border :0 !important;
+}
+
+
+.navbar-right .country-currency-ul li
+{
+  padding: 3px 0px !important;
+}
+
+
+.country-currency-menu .input-group-text {
+    padding: 6px !important;
+     background-color: #EFF2F5;
+     border :0 !important;
+}
+
+.country-currency-ul .media{
+  cursor: pointer;
+  padding: 2px;
+}
+
+.modal-dialog .close img{
+  width: 14px;
+
+}
+.country-currency-menu .search_input{
+  margin-bottom: 15px !important;
+}
+
+.country-currency-menu .search_input input{
+  height: 35px !important;
+}
+
+.country-currency-ul .media-body  p {
+  text-align: left !important;
+   font-size: 12px !important;
+   margin-top: 0px !important;
+}
+
+.country-currency-ul .media-left{
+  padding: 0px 12px !important;
+}
+
+.country_currencies img{
+  width: 22px !important;
+  margin-bottom: 3px !important;
+}
+
+.Currency_popup{
+  padding: 0px !important;
+}
+.Currency_popup .title{
+text-align: left;
+font-size: 18px !important;
+}
+
+/* country_currency code ends here */
+
+
 /***************************************** Media Queries ***********************************************/
 
 
@@ -1011,6 +1158,8 @@ a:hover {
     margin-top: 9px;
     transition: 0.5s;
   }
+
+  
 
   .navbar-nav .nav-item.show .caret_view,
   .mobile_login_block.show .caret_view,

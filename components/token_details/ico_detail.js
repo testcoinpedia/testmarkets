@@ -6,12 +6,27 @@ import JsCookie from "js-cookie"
 import { getLaunchpadType } from '../../config/helper' 
 import { roundNumericValue, separator } from '../../components/constants' 
 import moment from 'moment'
+import { useSelector, useDispatch } from 'react-redux'
 
 export default function MyFunction({launchpads, today_date, token_symbol}) 
 {
     // console.log("today_date", today_date)
     // console.log("launchpads", launchpads)
     const [collapse_value, set_collapse_value] = useState(false)
+
+    const active_currency = useSelector(state => state.active_currency)
+
+    const convertCurrency = (token_price) =>
+    {
+      if(active_currency.currency_value)
+      {
+        return active_currency.currency_symbol+" "+roundNumericValue(token_price*(active_currency.currency_value))
+      }
+      else
+      {
+        return "$ "+roundNumericValue(token_price)
+      }
+    }
 
     return (
         <>
@@ -87,7 +102,7 @@ export default function MyFunction({launchpads, today_date, token_symbol})
                                     {
                                         item.launchpad_price ?
                                         <>
-                                            $ {item.launchpad_price}
+                                            {convertCurrency(item.launchpad_price)}
                                         </>
                                         :
                                         <>
@@ -106,17 +121,19 @@ export default function MyFunction({launchpads, today_date, token_symbol})
                                     {
                                         item.listing_price ?
                                         <>
-                                        $ {item.listing_price} 
+                                        {convertCurrency(item.listing_price)} 
                                         {
-                                        (((item.listing_price-item.launchpad_price)/item.listing_price)*100).toFixed(2)  > 0 ?
-                                        <span className="green"><img src="/assets/img/markets/high.png" alt="high price" />{(((item.listing_price-item.launchpad_price)/item.launchpad_price)*100).toFixed(2)} %</span>
-                                        :
-                                        (((item.listing_price-item.launchpad_price)/item.listing_price)*100).toFixed(2) < 0 ?
-                                        <span className="red"><img src="/assets/img/markets/low.png" alt="high price" />{(((item.listing_price-item.launchpad_price)/item.launchpad_price)*100).toFixed(2)} %</span>
-                                        :
-                                        ""
+                                            item.launchpad_price ?
+                                                (((item.listing_price-item.launchpad_price)/item.listing_price)*100).toFixed(2)  > 0 ?
+                                                <span className="green"><img src="/assets/img/markets/high.png" alt="high price" />{(((item.listing_price-item.launchpad_price)/item.launchpad_price)*100).toFixed(2)} %</span>
+                                                :
+                                                (((item.listing_price-item.launchpad_price)/item.listing_price)*100).toFixed(2) < 0 ?
+                                                <span className="red"><img src="/assets/img/markets/low.png" alt="high price" />{(((item.listing_price-item.launchpad_price)/item.launchpad_price)*100).toFixed(2)} %</span>
+                                                :
+                                                ""
+                                            :
+                                            ""
                                         }
-                                        
                                         </>
                                         :
                                         <>TBA</>
@@ -132,7 +149,7 @@ export default function MyFunction({launchpads, today_date, token_symbol})
                                 <h5>
                                     {
                                         item.soft_cap ?
-                                        <>$ {item.soft_cap}</>
+                                        <>{convertCurrency(item.soft_cap)}</>
                                         :
                                         <>TBA</>
                                     }

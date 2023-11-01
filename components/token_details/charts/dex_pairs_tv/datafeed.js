@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Axios from 'axios' 
-import { arrangeData } from '../../tokenDetailsFunctions'
+import { arrangeData } from '../../custom_functions'
 import { tradeHistoryForTV } from '../../liquidity/queries'
 import { API_BASE_URL, config } from '../../../constants'
 import moment from 'moment'

@@ -8,7 +8,8 @@ import JsCookie from "js-cookie"
 // export const cookieDomainExtension = '.coinpedia.org'
 // export const logo =  '/assets/img/logo.png'
 // export const favicon =  '/assets/img/favicon.png'
-// export const graphqlApiKEY = "BQYDhJL0RXOU29HIwyFK2M5Bb5OOy3pp"
+// export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
+// export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
 
 //Test links
 export const coinpedia_url="https://maintest.coinpedia.org/"
@@ -18,8 +19,8 @@ export const events_coinpedia_url = 'https://testevents.coinpedia.org/'
 export const cookieDomainExtension = '.coinpedia.org'
 export const logo = '/assets/img/logo.png'
 export const favicon = '/assets/img/favicon.png'
-export const graphqlApiKEY = "BQYDhJL0RXOU29HIwyFK2M5Bb5OOy3pp"
-
+export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
+export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
 
 // Local Links
 // export const coinpedia_url="http://192.168.1.100:81/cpnews/"
@@ -29,20 +30,22 @@ export const graphqlApiKEY = "BQYDhJL0RXOU29HIwyFK2M5Bb5OOy3pp"
 // export const cookieDomainExtension = '192.168.1.100'
 // export const logo =  '/assets/img/dummy-logo.png'
 // export const favicon =  '/assets/img/dummy-favicon.png'
-// export const graphqlApiKEY = "BQYrI3Yg5TuSrVjY2JsbeCl7o7iPpkvw"
+// export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
+// export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
 
 
+// BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5
 //API local links
-//  export const API_BASE_URL = 'http://localhost:3010/'
-
-// export const API_BASE_URL = 'http://192.168.1.100:3010/'
+// export const API_BASE_URL = 'http://192.168.1.100:3500/'
+// export const MAIN_API_BASE_URL = 'http://192.168.1.100:3010/'
 
 //API TEST links
-export const API_BASE_URL = 'https://shark-app-q5yj6.ondigitalocean.app/'
+// export const API_BASE_URL = 'https://hammerhead-app-4vdn3.ondigitalocean.app/'
+// export const MAIN_API_BASE_URL = 'https://shark-app-q5yj6.ondigitalocean.app/'
 
 // //API live links
-//  export const API_BASE_URL = 'https://markets-nodejs-api-l9lg8.ondigitalocean.app/'
-
+export const API_BASE_URL = 'https://hammerhead-app-4vdn3.ondigitalocean.app/'
+export const MAIN_API_BASE_URL = 'https://markets-nodejs-api-l9lg8.ondigitalocean.app/'
 
 
 export const separator=(numb)=> {
@@ -100,6 +103,29 @@ export const strTrim=(string)=>
     return string === null? "-":string
 }
 
+
+export const smallExponentialPrice=(pass_value)=>
+{   
+  
+    const number = ((roundNumericValue(pass_value)).toString()).split('.')
+    if(number.length === 2) 
+    {
+      const integerPart = number[0]
+      const decimalPart = number[1]
+      const zeroCount = decimalPart.match(/^0+/)
+      
+      if(zeroCount && zeroCount[0].length > 4)
+      {
+        return (
+          <>
+            {integerPart}.0<sub className='zeroCount'>{zeroCount[0].length}</sub>{decimalPart.replace(/^0+/, '')}
+          </>
+        )
+      }
+    }
+    return pass_value
+}
+
 export const getDomainName = (link)=>
 {
   if(link != ''){
@@ -126,6 +152,59 @@ export const getDomainName = (link)=>
     return null
   }
   
+}
+
+export const speedoMeterValues = async ({total_sma_buy, total_sma_sell, total_sma_neutral}) =>
+{
+  var speed_meter_name = "Neutral"
+  var speed_percentage = 0
+  if(total_sma_buy || total_sma_sell)
+  {
+      if(total_sma_sell > total_sma_buy)
+      {
+        const temp_total_sma_value = await parseFloat(((total_sma_sell/(total_sma_buy+total_sma_sell))*100).toFixed(2))
+        if(temp_total_sma_value > 80)
+        {
+          speed_meter_name = "Strong Sell"
+          speed_percentage = 100-temp_total_sma_value
+        }
+        else if(temp_total_sma_value > 60)
+        {
+          speed_meter_name = "Sell"  
+          speed_percentage = 100-temp_total_sma_value
+        }
+        else
+        {
+          speed_percentage = 100-temp_total_sma_value
+        }
+
+        return { speed_meter_name, speed_percentage }
+      }
+      else
+      {
+        const temp_total_sma_value = await parseFloat(((total_sma_buy/(total_sma_buy+total_sma_sell))*100).toFixed(2))
+
+        if(temp_total_sma_value > 80)
+        {
+          speed_meter_name = "Strong Buy"
+          speed_percentage = temp_total_sma_value
+        }
+        else if(temp_total_sma_value > 60)
+        {
+          speed_meter_name = "Buy"  
+          speed_percentage = temp_total_sma_value
+        }
+        else
+        {
+          speed_percentage = temp_total_sma_value
+        }
+        return { speed_meter_name, speed_percentage }
+      }
+    }
+    else
+    {
+      return { speed_meter_name, speed_percentage }
+    }
 }
 
 
@@ -180,10 +259,13 @@ export const roundNumericValue=(value) =>
 { 
   if(value)
   {
-    if(value > 0 )
+    if(value > 0)
     {
-      
-        if(parseFloat(value) >= 0.1)
+        if(parseFloat(value) >= 1000000)
+        {
+          return separator((parseFloat(value)).toFixed(0))
+        }
+        else if(parseFloat(value) >= 0.1)
         {
           return separator((parseFloat(value)).toFixed(2))
         }
@@ -209,7 +291,7 @@ export const roundNumericValue=(value) =>
         }
         else if((parseFloat(value) < 0.000001) && (parseFloat(value) > 0.0000001))
         {
-          return (parseFloat(value)).toFixed(10)
+          return ((parseFloat(value)).toFixed(10))
         }
         else if((parseFloat(value) < 0.0000001) && (parseFloat(value) > 0.00000001))
         {
@@ -413,7 +495,11 @@ export const convertvalue=(labelValue)=>
 
   ? Math.trunc(Math.abs(Number(labelValue)) / 1.0e+3*100)/100 + " K"
 
-  : Math.abs(Number(labelValue)); 
+  : Math.abs(Number(labelValue)) >= 1
+
+  ? labelValue.toFixed(2)
+  
+  : Math.abs(Number(labelValue)) 
 } 
 
   export const Logout=()=> {
@@ -431,21 +517,33 @@ export const convertvalue=(labelValue)=>
 
   export const reduxData = {
     login:"loginAccount",
-    logout:"logoutAccount"
+    logout:"logoutAccount",
+    converter:"currencyConverter",
   }
   
 
   
 export const setLoginData=(message) => 
 {
+  if(message.keepme_status==2){
+    var expire_time = new Date(new Date().getTime()+ 30 * 24 * 60 * 60 * 1000)
+
+  }
+  else{
     var expire_time = new Date(new Date().getTime() + 180 * 60 * 1000)
+
+  }
+    // var expire_time = new Date(new Date().getTime() + 180 * 60 * 1000)
     // console.log(expire_time)
     JsCookie.set('user_token', message.token, { expires:expire_time, domain: cookieDomainExtension })
     JsCookie.set("user_email_status", true,{ expires:expire_time, domain: cookieDomainExtension })
     JsCookie.set("user_approval_status", message.approval_status,{ expires:expire_time, domain: cookieDomainExtension })
     JsCookie.set("user_email_id", message.email_id,{ expires:expire_time, domain: cookieDomainExtension })
     JsCookie.set("user_profile_image", message.profile_image,{ expires:expire_time, domain: cookieDomainExtension })  
-    JsCookie.set("user_username", message.user_name,{ expires:expire_time, domain: cookieDomainExtension })  
+    if(message.user_name)
+    {
+        JsCookie.set("user_username", message.user_name,{ expires:expire_time, domain: cookieDomainExtension })  
+    }
     JsCookie.set("user_full_name", message.full_name,{ expires:expire_time, domain: cookieDomainExtension })
     JsCookie.set("user_wallet_address", message.wallet_address,{ expires:expire_time, domain: cookieDomainExtension })
     JsCookie.set("user_company_listed_status", message.company_listed_status,{ expires:expire_time, domain: cookieDomainExtension })

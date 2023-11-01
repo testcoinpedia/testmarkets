@@ -30,21 +30,25 @@ export default function MyFunction()
         <div className='price_block'>
 <div className='row'>
 {price_prediction.map((e)=>
+        e.featured_image_sizes.medium ? 
           <div className='col-md-6'>
             <a href={e.yoast_head_json.canonical} title={e.yoast_head_json?.title} alt="price-analysis" target='_blank'>
-        <div className='media'>
-        <div className='media-left align-self-center'>
-          <img alt={e.yoast_head_json?.title} src={e.featured_image_sizes.medium}/>
-        </div>
-        <div className='media-body align-self-center'>
-          <div className='price_desc'>
-          <p> {e.date ? moment(e.date).fromNow():null} </p>
-          <h4 dangerouslySetInnerHTML={{ __html: e.yoast_head_json?.title }}></h4>
-          </div>                           
-        </div>
-      </div>
-      </a>
-       </div>
+              <div className='media'>
+                <div className='media-left align-self-center'>
+                  <img alt={e.yoast_head_json?.title}  src={(e.featured_image_sizes.medium ? e.featured_image_sizes.medium:"")} onError={(e) =>e.target.src = ""}/>
+                </div>
+
+                <div className='media-body align-self-center'>
+                  <div className='price_desc'>
+                    <p> {e.date ? moment(e.date).fromNow():null} a</p>
+                    <h4 dangerouslySetInnerHTML={{ __html: e.yoast_head_json?.title }}></h4>
+                  </div>                           
+                </div>
+              </div>
+            </a>
+          </div>
+          :
+          ""
       )}
 
   {/* <div className='col-md-6'>

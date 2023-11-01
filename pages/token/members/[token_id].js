@@ -120,7 +120,7 @@ export default function Create_token({ config, token_id }) {
         }
         set_err_user_name("")
         if (e.target.value) {
-            Axios.get(API_BASE_URL + "app/user_suggestions/" + e.target.value, config).then((response) => {
+            Axios.get(API_BASE_URL + "static/user_suggestions/" + e.target.value, config).then((response) => {
                 if (response.data.status === true) {
 
                     set_suggested_user_status(true)
@@ -274,7 +274,7 @@ export default function Create_token({ config, token_id }) {
         if (!formIsValid) {
             return
         }
-        Axios.get(API_BASE_URL + "app/event/check_username/" + speaker.user_name, config).then((response) => {
+        Axios.get(API_BASE_URL + "static/check_username/" + speaker.user_name, config).then((response) => {
             // console.log("cvcvfgds",response)
             if (response.data.status === true) {
                 set_team_member_array(prevState => [...prevState, speaker])

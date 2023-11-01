@@ -116,13 +116,13 @@ export default function Create_token({config})
     }
 
     const getCryptoNetworks = async () => 
-  {
-    const res = await Axios.get(API_BASE_URL + "app/crypto_networks", config)
-    if(res.data.status) 
     {
-      set_crypto_networks(res.data.message)
+      const res = await Axios.get(API_BASE_URL + "static/crypto_networks", config)
+      if(res.data.status) 
+      {
+        set_crypto_networks(res.data.message)
+      }
     }
-  }
  
     const imageCropModalClose = () => 
     {

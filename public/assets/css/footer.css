@@ -7,7 +7,7 @@
   #footer .aboutme-widget-content {
     color: #fff;
     font-size: 13px;
-    font-weight: 200;
+    font-weight: 500;
     font-family: 'Space Grotesk';
   }
   
@@ -150,7 +150,7 @@
     color: #fff;
     margin: 2px 5px 0;
     font-size: 13px;
-    font-weight: 200;
+    font-weight: 500;
     float: left;
     font-family: 'Space Grotesk';
   }
@@ -163,14 +163,15 @@
     color: #fff;
     margin: 0 10px;
     font-size: 13px;
-    font-weight: 200;
+    font-weight: 500;
     font-family: 'Space Grotesk';
   }
   
   #site-info {
     background: #0f053a;
-    padding: 23px 0;
-    margin-top: 20px;
+    padding: 20px 0;
+    line-height: 32px;
+    text-align: center;
   }
   
 
@@ -220,7 +221,7 @@
             margin-bottom: 10px;
             line-height: 1.5;
             font-size: 13px;
-            font-weight: 200 !important;
+            font-weight: 500 !important;
             max-width: 500px;
         }
         
@@ -234,8 +235,7 @@
 
 
           #site-info {
-            padding: 23px 0 90px;
-            text-align: center;
+           margin-bottom: 50px !important;
           }
         
           #footer .copyright-text {

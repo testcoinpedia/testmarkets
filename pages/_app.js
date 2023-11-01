@@ -7,11 +7,11 @@ import { Provider } from "react-redux";
 import {favicon} from '../components/constants'
 import rootReducer from '../components/redux/store'
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
 
 function MyApp({ Component, pageProps }) {
-  const router = useRouter();
-
+  // const router = useRouter();
+  const [data,set_data]=useState('')
   useEffect(() => {
     // Remove Google Analytics tracking parameters from the URL
     // const cleanUrl = window.location.pathname;
@@ -46,9 +46,9 @@ function MyApp({ Component, pageProps }) {
           <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"></link>
 
           <link rel="stylesheet" media="all" href="/assets/css/darktheme.css" />
-          
+{/*           
           <script async src="https://www.googletagmanager.com/gtag/js?id=G-RE1GG3FGQW"></script>
-          {/* <script
+          <script
                     dangerouslySetInnerHTML={{
                       __html: `
             window.dataLayer = window.dataLayer || [];
@@ -80,8 +80,8 @@ function MyApp({ Component, pageProps }) {
           <script src="/static/datafeeds/udf/dist/bundle.js" />
         </Head>
         <Provider store={rootReducer}> 
-          <Topmenu />
-          <Component {...pageProps} />
+        <Topmenu callback={set_data}/>
+        <Component {...pageProps} modalprops={data}/>
           <Footer /> 
          </Provider>
       </> 

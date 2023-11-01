@@ -5,6 +5,7 @@ import Link from 'next/link'
 import moment from 'moment'
 import dynamic from 'next/dynamic' 
 import { roundNumericValue } from '../../../components/config/helper'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 export default function AnalyticsFun({data}) 
@@ -373,8 +374,17 @@ export default function AnalyticsFun({data})
               {
                 tokens_balance ?
                   <div className="dex-donot-pichart charts_subtitle">
-                    <h6 >Chain Allocation</h6>
-                    <p>Diversify crypto portfolio by allocating across different blockchains. </p>
+                    <h6 >Chain Allocation <OverlayTrigger
+                                      delay={{ hide: 450, show: 300 }}
+                                        overlay={(props) => (
+                                          <Tooltip {...props} className="custom_pophover">
+                                            <p>Diversify crypto portfolio by allocating across different blockchains. </p>
+                                          </Tooltip>
+                                        )}
+                                        placement="bottom"
+                                      ><span className='info_col' ><img src="/assets/img/info.png" alt="Info" /></span>
+                                    </OverlayTrigger>   &nbsp;</h6>
+                    {/* <p>Diversify crypto portfolio by allocating across different blockchains. </p> */}
                     
                     <div className="donot-pi-chart-section" id="chart">
                       <ReactApexChart options={options} series={pi_chart_values} type="donut" />
@@ -387,8 +397,17 @@ export default function AnalyticsFun({data})
               {
                 tokens_balance ?
                 <div className="dex-donot-pichart charts_subtitle">
-                  <h6 >Token Allocation</h6>
-                  <p>Minimize risk through diversified asset allocation in investment portfolio.</p>
+                  <h6 >Token Allocation <OverlayTrigger
+                                      delay={{ hide: 450, show: 300 }}
+                                        overlay={(props) => (
+                                          <Tooltip {...props} className="custom_pophover">
+                                            <p>Minimize risk through diversified asset allocation in investment portfolio.</p>
+                                          </Tooltip>
+                                        )}
+                                        placement="bottom"
+                                      ><span className='info_col' ><img src="/assets/img/info.png" alt="Info" /></span>
+                                    </OverlayTrigger>   &nbsp;</h6>
+                  {/* <p>Minimize risk through diversified asset allocation in investment portfolio.</p> */}
                   <div className="donot-pi-chart-section" id="chart">
                     <ReactApexChart options={options2} series={token_allocation_values} type="donut" />
                   </div>

@@ -81,6 +81,7 @@ const cmc_graph_ranges = [
   }  
 ]
 
+
 const bitgquery_graph_ranges = [
   {
     _id : 1,

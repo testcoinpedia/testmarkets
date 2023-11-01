@@ -6,6 +6,7 @@ import ReactPaginate from 'react-paginate'
 import { API_BASE_URL, roundNumericValue, config, separator, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, strLenTrim, convertvalue, Logout} from '../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
+import { useSelector, useDispatch } from 'react-redux'
 import Search_token from '../components/search_token'
 import CategoriesTab from '../components/categoriesTabs'
 import TableContentLoader from '../components/loaders/tableLoader'
@@ -18,9 +19,12 @@ import { useRouter } from 'next/navigation'
 
 
 
-export default function MarketsIndex({page, userAgent, list_data, list_count, per_page_limit, final_count, pages_count, first_count})
+export default function MarketsIndex({page, userAgent, list_data, list_count, per_page_limit, final_count, pages_count, first_count,modalprops})
 { 
+  console.log("modalprops",modalprops)
     const router = useRouter()
+    const active_currency = useSelector(state => state.active_currency)
+   
     const myRef = useRef(null)
     const category_ref = useRef()
     const [is_client, set_is_client] = useState(false)
@@ -55,14 +59,62 @@ export default function MarketsIndex({page, userAgent, list_data, list_count, pe
     const [login_modal_status, set_login_modal_status] = useState(false)
     const [request_config, set_request_config] = useState(config(userAgent.user_token ? userAgent.user_token : ""))
     const [action_row_id, set_action_row_id] = useState("")
-   
 
+    const convertCurrency = (token_price) =>
+    {
+      if(token_price)
+      {
+        if(active_currency.currency_value)
+        {
+          return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
+        }
+        else
+        {
+          return roundNumericValue(token_price)
+        }
+      }
+      else
+      {
+        return '-'
+      }
+    }
+
+    const shortConvertCurrency = (token_price) =>
+    {
+      if(token_price)
+      {
+        if(active_currency.currency_value)
+        {
+          return active_currency.currency_symbol+" "+convertvalue(token_price*active_currency.currency_value)
+        }
+        else
+        {
+          return roundNumericValue(token_price)
+        }
+      }
+      else
+      {
+        return '-'
+      }
+    }
+    useEffect(() => {
+   
+      if(modalprops.login_data){
+        getDataFromChild(modalprops)
+      }
+    
+    }, [modalprops]);
     const getDataFromChild = async (pass_object) => 
     {
       await set_login_modal_status(false)
       await set_user_token(JsCookie.get("user_token"))
       await set_request_config(JsCookie.get("user_token"))
-      await addToWatchlist(action_row_id)
+      if(action_row_id){
+        await addToWatchlist(action_row_id)
+        }
+        else{
+          tokensList({selected : 0}, 1)
+        }
     }
 
     const login_props = {
@@ -379,7 +431,7 @@ return (
                   <h1 className="page_title">Top 100 Cryptocurrencies</h1>
                   {
                     total_marketcap ? 
-                    <p>Total market cap today is ${convertvalue(total_marketcap)} with {
+                    <p>Total market cap today is {shortConvertCurrency(total_marketcap)} with {
                       total_change_24h > 0 ?
                       <span className="color-green">{total_change_24h}%</span>
                       :
@@ -502,8 +554,6 @@ return (
               </div>
               <div className="market_page_data">
                     <div className="table-responsive">
-                     
-                        
                           {
                           !loader_status ?
                           <table className="table table-borderless">
@@ -569,7 +619,7 @@ return (
                                         <span onClick={()=>removeFromWatchlist(e._id)} ><img src=" /assets/img/wishlist_star_selected.svg" alt="Watchlist" width={17} height={17} /></span>
                                         :
                                         <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/star.svg" alt="Watchlist" width={17} height={17} /></span>
-                                        }
+                                      }
                                       </>
                                       :
                                       <span className='login-watchlist' onClick={()=>loginModalStatus(e._id)}><img src="/assets/img/star.svg" alt="Watchlist"/></span>
@@ -589,12 +639,13 @@ return (
                                       </div> 
                                     </Link>
                                   </td> 
+                                  
                                   <td > 
                                     <Link href={"/"+e.token_id}>
                                       <div className="block_price">
                                         {e.price ? 
                                         <>
-                                        {"$"+roundNumericValue(e.price)}
+                                        {convertCurrency(e.price)}
                                         <br/>
                                         {
                                           is_client ? 
@@ -604,11 +655,10 @@ return (
                                         }
                                         </>
                                         :
-                                        ""
+                                        "-"
                                         }
                                         
                                       </div>
-                                     
                                     </Link>
                                   </td>
                                 
@@ -655,13 +705,13 @@ return (
 
                                   <td className=" ">
                                     <Link href={"/"+e.token_id}>
-                                    {e.circulating_supply ?"$"+separator((e.circulating_supply*e.price).toFixed(0)) : ""}
+                                    {e.circulating_supply ? convertCurrency(e.circulating_supply*e.price): ""}
                                     </Link>
                                   </td>  
                                   
                                   <td className=" ">
                                     <Link href={"/"+e.token_id}>
-                                    {e.volume ?"$"+separator((e.volume).toFixed(0)) : ""}
+                                    {e.volume ?convertCurrency(e.circulating_supply*e.price) : ""}
                                     </Link>
                                   </td>
 

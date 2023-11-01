@@ -10,6 +10,8 @@ import Web3 from 'web3'
 import { useRouter } from 'next/router'
 // import { useDispatch } from 'react-redux'
 import moment from 'moment'
+
+import { useSelector, useDispatch } from 'react-redux'
 import dynamic from 'next/dynamic' 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 import Transactions from '../components/layouts/portfolio/transactions'
@@ -26,11 +28,12 @@ import CategoriesTab from '../components/categoriesTabs'
 import LoginModal from '../components/layouts/auth/loginModal'
 import { fantom_list } from '../components/config/fantom'
 import { avanlanche_list } from '../components/config/avalanche'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import SearchContractAddress from '../components/search_token'
 import Metamask from '../components/layouts/social_crypto_login/metamask'
 // import { ethereum_list, binance_list, polygon_list,fantom_list } from '../components/config/constants' 
-import { USDFormatValue, roundNumericValue, getNetworkImageNameByID, getNetworkNameByID, addRemoveActiveAddresses, setActiveNetworksArray, getShortAddress,fetchAPIQuery,makeJobSchema,graphqlBasicTokenData,graphqlPricingTokenData, cryptoNetworksList} from '../components/config/helper'
-import { cookieDomainExtension, app_coinpedia_url, API_BASE_URL, graphqlApiURL, graphqlApiKEY, strLenTrim, separator, currency_object,config,count_live_price,validBalance, getShortWalletAddress, market_coinpedia_url} from '../components/constants' 
+import { USDFormatValue, getNetworkImageNameByID, getNetworkNameByID, addRemoveActiveAddresses, setActiveNetworksArray, getShortAddress,fetchAPIQuery,makeJobSchema,graphqlBasicTokenData,graphqlPricingTokenData, cryptoNetworksList} from '../components/config/helper'
+import { cookieDomainExtension, roundNumericValue, app_coinpedia_url, API_BASE_URL, graphqlApiURL, strLenTrim, separator, currency_object,config,count_live_price,validBalance, getShortWalletAddress, market_coinpedia_url} from '../components/constants' 
 
 export default function WalletDetails({userAgent, prev_url, search_address}) 
 {  
@@ -212,6 +215,30 @@ export default function WalletDetails({userAgent, prev_url, search_address})
       delete my_pass_nicknames[pass_wallet_address]
     }
   }
+
+
+  // currency convertor 
+  const active_currency = useSelector(state => state.active_currency)
+
+  const convertCurrency = (token_price) =>
+  {
+        if(token_price)
+        {
+          if(active_currency.currency_value)
+          {
+            return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
+          }
+          else
+          {
+            return roundNumericValue(token_price)
+          }
+        }
+        else
+        {
+          return '-'
+        }
+  }
+
   
 
   // Multiple Wallet Select Code Starts Here
@@ -974,7 +1001,7 @@ export default function WalletDetails({userAgent, prev_url, search_address})
     var { wallet_tokens_list, total_balance } = await fetchNewWalletTokens(pass_address)
     await savePortfolioInLocalStorage({wallet_address:pass_address, final_array:wallet_tokens_list, total_balance:total_balance})
     await multipleAddressList(pass_address, pass_nickname, pass_action_type)
-    await Axios.get(API_BASE_URL+'app/portfolio/update_address/'+pass_address, config(JsCookie.get('user_token')))
+    await Axios.get(API_BASE_URL+'markets/portfolio/update_address/'+pass_address, config(JsCookie.get('user_token')))
     set_loader_status(true)
   }
 
@@ -1143,7 +1170,7 @@ export default function WalletDetails({userAgent, prev_url, search_address})
         {
             set_search_wallet_address("")
             set_change_address_modal_status(false)
-            await Axios.get(API_BASE_URL+'app/portfolio/update_address/'+search_wallet_address_value, config(JsCookie.get('user_token')))
+            await Axios.get(API_BASE_URL+'markets/portfolio/update_address/'+search_wallet_address_value, config(JsCookie.get('user_token')))
 
             router.push("/portfolio?address="+search_wallet_address_value)
         }
@@ -1374,7 +1401,7 @@ export default function WalletDetails({userAgent, prev_url, search_address})
       nick_name: nickName
     }
 
-    Axios.post(API_BASE_URL+"app/portfolio/add_new", reqObj, config(JsCookie.get('user_token'))).then(res => 
+    Axios.post(API_BASE_URL+"markets/portfolio/add_new", reqObj, config(JsCookie.get('user_token'))).then(res => 
     {
       set_loader(false)
       if(res.data.status==true) 
@@ -1402,7 +1429,7 @@ export default function WalletDetails({userAgent, prev_url, search_address})
   
   const getportfolio=()=>
   {
-    Axios.get(API_BASE_URL+'app/portfolio/list', config(JsCookie.get('user_token'))).then(res =>
+    Axios.get(API_BASE_URL+'markets/portfolio/list', config(JsCookie.get('user_token'))).then(res =>
       {
       //  console.log(res)
   
@@ -1437,7 +1464,7 @@ export default function WalletDetails({userAgent, prev_url, search_address})
   const removeWallet=()=>
   { 
     set_modal_data({  icon: "", title: "", content:""})
-    Axios.get(API_BASE_URL+'app/portfolio/remove_wallet/'+wallet_row_id, config(JsCookie.get('user_token'))).then(res =>
+    Axios.get(API_BASE_URL+'markets/portfolio/remove_wallet/'+wallet_row_id, config(JsCookie.get('user_token'))).then(res =>
     {
       set_wallet_confirm_remove_modal(false)
       if(res.data.status==true)
@@ -1596,16 +1623,9 @@ const getTokenDetail=  (e)=>
                         </div>
                       </div>
                   </li>
-                  
                 </ul>
-             
-              
-                                     
-                                    </div>
+              </div>
 
-             
-              
-             
               </div> 
             </div>
           </div>
@@ -1701,9 +1721,10 @@ const getTokenDetail=  (e)=>
                                         </>
                                     }
                                   </span>
-                                  <span className="input-group-addon lightmode_image">
+                                  <span className="input-group-addon ">
                                     <img src="/assets/img/filter_dropdown_white.svg" alt="Filter"  />
                                   </span>
+                                  {/* lightmode_image */}
                               </div>
                             </div>
                           {
@@ -1860,9 +1881,10 @@ const getTokenDetail=  (e)=>
                                 </>
                               } 
                             </span>
-                            <span className="input-group-addon lightmode_image">
+                            <span className="input-group-addon ">
                               <img src="/assets/img/filter_dropdown_white.svg" alt="Filter" />
                             </span>
+                            {/* lightmode_image */}
                           </div>
                         </div>
                             
@@ -1898,7 +1920,7 @@ const getTokenDetail=  (e)=>
                                       <img className="network_icons" src={`/assets/img/portfolio/${item.network_image}`} alt={item.network_name} title={item.network_name} />
                                       <div className="media-body">
                                         <h5 className="mt-0">{item.network_name}</h5>
-                                        <p>{item.network_balance ? USDFormatValue(item.network_balance, 1):0}</p>
+                                        <p>{item.network_balance ? convertCurrency(item.network_balance, 1):0}</p>
                                       </div>
                                     </div>
                                   </li>
@@ -1943,7 +1965,7 @@ const getTokenDetail=  (e)=>
                             <span className="net_worth_title">Net Worth:</span> 
                             <span className="net_worth_value">
                               {
-                                display_tokens_balance ? USDFormatValue(display_tokens_balance, 1):0.00
+                                display_tokens_balance ? convertCurrency(display_tokens_balance, 1):0.00
                               }
                               {
                                 net_worth_24h_change > 0 ?
@@ -2043,7 +2065,7 @@ const getTokenDetail=  (e)=>
                                           
                                        
                                         <td className=" mobile_hide"  >
-                                          <h6>{USDFormatValue(item.price, 1)}</h6>
+                                          <h6>{convertCurrency(item.price)}</h6>
                                           {
                                             item.change_24h ? 
                                             <>
@@ -2059,14 +2081,23 @@ const getTokenDetail=  (e)=>
                                           }
                                         </td>
                                         <td className="portfolio_mobile_right" onClick={()=>getTokenDetail(item)}>
-                                            <h6>{(item.price) ? USDFormatValue(item.price*item.balance, 1) : "-"}</h6>
+                                            <h6>{(item.price) ? convertCurrency(item.price*item.balance) : "-"}</h6>
                                             <p className="">{USDFormatValue(item.balance, 0)} {item.symbol}</p>
                                         </td>
                                         <td className="mobile_hide">
-                                        {
-                                          (((item.price*item.balance*100)/tokens_grand_total)).toFixed(2)
+                                        {/* {
+                                          ((((item.price*item.balance*100)/tokens_grand_total)).toFixed(2))
                                         }
-                                        %
+                                        % */}
+                                         <small>{((item.price*item.balance*100)/tokens_grand_total).toFixed(2)}%</small>
+                                        <div style={{maxWidth:"177px"}}>
+                                        <div className="progress gainer-progress">
+                                          <div className='progress-bar progress-bar-success'
+                                          role="progressbar" style={{width: (((item.price*item.balance*100)/tokens_grand_total)).toFixed(2)+"%"}}>
+                                       
+                                        </div>
+                                        </div>
+                                        </div>
                                         </td>
                                       </tr>
                                       :
@@ -2175,7 +2206,7 @@ const getTokenDetail=  (e)=>
                                             }
                                           </li>
                                           <li>
-                                            <h5>{item.sub_total_balance ? (USDFormatValue(item.sub_total_balance, 1)):0}</h5>
+                                            <h5>{item.sub_total_balance ? (convertCurrency(item.sub_total_balance)):0}</h5>
                                           </li>
                                           <li>
                                             <img src="/assets/img/filter_dropdown_white.svg"  alt="Filter" className="accordion_arrow collapsed" />
@@ -2223,7 +2254,7 @@ const getTokenDetail=  (e)=>
                                                       </td>
                                                       
                                                     <td className="mobile_hide">
-                                                      <h6>{USDFormatValue(item.price, 1)}</h6>
+                                                      <h6>{convertCurrency(item.price)}</h6>
                                                     
                                                       {
                                                         item.change_24h ? 
@@ -2240,14 +2271,23 @@ const getTokenDetail=  (e)=>
                                                       }
                                                     </td>
                                                     <td className="portfolio_mobile_right" onClick={()=>getTokenDetail(item)}>
-                                                        <h6>{(item.price) ? USDFormatValue(item.price*item.balance, 1) : "-"}</h6>
+                                                        <h6>{(item.price) ? convertCurrency(item.price*item.balance) : "-"}</h6>
                                                         <p className="">{USDFormatValue(item.balance, 0)} {item.symbol}</p>
                                                     </td>
                                                     <td className="mobile_hide">
-                                                    {
+                                                    {/* {
                                                       (((item.price*item.balance*100)/tokens_grand_total)).toFixed(2)
                                                     }
-                                                    %
+                                                    % */}
+                                                     <small>{((item.price*item.balance*100)/tokens_grand_total).toFixed(2)}%</small>
+                                        <div style={{maxWidth:"177px"}}>
+                                        <div className="progress gainer-progress">
+                                          <div className='progress-bar progress-bar-success'
+                                          role="progressbar" style={{width: (((item.price*item.balance*100)/tokens_grand_total)).toFixed(2)+"%"}}>
+                                       
+                                        </div>
+                                        </div>
+                                        </div>
                                                     </td>
                                                   </tr>
                                                   :
@@ -2309,8 +2349,17 @@ const getTokenDetail=  (e)=>
                                 ((pi_chart_values.length > 0) && (pi_chart_names.length > 0)) ?
                                   <div>
                                     <div className="dex-donot-pichart charts_subtitle">
-                                      <h6 >Chain Allocation</h6>
-                                      <p>Diversify crypto portfolio by allocating across different blockchains.</p>
+                                    <h6 >Chain Allocation <OverlayTrigger
+                                      delay={{ hide: 450, show: 300 }}
+                                        overlay={(props) => (
+                                          <Tooltip {...props} className="custom_pophover">
+                                            <p>Diversify crypto portfolio by allocating across different blockchains. </p>
+                                          </Tooltip>
+                                        )}
+                                        placement="bottom"
+                                      ><span className='info_col' ><img src="/assets/img/info.png" alt="Info" /></span>
+                                    </OverlayTrigger>   &nbsp;</h6>
+                                      {/* <p>Diversify crypto portfolio by allocating across different blockchains.</p> */}
                                         <div className="donot-pi-chart-section" id="chart">
                                           <ReactApexChart options={options} series={pi_chart_values} type="donut" />
                                         </div>
@@ -2325,8 +2374,17 @@ const getTokenDetail=  (e)=>
                                   ((token_allocation_values.length > 0) && (token_allocation_names.length > 0)) ?
                                     <div >
                                       <div className="dex-donot-pichart charts_subtitle">
-                                        <h6 >Token Allocation </h6>
-                                        <p>Minimize risk through diversified asset allocation in investment portfolio.</p>
+                                      <h6 >Token Allocation <OverlayTrigger
+                                      delay={{ hide: 450, show: 300 }}
+                                        overlay={(props) => (
+                                          <Tooltip {...props} className="custom_pophover">
+                                            <p>Minimize risk through diversified asset allocation in investment portfolio.</p>
+                                          </Tooltip>
+                                        )}
+                                        placement="bottom"
+                                      ><span className='info_col' ><img src="/assets/img/info.png" alt="Info" /></span>
+                                    </OverlayTrigger>   &nbsp;</h6>
+                                        {/* <p>Minimize risk through diversified asset allocation in investment portfolio.</p> */}
                                           <div className="donot-pi-chart-section" id="chart">
                                             <ReactApexChart options={options2} series={token_allocation_values} type="donut" />
                                           </div>
