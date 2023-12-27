@@ -489,7 +489,7 @@ export default function TransactionFun({networks, addresses})
                                             }
                                              </div>
                                         <div className='media-right align-self-center'>
-                                        <img src="/assets/img/info_icon.png"  className='info_icon_trans' alt="Info" onClick={()=>getTokenDetail(e)} />
+                                        <img src="/assets/img/view-arrow.png"  className='info_icon_trans' alt="Info" onClick={()=>getTokenDetail(e)} />
                                         </div>
                                         </div>
                                         </td>

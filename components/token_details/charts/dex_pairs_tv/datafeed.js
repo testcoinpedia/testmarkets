@@ -21,8 +21,53 @@ export const Datafeed = (props) =>
     var resolution_value = 30
     var trading_history = []
 
+    const getGraphQLData = async ({offset}) =>
+    {   
+        var graphql_array = []
+        let contract_details = await contracts_array.filter((item, index) =>  
+        network_row_id == item.network_row_id)
+        if(contract_details[0])
+        {  
+            const contract_address = (contract_details[0].contract_address).toLowerCase()
+            const response = await tradeHistoryForTV({network_type:network_row_id, liquidity_address:liquidity_address, limit:per_page_count, offset:offset})
+                //const response = await tradeHistoryForTV({network_type:network_row_id, liquidity_address:contract_address})
+               console.log("res_output", response)
+                if(response.status)
+                {
+                    if(response.message[0])
+                    {
+                        for(let run of response.message)
+                        {   
+                            var token_price = ((run.sellCurrency.address).toLowerCase() == contract_address.toLowerCase()) ? (run.buyAmountUSD / run.sellAmount):(run.sellAmountUSD / run.buyAmount)
+                            var token_amount = ((run.sellCurrency.address).toLowerCase() == contract_address.toLowerCase()) ? run.sellAmount:run.buyAmount
+                            await graphql_array.push({
+                                token_price : token_price,
+                                token_amount : token_amount,
+                                date_n_time : run.block.timestamp.time
+                            })
+                        }
+                        //await trading_history.push(graphql_array)
+                        return await { status:true, message:graphql_array }
+                    }
+                    else
+                    {
+                        return {status:false, message:{alert_message:"Sorry, contract address not found."}}
+                    }
+                }
+                else
+                {   
+                    return {status:false, message:{alert_message:"Sorry, contract address not found."}}
+                }
+
+        }
+        else
+        {
+            return {status:false, message:{alert_message:"Sorry, contract address not found."}}
+        }
+    }
+
     //liquidity_address network_row_id, liquidity_address
-    const getGraphQLData = async () =>
+    const getGraphQLDatda = async () =>
     {   
         var graphql_array = []
         let contract_details = await contracts_array.filter((item, index) =>  
@@ -150,7 +195,7 @@ export const Datafeed = (props) =>
 
                 if(graphql_data_status)
                 {   
-                    const response = await getGraphQLData()
+                    const response = await getGraphQLData({offset:trading_history.length})
                     if(response.status)
                     {
                         trading_history = response.message
@@ -163,7 +208,7 @@ export const Datafeed = (props) =>
                     {
                         // var cal_trading_history = trading_history
                         // const last_trade_object = cal_trading_history.pop()
-                        const my_store_response = await myStoredData(trading_history[0])
+                        const my_store_response = await getGraphQLData({offset:trading_history.length})
                         if(my_store_response.status)
                         {   
                             if(!my_store_response.message.length)
@@ -178,6 +223,40 @@ export const Datafeed = (props) =>
                         }
                     }
                 }
+
+
+                // if(graphql_data_status)
+                // {   
+                //     const response = await getGraphQLData({offset:trading_history.length})
+                //     if(response.status)
+                //     {
+                //         trading_history = response.message
+                //     }
+                //     graphql_data_status = false
+                // }
+                // if(!data_end_status)
+                // {
+                //     if(resolution > 1)
+                //     {   
+                //         const response = await getGraphQLData({offset:trading_history.length})
+
+                //         // var cal_trading_history = trading_history
+                //         // const last_trade_object = cal_trading_history.pop()
+                       
+                //         if(response.status)
+                //         {   
+                //             if(!response.message.length)
+                //             {
+                //                 data_end_status = true
+                //             }
+                //             console.log("my_store_response 1", trading_history)
+                //             trading_history = await (response.message).concat(trading_history)
+                //             data_add_status = true
+                //             // console.log("my_store_response 2", my_store_response.message)
+                //             // console.log("my_store_response 3", trading_history)
+                //         }
+                //     }
+                // }
                 
 
                 if(data_add_status)

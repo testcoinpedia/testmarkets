@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Axios from 'axios'
 import JsCookie from "js-cookie"
-import { IMAGE_BASE_URL, roundNumericValue} from '../constants'
+import { IMAGE_BASE_URL, roundNumericValue, market_coinpedia_url} from '../constants'
 import moment from 'moment'
 import { useSelector, useDispatch } from 'react-redux'
+import { AddToCalendarButton } from 'add-to-calendar-button-react'
 
 export default function MyFunction({airdrops, token_symbol, token_image, coinmarketcap_id, today_date}) 
 {   
     const [image_base_url] = useState(IMAGE_BASE_URL+'/markets/cryptocurrencies/')
     const [cmc_image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/128x128/')
+    const [is_client_load, set_is_client_load] = useState(false)
 
     const active_currency = useSelector(state => state.active_currency)
 
@@ -36,22 +38,44 @@ export default function MyFunction({airdrops, token_symbol, token_image, coinmar
                     </div>
                     <div className='media-body align-self-center'>
                         <h4>{item.title} 
+                            
+                            
+                            
+                            {
+                                moment(today_date).isBefore(moment(item.start_date).format('ll')) ?
+                                <button className='upcoming_button ico_button'  >Upcoming</button>
+                                :
+                                moment(today_date).isAfter(moment(item.start_date).format('ll')) && moment(today_date).isBefore(item.end_date) ?
+                                <button className='live_button ico_button' >Live</button>
+                                :
+                                moment(moment(item.end_date).format('ll')).isSame(today_date) || moment(moment(item.start_date).format('ll')).isSame(today_date) ?
+                                <button className='live_button ico_button' >Live</button>
+                                :
+                                moment(moment(item.end_date).format('ll')).isBefore(today_date) ?
+                                <button className='completed_button ico_button'>Ended</button>
+                                :
+                                null
+                            }
 
+                            <div className='token-details-add-to-calender '  >
                                 {
-                                    moment(today_date).isBefore(moment(item.start_date).format('ll')) ?
-                                    <button className='upcoming_button ico_button'  >Upcoming</button>
+                                    item.start_date ?
+                                    <AddToCalendarButton
+                                        name={item.title+" ("+item.symbol+")"}
+                                        startDate={(moment.utc(item.start_date).format("YYYY-MM-DD")).toString()}
+                                        endDate={(moment.utc(item.end_date).format("YYYY-MM-DD")).toString()}
+                                        description={item.description}
+                                        options={['Apple', 'Google', 'iCal']}
+                                        buttonStyle="custom"
+                                        label="&nbsp;"
+                                        listStyle="overlay"
+                                        trigger="click"
+                                        customCss={market_coinpedia_url+"assets/css/atcb.css"}
+                                    />
                                     :
-                                    moment(today_date).isAfter(moment(item.start_date).format('ll')) && moment(today_date).isBefore(item.end_date) ?
-                                    <button className='live_button ico_button' >Live</button>
-                                    :
-                                    moment(moment(item.end_date).format('ll')).isSame(today_date) || moment(moment(item.start_date).format('ll')).isSame(today_date) ?
-                                    <button className='live_button ico_button' >Live</button>
-                                    :
-                                    moment(moment(item.end_date).format('ll')).isBefore(today_date) ?
-                                    <button className='completed_button ico_button'>Ended</button>
-                                    :
-                                    null
+                                    ""
                                 }
+                            </div>
                         </h4>
                         <p>{convertCurrency(item.winner_price*item.participating_users)} worth of {token_symbol} to {item.participating_users} Lucky Winners</p>
                     </div>
@@ -90,14 +114,13 @@ export default function MyFunction({airdrops, token_symbol, token_image, coinmar
                         ""
                     }
                 </div>
-                 {
+                {
                     item.participate_link ?
-                    <div className=''>
                     <a href={item.participate_link} target='_blank'><button className='detail_button button_transition'>Join Now</button></a>
-                    </div>
                     :
                     ""
-                 }           
+                }  
+
                 
             </div>
             )

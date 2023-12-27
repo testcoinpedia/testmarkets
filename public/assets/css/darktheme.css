@@ -1,10 +1,10 @@
-/* html, */
+/* html,
 .dark_theme {
   background-color: #17171a !important;
 }
 
 .dark_theme .market_top_header {
-  background-color: #17171a;
+  background-color: #17171a !important;
   box-shadow: 0 0 10px 5px rgb(0 0 0 / 10%);
 }
 
@@ -12,10 +12,31 @@
   background-color: #17171a !important;
 }
 .dark_theme .page_title {
-  color: #fff;
+  color: #fff !important;
 }
 .dark_theme .market_insights p {
-  color: #43444e !important;
+  color: #b1b1b1 !important;
+}
+
+.dark_theme .market_page_data table thead tr th{
+  color: #fff;
+}
+
+.dark_theme .market_page_data tr .media img {
+  box-shadow: none;
+}
+
+.dark_theme .track_your_portfolio_desktop {
+  background: #2c2c2f;
+}
+
+.dark_theme .navbar-header {
+  border: 0 !important;
+}
+
+.dark_theme table thead {
+  background: #323232 !important;
+  border-color: #3f3f40 !important;
 }
 
 .dark_theme .new_markets_index table tbody tr td {
@@ -103,9 +124,7 @@
   background: #252533;
   color: #fff;
 }
-/* .dark_theme .highcharts-background {
-  background: #24262a !important;
-} */
+
 
 .dark_theme .price_change {
   color: #fff;
@@ -145,7 +164,7 @@
   color: #fff;
 }
 .dark_theme .token_form_sub_text {
-  color: #585885;
+  color: #b1b1b1;
 }
 .dark_theme .main_create_form {
   background: #282830;
@@ -183,7 +202,7 @@
   color: #58667e;
 }
 .dark_theme .form-custom label {
-  color: #474757;
+  color: #fff;
 }
 .dark_theme .addmore_ico span {
   color: #888;
@@ -203,19 +222,16 @@
 }
 
 .dark_theme .token_form label {
-  color: #474757;
+  color: #fff !important;
 }
 
 .dark_theme .token_list_table .form-control::placeholder {
-  color: #fff;
+  color: #fff !important;
 }
 .dark_theme .token-list-tbl td {
   color: #ddd;
 }
-.dark_theme .input_block_outline .access_type option {
-  color: #fff !important;
-  background: #17171a !important;
-}
+
 
 .dark_theme .ico_plans .panel-default {
   background: #323232;
@@ -228,7 +244,7 @@
 }
 
 .dark_theme .create_airdrop label {
-  color: #515162;
+  color: #fff !important;
 }
 
 .dark_theme .ico_block_details {
@@ -373,8 +389,19 @@
 }
 
 .dark_theme .search_filter {
-  background: #242532;
-  color: #fff;
+  background: #17171a !important;
+  color: #fff !important;
+  border-color: #323232 !important;
+}
+
+.dark_theme .search_filter input{
+  color: #fff !important;
+}
+
+.dark_theme .cust_filters_dropdown .cust_filter_input input{
+  background: #17171a !important;
+  color: #fff !important;
+  border: 1px solid #323232 !important;
 }
 
 .dark_theme .search_filter input {
@@ -439,7 +466,7 @@
   color: #fff;
 }
 .dark_theme .dropdown_wallet_header h6:first-child {
-  /* border-top: 1px solid #18191c; */
+  border-top: 1px solid #18191c;
 }
 .dark_theme .market_top_header .connect_wallet_header .connect_wallet {
   background: #2c2c2f;
@@ -474,11 +501,7 @@
   color: #fff;
 }
 
-.dark_theme .choose_file_input label {
-  color: #fff;
-  background: #242437;
-  border: 2px dashed #363652;
-}
+
 
 .dark_theme .token_max_supply .input-group-prepend .input-group-text {
   background: #323232;
@@ -572,10 +595,17 @@
 }
 
 .dark_theme .pager__list.pagination_element ul li.active a {
-  background: #323546 !important;
-  color: #f1b50a !important;
-  border: 1px solid #323546;
+  background: #2c2c2f !important;
+  color: #fff !important;
+  border: 0px solid #444b58;
+  border-radius: 6px;
 }
+
+.dark_theme .pager__list.pagination_element ul li a{
+  color: #fff !important;
+  border: 0px solid #212126;
+}
+
 
 .dark_theme .company_profile_tabs li:last-child {
   border-right: 0px;
@@ -610,16 +640,13 @@
   color: #585885;
 }
 
-.dark_theme .market_page_data tr td:first-child {
-  background: #17171a;
-  border-right: 0px;
-}
 
-.dark_theme .market_page_data thead th:first-child {
-  background: #17171a;
-}
 
 .dark_theme .page_range {
+  color: #fff;
+}
+
+.dark_theme .market-overview .overview-title {
   color: #fff;
 }
 
@@ -662,6 +689,7 @@
 .dark_theme .modal-content {
   background: #323232;
   color: #fff;
+  box-shadow: none;
 }
 .dark_theme .modal-header {
   border-bottom: 1px solid #18191c;
@@ -701,11 +729,12 @@
 
 .dark_theme .market_list_price .block_price {
   font-weight: 400;
+  color: #fff;
 }
 
 .dark_theme table thead th {
   font-weight: 500;
-  color: #7d7e84;
+  color: #fff !important;
 }
 
 .dark_theme .manage_tokens_edit {
@@ -737,7 +766,7 @@
 
 .dark_theme .market_token_details .token_share_vote li {
   background: #252533;
-  color: #555589;
+  color: #fff;
 }
 
 .dark_theme .market_token_details .token_share_vote li span {
@@ -767,16 +796,17 @@
 }
 
 .dark_theme .market_token_tabs .nav-tabs li a.active {
-  background: #363654;
+  background: #323232;
   color: #fff;
 }
 
 .dark_theme .market_token_tabs .nav-tabs li a {
-  color: #555589;
+  color: #b1b1b1;
 }
 
 .dark_theme .market_token_tabs .nav-tabs {
-  background: #242437;
+  background: #323232;
+  color: #fff;
 }
 
 .dark_theme .market_token_tabs h5 {
@@ -882,18 +912,207 @@
 }
 
 .dark_theme .how_do_you_feel p {
-  color: #4c4c77;
+  color: #fff;
 }
 
 .dark_theme .how_do_you_feel button {
   border: 1px solid #2c2c3e;
-  color: #585885;
+  color: #fff;
   background: #2c2c3e;
 }
 
 .dark_theme .coin_ico_list {
   border-top: 1px solid #2c2c3e;
 }
+
+.dark_theme body{
+  color: #fff;
+}
+
+.dark_theme .market_page_data a {
+  color: #fff;
+}
+
+.dark_theme .ico_canlendar_headings h1, .dark_theme .ico_canlendar_headings h2{
+  color: #fff;
+}
+
+.dark_theme .profile_page_table h5 {
+  color: #fff;
+}
+
+.dark_theme .transaction_table_block .secondary_tabs .secondary_tabs_active {
+  color: #fff;
+}
+
+.dark_theme .tabs_partition {
+  border-color: #6f6f6f;
+}
+
+.dark_theme .crypto-assets{
+  border-color: #323232;
+}
+
+.dark_theme .profile_page_table tbody tr:nth-of-type(odd){
+background-color: #17171a;
+}
+
+.dark_theme .dex-donot-pichart {
+  border-color: #323232;
+  background: #17171a;
+}
+
+.dark_theme .charts_subtitle h6 {
+  color: #fff;
+}
+
+.dark_theme .apexcharts-legend-text, .dark_theme .apexcharts-text tspan{
+  color: #fff !important;
+  fill: #fff;
+}
+
+.dark_theme .portfolio-sub-title,
+.dark_theme .txn-hash-link,
+.dark_theme .markets_subtitle,
+.dark_theme .token_price_block h6,
+.dark_theme .token_list_content h4,
+.dark_theme .quick_block_links .widgets__select a{
+  color: #fff !important;
+}
+
+
+.dark_theme #footer, .dark_theme #site-info {
+  background-color: #1c1d21 !important;
+}
+
+.dark_theme .cust_portfolio_network .cust_filter_input{
+  background: #17171a !important;
+  border: 1px solid #323232;
+  color: #fff !important;
+}
+
+.dark_theme .wallet-list-li, .dark_theme .wallet-list-li li{
+  background: #17171a !important;
+  border-color:  #323232;
+  color: #fff !important;
+}
+
+.dark_theme .test_dropdown .dropdown_button {
+  background: #17171a !important;
+}
+
+.dark_theme .dropdown-menu.show{
+  background: #35353c !important;
+}
+
+.dark_theme .network_display_dropdown .network_select span , .dark_theme .asset_view_dropdown .dropdown-toggle{
+  background: #17171a !important;
+  border: 1px solid #323232;
+  color: #fff !important;
+}
+
+.dark_theme .profile_page_table .table tr td img{
+  box-shadow: none;
+}
+
+.dark_theme .asset_view_dropdown .dropdown-menu li {
+  color: #fff;
+  border-color: #323232;
+}
+
+
+.dark_theme .analytic-gainer,
+.dark_theme .nft-details,
+.dark_theme .cust_filters_dropdown .markets_selected_category,
+.dark_theme .cust_filters_dropdown .cust_filter_result,
+.dark_theme .converter-label,
+.dark_theme .converter-input,
+.dark_theme .tokenomic_graph,
+.dark_theme .converter-label span,
+.dark_theme .input_block_outline .form-control,
+.dark_theme .input_block_outline,
+.dark_theme .dark_theme .choose_file_input label,
+.markets_modal .login_account_body .input-group{
+  background: #17171a !important;
+  border: 1px solid #323232;
+  color: #fff !important;
+}
+
+.dark_theme .markets_header_token, .dark_theme .form-no-border{
+  background: #17171a !important;
+}
+
+.dark_theme .charts_date_tab .nav-tabs li a.active , .dark_theme .exchange-tabs .nav-tabs li a.active {
+  background: #000;
+  color: #fff !important;
+}
+
+.dark_theme .charts_date_tab, .dark_theme .volume-tabs{
+  background: #323232;
+}
+
+.dark_theme .news_list_events h4 {
+  color: #fff;
+}
+
+.dark_theme .tokendetail_charts,
+.dark_theme .events_tables_content {
+  border: 1px solid #323232;
+}
+
+.dark_theme .text-center{
+  color: #fff;
+}
+
+.dark_theme .small_guage {
+  color: #fff;
+}
+
+.dark_theme .country-currency-menu{
+  background: #323232;
+}
+
+.dark_theme .speedometer .label text, 
+.dark_theme .small_guage .speedometer .current-value,
+.dark_theme .analysis_values h4, 
+.dark_theme .speedometer .current-value, 
+.dark_theme .pointer,
+.dark_theme .total_buy_sell_neutral,
+.dark_theme .summary_total,
+.dark_theme .price_desc h4,
+.dark_theme .tokendetail_charts h6,
+.dark_theme select,
+.dark_theme .Currency_popup .title {
+  color: #fff !important;
+  fill: #fff !important;
+}
+
+.dark_theme .technical_anaylysis_table  table thead  {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+.dark_theme .analysis_values{
+  border-color: #323232;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media (max-width: 991px) {
   .dark_theme .navbar_border_bottom .main_menu_header{
     background: #17171A;
@@ -940,4 +1159,4 @@
   .dark_theme .sticky_footer_menu{
     background: #24242a;
   }
-}
+} */

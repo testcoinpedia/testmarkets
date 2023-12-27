@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { live_price_graphql } from './graphql'
+// import { live_price_graphql } from './graphql'
 import {  count_live_price, API_BASE_URL, config, roundNumericValue} from '../constants'
 import Axios from 'axios'  
 import moment from 'moment'

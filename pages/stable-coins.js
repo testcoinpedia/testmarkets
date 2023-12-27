@@ -18,13 +18,11 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 // import Select from 'react-select'
 import { useRouter } from 'next/navigation'
 
-export default function Companies({userAgent,modalprops})
+export default function Companies({userAgent})
 { 
-  console.log("modalprops",modalprops)
-  
     const router = useRouter()
     const myRef = useRef(null)
-    
+    const { userData, active_currency } = useSelector(state => state)
     //const { active_category_tab } = router.query
     const active_category_tab = ''
     const [tokens_list, set_tokens_list] = useState([]) 
@@ -64,13 +62,22 @@ export default function Companies({userAgent,modalprops})
     const [request_config, set_request_config] = useState(config(userAgent.user_token ? userAgent.user_token : ""))
     const [action_row_id, set_action_row_id] = useState("")
    
-    useEffect(() => {
-   
-      if(modalprops.login_data){
-        getDataFromChild(modalprops)
+
+    useEffect(() => 
+    {
+      if(userData.token)
+      {
+        actionAfterMenuLogin(userData)
       }
-    
-    }, [modalprops]);
+    }, [userData.token]);
+
+    const actionAfterMenuLogin = async (pass_data) =>
+    {
+      await tokensList({selected : 0}, 1)
+      await set_user_token(pass_data.token)
+      await set_request_config(pass_data.token)
+    }
+
     const getDataFromChild = async (pass_object) => 
     {
       await set_login_modal_status(false)
@@ -98,7 +105,7 @@ export default function Companies({userAgent,modalprops})
       await set_action_row_id(pass_id)
     }
 
-    const active_currency = useSelector(state => state.active_currency)
+    
 
     const convertCurrency = (token_price) =>
         {

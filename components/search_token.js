@@ -1,9 +1,10 @@
 /* eslint-disable */
 import React , {useState, useEffect, useRef} from 'react'
 import Axios from 'axios'
-import {API_BASE_URL, graphqlApiKEY, market_coinpedia_url, config, createValidURL, IMAGE_BASE_URL, website_url} from '../components/constants'
+import {API_BASE_URL, graphqlApiKEY, market_coinpedia_url, config, createValidURL, IMAGE_BASE_URL, getShortWalletAddress} from '../components/constants'
 // import { useRouter } from 'next/navigation'
 import Popupmodal from '../components/popupmodal'
+import LoginModal from './layouts/auth/loginModal'
 import Link from 'next/link'
 import JsCookie from "js-cookie" 
 import { TrendingLoader } from '../components/loaders/contentLoader'
@@ -21,10 +22,11 @@ export default function Details()
     const [search_container_status, set_search_container_status] = useState(false)
     const [image_base_url] = useState(IMAGE_BASE_URL+'/markets/cryptocurrencies/')
     const [cmc_image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
-    
+    const [request_config, set_request_config] = useState(config(""))
     const [result_showing_type, set_result_showing_type] = useState(1)
     //1:trending & recent searched, 2:Show all tokens, 3:Show all category
 
+    const [user_token, set_user_token] = useState(JsCookie.get("user_token") ? JsCookie.get("user_token"):"")
     const [default_category_list, set_default_category_list] = useState([])
     const [default_tokens_list, set_default_tokens_list] = useState([])
     const [searched_tokens_list, set_searched_tokens_list] = useState([])
@@ -34,7 +36,18 @@ export default function Details()
     const [searched_categories_list, set_searched_categories_list] = useState([])
     const [api_loader,set_api_loader]=useState(false)
     const [api_loader_status,set_api_loader_status]=useState(false)
+    const [searched_liquidity_list, set_searched_liquidity_list] = useState([])
+    const [modal_data, setModalData] = useState({ icon: "", title: "", content: "" })
+    const [add_request_modal_status, set_add_request_modal_status] = useState(false)
+    const [add_token_name, set_add_token_name] = useState("")
+    const [add_symbol, set_add_symbol] = useState("")
+    const [add_request_loader_status, set_add_request_loader_status] = useState(false)
+    const [err_add_token_name, set_err_add_token_name] = useState("")
+    const [err_add_symbol, set_err_add_symbol] = useState("")
     
+    
+
+
     var data = []
     if(JsCookie.get("category_search_tokens"))
     {
@@ -46,6 +59,7 @@ export default function Details()
     const [categories_list, set_categories_list] = useState([])
     const [see_all_trending, set_see_all_trending] = useState(false)
     const [see_all_categories, set_see_all_categories] = useState(false)
+    const [login_modal_status, set_login_modal_status] = useState(false)
 
     const category_search_modal = useRef()
     useEffect(() => {
@@ -61,11 +75,82 @@ export default function Details()
         }
     }, [])
 
+
+    
+  const getDataFromChild = async () => 
+  {
+    await set_login_modal_status(false)
+    router.push('/token/update')  
+  }
+
+  const login_props = {
+    status: true,
+    request_config: request_config,
+    callback: getDataFromChild
+  }
+
+
+    const loginModalStatus = async () => 
+    {
+        await set_login_modal_status(false)
+        await set_login_modal_status(true)
+    }
+
     const clearform = () =>
     {
         set_search_contract_address("")
         setSearchBy("")
     }
+
+    const addTokenRequest = async () =>
+    {    
+        let formIsValid = true
+        set_err_add_token_name("")
+        set_err_add_symbol("")
+        setModalData({icon: "", title: "", content:""})
+
+        if(!add_token_name) 
+        {
+            formIsValid = false
+            set_err_add_token_name("The Add Token Name field is required.")
+        }
+
+        if(!add_symbol) 
+        {
+            formIsValid = false
+            set_err_add_symbol("The Add Symbol field is required.")
+        }
+
+        if(!formIsValid) 
+        {
+            return
+        }
+
+        const req_obj = {
+            token_name : add_token_name,
+            symbol : add_symbol,
+            search_from_type : 2
+        }
+        
+        set_add_request_loader_status(true)
+        const res = await Axios.post(API_BASE_URL+"markets/search_contract_address/update_details", req_obj, config(""))
+        if(res.data)
+        {
+            if(res.data.status)
+            { 
+                setModalData({icon: "", title: "Thank you", content:res.data.message.alert_message})
+                set_add_token_name("")
+                set_add_symbol("")
+                set_search_contract_address("")
+                set_add_request_modal_status(false)
+                set_add_request_loader_status(false)
+            } 
+        } 
+       
+    }
+
+
+
     const getTokenData = async ()=>
     { 
         // setvalidContractAddress("")
@@ -188,7 +273,7 @@ export default function Details()
             { 
                 set_api_loader(true)
                 set_see_all_trending(false)
-                
+               
                 set_default_tokens_list(res.data.message.tokens_list)
                 set_default_category_list(res.data.message.categories_list)
             } 
@@ -210,8 +295,10 @@ export default function Details()
                 set_searched_call_status(false)
                 set_searched_tokens_list(res.data.message.coins)
                 set_searched_categories_list(res.data.message.category)
+                set_searched_liquidity_list(res.data.message.liquidity)
                 set_api_loader_status(false)
-                if((res.data.message.coins.length == 0) && (res.data.message.category.length == 0))
+                
+                if((res.data.message.coins.length == 0) && (res.data.message.category.length == 0) && (res.data.message.liquidity.length == 0))
                 {   
                     set_api_loader_status(true)
                     const token_basic_details = await checkContractAddress(param)
@@ -307,10 +394,10 @@ return (
                 !search_container_status ?
                 <>
                 <div className="input-group search_filter new_design_serach">
-                    <input onClick={()=>set_search_container_status(true)}  type="text" className="form-control search-input-box" placeholder="Search " />
                     <div className="input-group-prepend ">
                         <span className="input-group-text" onClick={()=>set_search_container_status(true)} ><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                     </div>
+                    <input onClick={()=>set_search_container_status(true)}  type="text" className="form-control search-input-box" placeholder="Search Coin or Address" />
                 </div> 
                 <div className="error">  {err_searchBy}</div>
                 {validSearchContract && <div className="error">{validSearchContract}</div>}
@@ -399,13 +486,16 @@ return (
                                 <div >
                                     {
                                         recent_search_list.map((e,i) =>
-                                        <Link href={"/"+e.token_id}>
-                                            <div className='recent-searches'>
-                                                <img className="media-object token-img" src={(e.token_image ? image_base_url+e.token_image: e.coinmarketcap_id ? cmc_image_base_url+e.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={"test"} />
-                                                <div className="coin-name">{e.token_name}</div>
-                                                <div className="coin-symbol">{e.symbol}</div>
-                                            </div>
-                                             </Link>
+                                            e.token_id ?
+                                            <Link href={"/"+e.token_id}>
+                                                <div className='recent-searches'>
+                                                    <img className="media-object token-img" src={(e.token_image ? image_base_url+e.token_image: e.coinmarketcap_id ? cmc_image_base_url+e.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={"test"} />
+                                                    <div className="coin-name">{e.token_name}</div>
+                                                    <div className="coin-symbol">{e.symbol}</div>
+                                                </div>
+                                            </Link>
+                                            :
+                                            ""
                                         )
                                     }
                                     
@@ -491,11 +581,40 @@ return (
                                 :
                                 ""
                             }
+
+                            {
+                                (searched_liquidity_list && searched_liquidity_list.length > 0) ?
+                                <div>
+                                    <p className='searchbox_titles'>Searched Dex Pairs</p>
+                                    <ul className="search-tokens">
+                                    {
+                                        searched_liquidity_list.slice(0,6).map((e,i) =>
+                                            <li onClick={()=>searchByCategoryTokens(e)} key={i}>
+                                               <Link href={"/"+e.token_id}>
+                                                
+                                                        <div className="media">
+                                                            <div className="media-left">
+                                                                <img className="media-object token-img" src={(e.token_image ? image_base_url+e.token_image: e.coinmarketcap_id ? cmc_image_base_url+e.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} />
+                                                            </div>
+                                                            <div className="media-body">
+                                                                <p className="media-heading">{e.symbol}<span>/{e.pair_token_symbol}</span> {getShortWalletAddress(e.liquidity_address, 6)}</p>
+                                                            </div>
+                                                        </div>
+                                                </Link>
+                                            </li>
+                                        )
+                                    }
+                                    </ul>
+                                </div>    
+                                :
+                                ""
+                            }
+
                             
                             {
                                 searched_contract_details ?
                                 <div>
-                                    <p className='searchbox_titles'>Searched Dex Contract</p>
+                                    <p className='searchbox_titles'>Searched Dex Contracts</p>
                                     <ul className="search-tokens">
                                         <li key={233} onClick={()=>searchContract(searched_contract_details )}> 
                                             <div className="media">
@@ -511,6 +630,26 @@ return (
                                             </div>
                                         </li> 
                                     </ul>
+                                </div> 
+                                :
+                                ""
+                            }
+
+
+                            {
+                                !searched_contract_details && (searched_tokens_list.length == 0) && (searched_categories_list.length == 0) && (searched_liquidity_list.length == 0) ?
+                                <div style={{fontWeight:"500"}}>
+                                    Submit an <span className='add-token-link' onClick={()=>{set_add_request_modal_status(true), set_add_token_name(search_contract_address)}}>Add Token Request</span> to the administrator, or if you are the token owner, {
+                                        user_token ?
+                                        <>
+                                        <Link href={"/token/update"} className='add-token-link' >list new token</Link>
+                                        </>
+                                        :
+                                        <>
+                                       <a className='add-token-link' onClick={()=>loginModalStatus()}>Log In</a> to add the new token.
+                                        </>
+                                        
+                                    } 
                                 </div> 
                                 :
                                 ""
@@ -721,7 +860,55 @@ return (
                 :
                 ""
             } 
+
+                {login_modal_status ? <LoginModal name={login_props} /> : null}
+
+                {modal_data.title ? <Popupmodal name={modal_data} /> : null}
+
+
+            <div className="markets_modal">
+                <div className={'modal modal-create-acc'} style={add_request_modal_status ? { display: 'block' } : { display: 'none' }}>
+                    <div className="modal-dialog  modal-dialog-zoom event-login-popup">
+                        <div className="modal-content modal_registration_success modal-create-acc">
+                            <div className="modal-body">
+                            <button type="button" className="close" onClick={() => set_add_request_modal_status(false)}>
+                                <img src="/assets/img/pop-cancel.svg" alt="pop-cancel" title="pop-cancel" className="close-popup" />
+                            </button>
+
+                            <div className="create_account">
+                                <div className="login_account_body pb-0">
+                                    <h4 className="title">Submit a request to the administrator to add token details.</h4>
+                                    
+                                    <div className='mt-3'><b>Request Token Name <span className="label_star">*</span></b></div>
+                                    <div className="input-group mt-0">
+                                        <input type="text" className="form-control" placeholder="Request Token Name"  value={add_token_name} onChange={(e) => set_add_token_name((e.target.value).toLowerCase())} />
+                                    </div>
+                                    <div className="error">{err_add_token_name}</div>
+
+                                    <div className='mt-3'><b>Request Token Symbol <span className="label_star">*</span></b></div>
+                                    <div className="input-group mt-0">
+                                        <input type="text" className="form-control" placeholder="Request Token Symbol"  value={add_symbol} onChange={(e) => set_add_symbol((e.target.value).toLowerCase())} />
+                                    </div>
+                                    <div className="error">{err_add_symbol}</div>
+                                
+
+                                    <div className='button_wallet'>
+                                        {
+                                            add_request_loader_status ?
+                                            <button type="submit" style={{opacity:"0.5"}} className="button_transition"><div className="loader"><span className="spinner-border spinner-border-sm "></span> Submit</div></button>
+                                            :
+                                            <button type="submit" className="button_transition" onClick={() => addTokenRequest()}>Submit</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+    </div>
     )
 }         
 

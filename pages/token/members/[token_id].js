@@ -453,7 +453,7 @@ const btndelete = (row_id) => {
                                                     </div>
                                                     {manual_input_status ?
                                                     <div className="col-md-2 col-3">
-                                                        <h6><span onClick={() => closeAddSpeaker()}><button type="button" class="close"><img src="https://events.coinpedia.org/assets/img/pop-cancel.svg" alt="Close" title="Close" /></button></span></h6>
+                                                        <button type="button" onClick={() => closeAddSpeaker()} className="close"><img src="https://events.coinpedia.org/assets/img/pop-cancel.svg" alt="Close" title="Close" /></button>
                                                     </div>
                                                     :""}
                                                 </div>
@@ -513,7 +513,7 @@ const btndelete = (row_id) => {
                                                                         {err_add_manual_designation && <div className="error">{err_add_manual_designation}</div>}
                                                                     </div>
                                                                     <div className="review_upload_token mt-3">
-                                                                        <button type="submit" className="dsaf button_transition" onClick={() => addSpeakerManually()}>Add Member Manually</button>
+                                                                        <button type="submit" className="dsaf button_transition" onClick={() => addSpeakerManually()}> Add Member Manually</button>
                                                                     </div>
                                                                 </div></>
                                                             :
@@ -620,9 +620,9 @@ const btndelete = (row_id) => {
                                                         <div className="review_upload_token mt-3">
                                                             <button className="dsaf button_transition" onClick={() => createMember()}>
                                                                 {loader ? (
-                                                                    <div className="loader"><span className="spinner-border spinner-border-sm " ></span>Add Member</div>
+                                                                    <div className="loader"><span className="spinner-border spinner-border-sm " ></span> Add Member</div>
                                                                 ) : (
-                                                                    <>Add Member</>
+                                                                    <> Add Member</>
                                                                 )}
                                                             </button>
                                                         </div>

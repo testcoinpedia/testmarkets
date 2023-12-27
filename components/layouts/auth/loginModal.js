@@ -711,14 +711,17 @@ export default function LoginPopupmodal(props)
                         {
                             page_type == 0 ?
                                 <div className="modal-body">
-                                    <button type="button" className="close" onClick={() => setShowModal(false)}>
-                                        <img src="/assets/img/pop-cancel.svg" alt="pop-cancel" title="pop-cancel" className="close-popup" />
-                                    </button>
+                                    {/* <button type="button" className="close" onClick={() => setShowModal(false)}>
+                                        <img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt="pop-cancel" title="pop-cancel" className="close-popup" />
+                                    </button> */}
+                                     <button type="button" className="close" onClick={() => setShowModal(false)}>
+                                        <img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt="pop-cancel" className="close-popup" title="pop-cancel" /></button>
+                                     <img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18142420/toggle_menu.svg" title="Toggle Menu" alt="Toggle Menu"></img>
                                     <div className="">
-                                        <div className="">
+                                        <div className="col-md-11 mx-auto">
                                             <div className="create_account">
                                                 <div className="login_account_body pb-0">
-                                                    <h4 className="title">Manage Your Portfolio And Watchlist Markets On Coinpedia.</h4>
+                                                    <h4>Manage Your Portfolio And Watchlist Markets On Coinpedia.</h4>
                                                     {
                                                         err_wallet_address ?
                                                         <div className="alert alert-warning mt-2">
@@ -730,7 +733,7 @@ export default function LoginPopupmodal(props)
                                                    
                                                 
                                                     <div className="input-group">
-                                                        <input type="text" className="form-control" placeholder="Type Your Email ID" id="mail" name="email" value={login_id} onChange={(e) => LoginStatus((e.target.value).toLowerCase())} />
+                                                        <input type="text" className="form-control" placeholder="Enter Your Email ID" id="mail" name="email" value={login_id} onChange={(e) => LoginStatus((e.target.value).toLowerCase())} />
                                                         <div className="input-group-append">
                                                             <span className="input-group-text">
                                                             <img src="/assets/img/login-email.svg" alt="email" width="20" title="email" />
@@ -920,7 +923,8 @@ export default function LoginPopupmodal(props)
                                             <div className="">
                                                 <div className="">
                                                     <div className="create_account text-center">
-                                                        <button type="button" className="close" onClick={() => setShowModal(false)}><img src="/assets/img/pop-cancel.svg" alt="pop-cancel" className="close-popup" title="pop-cancel" /></button>
+                                                        <button type="button" className="close" onClick={() => setShowModal(false)}>
+                                                            <img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt="pop-cancel" className="close-popup" title="pop-cancel" /></button>
                                                         <div className="login_account_body pb-0">
                                                             <h4 className="title mb-2">Verify your email </h4>
                                                             <p>A code has been sent to <strong>{email_id}</strong>. Enter it below to verify your email.
@@ -948,25 +952,28 @@ export default function LoginPopupmodal(props)
                                                                             />
                                                                         </div>
                                                                         {err_otp_number && <div className="text-center err_message">{err_otp_number}</div>}
+
+                                                                        <div className='col-md-8 mx-auto'>
                                                                         <div className="button_wallet">
                                                                             {
                                                                                 otp_number.length == 6 ?
-                                                                                    <button className="btn-gradient-primary submit_button button_transition" type="button" onClick={() => { submitVerifyEmail(otp_number) }}>
+                                                                                    <button className=" button_transition mt-0" type="button" onClick={() => { submitVerifyEmail(otp_number) }}>
                                                                                         {
                                                                                             loader ?
                                                                                                 <>
                                                                                                     <span style={{ width: "1rem", height: "1rem" }} className="spinner-border spinner-border-sm mr-1"></span> Verifying
                                                                                                 </>
                                                                                                 :
-                                                                                                <>Verify OTP </>
+                                                                                                <>Verify </>
                                                                                         }
                                                                                     </button>
                                                                                     :
-                                                                                    <button className="btn-gradient-primary submit_button button_transition" style={{ opacity: "0.5" }} type="button">
-                                                                                        Verify OTP
+                                                                                    <button className="button_transition mt-0" style={{ opacity: "0.5" }} type="button">
+                                                                                        Verify
                                                                                     </button>
                                                                             }
                                                                             <div className="verify-otp-go-back" onClick={() => clearPreLoginAccount()} >Go back</div>
+                                                                        </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -979,238 +986,248 @@ export default function LoginPopupmodal(props)
                                     </div>
                                     :
                                     page_type == 2 ?
-                                        <div className="modal-body">
-                                            <button type="button" className="close" onClick={() => setShowModal(false)}><img src="/assets/img/pop-cancel.svg" alt="pop-cancel" title="pop-cancel" className="close-popup" /></button>
-                                            <div className="login_account_body pb-0">
-                                                <h4 className="title">Create CoinPedia Account </h4>
-                                                <p>A Platform to over 1 million + Crypto and Blockchain enthusiasts in the world.</p>
-                                            </div>
-                                            <div className="manual_login">
-                                                <form className="form-horizontal" action="" method="post" id="myform">
-                                                    <div className="">
-                                                        <div className="row">
-                                                            <div className="col-md-12 auth_second_step">
-                                                                {
-                                                                    register_type == 1 ?
+                                    <div className="modal-body">
+                                    <button type="button" className="close" onClick={() => setShowModal(false)}>
+                                        <img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt="pop-cancel" className="close-popup" title="pop-cancel" />
+                                        <img src="/assets/img/darkmode/pop-cancel.svg" className='darkmode_image' alt="Cancel" title="Cancel" /></button>
+                                    <div className="login_account_body pb-0">
+                                        <h4>Create CoinPedia Account </h4>
+                                        <p>A Platform to over 1 million + Crypto and Blockchain enthusiasts in the world.</p>
+                                    </div>
+                                    <div className="manual_login">
+                                        <form className="form-horizontal" action="" method="post" id="myform">
+                                            <div className="">
+                                                <div className="row">
+                                                    <div className="col-md-12 auth_second_step">
+                                                        {
+                                                            register_type == 1 ?
+                                                                <div className="row">
+                                                                    <div className="col-md-12">
+                                                                        <div className="media email_connected connected_social_block">
+                                                                            <div className="media-body">
+                                                                                <input autoComplete="off" type="text" className="form-control" value={email_id} />
+                                                                            </div>
+                                                                            <div className="media-right">
+                                                                                <img src="/assets/img/login-email.svg" alt="Email" title="Email" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                :
+                                                                register_type == 6 ?
+                                                                    <div className="row">
+                                                                        <div className="col-md-12">
+                                                                            <div className="media metamast_connected connected_social_block">
+                                                                                <div className="media-body">
+                                                                                    <input autoComplete="off" type="text" className="form-control" value={temp_wallet_address} />
+                                                                                </div>
+                                                                                <div className="media-right">
+                                                                                    <img src="/assets/img/login-metamask.svg" alt="Metamask" title="Metamask" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    :
+                                                                    register_type == 2 ?
                                                                         <div className="row">
                                                                             <div className="col-md-12">
                                                                                 <div className="media email_connected connected_social_block">
                                                                                     <div className="media-body">
-                                                                                        <input autoComplete="off" type="text" className="form-control" value={email_id} />
+                                                                                        <input autoComplete="off" type="text" className="form-control" value={mobile_number} />
                                                                                     </div>
                                                                                     <div className="media-right">
-                                                                                        <img src="/assets/img/login-email.svg" alt="Email" title="Email" />
+                                                                                        <img src="/assets/img/login-telegram.svg" alt="Telegram" title="Telegram" />
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                         :
-                                                                        register_type == 6 ?
-                                                                            <div className="row">
-                                                                                <div className="col-md-12">
-                                                                                    <div className="media metamast_connected connected_social_block">
-                                                                                        <div className="media-body">
-                                                                                            <input autoComplete="off" type="text" className="form-control" value={temp_wallet_address} />
-                                                                                        </div>
-                                                                                        <div className="media-right">
-                                                                                            <img src="/assets/img/login-metamask.svg" alt="Metamask" title="Metamask" />
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
+                                                                        ""
+                                                        }
+                                                        <div className="row">
+                                                            <div className="col-md-12">
+                                                            <h6 className="field_label">Full Name<span>*</span></h6>
+                                                                <div className=" form-custom">
+                                                                    <div className="form-group input_block_outline">
+                                                                        <div className="input-group">
+                                                                            <div className="input-group-append">
+                                                                                <select className="input-group-text text-left form-control" onChange={(e) => setgender(e.target.value)}>
+                                                                                    <option value="1">Male</option>
+                                                                                    <option value="2">Female</option>
+                                                                                    <option value="3">Other</option>
+
+                                                                                </select>
                                                                             </div>
-                                                                            :
-                                                                            register_type == 2 ?
-                                                                                <div className="row">
-                                                                                    <div className="col-md-12">
-                                                                                        <div className="media email_connected connected_social_block">
-                                                                                            <div className="media-body">
-                                                                                                <input autoComplete="off" type="text" className="form-control" value={mobile_number} />
-                                                                                            </div>
-                                                                                            <div className="media-right">
-                                                                                                <img src="/assets/img/login-telegram.svg" alt="Telegram" title="Telegram" />
-                                                                                            </div>
+                                                                            <input autoComplete="off" type="text" placeholder="Type your Full Names" className="form-control" value={full_name} onChange={(e) => setfull_name((e.target.value))} />
+                                                                        </div>
+                                                                        {err_full_name && <div className="error">{err_full_name}</div>}
+                                                                    </div>
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                            {/* <div className="col-md-12">
+                                                                <div className="default_form_group">
+                                                                    <div className="form-group">
+                                                                        <input autoComplete="off" type="text" className="form-control" placeholder="Type your Username*" value={user_name} onChange={(e) => setUserName((e.target.value).toLowerCase())} />
+                                                                        {err_user_name && <div className="error">{err_user_name}</div>}
+                                                                    </div>
+                                                                </div>
+                                                            </div> */}
+                                                            {
+                                                                register_type != 1 ?
+                                                                    <>
+                                                                        {
+                                                                            temp_facebook_email ?
+                                                                                <div className="col-md-12">
+                                                                                    <h6 className="field_label">Email ID<span>*</span></h6>
+                                                                                    <div className="default_form_group">
+                                                                                        <div className="form-group">
+                                                                                            <input autoComplete="off" type="text" className="form-control" placeholder="Enter your Email ID*" value={temp_facebook_email} readOnly="true" />
+
                                                                                         </div>
+                                                                                        {err_email_id && <div className="error">{err_email_id}</div>}
                                                                                     </div>
                                                                                 </div>
                                                                                 :
-                                                                                ""
-                                                                }
-                                                                <div className="row">
-                                                                    <div className="col-md-12">
-                                                                        <div className="default_form_group">
-                                                                            <div className="form-group addon-select-option">
-                                                                                <div className="input-group">
-                                                                                    <div className="input-group-append country_select">
-                                                                                        <select name="cars" id="cars" className="input-group-text text-left" onChange={(e) => setgender(e.target.value)}>
-                                                                                            <option value="1">Male</option>
-                                                                                            <option value="2">Female</option>
-                                                                                            <option value="3">Other</option>
-
-                                                                                        </select>
-                                                                                    </div>
-                                                                                    <input autoComplete="off" type="text" placeholder="Type your Full Name*" className="form-control" value={full_name} onChange={(e) => setfull_name((e.target.value))} />
-                                                                                </div>
-                                                                                {err_full_name && <div className="error">{err_full_name}</div>}
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    {/* <div className="col-md-12">
-                                                                        <div className="default_form_group">
-                                                                            <div className="form-group">
-                                                                                <input autoComplete="off" type="text" className="form-control" placeholder="Type your Username*" value={user_name} onChange={(e) => setUserName((e.target.value).toLowerCase())} />
-                                                                                {err_user_name && <div className="invalid-input-feilds">{err_user_name}</div>}
-                                                                            </div>
-                                                                        </div>
-                                                                    </div> */}
-                                                                    {
-                                                                        register_type != 1 ?
-                                                                            <>
-                                                                                {
-                                                                                    temp_facebook_email ?
-                                                                                        <div className="col-md-12">
-                                                                                            <div className="default_form_group">
-                                                                                                <div className="form-group">
-                                                                                                    <input autoComplete="off" type="text" className="form-control" placeholder="Type your Email ID*" value={temp_facebook_email} readOnly="true" />
-                                                                                                    {err_email_id && <div className="error">{err_email_id}</div>}
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        :
-                                                                                        <div className="col-md-12">
-                                                                                            <div className="default_form_group">
-                                                                                                <div className="form-group">
-                                                                                                    <input autoComplete="off" type="text" className="form-control" placeholder="Type your Email ID*" value={email_id} onChange={(e) => setEmailId((e.target.value).toLowerCase())} />
-                                                                                                    {err_email_id && <div className="error">{err_email_id}</div>}
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                }
-
-                                                                            </>
-                                                                            :
-                                                                            ""
-                                                                    }
-                                                                    {
-                                                                        register_type != 6 ?
-                                                                            <>
                                                                                 <div className="col-md-12">
-                                                                                    {
-                                                                                        !temp_wallet_address ?
-                                                                                            <div className="default_form_group">
-                                                                                                <div className="form-group connect_wallet_block">
-                                                                                                    <p onClick={() => connectToWallet(0)}>Click here to connect Wallet</p>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            :
+                                                                                    <div className="default_form_group">
+                                                                                        <div className="form-group">
+                                                                                            <input autoComplete="off" type="text" className="form-control" placeholder="Enter your Email ID" value={email_id} onChange={(e) => setEmailId((e.target.value).toLowerCase())} />
+
+                                                                                        </div>
+                                                                                        {err_email_id && <div className="error">{err_email_id}</div>}
+                                                                                    </div>
+                                                                                </div>
+                                                                        }
+
+                                                                    </>
+                                                                    :
+                                                                    ""
+                                                            }
+                                                            {
+                                                                register_type != 6 ?
+                                                                    <>
+                                                                        <div className="col-md-12">
+                                                                            {
+                                                                                !temp_wallet_address ?
+                                                                                <>
+                                                                                  <h6 className="field_label">Connect Wallet</h6>
+                                                                                    <div className="default_form_group">
+                                                                                        <div className="form-group connect_wallet_block">
+                                                                                            <p onClick={() => connectToWallet(0)}>Click here to connect Wallet</p>
+                                                                                        </div>
+                                                                                        {err_wallet_address && <div className="error">{err_wallet_address}</div>}
+                                                                                    </div>
+                                                                                    </>
+                                                                                    :
+                                                                                    <>
+                                                                                        <label htmlFor="username">Connected Wallet Address</label>
+                                                                                        <div className="default_form_group">
                                                                                             <div className="form-group">
-                                                                                                <label htmlFor="username">Connected Wallet Address</label>
+
                                                                                                 <input id="user_name" type="text" className="form-control" placeholder="0x12...123" value={temp_wallet_address} autoFocus="" readOnly />
                                                                                             </div>
-
-                                                                                    }
-                                                                                    {err_wallet_address && <div className="error">{err_wallet_address}</div>}
-                                                                                </div>
-                                                                            </>
-                                                                            :
-                                                                            ""
-                                                                    }
-                                                                    {
-                                                                        register_type != 2 ?
-                                                                            <div className="col-md-12">
-                                                                                <div className="default_form_group">
-                                                                                    <div className="form-group addon-select-option">
-                                                                                        <div className="input-group">
-                                                                                            <div className="input-group-append country_select" onClick={() => set_country_list_status(true)}>
-                                                                                                <span className="input-group-text" >
-                                                                                                    <img src={"/assets/img/flags/" + country_data.country_flag} className="country_image" alt="India" title="India" /> {country_data.country_code}
-                                                                                                    <img src="/assets/img/down-arrow.png" className="country_caret_down" alt="drop down" title="drop down" />
-                                                                                                </span>
-                                                                                            </div>
-                                                                                            <input autoComplete="off" type="number" className="form-control" placeholder="Type your Mobile Number" value={mobile_number} onChange={(e) => set_mobile_number((e.target.value).toLowerCase())} />
+                                                                                            {err_wallet_address && <div className="error">{err_wallet_address}</div>}
                                                                                         </div>
-                                                                                        {err_mobile_number && <div className="error">{err_mobile_number}</div>}
+                                                                                    </>
+
+                                                                            }
+                                                                            
+                                                                        </div>
+                                                                    </>
+                                                                    :
+                                                                    ""
+                                                            }
+                                                            {
+                                                                register_type != 2 ?
+                                                                    <div className="col-md-12">
+                                                                        <h6 className="field_label">Mobile No</h6>
+                                                                        <div className="form-custom event_organiser_mobile_number mb-2">
+                                                                            <div className="form-group input_block_outline">
+                                                                                <div className="input-group">
+                                                                                    <div className="input-group-append country_select" onClick={() => set_country_list_status(true)}>
+                                                                                        <span className="input-group-text" >
+                                                                                            <img src={"/assets/img/flags/" + country_data.country_flag} className="country_image" alt="India" title="India" /> {country_data.country_code}
+                                                                                            <img src="/assets/img/down-arrow.svg" className="country_caret_down " alt="drop down" title="drop down" />
+                                                                                            <img src="/assets/img/darkmode/down-arrow.svg" className="country_caret_down darkmode_image" alt="drop down" title="drop down" />
+                                                                                        </span>
                                                                                     </div>
+                                                                                    <input autoComplete="off" type="number" className="form-control" placeholder="Type your Mobile Number" value={mobile_number} onChange={(e) => set_mobile_number((e.target.value).toLowerCase())} />
                                                                                 </div>
+                                                                                {err_mobile_number && <div className="error">{err_mobile_number}</div>}
                                                                             </div>
-                                                                            :
-                                                                            ""
-                                                                    }
-                                                                </div>
-                                                                <div className="row">
-                                                                    <div className="col-md-12">
-                                                                        <div className="default_form_group">
-                                                                            <div className="form-group">
-                                                                                <input type="text" autocomplete="off" className="form-control" placeholder="Any invitee Id ?" value={referral_id} onChange={(e) => setReferralId((e.target.value).toLowerCase())} />
-                                                                                {err_referral_id && <div className="error">{err_referral_id}</div>}
-                                                                            </div>
+                                                                            
                                                                         </div>
                                                                     </div>
-                                                                    {/* <div className="col-md-12">
-                                                                        <div className="default_form_group">
-                                                                            <div className="form-group">
-                                                                                <input type="text" autocomplete="off" className="form-control" placeholder="Working at?" value={company_name} onChange={(e) => setCompanyName((e.target.value).toLowerCase())} />
-                                                                                {err_company_name && <div className="invalid-input-feilds">{err_company_name}</div>}
-                                                                            </div>
-                                                                        </div>
+                                                                    :
+                                                                    ""
+                                                            }
+                                                        </div>
+                                                        <div className="row">
+                                                            <div className="col-md-12">
+                                                            <h6 className="field_label">Referral ID</h6>
+                                                                <div className="form-custom event_organiser_mobile_number mb-2">
+                                                                    <div className="form-group input_block_outline">
+                                                                    <div className="input-group">
+                                                                        <input type="text" autocomplete="off" className="form-control" placeholder="Any invitee Id ?" value={referral_id} onChange={(e) => setReferralId((e.target.value).toLowerCase())} />
+
                                                                     </div>
-                                                                    <div className="col-md-12">
-                                                                        <div className="default_form_group">
-                                                                            <div className="form-group">
-                                                                                <input type="text" autocomplete="off" className="form-control" placeholder="Working as?" value={designation} onChange={(e) => setDesignation(e.target.value)} />
-                                                                                {err_designation && <div className="invalid-input-feilds">{err_designation}</div>}
-                                                                            </div>
-                                                                        </div>
-                                                                    </div> */}
+                                                                    {err_referral_id && <div className="error">{err_referral_id}</div>}
+                                                                    </div>
+                                                                   
                                                                 </div>
-                                                                <div className="row">
-                                                                    <div className="col-md-12">
-                                                                        <div className='button_wallet'>
-                                                                        {
-                                                                            register_loader_status ?
-                                                                            <button type="button" name="register" style={{opacity:"0.5"}} className="button_transition"><div className="loader"><span className="spinner-border spinner-border-sm "></span> Create Account</div></button>
-                                                                            :
-                                                                            <button type="button" name="register" onClick={(e) => createNewAccount(e)} className="button_transition">Create Account</button>
-                                                                        }
-                                                                        </div> 
-                                                                        <div className="verify-otp-go-back" onClick={() => clearPreLoginAccount()} >Go back</div>  
+                                                            </div>
+                                                            {/* <div className="col-md-12">
+                                                                <div className="default_form_group">
+                                                                    <div className="form-group">
+                                                                        <input type="text" autocomplete="off" className="form-control" placeholder="Working at?" value={company_name} onChange={(e) => setCompanyName((e.target.value).toLowerCase())} />
+                                                                        {err_company_name && <div className="error">{err_company_name}</div>}
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            <div className="col-md-12">
+                                                                <div className="default_form_group">
+                                                                    <div className="form-group">
+                                                                        <input type="text" autocomplete="off" className="form-control" placeholder="Working as?" value={designation} onChange={(e) => setDesignation(e.target.value)} />
+                                                                        {err_designation && <div className="error">{err_designation}</div>}
+                                                                    </div>
+                                                                </div>
+                                                            </div> */}
+                                                        </div>
+                                                        <div className="row">
+                                                            <div className="col-md-12 mt-3">
+                                                                <button type="button" name="register" onClick={(e) => createNewAccount(e)} className=" button_transition ">Create Account</button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
+                                        </form>
+                                    </div>
 
-                                            <div className="account_body_footer">
-                                                <p>
-                                                    By creating account with us, you clarify you have read and accepted the <a className="modal-link" href={coinpedia_url+"/privacy-policy/"} target="_blank">Privacy policy</a> and <a className="modal-link" href={coinpedia_url+"/terms-and-conditions/"} target="_blank">Terms and Conditions</a> 
-                                                    
-                                                </p>
-                                            </div>
-                                        </div>
+                                    <div className="account_body_footer">
+                                        <p>By creating account with us, you clarify you have read and accepted the <a href={coinpedia_url + "privacy-policy/"} target="_blank"><span className='blue_links'>Privacy policy</span></a> and <a href={coinpedia_url + "terms-and-conditions/"}><span className='blue_links'>Terms & Conditions </span></a></p>
+                                    </div>
+                                </div>
                                         :
                                         page_type == 3 ?
-
-                                      
-                                            <div className="modal-content create_event_modal_box">
-                                               
-                                                <div  className="modal-body login_account_body" >
-                                                <div className="ticket_updated_popup_img text-center" > 
-                                                    <img style={{width:'100px'}} src="/assets/img/thumbsup_green.png"/>
-                                                </div>
-                                                   
-                                                <h4 className="title mb-3">Registration Successful&nbsp;! </h4>
-                                                <p>Hello <b>{full_name}</b>,you have successfully registered and created an account on Coinpedia. You can now list and manage your own events. Explore our services and complete your company profile now.</p>
+                                        <div className="modal-content create_event_modal_box">
+                                            <div  className="modal-body login_account_body" >
+                                            <div className="ticket_updated_popup_img text-center" > 
+                                                <img style={{width:'100px'}} src="/assets/img/thumbsup_green.png"/>
+                                            </div>
                                                 
-                                                <div>
-                                                    <div className="row mt-3">
-                                                    <div className="col-md-6"><button className="close_button_indi" onClick={() => onComplete(1)}>Continue in Markets</button></div>
-                                                    <div className="col-md-6"><button className="btn complete_button button_transition" onClick={() => onComplete(2)}>Complete Your Profile</button></div>
-                                                    </div>
-                                                </div>
-
+                                            <h4 className="title mb-3">Registration Successful&nbsp;! </h4>
+                                            <p>Hello <b>{full_name}</b>, you have successfully registered and created an account on Coinpedia. You can now Manage your portfolio effortlessly. Explore crypto tokens, dive into details, and add to your watchlist for timely updates. Happy investing!"</p>
+                                            
+                                            <div>
+                                                <div className="row mt-3">
+                                                <div className="col-md-6"><button className="close_button_indi cancel_transition" onClick={() => onComplete(1)}>Continue in Markets</button></div>
+                                                <div className="col-md-6"><button className="complete_button button_transition" onClick={() => onComplete(2)}>Complete Your Profile</button></div>
                                                 </div>
                                             </div>
+                                            </div>
+                                        </div>
                                         :
                                         null
                         }

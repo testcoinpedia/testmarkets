@@ -50,11 +50,11 @@ export const tokenLoader=(param)=>
                 <rect x="45" y="0" rx="0" width="60%" height="30px" />
                 </ContentLoader>
               </td>
-              <td>
+              {/* <td>
                 <ContentLoader  width="100%" height="40px">
                 <rect x="20" y="0" rx="25" width="30px" height="30px" />
                 </ContentLoader>
-              </td>
+              </td> */}
               <td>
                 <ContentLoader  width="100%" height="40px">
                 <rect x="0" y="0" rx="0" width="80%" height="15px" />

@@ -3,6 +3,7 @@ import React, {useEffect, useState, useRef} from 'react'
 import Link from 'next/link' 
 import cookie from "cookie"
 import ReactPaginate from 'react-paginate'  
+import { getLaunchpadType } from '../config/helper' 
 import { API_BASE_URL, roundNumericValue, config, separator, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, strLenTrim, convertvalue, Logout} from '../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
@@ -14,17 +15,16 @@ import moment from 'moment'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import JsCookie from "js-cookie"
 import LoginModal from '../components/layouts/auth/loginModal'
+import Popupmodal from '../components/popupmodal'
 // import Select from 'react-select'
 import { useRouter } from 'next/navigation'
 
-
-
-export default function MarketsIndex({page, userAgent, list_data, list_count, per_page_limit, final_count, pages_count, first_count,modalprops})
+export default function MarketsIndex({page, userAgent, list_data, list_count, per_page_limit, final_count, pages_count, first_count, modalprops, unsubscribe, code})
 { 
-  console.log("modalprops",modalprops)
-    const router = useRouter()
-    const active_currency = useSelector(state => state.active_currency)
    
+    const router = useRouter()
+    const { userData, active_currency } = useSelector(state => state)
+  
     const myRef = useRef(null)
     const category_ref = useRef()
     const [is_client, set_is_client] = useState(false)
@@ -55,6 +55,17 @@ export default function MarketsIndex({page, userAgent, list_data, list_count, pe
     const [total_marketcap, set_total_marketcap] = useState("")
     const [total_change_24h, set_total_change_24h] = useState("")
 
+    const [active_airdrops, set_active_airdrops] = useState("")
+    const [active_launchpads, set_active_launchpads] = useState("")
+    const [upcoming_airdrops, set_upcoming_airdrops] = useState("")
+    const [upcoming_launchpads, set_upcoming_launchpads] = useState("")
+    const [total_categories, set_total_categories] = useState("")
+    const [airdrops_list, set_airdrops_list] = useState([])
+    const [launchpads_list, set_launchpads_list] = useState([])
+    const [gainers_category_list, set_gainers_category_list] = useState([])
+    
+    const [modal_data, set_modal_data] = useState({icon:"", title:"", content:""})
+    
     const [user_token, set_user_token] = useState(userAgent.user_token? userAgent.user_token:"");
     const [login_modal_status, set_login_modal_status] = useState(false)
     const [request_config, set_request_config] = useState(config(userAgent.user_token ? userAgent.user_token : ""))
@@ -97,19 +108,28 @@ export default function MarketsIndex({page, userAgent, list_data, list_count, pe
         return '-'
       }
     }
-    useEffect(() => {
-   
-      if(modalprops.login_data){
-        getDataFromChild(modalprops)
-      }
     
-    }, [modalprops]);
+    useEffect(() => 
+    {
+      if(userData.token)
+      {
+        actionAfterMenuLogin(userData)
+      }
+    }, [userData.token]);
+
+    const actionAfterMenuLogin = async (pass_data) =>
+    {
+      await tokensList({selected : 0}, 1)
+      await set_user_token(pass_data.token)
+      await set_request_config(pass_data.token)
+    }
+
     const getDataFromChild = async (pass_object) => 
     {
       await set_login_modal_status(false)
       await set_user_token(JsCookie.get("user_token"))
       await set_request_config(JsCookie.get("user_token"))
-      if(action_row_id){
+        if(action_row_id){
         await addToWatchlist(action_row_id)
         }
         else{
@@ -134,8 +154,35 @@ export default function MarketsIndex({page, userAgent, list_data, list_count, pe
     useEffect(()=>
     { 
       getCategoryList()
+      getMarketsOverview()
       getOverviewDetails()
+      if(unsubscribe && code)
+      {
+        unsubscribeEmail({unsubscribe, code})
+      }
     },[]) 
+
+    const unsubscribeEmail = async ({unsubscribe, code}) =>
+    {
+      set_modal_data({icon:"", title:"", content:""})
+      const res = await Axios.get(API_BASE_URL + "markets/subscribe/email_unsubscribe/"+unsubscribe , config(code))
+      if(res.data)
+      {
+        if(res.data.status)
+        {
+          set_modal_data({icon: "/assets/img/update-successful.png", title: "Thank You!", content: res.data.message.alert_message})
+          router.push('/')
+        }
+        else
+        {
+          if(res.data.message.alert_message)
+          { 
+            set_modal_data({icon: "", title: "Already Removed", content: res.data.message.alert_message})
+            router.push('/')
+          }
+        }
+      }
+    }
 
     useEffect(()=>
     {  
@@ -176,10 +223,32 @@ export default function MarketsIndex({page, userAgent, list_data, list_count, pe
         {
           set_total_marketcap(res.data.message.total_marketcap)
           set_total_change_24h(res.data.message.total_change_24h)
-          console.log("Overview", res.data)
+
+          set_active_airdrops(res.data.message.active_airdrops)
+          set_active_launchpads(res.data.message.active_launchpads)
+          set_upcoming_airdrops(res.data.message.upcoming_airdrops)
+          set_upcoming_launchpads(res.data.message.upcoming_launchpads)
+          set_total_categories(res.data.message.total_categories)
         }
       })
     }
+
+    
+    const getMarketsOverview = () => 
+    {
+      Axios.get(API_BASE_URL + "markets/cryptocurrency/markets_overview" , request_config).then(res => 
+      {
+        if(res.data.status) 
+        {
+          set_airdrops_list(res.data.message.airdrops_list)
+          set_launchpads_list(res.data.message.launchpads_list)
+          set_gainers_category_list(res.data.message.gainers_category_list)
+          
+          console.log("MarketsOverview", res.data)
+        }
+      })
+    }
+
 
     const getCategoryList = () =>
     {  
@@ -375,16 +444,16 @@ return (
          <link rel="canonical" href={market_coinpedia_url}/>
          
         <script type="application/ld+json"  
-          dangerouslySetInnerHTML={{
-            __html: `{
-              "@context":"http://schema.org/",
-              "@type":"Organization",
-              "name":"Markets Coinpedia",
-              "url":"https://markets.coinpedia.org",
-              "logo":"http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
-              "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
-            }`,
-          }}
+            dangerouslySetInnerHTML={{
+              __html: `{
+                "@context":"http://schema.org/",
+                "@type":"Organization",
+                "name":"Markets Coinpedia",
+                "url":"https://markets.coinpedia.org",
+                "logo":"http://image.coinpedia.org/wp-content/uploads/2020/08/19142249/cp-logo.png",
+                "sameAs":["http://www.facebook.com/Coinpedia.org/","https://twitter.com/Coinpedianews", "http://in.linkedin.com/company/coinpedia", "http://t.me/CoinpediaMarket"]
+              }`,
+            }}
         />
 
         <script type="application/ld+json"  
@@ -447,6 +516,191 @@ return (
                   <Search_token /> 
                 </div>
               </div>
+
+            <div className='markets_overview_mobile'>
+              <div className="row">
+                <div className="col-md-4 mb-2">
+                    <div className='market-overview market-overview-category'>
+                      <div className="row header-section">
+                        <div className="col-12 col-xl-5 mb-2 ">
+                          <h5 className='overview-title'>Markets Index</h5>
+                        </div>   
+                        <div className="col-12 col-xl-7 ">
+                          <div className='row'>
+                            <div className="col-8">
+                              {
+                                total_categories ?
+                                <span className='category'>{total_categories} Categories</span> 
+                                :
+                                ""
+                              }
+                            </div>  
+                            <div className="col-4 text-right pull-right">
+                            <Link href="/categories"><img src="/assets/img/next.png"  className="media-object arrow-img market-overview-next " /></Link>  
+                            </div>   
+                          </div>
+                          
+                          
+                        </div>   
+                      </div>
+
+                      {
+                          gainers_category_list.length ?
+                          gainers_category_list.map((item, i) =>
+                          <ul className="airdrops-list">
+                              <li>
+                                   <Link href={"/category/"+item.category_id}> 
+                                    <div className="media">
+                                      <div className="media-left align-self-center mr-4">
+                                      <b>{++i}</b>
+                                      </div>
+                                      <div className="media-body align-self-center">
+                                        <h6 className="media-heading token-name">{strLenTrim(item.category_name, 20)}</h6>
+                                        {/* <p className='token-symbol'>{(item.symbol).toUpperCase()}</p> */}
+                                      </div>
+                                      <div className="media-right ">
+                                      <h6 className="media-heading token-name"><span className='category-percent'>{(((item.total_gainers*100)/item.total_tokens)).toFixed(0)}%</span> Gainers
+                                      <img src="/assets/img/right-arrow.png"  className="media-object arrow-img" />
+                                     
+                                      </h6>
+                                      </div>
+                                    </div>
+                                  </Link>
+
+                                 
+                              </li>
+                          </ul>
+                          )
+                          :
+                          ""
+                        }
+
+                      
+                      
+                    </div>        
+                </div>
+                
+                
+
+                
+                <div className="col-md-4  mb-2">
+                    <div className='market-overview '>
+                      <div className="row header-section">
+                        <div className="col-12 col-xl-4 mb-2">
+                        <h5 className='overview-title'>Airdrops</h5>
+                        </div>   
+                        <div className="col-12 col-xl-8 text-right pull-right">
+                          {
+                            active_airdrops ?
+                            <Link href="/airdrops"><span className='live-values'>{active_airdrops} Live</span> </Link>
+                            :
+                            ""
+                          }
+
+                          {
+                            upcoming_airdrops ?
+                            <Link href="/airdrops/upcoming"><span className='live-upcoming'>{upcoming_airdrops} Upcoming</span></Link>
+                            :
+                            ""
+                          }
+
+                          <Link href="/airdrops"><img src="/assets/img/next-black.png"  className="media-object arrow-img market-overview-next " /></Link>  
+                         
+                        </div>   
+                      </div>
+                       {
+                          airdrops_list.length ?
+                          airdrops_list.map((item, i) =>
+                          <ul className="airdrops-list">
+                              <li>
+                                  <Link href={"/"+item.token_id+"?tab=airdrop&tab_id="+item._id}>
+                                    <div className="media">
+                                      <div className="media-left align-self-center">
+                                        <img src={(item.token_image ? image_base_url+item.token_image: item.coinmarketcap_id ? cmc_image_base_url+item.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object token-img" />
+                                      </div>
+                                      <div className="media-body align-self-center">
+                                        <h6 className="media-heading token-name">{strLenTrim(item.token_name, 20)}</h6>
+                                        {/* <p className='token-symbol'>{(item.symbol).toUpperCase()}</p> */}
+                                      </div>
+                                      <div className="media-right ">
+                                      <h6 className="media-heading token-name">{convertCurrency(item.winner_price)}
+                                      <img src="/assets/img/right-arrow.png" alt={item.token_name}  className="media-object arrow-img" />
+                                     
+                                      </h6>
+                                      </div>
+                                    </div>
+                                  </Link>
+
+                                 
+                              </li>
+                          </ul>
+                          )
+                          :
+                          ""
+                        } 
+                    </div>
+                </div>
+                <div className="col-md-4  mb-2">
+                  <div className='market-overview'>
+                      <div className="row header-section">
+                        <div className="col-12 col-xl-4 mb-2">
+                        <h5 className='overview-title'>Launchpads</h5>
+                        </div>   
+                        <div className="col-12 col-xl-8 text-right pull-right">
+                          {
+                            active_launchpads ?
+                            <Link href="/launchpad"><span className='live-values'>{active_launchpads} Live</span></Link>
+                            :
+                            ""
+                          }
+                          
+                          {
+                            upcoming_launchpads ?
+                            <Link href="/launchpad/upcoming"><span className='live-upcoming'>{upcoming_launchpads} Upcoming</span></Link>
+                            :
+                            ""
+                          }
+
+                          <Link href="/launchpad"><img src="/assets/img/next-black.png"  className="media-object arrow-img market-overview-next " /></Link>  
+                        </div>   
+                      </div>
+
+                      {
+                          launchpads_list.length ?
+                          launchpads_list.map((item, i) =>
+                          <ul className="airdrops-list">
+                              <li>
+                                  <Link href={"/"+item.token_id+"?tab=ico&tab_id="+item._id}>
+                                    <div className="media">
+                                      <div className="media-left align-self-center">
+                                        <img src={(item.token_image ? image_base_url+item.token_image: item.coinmarketcap_id ? cmc_image_base_url+item.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object token-img" />
+                                      </div>
+                                      <div className="media-body align-self-center">
+                                        <h6 className="media-heading token-name">{strLenTrim(item.token_name, 20)}</h6>
+                                        {/* <p className='token-symbol'>{(item.symbol).toUpperCase()}</p> */}
+                                      </div>
+                                      <div className="media-right ">
+                                      <h6 className="media-heading token-name">{getLaunchpadType(item.launchpad_type)}
+                                      <img src="/assets/img/right-arrow.png" onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object arrow-img" />
+                                     
+                                      </h6>
+                                      </div>
+                                    </div>
+                                  </Link>
+
+                                 
+                              </li>
+                          </ul>
+                          )
+                          :
+                          ""
+                        } 
+                    
+                  </div>
+                </div>
+              </div>
+              </div>
+
               <div>
                 <div className="all-categories-list ">
                   <CategoriesTab active_tab={1} user_token={user_token}/> 
@@ -711,7 +965,7 @@ return (
                                   
                                   <td className=" ">
                                     <Link href={"/"+e.token_id}>
-                                    {e.volume ?convertCurrency(e.circulating_supply*e.price) : ""}
+                                    {e.volume ?convertCurrency(e.volume) : ""}
                                     </Link>
                                   </td>
 
@@ -865,9 +1119,12 @@ return (
 
     </div>
     {login_modal_status ? <LoginModal name={login_props} sendDataToParent={getDataFromChild} /> : null}
+    { modal_data.title ? <Popupmodal name={modal_data} />:null }
 </>
 )
 } 
+
+
 
 export async function getServerSideProps({req, query}) 
 {
@@ -879,6 +1136,8 @@ export async function getServerSideProps({req, query})
    var pages_count = 0
    var final_count = 0
    var first_count = 0 
+   var unsubscribe = query.unsubscribe ? query.unsubscribe:""
+   var code = query.code ? query.code:""
 
    const tokenQuery = await fetch(API_BASE_URL + "markets/cryptocurrency/list/"+current_page+'/'+per_page_limit, config(userAgent.user_token))
    if(tokenQuery) 
@@ -896,8 +1155,8 @@ export async function getServerSideProps({req, query})
       {
         final_count = totalcompany
       }
-
-      return { props: {list_data: tokenQueryRun.message, list_count: tokenQueryRun.count, final_count, pages_count, first_count, userAgent:userAgent, page:page, per_page_limit:per_page_limit, user_token:user_token}}
+      
+      return { props: {list_data: tokenQueryRun.message, list_count: tokenQueryRun.count, final_count, pages_count, first_count, userAgent:userAgent, page:page, per_page_limit:per_page_limit, user_token:user_token, unsubscribe, code}}
     }
     else
     {

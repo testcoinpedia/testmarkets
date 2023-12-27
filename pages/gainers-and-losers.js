@@ -15,9 +15,10 @@ import JsCookie from "js-cookie"
 import LoginModal from '../components/layouts/auth/loginModal'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
  
-export default function GainersLosers({userAgent,modalprops})
+export default function GainersLosers({userAgent})
 {  
-  console.log("modalprops",modalprops)
+  const { userData, active_currency } = useSelector(state => state)
+  
     const [watch_list_status, set_watch_list_status] = useState(false)
     const [watchlist, set_watchlist] = useState([])
     const [image_base_url] = useState(IMAGE_BASE_URL+'/markets/cryptocurrencies/')
@@ -58,13 +59,23 @@ export default function GainersLosers({userAgent,modalprops})
     const [request_config, set_request_config] = useState(config(userAgent.user_token ? userAgent.user_token : ""))
     const [action_row_id, set_action_row_id] = useState("")
    
-    useEffect(() => {
-   
-      if(modalprops.login_data){
-        getDataFromChild(modalprops)
+
+    useEffect(() => 
+    {
+      if(userData.token)
+      {
+        actionAfterMenuLogin(userData)
       }
-    
-    }, [modalprops]);
+    }, [userData.token])
+
+    const actionAfterMenuLogin = async (pass_data) =>
+    {
+        topGainners()
+        topLosers()
+        await set_user_token(pass_data.token)
+        await set_request_config(pass_data.token)
+    }
+
     const getDataFromChild = async (pass_object) => 
     {
       await set_login_modal_status(false)
@@ -93,7 +104,7 @@ export default function GainersLosers({userAgent,modalprops})
       await set_action_row_id(pass_id)
     }
 
-    const active_currency = useSelector(state => state.active_currency)
+    
 
 const convertCurrency = (token_price) =>
     {
@@ -381,7 +392,7 @@ const convertCurrency = (token_price) =>
                             </div>
                         </div>
                             <div>
-                        <div class="all-categories-list">
+                        <div className="all-categories-list">
                             <CategoriesTab active_tab={2} user_token={user_token}/> 
                     </div>
                     </div>
@@ -463,10 +474,10 @@ const convertCurrency = (token_price) =>
                           )}
                          
 
-{/* <div class="cust_filter_input">
-                                <div class="input-group">
-                                <input autocomplete="off" class="form-control " data-bs-toggle="dropdown" autoComplete='off' placeholder="Time" />
-                                    <span class="input-group-addon lightmode_image">
+{/* <div className="cust_filter_input">
+                                <div className="input-group">
+                                <input autocomplete="off" className="form-control " data-bs-toggle="dropdown" autoComplete='off' placeholder="Time" />
+                                    <span className="input-group-addon lightmode_image">
                                         <img src="/assets/img/filter_dropdown.svg" title="Filter Dropdown" alt="Filter Dropdown" /></span>
                             </div>
                             </div> */}
@@ -539,18 +550,18 @@ const convertCurrency = (token_price) =>
                               set_coin_type_status(!coin_type_status)
                             }
                           >
-                            <div class="input-group">
+                            <div className="input-group">
                               <input
                                 id="email"
                                 type="text"
-                                class="form-control "
+                                className="form-control "
                                 placeholder="Coins"
                                 disabled
                               />
-                              <span class="input-group-addon lightmode_image">
+                              <span className="input-group-addon lightmode_image">
                                 <img src="/assets/img/filter_dropdown.svg" title="Event Type" alt="Event Type" />
                               </span>
-                              <span class="input-group-addon darkmode_image">
+                              <span className="input-group-addon darkmode_image">
                               <img src="/assets/img/filter_dropdown_grey.svg" title="Event Type" alt="Event Type" />
                             </span>
                             </div>
@@ -579,10 +590,10 @@ const convertCurrency = (token_price) =>
                           {/* </div>
                         </>
                       )} */}
-                            {/* <div class="cust_filter_input">
-                                <div class="input-group">
-                                <input autocomplete="off" type="text" class="form-control " autoComplete='off' placeholder="Coins" />
-                                    <span class="input-group-addon lightmode_image">
+                            {/* <div className="cust_filter_input">
+                                <div className="input-group">
+                                <input autocomplete="off" type="text" className="form-control " autoComplete='off' placeholder="Coins" />
+                                    <span className="input-group-addon lightmode_image">
                                         <img src="/assets/img/filter_dropdown.svg" title="Filter Dropdown" alt="Filter Dropdown" /></span>
                             </div>
                             </div>

@@ -9,20 +9,8 @@ import rootReducer from '../components/redux/store'
 import { useRouter } from 'next/router';
 import { useEffect,useState } from 'react';
 
-function MyApp({ Component, pageProps }) {
-  // const router = useRouter();
-  const [data,set_data]=useState('')
-  useEffect(() => {
-    // Remove Google Analytics tracking parameters from the URL
-    // const cleanUrl = window.location.pathname;
-    // if (window.location.search) {
-    //   router.replace(cleanUrl);
-    // }
-  }, []);
-
-  
-
-
+function MyApp({ Component, pageProps }) 
+{
     return ( 
       <>
         <Head>
@@ -46,7 +34,7 @@ function MyApp({ Component, pageProps }) {
           <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"></link>
 
           <link rel="stylesheet" media="all" href="/assets/css/darktheme.css" />
-{/*           
+          
           <script async src="https://www.googletagmanager.com/gtag/js?id=G-RE1GG3FGQW"></script>
           <script
                     dangerouslySetInnerHTML={{
@@ -58,9 +46,9 @@ function MyApp({ Component, pageProps }) {
             gtag('config', 'G-RE1GG3FGQW');
             `,
           }}
-          /> */}
+          />
        
-       {/* <script
+       <script
           dangerouslySetInnerHTML={{
             __html: `
             (function(c,l,a,r,i,t,y){
@@ -70,7 +58,9 @@ function MyApp({ Component, pageProps }) {
           })(window, document, "clarity", "script", "i17ihm5vtw");
           `,
         }}
-        ></script> */}
+        ></script>
+
+
       
           
           <script src="https://kit.fontawesome.com/215157a960.js" crossOrigin="anonymous"></script>
@@ -80,8 +70,8 @@ function MyApp({ Component, pageProps }) {
           <script src="/static/datafeeds/udf/dist/bundle.js" />
         </Head>
         <Provider store={rootReducer}> 
-        <Topmenu callback={set_data}/>
-        <Component {...pageProps} modalprops={data}/>
+        <Topmenu />
+        <Component {...pageProps}/>
           <Footer /> 
          </Provider>
       </> 

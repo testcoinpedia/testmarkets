@@ -10,6 +10,7 @@ import TransactionDetail from './transaction_detail'
 
 export default function TransactionFun({networks, addresses}) 
 {   
+    // console.log("token",token)
     const [toggle,set_toggle] =useState(true) // true = recent , false = all
     const [txns_list,set_txns_list] =useState([])
     const [loader_status, set_loader_status]=useState(false)
@@ -48,6 +49,25 @@ export default function TransactionFun({networks, addresses})
 
     const bnbTxnsList =async()=>
     {   
+
+        // const bal_req = await Promise.all([
+        //     fetch(bnb_api_url+"txlist&address="+addresses[0]+"&startblock=0&endblock=99999999&sort=desc&apikey="+bnb_api_key+"&page=1&offset=5"),
+        //     fetch(bnb_api_url+"tokentx&address="+addresses[0]+"&sort=desc&apikey="+bnb_api_key+"&page=1&offset=5"),
+        //     fetch(eth_api_url+"txlist&address="+addresses[0]+"&startblock=0&endblock=99999999&sort=desc&apikey="+eth_api_key+"&page=1&offset=5"),
+        //     fetch(eth_api_url+"tokentx&address="+addresses[0]+"&page=1&offset=5&sort=desc&apikey="+eth_api_key),
+        //     fetch(fantom_api_url+"txlist&address="+addresses[0]+"&startblock=0&endblock=99999999&sort=desc&apikey="+fantom_api_key+"&page=1&offset=5"),
+        //     fetch(fantom_api_url+"tokentx&address="+addresses[0]+"&sort=desc&apikey="+fantom_api_key+"&page=1&offset=5"),
+        //     fetch(polygon_api_url+"txlist&address="+addresses[0]+"&startblock=0&endblock=99999999&sort=desc&apikey="+polygon_api_key+"&page=1&offset=5"),
+        //     fetch(polygon_api_url+"tokentx&address="+addresses[0]+"&sort=desc&apikey="+polygon_api_key+"&page=1&offset=5"),
+        // ])
+        // const bal_res = await Promise.all(bal_req.map(r => r.json()))
+        // let i=0
+        // for(let run of bal_res)
+        // {
+
+        // }
+        // console.log("bal_res", bal_res)
+        // return 
         var result = []
         var res1 = ""
         var res2 = ""
@@ -316,7 +336,7 @@ export default function TransactionFun({networks, addresses})
                     <div className="col-md-8 col-xl-8 col-lg-8 col-6">
                         {
                             addresses.length > 0 ?
-                                <h6 className='portfolio-sub-title active_wallet_address_display'> Active Wallet Address: <span>{getShortWalletAddress(addresses[0])}</span></h6>
+                                <h6 className='portfolio-sub-title active_wallet_address_display ml-4'> Active Wallet Address: <span>{getShortWalletAddress(addresses[0])}</span></h6>
                             :
                                 ""
                         }
@@ -533,7 +553,7 @@ export default function TransactionFun({networks, addresses})
                                         }
                                         </div>
                                         <div className='media-right align-self-center'>
-                                        <img src="/assets/img/info_icon.png" alt="info" className='info_icon_trans' onClick={()=>getTokenDetail(e)} />
+                                        <img src="/assets/img/view-arrow.png" alt="info" className='info_icon_trans' onClick={()=>getTokenDetail(e)} />
                                         </div>
                                         </div>
                                             

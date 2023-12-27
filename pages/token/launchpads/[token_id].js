@@ -699,7 +699,7 @@ export default function CreateLauchPad({config,token_id})
                           <div className="form-custom">
                             <label htmlFor="email">Title<span className="label_star">*</span></label>
                             <div className="form-group input_block_outline">
-                            <input autoComplete="off" type="text" placeholder="Title" value={title} onChange={(e)=>set_title(e.target.value)} />
+                            <input className='form-control' autoComplete="off" type="text" placeholder="Title" value={title} onChange={(e)=>set_title(e.target.value)} />
                             </div>
                             <div className="error">{err_title} </div>
                           </div>
@@ -766,7 +766,7 @@ export default function CreateLauchPad({config,token_id})
                           <div className="form-custom">
                           <label htmlFor="price">Soft Cap($)</label>
                             <div className="form-group input_block_outline">
-                              <input type="number" min="0" placeholder="Soft cap"  value={soft_cap} onChange={(e)=>set_soft_cap(e.target.value)}  />
+                              <input className='form-control' type="number" min="0" placeholder="Soft cap"  value={soft_cap} onChange={(e)=>set_soft_cap(e.target.value)}  />
                             </div>
                             <div className="error"></div>
                           </div>
@@ -811,7 +811,7 @@ export default function CreateLauchPad({config,token_id})
                           <div className="form-custom">
                           <label htmlFor="price">ICO Price<span className="label_star">*</span></label>
                             <div className="form-group input_block_outline">
-                              <input type="number" min="0" placeholder="Eg.,$00.00"  value={launchpad_price} onChange={(e)=>set_launchpad_price(e.target.value)}  />
+                              <input type="number" className='form-control' min="0" placeholder="Eg.,$00.00"  value={launchpad_price} onChange={(e)=>set_launchpad_price(e.target.value)}  />
                             </div>
                             <div className="error">{err_launchpad_price}</div>
                           </div>
@@ -820,7 +820,7 @@ export default function CreateLauchPad({config,token_id})
                       <div className="form-custom">
                           <label htmlFor="price">Listing Price<span className="label_star">*</span></label>
                             <div className="form-group input_block_outline">
-                              <input type="number" min="0" placeholder="Eg.,$00.00"  value={listing_price} onChange={(e)=>set_listing_price(e.target.value)}  />
+                              <input type="number" className='form-control' min="0" placeholder="Eg.,$00.00"  value={listing_price} onChange={(e)=>set_listing_price(e.target.value)}  />
                             </div>
                             <div className="error">{err_listing_price}</div>
                             {/* <div>
@@ -838,7 +838,7 @@ export default function CreateLauchPad({config,token_id})
                           <div className="form-custom">
                           <label htmlFor="where_to_buy_link">Where to Buy Link<span className="label_star">*</span></label>
                           <div className="form-group input_block_outline">
-                            <input autoComplete="off" type="text" placeholder="Where to Buy Link" name="where_to_buy_link"  value={where_to_buy_link} onChange={(e)=>set_where_to_buy_link(e.target.value)}  />
+                            <input className='form-control' autoComplete="off" type="text" placeholder="Where to Buy Link" name="where_to_buy_link"  value={where_to_buy_link} onChange={(e)=>set_where_to_buy_link(e.target.value)}  />
                           </div>
                           <div className="error">{err_wheretobuylink}</div>
                           </div>
@@ -923,19 +923,19 @@ export default function CreateLauchPad({config,token_id})
                         <div className="review_upload_token create-launchpad-submit-button mt-3">
                             {
                               !edit_launchpad_row_id ? 
-                                <button type="button" onClick={()=> OnSubmitData()}>
+                                <button type="button" className="button_transition" onClick={()=> OnSubmitData()}>
                                   {loader ? (
-                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Create Launchpad</div>
+                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span> Create Launchpad</div>
                                         ) : (
-                                            <>Create Launchpad</>
+                                            <> Create Launchpad</>
                                         )}
                                 </button>
                               :
-                              <button type="button" onClick={()=> OnSubmitData()}>
+                              <button type="button" className="button_transition" onClick={()=> OnSubmitData()}>
                                 {loader ? (
-                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span>Update Launchpad</div>
+                                        <div className="loader"><span className="spinner-border spinner-border-sm "></span> Update Launchpad</div>
                                         ) : (
-                                            <>Update Launchpad</>
+                                            <> Update Launchpad</>
                                         )}
                               </button>
                             }
@@ -1031,7 +1031,7 @@ export default function CreateLauchPad({config,token_id})
                                                 // delay={{ hide: 450, show: 300 }}
                                                 overlay={(props) => (
                                                   <Tooltip {...props} className="custom_pophover ">
-                                                    <p className="rejected_reason"><b>Rejected On:</b> {moment(e.rejected_on).utc().format("lll")} </p>
+                                                    <p className="rejected_reason"><b>Rejected On:</b> {moment(e.rejected_on).utc().format("ll")} </p>
                                                     <p className="rejected_reason"><b>Reason:</b> {e.rejected_reason}</p>
                                                   </Tooltip>
                                                 )}

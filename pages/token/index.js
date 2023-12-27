@@ -16,7 +16,7 @@ export default function WalletTokensList({userAgent, config})
   const [loader_status, set_loader_status]= useState(false)
   const [image_base_url]=useState(IMAGE_BASE_URL+"/markets/cryptocurrencies/")
   const [pageCount, setPageCount] = useState(0)
-  const [perPage] = useState(10)
+  const [perPage] = useState(20)
   const [currentPage, setCurrentPage] = useState(0)
   const [currentPageArray, setCurrentPageArray] = useState([])
 
@@ -162,7 +162,7 @@ const getTokensCurrentList=(items, offset)=>
                   </form>
                  
                   <div className="quick_block_links main_page_coin_filter create_token_btn"> 
-                    <Link href="/token/update">Create Token</Link>
+                    <Link href="/token/update">List new token</Link>
                   </div>
                 </div>
               </div>
@@ -188,6 +188,7 @@ const getTokensCurrentList=(items, offset)=>
                       <tr>
                           {/* <th></th> */}
                           <th>#</th>
+                          <th>Updated On</th>
                           <th className="manage_token_name">Details</th>
                           <th>Total Supply</th>
                           <th>Status</th> 
@@ -203,6 +204,14 @@ const getTokensCurrentList=(items, offset)=>
                   currentPageArray.map((e, i)=>
                    <tr key={i}>
                         <td>{sl_no+i+1}</td>
+                        <td> 
+                          { 
+                              e.updated_on ?
+                              <>{moment(e.updated_on ).format('MMM D YYYY h:mma')}</> 
+                              :
+                              "-"
+                          }
+                        </td>
                         <td>
                           <div className="media">
                             <div className='media-left align-self-center'>
@@ -274,7 +283,7 @@ const getTokensCurrentList=(items, offset)=>
                                   <OverlayTrigger
                                     overlay={(props) => (
                                       <Tooltip {...props} className="custom_pophover ">
-                                          <p className="rejected_reason"><b>Rejected On:</b> {moment(e.rejected_on).utc().format("lll")} </p>
+                                          <p className="rejected_reason"><b>Rejected On:</b> {moment(e.rejected_on).utc().format("ll")} </p>
                                           <p className="rejected_reason"><b>Reason:</b> {e.rejected_reason}</p>
                                       </Tooltip>
                                     )}
@@ -335,7 +344,7 @@ const getTokensCurrentList=(items, offset)=>
             </div> 
         
           {
-            filteredTokens.length > 10 
+            filteredTokens.length > perPage 
             ?
             <div className="pager__list pagination_element"> 
               <ReactPaginate

@@ -146,13 +146,17 @@
   margin: 10px 0px;
 }
 
-.track_your_portfolio {
+/* .track_your_portfolio {
   padding: 10px 0;
-}
+} */
 
 .track_your_portfolio h4 {
   text-align: center;
-  margin-bottom: 0;
+    font-size: 15px;
+    line-height: 1;
+    margin-bottom: 0;
+    font-weight: 500 !important;
+    padding: 10px;
 }
 
 .track_your_portfolio h4 a{
@@ -705,11 +709,12 @@ a:hover {
 
 /* country_currency code starts here */
 
-.country_currency .currency_caret_down
+.currency_caret_down
 {
-  width: 12px !important;
-  margin: 0px !important;
-  padding-bottom: 4px;
+  position: relative;
+  bottom: 2px;
+  width: auto;
+  margin: 0;
 }
 
 .country-currency-ul .selected
@@ -717,7 +722,12 @@ a:hover {
   background: #eff2f5;
 }
 
-
+.header_button .media-right img{
+  position: relative;
+  bottom: 2px;
+  width: auto;
+  margin: 0;
+}
 
 
 
@@ -744,7 +754,18 @@ margin-top: 12px !important;
   width: 20px !important;
   margin: 0px !important;
   margin-right: 5px !important;;
-  padding-bottom: 5px;
+  position: relative;
+  bottom: 2px;
+  border-radius: 2px;
+}
+
+.curreny_flag_popup {
+  width: 25px !important;
+  margin: 0px !important;
+  margin-right: 5px !important;;
+  position: relative;
+  bottom: 2px;
+  border-radius: 2px;
 }
 
 .country-currency-ul::-webkit-scrollbar {
@@ -840,7 +861,7 @@ border :0 !important;
   padding: 0px 12px !important;
 }
 
-.country_currencies img{
+.event-login-popup .country_currencies img{
   width: 22px !important;
   margin-bottom: 3px !important;
 }
@@ -851,6 +872,12 @@ border :0 !important;
 .Currency_popup .title{
 text-align: left;
 font-size: 18px !important;
+}
+
+
+
+.currency_modal .modal-dialog {
+  margin-top: 20vh !important;
 }
 
 /* country_currency code ends here */
@@ -939,6 +966,16 @@ font-size: 18px !important;
 @media (max-width: 991px) {
   .navbar-header {
     border-bottom: 0px;
+  }
+
+  .country_currency {
+    background-color: #25126d;
+    border-radius: 6px !important;
+    height: 38px;
+    color: #fff;
+    margin: 18px 0 10px;
+    padding: 0px 10px;
+    font-size: 12px;
   }
 
   .login_portfolio {
@@ -1466,6 +1503,10 @@ font-size: 18px !important;
   .category_list {
     margin: 8px 0;
     padding-bottom: 5px;
+  }
+
+  .country_currency {
+    margin: 12px 0 10px;
   }
 
   .mobile_hide_view {

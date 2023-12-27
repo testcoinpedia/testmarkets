@@ -174,7 +174,7 @@ return (
                 </div>
               </div>
             <div>
-            <div class="all-categories-list">
+            <div className="all-categories-list">
             <CategoriesTab active_tab={8} user_token={user_token}/> 
             </div>
               </div>
@@ -363,8 +363,8 @@ return (
                                      </td>
                                      <td className="mobile_hide_table_col">
                                        <Link href={"/category/"+e.category_id}> 
-                                       <span class="market_list_price">
-                                        <button class="vote_btn button_blue_transition">View</button>
+                                       <span className="market_list_price">
+                                        <button className="vote_btn button_blue_transition">View</button>
                                         </span>
                                         </Link>
                                      </td>
@@ -452,16 +452,16 @@ return (
       </div>
       
 
-          <div class="modal" id="trending-modal">
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
+          <div className="modal" id="trending-modal">
+            <div className="modal-dialog modal-lg">
+              <div className="modal-content">
               
-                <div class="modal-header">
+                <div className="modal-header">
               
-                  <button type="button" class="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" alt="Close" /></span></button>
+                  <button type="button" className="close" data-dismiss="modal"><span><img src="/assets/img/close_icon.svg" alt="Close" /></span></button>
                 </div>
                 
-                <div class="modal-body">
+                <div className="modal-body">
           
                   <ul className="trending-tokens">
                     <li><img src="/assets/img/markets/trending.png" alt="trending"/> Trending Coin:</li>

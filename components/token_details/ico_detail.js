@@ -4,9 +4,10 @@ import Head from 'next/head'
 import Axios from 'axios'
 import JsCookie from "js-cookie"
 import { getLaunchpadType } from '../../config/helper' 
-import { roundNumericValue, separator } from '../../components/constants' 
+import { roundNumericValue, separator, market_coinpedia_url } from '../../components/constants' 
 import moment from 'moment'
 import { useSelector, useDispatch } from 'react-redux'
+import { AddToCalendarButton } from 'add-to-calendar-button-react'
 
 export default function MyFunction({launchpads, today_date, token_symbol}) 
 {
@@ -43,7 +44,22 @@ export default function MyFunction({launchpads, today_date, token_symbol})
                     </div>
                     <div className='col-md-5 col-6'>
                         <div className='ico_status_button'>
+                            <div style={{width:"40px"}}  >
+                                    <AddToCalendarButton
+                                        name={item.title+" ("+getLaunchpadType(item.launchpad_type)+")"}
+                                        startDate={(moment.utc(item.start_date).format("YYYY-MM-DD")).toString()}
+                                        endDate={(moment.utc(item.end_date).format("YYYY-MM-DD")).toString()}
+                                        description={item.description}
+                                        options={['Apple', 'Google', 'iCal']}
+                                        buttonStyle="custom"
+                                        label={" "}
+                                        listStyle="overlay"
+                                        trigger="click"
+                                        customCss={market_coinpedia_url+"assets/css/atcb.css"}
+                                        />  
+                            </div>
                             <div className={`dropdown `}>
+                               
                                 {
                                     moment(today_date).isBefore(moment(item.start_date).format('ll')) ?
                                     <button className='upcoming_button ico_button'  >Upcoming</button>
@@ -60,6 +76,7 @@ export default function MyFunction({launchpads, today_date, token_symbol})
                                     null
                                 }
                                 <img className='dropdown_ico collapsed ' src="/assets/img/dropdown_icon.png" data-toggle="collapse" href={"#data_ico"+item._id} alt="Dropdown" />
+                               
                             </div>
                         </div>
                     </div>

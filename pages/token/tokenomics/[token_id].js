@@ -359,9 +359,9 @@ export default function Create_token({config, token_id})
                         <div className="review_upload_token mt-3">
                         <button className="dsaf button_transition"  onClick={() =>{createTokenomic()}}>
                             {loader ? (
-                                <div className="loader"><span className="spinner-border spinner-border-sm "></span>{tokenomics_row_id?"Update":"Create"}</div>
+                                <div className="loader"><span className="spinner-border spinner-border-sm "></span> {tokenomics_row_id?"Update":"Create"}</div>
                                 ) : (
-                                    <>{tokenomics_row_id?"Update":"Create"}</>
+                                    <> {tokenomics_row_id?"Update":"Create"}</>
                                 )}
                         </button> 
                         </div>

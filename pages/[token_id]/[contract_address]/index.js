@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { API_BASE_URL,config,graphql_headers, graphqlApiURL, separator, graphqlApiKEY, app_coinpedia_url, market_coinpedia_url, roundNumericValue, } from '../../../components/constants'
+import { smallExponentialPrice, API_BASE_URL,config,graphql_headers, graphqlApiURL, separator, graphqlApiKEY, speedoMeterValues, market_coinpedia_url, roundNumericValue,  indicator_time_series} from '../../../components/constants'
 import { tokenBasic, otherDetails, getVolume24h, getHighLow24h, getNetworkId } from '../../../components/search_contract_address/live_price'
 import Search_token from '../../../components/search_token'
 import { ethers } from 'ethers'
 import Web3 from 'web3'
 import Head from 'next/head'
 import Axios from 'axios'
+import { useSelector, useDispatch } from "react-redux";
 import moment from 'moment'
+const ReactSpeedometer = dynamic(() => import('react-d3-speedometer'), { ssr: false });
+import dynamic from "next/dynamic";
 import Link from 'next/link'
 import News from '../../../components/token_details/news'
 import Events from '../../../components/token_details/events'
@@ -36,10 +39,19 @@ let inputProps2 = {
   readOnly: true
 }
 
-export default function TokenDetails({network_id, address, tokenData}) 
+export default function TokenDetails({network_id, address, tokenData, token_id,}) 
 {
    console.log("tokenData", tokenData)
    console.log("network_id", network_id)
+
+   
+  let sma_buy_count = 0
+  let sma_sell_count = 0
+  let sma_neutral_count = 0
+
+  let ema_buy_count = 0
+  let ema_sell_count = 0
+  let ema_neutral_count = 0
   
   // post.smartContract.currency.symbol
   const [percentage_change_24h, set_percentage_change_24h] = useState(false)
@@ -54,10 +66,11 @@ export default function TokenDetails({network_id, address, tokenData})
   
   const [graphDate, set_graphDate] = useState(1)
   const [market_cap, set_market_cap] = useState(0)
-  const [token_supply, set_token_supply] = useState(tokenData.token_supply ? tokenData.token_supply:"")
+  const [total_supply, set_total_supply] = useState(tokenData.token_supply ? tokenData.token_supply:"")
   const [connected_address, set_connected_address] = useState("")
   const [wallet_data, setWalletData] = useState([]);
   const [walletspageCount, setWalletsPageCount] = useState(0)
+  const [volatility, set_volatility] = useState("")
 
   const [handleModalConnections, setHandleModalConnections] = useState(false)
   const [handleModalMainNetworks, setHandleModalMainNetworks] = useState(false)
@@ -97,24 +110,139 @@ export default function TokenDetails({network_id, address, tokenData})
   const [usd_converter_value, set_usd_converter_value] = useState("")
   const [converter_pair_currency, set_converter_pair_currency] = useState(1)
 
+ 
+  const [total_sma_buy, set_total_sma_buy] = useState(0)
+  const [total_sma_sell, set_total_sma_sell] = useState(0)
+  const [total_sma_neutral, set_total_sma_neutral] = useState(0)
+  const [oscillator_buy, set_oscillator_buy] = useState(0)
+  const [oscillator_sell, set_oscillator_sell] = useState(0)
+  const [oscillator_neutral, set_oscillator_neutral] = useState(0) 
+
+  const [summary_buy, set_summary_buy] = useState(0)
+  const [summary_sell, set_summary_sell] = useState(0)
+  const [summary_neutral, set_summary_neutral] = useState(0) 
+
+  const [oscillator_speed_meter_name, set_oscillator_speed_meter_name] = useState("")
+  const [oscillator_speedo_meter, set_oscillator_speedo_meter] = useState(0)
+  const [summary_speed_meter_name, set_summary_speed_meter_name] = useState("") 
+  const [summary_speedo_meter, set_summary_speedo_meter] = useState(0)
+ 
+  const [sma_speedo_meter, set_sma_speedo_meter] = useState(0)
+  const [sma_speed_meter_name, set_sma_speed_meter_name] = useState("")
+  
+  const [total_ema_buy, set_total_ema_buy] = useState(0)
+  const [total_ema_sell, set_total_ema_sell] = useState(0)
+  const [total_ema_neutral, set_total_ema_neutral] = useState(0)
+
+ 
+  const [green_days, set_green_days] = useState(0)
+  const [close_price_of_fifty, set_close_price_of_fifty] = useState(0)
+  const [close_price_of_two_hundred, set_close_price_of_two_hundred] = useState(0)
+
+ 
+  
+  const [sma_list, set_sma_list] = useState([]);
+  const [moving_averages_crossovers, set_moving_averages_crossovers] = useState([]);
+  const [macd_line, set_macd_line] = useState([]);
+  const [stochastic_values, set_stochastic_values] = useState([]);
+  const [hull_moving_average, set_hull_moving_average] = useState([]);
+  const [average_true_range, set_average_true_range] = useState([]);
+  const [roc, set_roc] = useState([]);
+  const [cci , set_cci] = useState([]);
+  const [vwma , set_vwma] = useState([]);
+  const [bull_bear_power , set_bull_bear_power] = useState([]);
+  const [williams_percent_range , set_williams_percent_range] = useState([]);
+  const [bollinger_bands , set_bollinger_bands] = useState([]);
+  const [money_flow_index , set_money_flow_index] = useState([]);
+  const [rsi_value , set_rsi_value] = useState([]);
+  const [ma_crossovers_bullish, set_ma_crossovers_bullish] = useState("")
+  const [ma_crossovers_bearish, set_ma_crossovers_bearish] = useState("")
+  const [interval_type, set_interval_type] = useState(6)
+  
+  
+
+  const bullishCount = sma_list.filter(item => live_price > item.sma_value ).length;
+  const bearishCount = sma_list.filter(item => live_price < item.sma_value ).length;
+
+  const ema_bullish_count = sma_list.filter(item => live_price > item.ema_value ).length;
+  const ema_bearish_count = sma_list.filter(item => live_price < item.ema_value ).length;
+  const total = sma_list.length;  
+  
+
+  const oscillators = 30;
+
+  const summary = 50;
+
+  const averages = 70;
+
+  const percentage = (green_days / 30) * 100;
+ 
+
+
+  const [ringColor, setRingColor] = useState('#E0E3EB');
+  const customNeedlePath = `<svg width="200" height="245" viewBox="0 0 200 245" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M6.57365 2.90619L9.82805 0.0395701L172.112 202.59L157.504 214.277L6.57365 2.90619Z" fill="#141822"/>
+  <circle cx="173.43" cy="222.086" r="22.3987" fill="#141822"/>
+  </svg>`; // Custom SVG path for needle
+
+  const dexPairGraph = async (pass_object) => {
+    //console.log("adsfasdff")
+    await set_dex_pair_details(false);
+    await set_dex_pair_object({});
+    await set_dex_pair_object(pass_object);
+  };
+
+  const active_currency = useSelector((state) => state.active_currency);
+
+  const convertCurrency = (token_price) => {
+    if (token_price > 0.00001) {
+      if (active_currency.currency_value) {
+        return (
+          active_currency.currency_symbol +
+          " " +
+          roundNumericValue(token_price * active_currency.currency_value)
+        );
+      } else {
+        return roundNumericValue(token_price);
+      }
+    } else {
+      if (active_currency.currency_value) {
+        return (
+          <>
+            {active_currency.currency_symbol}{" "}
+            {smallExponentialPrice(token_price)}
+          </>
+        );
+      } else {
+        return <>{smallExponentialPrice(token_price)}</>;
+      }
+    }
+  };
+
+  
+  const updateContractDetails = async ({volume_24h}) => 
+  {
+    var reqObj = {
+      contract_address : address,
+      token_name: tokenData.name,
+      symbol: tokenData.symbol,
+      network_row_id : tokenData.network_row_id,
+      price: tokenData.live_price,
+      total_supply: tokenData.total_supply,
+      volume_24h : volume_24h
+    }
+
+    const res = await Axios.post(API_BASE_URL+"markets/search_contract_address/update_details", reqObj, config(""))
+    if(res.data)
+    {
+      console.log("data", res.data)
+    } 
+  }
+  
   useEffect(() => 
   {
-    tokenOtherDetails()
-    
+    tokenOtherDetails(6)
     getTokenDetails()
-    
-    // getTokendetails(window.location.pathname.substring(5))
-    // getTokenTransactions(window.location.pathname.substring(5))
-    // getexchangedata(window.location.pathname.substring(5))
-    // getGraphData(4, isBNB, window.location.pathname.substring(5))
-    // getTokenUsdPrice(window.location.pathname.substring(5))
-    // get24hVolume(window.location.pathname.substring(5))
-    // setContractAddress(window.location.pathname.substring(5))
-
-    // if (localStorage.getItem("walletconnectedtype") === "1") {
-    //   getBEPAccountDetails(0)
-    //   getETHAccountDetails(0)
-    // }
   }, [address])
 
  const getTokenDetails = async () =>
@@ -123,15 +251,20 @@ export default function TokenDetails({network_id, address, tokenData})
     await set_main_tab("")
     await set_main_tab(1)
     //await getexchangedata(address)
-
+    var volume_24h = 0
     const response2 = await getVolume24h(tokenData.contract_type, address)
     if(response2.status)
     {
       if(response2.message.volume_24h)
       {
         set_contract_24h_volume(response2.message.volume_24h)
+        volume_24h = await response2.message.volume_24h
       }
     }
+
+    await updateContractDetails({volume_24h})
+
+    
 
     //getMarketCap(address)
     //await getTokenTransactions(address)
@@ -150,7 +283,7 @@ export default function TokenDetails({network_id, address, tokenData})
     if(tokenData.live_price)
     {
       set_live_price(tokenData.live_price)
-      set_token_supply(tokenData.total_supply)
+      set_total_supply(tokenData.total_supply)
       const response = await otherDetails(tokenData.contract_type, address)
       if(response.status)
       {
@@ -168,7 +301,7 @@ export default function TokenDetails({network_id, address, tokenData})
         if(getData.live_price)
         {
           set_live_price(getData.live_price)
-          set_token_supply(getData.total_supply)
+          set_total_supply(getData.total_supply)
 
           const response = await otherDetails(tokenData.contract_type, address)
           if(response.status)
@@ -181,6 +314,8 @@ export default function TokenDetails({network_id, address, tokenData})
         }
       }
     }
+
+    
     
  }
 
@@ -228,22 +363,207 @@ const tokenConverter = async (pass_value, pass_type, pass_pair_value) =>
   }
 
 }
-const tokenOtherDetails = async () =>
-{
-   const response = await Axios.get(API_BASE_URL + "markets/cryptocurrency/converter_currencies", config(""))
- 
-    console.log("tokenOtherDetails",response)
-    if(response.data)
+const tokenOtherDetails = async (pass_type) => 
+  {
+    await set_interval_type("")
+    await set_interval_type(pass_type)
+    const response = await Axios.get(API_BASE_URL +"markets/search_contract_address/other_details/" + address+"?interval_type="+pass_type+"&network_row_id="+network_id,config(""));
+    if(response.data) 
     {
-        if(response.data.message)
+      console.log("asdf", response.data)
+      if(pass_type == 6)  
+      {
+        set_green_days(response.data.message.green_days)
+        set_close_price_of_fifty(response.data.message.close_price_of_fifty)
+        set_close_price_of_two_hundred(response.data.message.close_price_of_two_hundred)
+      }
+      
+     
+      if(response.data.message.converter_currencies) 
+      {
+        set_converter_pair_currencies( response.data.message.converter_currencies );
+        
+        if(response.data.message.moving_averages_crossovers)
         {
-          set_converter_pair_currencies(response.data.message)
+          if(response.data.message.moving_averages_crossovers.data)
+          {
+            set_moving_averages_crossovers(response.data.message.moving_averages_crossovers.data)
+            set_ma_crossovers_bullish(response.data.message.moving_averages_crossovers.total_bullish)
+            set_ma_crossovers_bearish(response.data.message.moving_averages_crossovers.total_bearish)
+          }
         }
+        
+        var sma_array = []
+        var temp_total_sma_buy = 0
+        var temp_total_sma_sell = 0
+        var temp_total_sma_neutral = 0
+
+        var temp_total_ema_buy = 0
+        var temp_total_ema_sell = 0
+        var temp_total_ema_neutral = 0
+        
+        if(response.data.message.moving_averages)
+        {
+          if(response.data.message.moving_averages.length > 0)
+          {
+            for(let run of response.data.message.moving_averages)
+            {
+              var new_sma_object = {}
+              new_sma_object['day_number'] = run.day_number
+              new_sma_object['sma_value'] = run.sma_value
+              new_sma_object['ema_value'] = run.ema_value
+
+              if(live_price > run.sma_value) 
+              {
+                temp_total_sma_buy++;
+                new_sma_object['sma_status'] = 1
+              } 
+              else if (live_price < run.sma_value) 
+              {
+                temp_total_sma_sell++;
+                new_sma_object['sma_status'] = 2
+              } 
+              else 
+              {
+                temp_total_sma_neutral++;
+                new_sma_object['sma_status'] = 3
+              }
+
+              if(live_price > run.ema_value) 
+              {
+                temp_total_ema_buy++;
+                new_sma_object['ema_status'] = 1
+              } 
+              else if (live_price < run.ema_value) 
+              {
+                temp_total_ema_sell++;
+                new_sma_object['ema_status'] = 2
+              } 
+              else 
+              {
+                temp_total_ema_neutral++;
+                new_sma_object['ema_status'] = 3
+              }
+
+              await sma_array.push(new_sma_object)
+            }
+          }
+        } 
+        
+
+        // temp_total_sma_buy = 4
+        // temp_total_sma_sell = 3
+        // temp_total_sma_neutral = 0
+        const { speed_meter_name, speed_percentage } = await speedoMeterValues({total_sma_buy:temp_total_sma_buy, 
+                                                          total_sma_sell:temp_total_sma_sell, 
+                                                          total_sma_neutral:temp_total_sma_neutral
+                                                        })
+        await set_sma_speed_meter_name(speed_meter_name)
+        await set_sma_speedo_meter(speed_percentage)
+        
+
+        
+        await set_sma_list(sma_array)
+        await set_total_sma_buy(temp_total_sma_buy)
+        await set_total_sma_sell(temp_total_sma_sell)
+        await set_total_sma_neutral(temp_total_sma_neutral)
+        await set_total_ema_buy(temp_total_ema_buy)
+        await set_total_ema_sell(temp_total_ema_sell)
+        await set_total_ema_neutral(temp_total_ema_neutral)
+       
+        var temp_oscillator_buy = 0
+        var temp_oscillator_sell = 0
+        var temp_oscillator_neutral = 0
+        set_macd_line(response.data.message.macd_line)
+        response.data.message.macd_line < 0 ? temp_oscillator_sell++ : response.data.message.macd_line > 0 ? temp_oscillator_buy++ : temp_oscillator_neutral++
+        
+        set_stochastic_values(response.data.message.stochastic_values)
+        if(response.data.message.stochastic_values)
+        {
+          response.data.message.stochastic_values.slow <= 45 ?  temp_oscillator_buy++ :  response.data.message.stochastic_values.slow >= 55 ? temp_oscillator_sell++ : temp_oscillator_neutral++
+        }
+        
+                                                        
+        set_roc(response.data.message.roc)
+        response.data.message.roc < 0 ? temp_oscillator_sell++ : response.data.message.roc > 0 ? temp_oscillator_buy++ : temp_oscillator_neutral++
+       
+        set_cci(response.data.message.cci) 
+        response.data.message.cci > 50? temp_oscillator_buy++ : response.data.message.cci < -50 ? temp_oscillator_sell++ : temp_oscillator_neutral++
+
+
+        set_money_flow_index(response.data.message.money_flow_index)
+        response.data.message.money_flow_index <= 20 ? temp_oscillator_buy++ : response.data.message.money_flow_index > 80 ? temp_oscillator_sell++ : temp_oscillator_neutral++
+       
+        set_williams_percent_range(response.data.message.williams_percent_range)
+        response.data.message.williams_percent_range > -50 ? temp_oscillator_buy++ : response.data.message.williams_percent_range < -60? temp_oscillator_sell++ : temp_oscillator_neutral++
+                                                        
+        set_bull_bear_power(response.data.message.bull_bear_power)
+        response.data.message.bull_bear_power < 0 ? temp_oscillator_sell++ : response.data.message.bull_bear_power > 0 ? temp_oscillator_buy++ : temp_oscillator_neutral++                                                
+        
+        set_bollinger_bands(response.data.message.bollinger_bands)
+        if(response.data.message.bollinger_bands)
+        {
+          live_price >= response.data.message.bollinger_bands.upper_band ? temp_oscillator_sell++ : live_price <= response.data.message.bollinger_bands.lower_band ? temp_oscillator_buy++ : temp_oscillator_neutral++  
+        }
+        
+
+        set_rsi_value(response.data.message.rsi_value)
+        response.data.message.rsi_value < 30 ? temp_oscillator_sell++ : response.data.message.rsi_value > 70 ? temp_oscillator_buy++ : temp_oscillator_neutral++
+                                                        
+
+
+        set_hull_moving_average (response.data.message.hull_moving_average);
+        set_average_true_range(response.data.message.average_true_range);
+        
+        
+        set_vwma(response.data.message.vwma)
+        
+        
+        
+        set_volatility(response.data.message.volatility_30d)
+        // response.data.message.volatility_30d >= 5 && volatility < 10 ? temp_oscillator_sell++ :
+        // (response.data.message.volatility_30d >= 1 && volatility < 2 ? temp_oscillator_buy++ :
+        // (response.data.message.volatility_30d >= 2 && volatility < 5 ? temp_oscillator_neutral++ : null));
+        
+        // console.log("temp_oscillator_buy", temp_oscillator_buy)
+        // console.log("temp_oscillator_sell", temp_oscillator_sell)
+        // console.log("temp_oscillator_neutral", temp_oscillator_neutral)
+        
+        await set_oscillator_buy(temp_oscillator_buy)
+        await set_oscillator_sell(temp_oscillator_sell)
+        await set_oscillator_neutral(temp_oscillator_neutral)
+
+        const oscillator_speedo_meter_values = await speedoMeterValues({total_sma_buy:temp_oscillator_buy, 
+          total_sma_sell:temp_oscillator_sell, 
+          total_sma_neutral:temp_oscillator_neutral
+        })
+        await set_oscillator_speed_meter_name(oscillator_speedo_meter_values.speed_meter_name)
+        await set_oscillator_speedo_meter(oscillator_speedo_meter_values.speed_percentage)
+
+        var temp_summary_buy = await temp_oscillator_buy+temp_total_sma_buy
+        var temp_summary_sell = await temp_oscillator_sell+temp_total_sma_sell
+        var temp_summary_neutral = await temp_oscillator_neutral+temp_total_sma_neutral
+
+        await set_summary_buy(temp_summary_buy)
+        await set_summary_sell(temp_summary_sell)
+        await set_summary_neutral(temp_summary_neutral)
+
+        const summary_speedo_meter_values = await speedoMeterValues({
+          total_sma_buy : temp_oscillator_buy, 
+          total_sma_sell : temp_oscillator_sell, 
+          total_sma_neutral : temp_oscillator_neutral
+        })
+
+        await set_summary_speed_meter_name(summary_speedo_meter_values.speed_meter_name)
+        await set_summary_speedo_meter(summary_speedo_meter_values.speed_percentage)
+
+
+        await set_sma_speed_meter_name(speed_meter_name)
+        await set_sma_speedo_meter(speed_percentage)
+
+      }
     }
-    
-    
-  
-}
+  };
 
 //converter_currencies
 
@@ -1724,8 +2044,9 @@ const getMarketCap = async (id, decval, usd_price) =>
                     </div>
                     <div className="col-lg-3 col-xl-3 col-md-6 order-md-2 order-3">
                       <div className="token_price_block airdrop_data_content">
-                          <h5>{live_price ? "$" : null} {live_price > 0 ? separator(parseFloat(live_price.toFixed(8))) : "NA"}
-                              </h5>
+                      <h5 title={live_price}>
+                          {live_price > 0 ? convertCurrency(live_price) : "NA"}
+                        </h5>
                           <h6>
                           <span className="timings_price">&nbsp;24h</span>{" "}
                           <span>
@@ -1850,7 +2171,7 @@ const getMarketCap = async (id, decval, usd_price) =>
                                 <input type="number" value={token_converter_value} onChange={(e) => tokenConverter(e.target.value, 1, converter_pair_currency)} step="0.000001" min="0.000001" className="form-control converter-input" placeholder="0" />
                                 <div className="input-group-append converter-label">
                                   <span className="input-group-text converter-second-span">
-                                    <select class="form-no-border" onChange={(e) => tokenConverter(token_converter_value, 1, e.target.value)}>
+                                    <select className="form-no-border" onChange={(e) => tokenConverter(token_converter_value, 1, e.target.value)}>
                                       {
                                          converter_pair_currencies.map((item, i) =>
                                           item.currency_name != data.symbol ?
@@ -1871,6 +2192,181 @@ const getMarketCap = async (id, decval, usd_price) =>
                           </div>
                         </div>
                       
+                        <>
+                          
+                          <div className="row">
+
+                            {/* {data.open_close_details.total_days >= 50 ? ( */}
+                              <div className="col-md-6 col-12">
+                                <div className="mobile_padding_right">
+                                  <div className="token_list_values">
+                                    <h4>
+                                      {" "}
+                                      50-Day SMA &nbsp;
+                                      <OverlayTrigger
+                                        delay={{ hide: 450, show: 300 }}
+                                        overlay={(props) => (
+                                          <Tooltip
+                                            {...props}
+                                            className="custom_pophover"
+                                          >
+                                            <p>
+                                              50 days Simple Moving Average :
+                                              The average closing price for
+                                              the last 50 days
+                                            </p>
+                                          </Tooltip>
+                                        )}
+                                        placement="bottom"
+                                      >
+                                        <span className="info_col">
+                                          <img
+                                            src="/assets/img/info.png"
+                                            alt="Info"
+                                          />
+                                        </span>
+                                      </OverlayTrigger>{" "}
+                                      :
+                                    </h4>
+                                    <h5>
+                                      {close_price_of_fifty ? (
+                                        <>
+                                          {convertCurrency(close_price_of_fifty)}
+                                        </>
+                                      ) : (
+                                        "NA"
+                                      )}
+                                      &nbsp;
+                                    </h5>
+                                  </div>
+                                </div>
+                              </div>
+
+
+                          
+                              <div className="col-md-6 col-12">
+                                <div className="mobile_padding_right">
+                                  <div className="token_list_values">
+                                    <h4>
+                                      {" "}
+                                      200-Day SMA &nbsp;
+                                      <OverlayTrigger
+                                        delay={{ hide: 450, show: 300 }}
+                                        overlay={(props) => (
+                                          <Tooltip
+                                            {...props}
+                                            className="custom_pophover"
+                                          >
+                                            <p>
+                                              200 days Simple Moving Average :
+                                              The average closing price for
+                                              the last 200 days
+                                            </p>
+                                          </Tooltip>
+                                        )}
+                                        placement="bottom"
+                                      >
+                                        <span className="info_col">
+                                          <img
+                                            src="/assets/img/info.png"
+                                            alt="Info"
+                                          />
+                                        </span>
+                                      </OverlayTrigger>{" "}
+                                      :
+                                    </h4>
+                                    <h5>
+                                      {close_price_of_two_hundred ? (
+                                        <>
+                                          {convertCurrency(close_price_of_two_hundred)}
+                                        </>
+                                      ) : (
+                                        "NA"
+                                      )}
+                                      &nbsp;
+                                    </h5>
+                                  </div>
+                                </div>
+                              </div>
+                            {/* ) : (
+                              ""
+                            )} */}
+
+                            {/* {data.open_close_details.total_days >= 200 ? (
+                              <div className="col-md-6 col-12">
+                                <div className="mobile_padding_right">
+                                  <div className="token_list_values">
+                                    <h4>
+                                      {" "}
+                                      Volatility &nbsp;
+                                      <OverlayTrigger
+                                        delay={{ hide: 450, show: 300 }}
+                                        overlay={(props) => (
+                                          <Tooltip
+                                            {...props}
+                                            className="custom_pophover"
+                                          >
+                                            <p>
+                                              Volatility is a statistical
+                                              measure that is used to
+                                              determine the risk of a certain
+                                              asset. In general the higher the
+                                              volatility, the riskier is to
+                                              invest in the asset. Volatility
+                                              below 1% is very low, 1-2% low,
+                                              2-5% medium, 5-10% high, 10-20%
+                                              very high, and above 20%
+                                              extremely high.
+                                            </p>
+                                          </Tooltip>
+                                        )}
+                                        placement="bottom"
+                                      >
+                                        <span className="info_col">
+                                          <img
+                                            src="/assets/img/info.png"
+                                            alt="Info"
+                                          />
+                                        </span>
+                                      </OverlayTrigger>{" "}
+                                      :
+                                    </h4>
+                                    <h5>
+                                      {volatility ? (
+                                        <>
+                                          {volatility}% (
+                                          {volatility < 1
+                                            ? "Very Low"
+                                            : volatility >= 1 &&
+                                              volatility < 2
+                                            ? "Low"
+                                            : volatility >= 2 &&
+                                              volatility < 5
+                                            ? "Medium"
+                                            : volatility >= 5 &&
+                                              volatility < 10
+                                            ? "High"
+                                            : volatility >= 10 &&
+                                              volatility < 20
+                                            ? "Very High"
+                                            : "Extremely High"}
+                                          )
+                                        </>
+                                      ) : (
+                                        "NA"
+                                      )}
+                                    </h5>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              ""
+                            )} */}
+                          </div>
+                        </>               
+
+                                      
+
                     </div>
 
                       <div className="col-md-6">
@@ -1879,7 +2375,7 @@ const getMarketCap = async (id, decval, usd_price) =>
                             <div className="">
                               <div className="token_list_values">
                                 <h4>Total Supply</h4>
-                                <h5>
+                                {/* <h5>
                                 {
                                   token_supply ? 
                                   <>
@@ -1888,11 +2384,82 @@ const getMarketCap = async (id, decval, usd_price) =>
                                   :
                                   "NA"
                                 } 
-                                </h5>
+                                </h5> */}
+
+                                <h5>
+                                      {total_supply
+                                        ? separator(total_supply.toFixed(2))
+                                        : "NA"}
+                                      &nbsp;
+                                    </h5>
                               </div>
                               <div className="token_list_values">
-                                <h4>Liquidity</h4>
-                                <h5>${separator((liquidity).toFixed(2))}</h5>
+                                {/* <h4>Liquidity</h4>
+                                <h5>${separator((liquidity).toFixed(2))}</h5> */}
+                                <div className="mobile_padding_right">
+                                <div className="token_list_values">
+                                  <h4>
+                                    {" "}
+                                    Green Days &nbsp;
+                                    <OverlayTrigger
+                                      delay={{ hide: 450, show: 300 }}
+                                      overlay={(props) => (
+                                        <Tooltip
+                                          {...props}
+                                          className="custom_pophover"
+                                        >
+                                          <p>
+                                            If the open price on a day
+                                            beginning at any time is lower
+                                            than the closing price, the day
+                                            will be considered a "green day."{" "}
+                                            <br />
+                                            Here the number of Green Days in
+                                            last 30 days are displayed
+                                          </p>
+                                        </Tooltip>
+                                      )}
+                                      placement="bottom"
+                                    >
+                                      <span className="info_col">
+                                        <img
+                                          src="/assets/img/info.png"
+                                          alt="Info"
+                                        />
+                                      </span>
+                                    </OverlayTrigger>{" "}
+                                    :
+                                  </h4>
+                                  <h5>
+                                    {
+                                      green_days ? 
+                                      <>
+                                      {green_days} / 30 {!isNaN(percentage) ? <>({percentage.toFixed(2)}%)</>:""}
+                                      </>
+                                      :
+                                      "NA"
+                                    }
+                                  
+
+                                    {/* {data.open_close_details.green_days}/
+                                    {data.open_close_details.total_days >= 30
+                                      ? 30
+                                      : data.open_close_details
+                                          .total_days}{" "}
+                                    (
+                                    {(
+                                      (data.open_close_details.green_days /
+                                        (data.open_close_details.total_days >=
+                                        30
+                                          ? 30
+                                          : data.open_close_details
+                                              .total_days)) *
+                                      100
+                                    ).toFixed(2)}
+                                    %) */}
+                                  </h5>
+                                </div>
+                              </div>
                               </div>
 
                               {/* <div className="token_list_values">
@@ -1968,16 +2535,20 @@ const getMarketCap = async (id, decval, usd_price) =>
                         <li className="nav-item">
                           <a data-toggle="tab" onClick={()=>setMainTab(1)} className={"nav-link "+(main_tab == 1? " active":"")} ><span>Chart</span></a>
                         </li>
-                        {/* <li className="nav-item">
-                          <a data-toggle="tab" onClick={()=>set_main_tab(2)} className={"nav-link "+(main_tab == 2 ? " active":"")} ><span>Exchange</span></a>
-                        </li> */}
-
                         <li className="nav-item" >
                           <a className={"nav-link " + (main_tab == 9 ? "active" : "")} onClick={() => set_main_tab(9)}>Liquidity Pools</a>
                         </li>
                         <li className="nav-item" >
                           <a className={"nav-link " + (main_tab == 10 ? "active" : "")} onClick={() => set_main_tab(10)}>Trade History</a>
                         </li>
+
+                        <li className="nav-item" >
+                          <a className={"nav-link "+(main_tab == 11 ? "active":"")} onClick={()=>set_main_tab(11)}>Analysis</a>
+                        </li>
+
+                         {/* <li className="nav-item">
+                          <a data-toggle="tab" onClick={()=>set_main_tab(2)} className={"nav-link "+(main_tab == 2 ? " active":"")} ><span>Exchange</span></a>
+                        </li> */}
 
                         {/* <li className="nav-item">
                           <a data-toggle="tab" onClick={()=>set_main_tab(3)} className={"nav-link "+(main_tab == 3 ? " active":"")} ><span>Transactions</span></a>
@@ -1989,6 +2560,7 @@ const getMarketCap = async (id, decval, usd_price) =>
                         <li className="nav-item" >
                           <a className={"nav-link "+(main_tab == 8 ? "active":"")} onClick={()=>set_main_tab(5)}>Price Prediction</a>
                         </li>
+                       
                         
                       </ul>            
                     </div>
@@ -2034,7 +2606,7 @@ const getMarketCap = async (id, decval, usd_price) =>
                           main_tab==1 ?
                             graph_date_type ?
                             <>
-                            <TradingView reqData={{symbol: (tokenData.symbol).toLowerCase(), network_row_id: tokenData.network_row_id, contract_address: address }} />
+                            <TradingView reqData={{symbol:(tokenData.symbol?(tokenData.symbol).toLowerCase():"ETH"), network_row_id: tokenData.network_row_id, contract_address: address }} />
                             {/* <Price_chart reqData={{address:address, contract_type:tokenData.contract_type, graph_date_type:graph_date_type}}/> */}
                             
                             <br/>
@@ -2148,6 +2720,811 @@ const getMarketCap = async (id, decval, usd_price) =>
                 <div id="priceprediction" className={"tab-pane fade "+(main_tab == 5 ? "show active":"")}>
                     <Price_prediction/>
                 </div>
+
+   
+          {/* Technical analysis code starts here */}
+
+          <div id="technical_analysis" className={"tab-pane fade " + (main_tab == 11 ? "show active" : "")}>
+              <div className="container text-center mb-4">
+                <ul>
+                  {indicator_time_series.length ?
+                    indicator_time_series.map((item, i) =>
+                      item.search_bitquery == true ?
+                      <li className={(item.interval_type == interval_type ? "active" : "")} onClick={() => tokenOtherDetails(item.interval_type)}>
+                        {item.interval_time}
+                      </li>
+                      :
+                      ""
+                    )
+                    :
+                    ""
+                  }
+                </ul>
+              </div>
+              <div className="row">
+                <div className="col-md-4">
+                  <div className="text-center small_guage">
+                    <h3 className="heading">Oscillator</h3>
+                    <ReactSpeedometer
+                      currentValueText={oscillator_speed_meter_name}
+                      textColor={'#000'}
+                      value={oscillator_speedo_meter}
+                      minValue={0}
+                      maxValue={100}
+                      needleColor="#131721"
+                      startColor={ringColor}
+                      segments={5}
+                      width={200}
+                      height={150}
+                      endColor="red"
+                      needleHeightRatio={0.7}
+                      segmentWidth={15}
+                      segmentLength={10}
+                      ringWidth={8}
+                      segmentColors={[
+                        '#d4405f',
+                        '#f18da1',
+                        '#e0e3eb',
+                        '#9ed4ff',
+                        '#45a7f5'
+                      ]}
+                      customSegmentLabels={[
+                        { text: 'Strong Sell', position: 'OUTSIDE' },
+                        { text: 'Sell', position: 'OUTSIDE' },
+                        { text: 'Neutral', position: 'OUTSIDE' },
+                        { text: 'Buy', position: 'OUTSIDE' },
+                        { text: 'Strong Buy', position: 'OUTSIDE' },
+                      ]}
+                      needleTransition
+                      needleTransitionDuration={500}
+                      needleTransitionEasing="easeElastic"
+                      needleTransitionDelay={0}
+                      customNeedle={customNeedlePath}
+                    />
+                  </div>
+                  <div className="row">
+                    <div className="col-md-1">&nbsp;</div>
+                    <div className="col-md-10">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <div className="overview_analysis">
+                            <h5>Sell</h5>
+                            <h4>{oscillator_sell}</h4>
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="overview_analysis">
+                            <h5>Neutral</h5>
+                            <h4>{oscillator_neutral}</h4>
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="overview_analysis">
+                            <h5>Buy</h5>
+                            <h4>{oscillator_buy}</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-md-4">
+                  <div className="text-center">
+                    <h3 className="heading">Summary</h3>
+                    <ReactSpeedometer
+                      currentValueText={summary_speed_meter_name}
+                      textColor={'#000'}
+                      value={summary_speedo_meter}
+                      minValue={0}
+                      width={250}
+                      height={180}
+                      maxValue={100}
+                      needleColor="#131721"
+                      startColor={ringColor}
+                      segments={5}
+                      endColor="red"
+                      needleHeightRatio={0.7}
+                      segmentWidth={15}
+                      segmentLength={10}
+                      ringWidth={8}
+                      segmentColors={[
+                        '#d4405f',
+                        '#f18da1',
+                        '#e0e3eb',
+                        '#9ed4ff',
+                        '#45a7f5'
+                      ]}
+                      customSegmentLabels={[
+                        { text: 'Strong Sell', position: 'OUTSIDE' },
+                        { text: 'Sell', position: 'OUTSIDE' },
+                        { text: 'Neutral', position: 'OUTSIDE' },
+                        { text: 'Buy', position: 'OUTSIDE' },
+                        { text: 'Strong Buy', position: 'OUTSIDE' },
+                      ]}
+                      needleTransition
+                      needleTransitionDuration={500}
+                      needleTransitionEasing="easeElastic"
+                      needleTransitionDelay={0}
+                      customNeedle={customNeedlePath}
+                    />
+                  </div>
+                  <div className="row">
+                    <div className="col-md-1">&nbsp;</div>
+                    <div className="col-md-10">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <div className="overview_analysis">
+                            <h5>Sell</h5>
+                            <h4>{summary_sell}</h4>
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="overview_analysis">
+                            <h5>Neutral</h5>
+                            <h4>{summary_neutral}</h4>
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="overview_analysis">
+                            <h5>Buy</h5>
+                            <h4>{summary_buy}</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-md-4">
+                  <div className="text-center small_guage">
+                    <h3 className="heading">Moving Average</h3>
+                    <ReactSpeedometer
+                      currentValueText={sma_speed_meter_name}
+                      textColor={'#000'}
+                      width={200}
+                      height={150}
+                      value={sma_speedo_meter}
+                      minValue={0}
+                      maxValue={100}
+                      needleColor="#131721"
+                      startColor={ringColor}
+                      segments={5}
+                      endColor="red"
+                      needleHeightRatio={0.7}
+                      segmentWidth={15}
+                      segmentLength={10}
+                      ringWidth={8}
+                      segmentColors={[
+                        '#d4405f',
+                        '#f18da1',
+                        '#e0e3eb',
+                        '#9ed4ff',
+                        '#45a7f5'
+                      ]}
+                      customSegmentLabels={[
+                        { text: 'Strong Sell', position: 'OUTSIDE' },
+                        { text: 'Sell', position: 'OUTSIDE' },
+                        { text: 'Neutral', position: 'OUTSIDE' },
+                        { text: 'Buy', position: 'OUTSIDE' },
+                        { text: 'Strong Buy', position: 'OUTSIDE' },
+                      ]}
+                      needleTransition
+                      needleTransitionDuration={500}
+                      needleTransitionEasing="easeElastic"
+                      needleTransitionDelay={0}
+                      customNeedle={customNeedlePath}
+                    />
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-1">&nbsp;</div>
+                    <div className="col-md-10">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <div className="overview_analysis">
+                            <h5>Sell</h5>
+                            <h4>{total_sma_sell}</h4>
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="overview_analysis">
+                            <h5>Neutral</h5>
+                            <h4>{total_sma_neutral}</h4>
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="overview_analysis">
+                            <h5>Buy</h5>
+                            <h4>{total_sma_buy}</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+           
+
+
+              <div className='row'>
+              <div className="col-md-6">
+                <div className="analysis_values">
+                      <h4 className="">Simple Moving Averages(SMA)</h4>
+                      <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
+                        <span style={{ position: "absolute", top: "-5px", right: "0" }}>
+                        {bearishCount !== 0 && (
+                            <strong  className="bearish">{bearishCount}</strong>
+                          )}
+                        </span>
+                        <span style={{ position: "absolute", top: "-5px", left: "0" }}>
+                          {bullishCount !== 0 && (
+                            <strong className="bullish">{bullishCount}</strong>
+                          )}
+                        </span>
+                        <div className="progress gainer-progress">
+                          <div
+                            className="progress-bar bg-success"
+                            role="progressbar"
+                            style={{ width: `${(bullishCount / total) * 100}%` }}
+                          ></div>
+                          <div
+                            className="progress-bar bg-danger"
+                            role="progressbar"
+                            style={{ width: `${(bearishCount / total) * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div className="technical_anaylysis_table simple_analysis">
+                        <table width="100%" className="" cellpadding="0" cellspacing="0" border="0">
+                          <thead>
+                            <tr className="inner_table_average">
+                              <th>
+                                <p className="">Period</p>
+                              </th>
+                              
+                              <th>
+                                <p className="">Value</p>
+                              </th>
+                              <th>
+                                <p className="">Action</p>
+                              </th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            {sma_list.length > 0 ? (
+                              sma_list.map((item, i) => 
+                              {
+                                if(live_price > item.sma_value) 
+                                {
+                                  sma_buy_count++;
+                                } else if (live_price < item.sma_value) {
+                                  sma_sell_count++;
+                                } else {
+                                  sma_neutral_count++;
+                                }
+                                
+                                return (
+                                  <tr key={i}>
+                                    <td> SMA {item.day_number}</td>
+                                    <td>
+                                      <span>
+                                        {roundNumericValue(item.sma_value)}
+                                      </span>
+                                    </td>
+                                    <td>
+                                        {
+                                          live_price > item.sma_value ? 
+                                          <span className="bullish">Buy</span>
+                                          : 
+                                          live_price < item.sma_value ? 
+                                          <span className="bearish">Sell</span>
+                                          : 
+                                          <span className="neutral">Neutral</span>
+                                        }
+                                    </td>
+                                  </tr>
+                                );
+                              })
+                            ) : (
+                              <tr>
+                                <td>No Data Found</td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                        <p className="total_buy_sell_neutral">
+                          <span>Buy: {total_sma_buy}</span> <span>Sell: {total_sma_sell}</span> <span>Neutral: {total_sma_neutral}</span>
+                        </p>
+                        <h3 className="summary_total">
+                          Summary: <span className={total_sma_buy > total_sma_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                            {total_sma_buy > total_sma_sell ? 'Strong Buy' : 'Strong Sell'}
+                          </span>
+                        </h3>
+                      </div>
+                      </div>
+                </div>
+                <div className="col-md-6">
+  <div className="analysis_values">
+        <h4 className="">Exponential Moving Averages (EMA)</h4>
+        <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
+          <span style={{ position: "absolute", top: "-5px", right: "0" }}>
+          {ema_bearish_count !== 0 && (
+              <strong  className="bearish">{ema_bearish_count}</strong>
+            )}
+          </span>
+          <span style={{ position: "absolute", top: "-5px", left: "0" }}>
+            {ema_bullish_count !== 0 && (
+              <strong className="bullish">{ema_bullish_count}</strong>
+            )}
+          </span>
+          <div className="progress gainer-progress">
+            <div
+              className="progress-bar bg-success"
+              role="progressbar"
+              style={{ width: `${(ema_bullish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
+            ></div>
+            
+
+            <div
+              className="progress-bar bg-danger"
+              role="progressbar"
+              style={{ width: `${(ema_bearish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
+            ></div>
+          </div>
+        </div>
+
+        <div className="technical_anaylysis_table simple_analysis">
+          <table width="100%" className="" cellpadding="0" cellspacing="0" border="0">
+            <thead>
+              <tr className="inner_table_average">
+                <th>
+                  <p className="">Period</p>
+                </th>
+                <th>
+                  <p className="">Value</p>
+                </th>
+                <th>
+                  <p className="">Action</p>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {sma_list.length > 0 ? (
+                sma_list.map((item, i) => {
+                  if(live_price > item.ema_value) 
+                  {
+                    ema_buy_count++;
+                  } else if (live_price < item.ema_value ) 
+                  {
+                    ema_sell_count++;
+                  }
+                  else 
+                  {
+                    ema_neutral_count++;
+                  }
+
+                  return (
+                    <tr key={i}>
+                      <td> EMA {item.day_number}</td>
+                      <td>
+                        <span>
+                        {roundNumericValue(item.ema_value)}
+                        </span>
+                      </td>
+                      <td>
+                          {
+                            live_price > item.ema_value ? 
+                            <span className="bullish">Buy</span>
+                            : 
+                            live_price < item.ema_value ? 
+                            <span className="bearish">Sell</span>
+                            : 
+                            <span className="neutral">Neutral</span>
+                          }
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td>No Data Found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+          
+          <p className="total_buy_sell_neutral">
+            <span>Buy: {total_ema_buy}</span> <span>Sell: {total_ema_sell}</span> <span>Neutral: {total_ema_neutral}</span>
+          </p>
+          <h3 className="summary_total">
+            Summary: <span className={total_ema_buy > total_ema_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+              {total_ema_buy > total_ema_sell ? 'Strong Buy' : 'Strong Sell'}
+            </span>
+          </h3>
+        </div>
+        </div>
+  </div>
+              </div>
+
+               <div className="row">
+  <div className="col-md-6">
+    <div className="analysis_values">
+    <h4 className="">Moving Averages Crossovers</h4>     
+    
+            
+    <div className="technical_anaylysis_table">
+      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
+        <thead>
+          <tr className="inner_table_average">
+            <th colspan="0">
+              <p className="">Period</p>
+            </th>
+            <th colspan="0">
+              <p className="">Moving Average Crossover</p>
+            </th>
+            <th colspan="0">
+              <p className="">Indication</p>
+            </th>
+          </tr>
+        </thead>
+      
+        <tbody>
+        {moving_averages_crossovers.length > 0 ? moving_averages_crossovers.map((item, i) => (
+        <tr key={i}>
+            <td> {item.term}</td>
+            <td>
+              <span className="">
+                {item.start_sma_day} & {item.end_sma_day} DMA Crossover
+              </span>
+            </td>
+            <td>
+              <span  className={`Capital_Singnal ${
+                  item.signal_description === 'bearish'
+                    ? 'bearish'
+                    : item.signal_description === 'bullish'
+                    ? 'bullish'
+                    : item.signal_description === 'neutral'
+                    ? 'neutral'
+                    : ''
+                }`}>  
+                {item.signal_description}
+              </span>
+            </td>
+          </tr>
+          )):
+          <tr>
+            <td>No Data Found</td>
+          </tr>
+          
+          }
+        </tbody>
+      </table>
+      <p className="total_buy_sell_neutral"><span>Bullish: {ma_crossovers_bullish}</span> <span>Bearish: {ma_crossovers_bearish}</span> </p>
+    </div>
+    </div>
+  </div>
+  
+  <div className="col-md-6">
+    <div className="analysis_values">
+      <h4 className="">Other Moving Averages</h4> 
+      <div className="technical_anaylysis_table">
+      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
+        <thead>
+          <tr className="inner_table_average">
+            <th colspan="0">
+              <p className="">Period</p>
+            </th>
+            <th colspan="0">
+              <p className="">Value</p>
+            </th>
+            <th colspan="0">
+              <p className="">Action</p>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>HMA(9)</td>
+            <td>{roundNumericValue(hull_moving_average)}</td>
+            <td>
+                {
+                  live_price > hull_moving_average ? 
+                  <span className="bullish">Buy</span>
+                  : 
+                  live_price < hull_moving_average ? 
+                  <span className="bearish">Sell</span>
+                  : 
+                  <span className="neutral">Neutral</span>
+                }
+            </td>
+          </tr>
+          <tr>
+            <td>VWMA(20)</td>
+            <td>{roundNumericValue(vwma)}</td>
+            <td>
+              {
+                live_price > vwma ? 
+                <span className="bullish">Buy</span>
+                : 
+                live_price < vwma ? 
+                <span className="bearish">Sell</span>
+                : 
+                <span className="neutral">Neutral</span>
+              }
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        </div>
+    </div>  
+  </div>
+
+  </div>
+
+                  {moving_averages_crossovers && sma_list.length > 0 && (
+                              <div className="">
+                                <div className="row ">
+                                  <div className="col-md-12 ">
+                                    <div className="analysis_values">
+                                    <h4 className="">Technical Indicators</h4>
+                                    <div className="technical_anaylysis_table simple_analysis">
+                                      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
+                                          <thead>
+                                            <tr className="inner_table_average">
+                                              <th style={{minWidth: '185px'}}>
+                                                <p className="">Name</p>
+                                              </th>
+                                              <th >
+                                                <p className="">Value</p>
+                                              </th>
+                                              <th>
+                                                <p className="">Action</p>
+                                              </th>
+                                            </tr>
+                                          </thead>
+                                        
+                                          <tbody>
+                                            
+                                            <tr>
+                                              <td>Volatility</td>
+                                              <td>{volatility} %</td>
+                                              <td>
+                                              {
+                                                volatility ? (
+                                                <>
+                                                    {
+                                                        volatility < 1  ? 
+                                                        <span className="bearish sell">Very Low</span>
+                                                        : 
+                                                        volatility >= 1 && volatility < 2 ? 
+                                                        <span className="bearish sell">Low</span>
+                                                        :
+                                                        volatility >= 2 && volatility < 5 ? 
+                                                        <span className="neutral">Neutral</span>
+                                                        :
+                                                        volatility >= 5 && volatility < 10 ? 
+                                                        <span className="bullish buy">High</span>
+                                                        : 
+                                                        volatility >= 10 && volatility < 20 ?
+                                                        <span className="bullish buy">Very High</span>
+                                                        : 
+                                                        <span className="bullish buy">Extremely High</span>
+                                                    }
+                                                </>
+                                              ) : (
+                                                "NA"
+                                              )}
+                                                {/* <span className="bearish">Sell</span> */}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>RSI</td>
+                                              <td>{rsi_value}</td>
+                                              <td>
+                                                <span className={`${
+                                                  rsi_value < 30 ? 'bearish sell' : rsi_value > 70 ? 'bullish buy' : 'neutral'
+                                                }`}>
+                                                {rsi_value < 30 ? 'Sell' : rsi_value > 70 ? 'Buy' : 'Neutral'}
+                                                </span>
+                                              </td>
+                                            </tr>
+                                          
+
+                            
+                                            <tr>
+                                                <td>MACD (12,26) </td>
+                                                <td>{roundNumericValue(macd_line)}</td>
+                                                <td>
+                                                    <span className={`${
+                                                    macd_line < 0 ? 'bearish sell' : macd_line > 0 ? 'bullish buy' : 'neutral'
+                                                    }`}>
+                                                    {macd_line < 0 ? 'Sell' : macd_line > 0 ? 'Buy' : 'Neutral'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                           
+                                            <tr>
+                                              <td>Stochastic (20,3) &nbsp;
+                                            <OverlayTrigger
+                                              delay={{ hide: 450, show: 300 }}
+                                              overlay={(props) => (
+                                                <Tooltip
+                                                  {...props}
+                                                  className="custom_pophover"
+                                                >
+                                                  <p>
+                                                  20 Indicates the Number of periods
+                                                  &
+                                                  3 Indicates the Last 3 values of 20 % k SMA Value
+                                                  </p>
+                                                </Tooltip>
+                                              )}
+                                              placement="bottom"
+                                            >
+                                              <span className="info_col">
+                                                <img
+                                                  src="/assets/img/info.png"
+                                                  alt="Info"
+                                                />
+                                              </span>
+                                            </OverlayTrigger>
+                                            </td>
+                                            <td>{roundNumericValue(stochastic_values.slow)}</td>
+                                            <td>
+                                                {
+                                                  stochastic_values.slow <= 45 ? 
+                                                  <span className="bullish buy">Buy</span>
+                                                  : 
+                                                  stochastic_values.slow >= 55 ? 
+                                                  <span className="bearish sell">Sell</span>
+                                                  : 
+                                                  <span className="neutral">Neutral</span>
+                                                }
+                                            </td>
+                                        </tr>
+
+                                            <tr>
+                                              <td>ATR (14)</td>
+                                              <td>{roundNumericValue(average_true_range)}</td>
+                                              <td>
+                                                {/* <span className="bearish">Sell</span> */}
+                                              </td>
+                                            </tr>
+                                            {/* <tr>
+                                              <td>ADX (14)</td>
+                                              <td>74.20</td>
+                                              <td><span className="bearish">Sell</span></td>
+                                              
+                                            </tr> */}
+                                           
+                                            <tr>
+                                              <td>ROC</td>
+                                              <td>{roundNumericValue(roc)}</td>
+                                              <td>
+                                                {
+                                                  roc < 0 ?
+                                                  <span className="bearish sell">Sell</span>
+                                                  :
+                                                  roc > 0 ?
+                                                  <span className="bullish buy">Buy</span>
+                                                  :
+                                                  <span className="neutral">Neutral</span>
+                                                } 
+                                            </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                              <td>CCI (20)</td>
+                                              <td>{roundNumericValue(cci)}</td>  
+                                              <td>
+                                                {
+                                                  cci > 50?
+                                                  <span className="bullish buy">Buy</span>
+                                                  :
+                                                  cci < -50?
+                                                  <span className="bearish sell">Sell</span>
+                                                  :
+                                                  <span className="neutral">Neutral</span>
+                                                }
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>MFI</td>
+                                              <td>{roundNumericValue(money_flow_index)}</td>
+                                              <td>
+                                                {
+                                                  money_flow_index <= 20?
+                                                  <span className="bullish buy">Buy</span>
+                                                  :
+                                                  money_flow_index > 80?
+                                                  <span className="bearish sell">Sell</span>
+                                                  :
+                                                  <span className="neutral">Neutral</span>
+                                                }
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>WPR (14)</td>
+                                              <td>{roundNumericValue(williams_percent_range)}</td>
+                                              <td>
+                                                {
+                                                  williams_percent_range > -50?
+                                                  <span className="bullish buy">Buy</span>
+                                                  :
+                                                  williams_percent_range < -60?
+                                                  <span className="bearish sell">Sell</span>
+                                                  :
+                                                  <span className="neutral">Neutral</span>
+                                                }
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bull Bear Power</td>
+                                                <td>{roundNumericValue(bull_bear_power)}</td>
+                                                <td>
+                                                  <span className={`${
+                                                    bull_bear_power < 0 ? 'bearish sell' : bull_bear_power > 0 ? 'bullish buy' : 'neutral'
+                                                  }`}>
+                                                    {bull_bear_power < 0 ? 'Sell' : bull_bear_power > 0 ? 'Buy' : 'Neutral'}
+                                                  </span>
+                                                </td>
+                                              </tr>
+
+                                            <tr className="bollinger_bands_space">
+                                              <td><br/> Bollinger Bands</td>
+                                              <td>
+                                                SMA20: {roundNumericValue(bollinger_bands.sma20)}
+                                                <br/>UB: {roundNumericValue(bollinger_bands.upper_band)}  
+                                                <br/>LB: {roundNumericValue(bollinger_bands.lower_band)}
+                                              </td>
+                                              <td>
+                                                <br/>
+                                                <span className={`${
+                                                live_price >= bollinger_bands.upper_band ? 'bearish sell' :
+                                                live_price <= bollinger_bands.lower_band ? 'bullish buy' :
+                                                'neutral'
+                                            }`}>
+                                                {live_price >= bollinger_bands.upper_band ? 'Sell' :
+                                                live_price <= bollinger_bands.lower_band ? 'Buy' :
+                                                'Neutral'}
+                                            </span>
+                                              </td>
+                                            </tr>
+
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                      <p className="total_buy_sell_neutral"><span>Buy: {oscillator_buy}</span> <span>Sell: {oscillator_sell}</span> <span>Neutral: {oscillator_neutral}</span></p>
+                                        <h3 className="summary_total">
+                                          Summary: <span className={oscillator_buy > oscillator_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                                            {oscillator_buy > oscillator_sell ? 'Strong Buy' : 'Strong Sell'}
+                                          </span>
+                                        </h3> 
+                                    </div>
+                                  </div>
+
+                                      
+                                    </div>
+                                    <div className="row ml-0 mr-0">
+                                      <div className="col-md-12 col-sm-12 ">
+                                      
+                                      </div>
+                                    </div>
+                                  </div> 
+                                )}
+
+  </div>
+                        
+          {/* Technical analysis code ends here */}
+
+
+
 
                 <div id="LiquidityPoollist" className={"tab-pane fade " + (main_tab == 9 ? "show active" : "")}>
                   <Liquidity_pools_list reqData={{ fetch_data_type: data.fetch_data_type ? data.fetch_data_type : 1, network_row_id: tokenData.network_row_id, network_name: tokenData.name, token_image: tokenData.contract_type == 1 ? "ethereum.svg" : "binance.svg", contracts_address: address, token_symbol: tokenData.symbol, token_price: tokenData.live_price }} crypto_type={1} />

@@ -147,8 +147,7 @@ const cmcArrageGraphData = async (data)=>
   }
   const base_price = await ((low_value+high_value)/2).toFixed(0)
   
-
-  
+  console.log("final_array", final_array)
 
   return {final_array, volume_array,market_cap_array, base_price, low_value, high_value}
 }

@@ -663,7 +663,7 @@ export default function Create_token({config,token_id})
                                 // delay={{ hide: 450, show: 300 }}
                                 overlay={(props) => (
                                   <Tooltip {...props} className="custom_pophover">
-                                     <p className="rejected_reason"><b>Rejected On:</b> {moment(e.rejected_on).utc().format("lll")} </p>
+                                     <p className="rejected_reason"><b>Rejected On:</b> {moment(e.rejected_on).utc().format("ll")} </p>
                                       <p className="rejected_reason"><b>Reason:</b> {e.rejected_reason}</p>
                                   </Tooltip>
                                 )}

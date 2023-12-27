@@ -35,34 +35,40 @@ export default function Tokenchart({reqData})
                 // console.log("low_value", low_value)
                 // console.log("high_value", high_value)
                 // console.log("response", response)
+                let leftPriceScale = true
+                let chart_height = 350
                 if(chartMarketCapRef.current)
                 {
+                    if(chartMarketCapRef.current.clientWidth <= 767)
+                    {
+                        leftPriceScale = false
+                        chart_height =  300
+                    }
+
                     const chart = createChart(chartMarketCapRef.current, {
                         layout: {
                             background: { type: ColorType.Solid, color: "white",  },
                             textColor: '#8f98aa'
                         },
                         width: chartMarketCapRef.current ? chartMarketCapRef.current.clientWidth:600,
-                        height: 350,
-                    
+                        height: chart_height,
                     })
-        
             
                     chart.applyOptions({
                         leftPriceScale: {
-                            visible: true,
+                            visible: leftPriceScale,
                         },
                         rightPriceScale: {
                             visible: false,
                         },
-                        handleScroll:{
-                            mouseWheel:false,
-                            pressedMouseMove:false
-                        },
-                        handleScale:
-                        {
-                            mouseWheel:false
-                        },
+                        // handleScroll:{
+                        //     mouseWheel:false,
+                        //     pressedMouseMove:false
+                        // },
+                        // handleScale:
+                        // {
+                        //     mouseWheel:false
+                        // },
                         grid: {
                             vertLines: {
                                 visible: false,
@@ -72,8 +78,9 @@ export default function Tokenchart({reqData})
                             }
                         },
                         timeScale: {
-                        timeVisible: true,
-                        secondsVisible: false,
+                            timeVisible: true,
+                            secondsVisible: false,
+                            fixLeftEdge: true,
                         },
                     })
             
@@ -171,7 +178,7 @@ export default function Tokenchart({reqData})
                             
                             </div>
                             <div style="font-size: 13px;color: ${'black'}">
-                                <div class="tooltip-dot dot-info"></div>
+                                <div className="tooltip-dot dot-info"></div>
                         <strong>Market Cap</strong>: ${roundNumericValue(price)}</div>
                             <div style="font-size: 13px;color: ${'black'}"><strong>Vol 24h:</strong> $ ${separator(volume_24h.toFixed(0))}</div></div>`;
             

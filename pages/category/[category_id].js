@@ -17,9 +17,10 @@ import Select from 'react-select'
 import { useRouter } from 'next/router'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
-export default function Companies({data, userAgent, category_id, errorCode,modalprops})
+export default function Companies({data, userAgent, category_id, errorCode})
 { 
-    console.log("category_id",category_id)
+   const { userData, active_currency } = useSelector(state => state)
+
     if(errorCode) { return <Error /> }
     const router = useRouter()
     const myRef = useRef(null)
@@ -49,13 +50,22 @@ export default function Companies({data, userAgent, category_id, errorCode,modal
     const [request_config, set_request_config] = useState(config(userAgent.user_token ? userAgent.user_token : ""))
     const [action_row_id, set_action_row_id] = useState("")
    
-    useEffect(() => {
    
-      if(modalprops.login_data){
-        getDataFromChild(modalprops)
+    useEffect(() => 
+    {
+      if(userData.token)
+      {
+        actionAfterMenuLogin(userData)
       }
-    
-    }, [modalprops]);
+    }, [userData.token]);
+
+    const actionAfterMenuLogin = async (pass_data) =>
+    {
+      await tokensList({selected : 0}, 1, data._id)
+      await set_user_token(pass_data.token)
+      await set_request_config(pass_data.token)
+    }
+
     const getDataFromChild = async (pass_object) => 
     {
       await set_login_modal_status(false)
@@ -83,8 +93,7 @@ export default function Companies({data, userAgent, category_id, errorCode,modal
       await set_action_row_id(pass_id)
     }
 
-    const active_currency = useSelector(state => state.active_currency)
-
+   
     const convertCurrency = (token_price) =>
     {
       if(active_currency.currency_value)
@@ -122,32 +131,29 @@ export default function Companies({data, userAgent, category_id, errorCode,modal
         set_loader_status(false)  
         const res = await Axios.get(API_BASE_URL+"markets/cryptocurrency/category_tokens/"+current_pages+'/'+per_page_count+"?search="+search_title+"&category_id="+pass_category_row_id, config(JsCookie.get('user_token')))
         if(res.data)
-        {
-            if(res.data.status === true)
+        { 
+            if(res.data.status)
             {   
-              if(res.data.message.length)
+              set_loader_status(true)
+              console.log("res",res) 
+              set_tokens_list(res.data.message)
+              setPageCount(Math.ceil(res.data.count/per_page_count))
+              set_sl_no(current_pages)
+              setCurrentPage(page.selected)
+              setfirstcount(current_pages+1)
+              setCount(res.data.count)
+              // set_category()
+              // console.log(categ)
+              //setfinalcount(parseInt(current_pages)+parseInt(per_page_count))
+              const presentPage = page.selected+1
+              const totalcompany = res.data.count
+              var sadf = presentPage*per_page_count
+              if((presentPage*per_page_count) > totalcompany)
               {
-                console.log("res",res) 
-                set_loader_status(true)
-                set_tokens_list(res.data.message)
-                setPageCount(Math.ceil(res.data.count/per_page_count))
-                set_sl_no(current_pages)
-                setCurrentPage(page.selected)
-                setfirstcount(current_pages+1)
-                setCount(res.data.count)
-                // set_category()
-                // console.log(categ)
-                //setfinalcount(parseInt(current_pages)+parseInt(per_page_count))
-                const presentPage = page.selected+1
-                const totalcompany = res.data.count
-                var sadf = presentPage*per_page_count
-                if((presentPage*per_page_count) > totalcompany)
-                {
-                sadf = totalcompany
-                }
-                const final_count=sadf
-                setfinalcount(final_count)
-              } 
+              sadf = totalcompany
+              }
+              const final_count=sadf
+              setfinalcount(final_count)
                 
             } 
         }

@@ -3,7 +3,7 @@ import React, { useState, useEffect,useCallback, useRef } from 'react';
 import Axios from 'axios'
 import Link from 'next/link' 
 import Web3 from 'web3' 
-import { ethers } from 'ethers'
+// import { ethers } from 'ethers'
 import { useRouter } from 'next/router' 
 import Head from 'next/head'
 import JsCookie from "js-cookie" 
@@ -1094,22 +1094,44 @@ const createNewToken = () =>
               <div> 
                 <div className="token_form">
                   <div className='market_token_tabs'>
-                  { token_row_id ?
-                    <>
-                      <h1 className='page_main_heading'> Update Coin/Token Details</h1>
-                      <p>Edit details of your coins/tokens listed on Coinpedia markets</p>
-                    </>
-                  :
-                    <>
-                      <h1 className='page_main_heading'> List Your Coin/Token On CoinPedia Markets </h1>
-                      <p>Submit your coin/token details in the form below, we will verify and list it on the markets page. </p>
-                      <br/>
-                    </>
-                  }
+                  <div className='row'>
+                    <div className='col-md-10'>
+                      <div className='prices__title h5'>
+                        { 
+                          token_row_id ?
+                          <>
+                            <h1 className=''>Update Coin/Token Details</h1>
+                            <p className='token_form_sub_text' >Edit details of your coins/tokens listed on Coinpedia markets</p>
+                          </>
+                          :
+                          <>
+                          
+                            <h1 className=' '> List Your Coin/Token On CoinPedia Markets </h1>
+                            <p className='token_form_sub_text mb-4'>Submit your coin/token details in the form below, we will verify and list it on the markets page. </p>
+                            <br/>
+                          </>
+                        }
+                      </div>
+                     
+                    </div>
+                    <div className='col-md-2 text-right'>
+                    <div className="quick_block_links main_page_coin_filter create_token_btn">
+                      <Link href="/token">Manage Tokens</Link>
+                    </div>
+                    </div>
+                  </div>
+                 
+
+
                     
-                    {token_row_id?
+                    {
+                      token_row_id?
                       <Top_header active_tab={1} token_id={token_row_id} approval_status={approval_status}/>
-                    :""}
+                      :
+                      ""
+                    }
+
+
                         {/* <h5>Create Token</h5>
                         <p>Enter all these fields to create token</p> */}
 
@@ -1649,9 +1671,9 @@ exchange_link
                               <div className="text-left review_upload_token mt-3">
                                 <button className="dsaf button_transition" onClick={() =>{createNewToken()}}>
                                  {loader ? (
-                                      <div className="loader"><span className="spinner-border spinner-border-sm "></span>Review and Upload</div>
+                                      <div className="loader"><span className="spinner-border spinner-border-sm "></span> Review and Upload</div>
                                       ) : (
-                                          <>Review and Upload</>
+                                          <> Review and Upload</>
                                       )}
                                 </button> 
                               </div>

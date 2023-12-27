@@ -142,8 +142,8 @@ export default function Popupmodal({dex_row_id})
         <div className="popup_modal_for_all modal" style={ showmodal ? { display: 'block' } : { display: 'none' }} id="myModal">
            <div className="modal-dialog modal-md">
                <div className="modal-content">
-               <div class="modal-header">
-                <h4 class="modal-title">{selected_dex_data.heading?selected_dex_data.heading:""}</h4>
+               <div className="modal-header">
+                <h4 className="modal-title">{selected_dex_data.heading?selected_dex_data.heading:""}</h4>
                 <button type="button" className="close" data-dismiss="modal" onClick={()=> setShowModal(!showmodal)}><span><img src="/assets/img/close_icon.svg" alt = " Close" /></span></button>
                 </div>               
                <div className="modal-body">

@@ -2,19 +2,21 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
 import Axios from 'axios'
+import { useRouter } from 'next/navigation'
 import { getLaunchpadType } from '../../config/helper'
 import { API_BASE_URL, market_coinpedia_url, config, IMAGE_BASE_URL, roundNumericValue} from '../../components/constants'; 
 import cookie from 'cookie'
 import moment from 'moment'
 import { useSelector, useDispatch } from 'react-redux'
-
+import LoginModal from '../../components/layouts/auth/loginModal'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import JsCookie from "js-cookie"
 import ICO_header from '../../components/ico_calender/header'
+import { AddToCalendarButton } from 'add-to-calendar-button-react';
 
-export default function MyFunction() 
+export default function MyFunction({user_token}) 
 {
-   
+    const router = useRouter() 
   const [ico_list, set_ico_list] = useState([]) 
   const [image_base_url] = useState(IMAGE_BASE_URL+'/markets/cryptocurrencies/')
   const [cmc_image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
@@ -26,9 +28,15 @@ export default function MyFunction()
   const [overview_counts, set_overview_counts] = useState({}) 
   const [crypto_networks, set_crypto_networks] = useState([])
 
+  const [tab_user_token, set_tab_user_token] = useState(user_token ? user_token:"");
+  const [login_modal_status, set_login_modal_status] = useState(false)
+  const [request_config, set_request_config] = useState(config(user_token ? user_token : ""))
+  const [is_client_load, set_is_client_load] = useState(false)
+
   useEffect(() => 
   {
     getICOList()
+    set_is_client_load(true)
   } , [search_value, search_networks])
 
   const getICOList = async () => 
@@ -64,23 +72,43 @@ export default function MyFunction()
   }
   const active_currency = useSelector(state => state.active_currency)
 
-const convertCurrency = (token_price) =>
+    const convertCurrency = (token_price) =>
     {
-      if(token_price)
-      {
+        if(token_price)
+        {
         if(active_currency.currency_value)
         {
-          return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
+            return active_currency.currency_symbol+" "+roundNumericValue(token_price*active_currency.currency_value)
         }
         else
         {
-          return roundNumericValue(token_price)
+            return roundNumericValue(token_price)
         }
-      }
-      else
-      {
+        }
+        else
+        {
         return '-'
-      }
+        }
+    }
+
+    
+    const getDataFromChild = async () => 
+    {
+        await set_login_modal_status(false)
+        await set_tab_user_token(JsCookie.get("user_token"))
+        router.push('/token')  
+    }
+
+    const login_props = {
+        status: true,
+        request_config: request_config,
+        callback: getDataFromChild
+    }
+
+    const loginModalStatus = async () => 
+    {
+        await set_login_modal_status(false)
+        await set_login_modal_status(true)
     }
 
   return (
@@ -146,7 +174,7 @@ const convertCurrency = (token_price) =>
             <div className='container'>
             <div className=' header_tabs_row mt-3'>
                 <div className='row'>
-                    <div className='col-md-8 col-xl-9 col-lg-9 col-12'>
+                    <div className='col-md-7 col-xl-7 col-lg-7 col-12'>
                         <div className='ico_header_lists'>
                             <ul>
                                 <li onClick={()=>set_search_networks("")}  className={search_networks == "" ? " active":""}>All</li>
@@ -164,14 +192,26 @@ const convertCurrency = (token_price) =>
                     {/* <li className='image_fire'><img src="/assets/img/fire_icon.svg" /></li> */}
                     {/* <button className='button_blue_transition kyc_button'>KYC &nbsp;<span><img src="/assets/img/finger_print.svg" /></span></button> */}
 
-                    <div className='col-md-4 col-xl-3 col-lg-3 col-12'>
-                        <div class="input-group search_filter new_design_serach">
+                    <div className='col-md-2 col-xl-2 col-lg-2 col-4'>
+                        {
+                          tab_user_token ?
+                          <div className='launchpad-button-section'>
+                            <Link href="/token" className='create-launchpad button_transition'>Create Launchpad</Link>
+                          </div>
+                          :
+                          <div className='launchpad-button-section'>
+                          <a  className='create-launchpad button_transition' onClick={()=>loginModalStatus()}>Create Launchpad</a>
+                          </div>
+                        }
+                    </div>
+                    <div className='col-md-4 col-xl-3 col-lg-3 col-8'>
+                        <div className="input-group search_filter new_design_serach">
                             <input value={search_value} onChange={(e)=> set_search_value(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search" />
-                            <div class="input-group-prepend ">
-                                <span class="input-group-text">
+                            <div className="input-group-prepend ">
+                                <span className="input-group-text">
                                     <img src="/assets/img/search_large.svg" alt="search-box" width="100%" height="100%" />
                                 </span>
-                                <span class="input-group-text" onClick={()=>resetFilter()}>
+                                <span className="input-group-text" onClick={()=>resetFilter()}>
                                     <img src="/assets/img/reset.svg" alt="search-box" width="100%" height="100%" />
                                 </span>
                             </div>
@@ -254,7 +294,7 @@ const convertCurrency = (token_price) =>
                                     <div className='row'>
                                         <div className='col-md-6 col-6'>
                                             <p>Listing Price:</p>
-                                            <h6>{item.listing_price ? convertCurrency(item.tokens_for_sale):"TBA"}</h6>
+                                            <h6>{item.listing_price ? convertCurrency(item.listing_price):"TBA"}</h6>
                                         </div>
                                         <div className='col-md-6 col-6'>
                                             <p>Sale Tokens:</p>
@@ -349,23 +389,23 @@ const convertCurrency = (token_price) =>
                                         <div className='row'>
                                             <div className='col-md-11 col-10'>
                                                 {
-                                                   item.start_date ?
-                                                   <p><img src="/assets/img/calander-ico.svg" alt="Calander" className="ico_calander_icon" />  
-                                                   {
-                                                     moment(item.start_date).utc().format('YYYY') == moment(item.start_date).utc().format('YYYY') ?
-                                                     <>
-                                                     {moment(item.start_date).utc().format('MMM D')} - {moment(item.end_date).utc().format('MMM D YYYY')}
-                                                     </>
-                                                     :
-                                                     <>
-                                                     {moment(item.start_date).utc().format('MMM D YYYY')} - {moment(item.end_date).utc().format('MMM D YYYY')}
-                                                     </>
-                                                   }
-                                                   </p>
-                                                   :
-                                                   <p><img src="/assets/img/calander-ico.svg" alt="Calander"  className="ico_calander_icon" />  TBA</p> 
-                                                }
-                                                
+                                                    is_client_load ?
+                                                    <AddToCalendarButton
+                                                        name={item.title+" ("+getLaunchpadType(item.launchpad_type)+")"}
+                                                        startDate={(moment.utc(item.start_date).format("YYYY-MM-DD")).toString()}
+                                                        endDate={(moment.utc(item.end_date).format("YYYY-MM-DD")).toString()}
+                                                        description={item.description}
+                                                        location={item.location}
+                                                        options={['Apple', 'Google', 'iCal']}
+                                                        buttonStyle="custom"
+                                                        label={" "+(item.start_date ? moment(item.start_date).utc().format('YYYY') == moment(item.start_date).utc().format('YYYY') ? moment(item.start_date).utc().format('MMM D')+" - "+moment(item.end_date).utc().format('MMM D YYYY'):moment(item.start_date).utc().format('MMM D YYYY')+" - "+moment(item.end_date).utc().format('MMM D YYYY'):"TBA")}
+                                                        listStyle="overlay"
+                                                        trigger="click"
+                                                        customCss={market_coinpedia_url+"assets/css/atcb.css"}
+                                                        />  
+                                                    :
+                                                    ""
+                                                } 
                                             </div>
                                             <div className='col-md-1 col-2 text-right p-0'>
                                             <Link href={"/"+item.token_id+"?tab=ico&tab_id="+item._id}><img src="/assets/img/ico_view.svg" alt="View" className="ico_airdrop_arrow" /></Link>
@@ -435,7 +475,16 @@ const convertCurrency = (token_price) =>
                 </div>
                 </div>
             </div>
-
+            {login_modal_status ? <LoginModal name={login_props} sendDataToParent={getDataFromChild} /> : null}                 
             </> 
     )
+}
+
+
+export async function getServerSideProps({req, query}) 
+{
+   const userAgent = cookie.parse(req ? req.headers.cookie || "" : document.cookie)
+   const user_token = userAgent.user_token ? userAgent.user_token : ""
+
+   return { props: { userAgent:userAgent, user_token:user_token }}
 }

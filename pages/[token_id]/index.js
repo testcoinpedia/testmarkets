@@ -3,13 +3,8 @@ import Link from "next/link";
 import Head from "next/head";
 import cookie from "cookie";
 import JsCookie from "js-cookie";
-
-
-
 import LoginModal from "../../components/layouts/auth/loginModal";
 import Axios from "axios";
-
-
 import { useSelector, useDispatch } from "react-redux";
 import Error from "../404";
 import { smallExponentialPrice, API_BASE_URL,config, separator,getURLWebsiteName,getShortWalletAddress,
@@ -18,8 +13,10 @@ import { smallExponentialPrice, API_BASE_URL,config, separator,getURLWebsiteName
   market_coinpedia_url,
   IMAGE_BASE_URL,
   roundNumericValue,
+  convertvalue ,
   volume_time_list,
-  speedoMeterValues
+  speedoMeterValues,
+  indicator_time_series
 } from "../../components/constants";
 import {
   tokenBasic,
@@ -56,6 +53,9 @@ import Ico_detail from "../../components/token_details/ico_detail";
 import Dex_volume from "../../components/token_details/dex_volume";
 import Dex_pairs from "../../components/token_details/charts/dex_pairs_tv/dex_pairs";
 import Community_scrore from "../../components/token_details/community_scrore";
+import Animated_number from "../../components/token_details/animated_number";
+
+const DynamicChartComponent = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 // import Dex_pairs from '../../index'
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
@@ -72,6 +72,12 @@ import {
 // 	{ ssr: false },
 // )
 
+
+// function getRandomNumber() {
+//   return Math.floor(10 + Math.random() * (9999 - 10 + 1));
+// }
+
+
 export default function tokenDetailsFunction({
   errorCode,
   data,
@@ -79,7 +85,80 @@ export default function tokenDetailsFunction({
   userAgent,
   switch_tab,
   search_by_category
-}) {
+}) 
+{
+
+  // const [nextNumber, setNextNumber] = useState(getRandomNumber());
+  // const intervalRef = useRef();
+  // const prevNumber = useRef();
+
+  // const startInterval = () => {
+  //   intervalRef.current = setInterval(() => {
+  //     const val = getRandomNumber();
+
+  //     setNextNumber((prev) => {
+  //       // We need this to get the previous state value
+  //       // Has to do with the fact that this is within a setInterval
+  //       prevNumber.current = prev;
+  //       return val;
+  //     });
+  //   }, 5000);
+  // };
+  
+  //  useEffect(() => {
+  //   startInterval();
+
+  //   return () => clearInterval(intervalRef.current);
+  // }, []);
+
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+
+  const [chartData, setChartData] = useState({
+    series: [100, 100, 50],
+    options: {
+      chart: {
+        height: '100%',
+        type: 'radialBar',
+        width: 4,
+      },
+      plotOptions: {
+        radialBar: {
+          dataLabels: {
+            name: {
+              fontSize: '14px',
+              // color: '#FF007A',
+            },
+            value: {
+              fontSize: '11px',
+              color: '#000',
+            },
+            
+            // total: {
+            //   show: true,
+            //   label: 'Total',
+            //   formatter: function (w) {
+            //     return 249; 
+            //   },
+            // },
+          },
+        },
+      },
+      colors: ['#FF007A', '#FF007A', '#FF007A'],
+      labels: ['Max Supply', 'Total Supply', 'Circulating Supply'],
+    },
+  });
+
+
+
+
+  const { userData, active_currency } = useSelector(state => state)
+  
 
   let sma_buy_count = 0
   let sma_sell_count = 0
@@ -89,7 +168,7 @@ export default function tokenDetailsFunction({
   let ema_sell_count = 0
   let ema_neutral_count = 0
   
-  // console.log("data", data);
+ console.log("active_currency", active_currency);
   if (errorCode) {
     return <Error />;
   }
@@ -142,14 +221,17 @@ export default function tokenDetailsFunction({
   const [exchanges] = useState(data.exchanges ? data.exchanges : []);
   const [explorers] = useState(data.explorers ? data.explorers : []);
   const [communities] = useState(data.communities ? data.communities : []);
-   
+  const [liqudity_networks, set_liqudity_networks] = useState([])
+  const [total_watchlist_count, set_total_watchlist_count] = useState(data.total_watchlist_count ? data.total_watchlist_count:0) 
+  
+  const [percent_change_1h, set_percent_change_1h] = useState(0)
   const [total_sma_buy, set_total_sma_buy] = useState(0)
   const [total_sma_sell, set_total_sma_sell] = useState(0)
   const [total_sma_neutral, set_total_sma_neutral] = useState(0)
   const [oscillator_buy, set_oscillator_buy] = useState(0)
   const [oscillator_sell, set_oscillator_sell] = useState(0)
   const [oscillator_neutral, set_oscillator_neutral] = useState(0) 
-
+  
   const [summary_buy, set_summary_buy] = useState(0)
   const [summary_sell, set_summary_sell] = useState(0)
   const [summary_neutral, set_summary_neutral] = useState(0) 
@@ -165,9 +247,11 @@ export default function tokenDetailsFunction({
   const [total_ema_buy, set_total_ema_buy] = useState(0)
   const [total_ema_sell, set_total_ema_sell] = useState(0)
   const [total_ema_neutral, set_total_ema_neutral] = useState(0)
+ 
+  const [green_days, set_green_days] = useState(0)
+  const [close_price_of_fifty, set_close_price_of_fifty] = useState(0)
+  const [close_price_of_two_hundred, set_close_price_of_two_hundred] = useState(0)
   
-  
-
   const [no_data_link] = useState("");
 
   const [category_list, set_category_list] = useState(false);
@@ -182,7 +266,7 @@ export default function tokenDetailsFunction({
   // data.fully_diluted_market_cap ? data.fully_diluted_market_cap:""
   // data.api_from_type
 
-  const [circulating_supply] = useState(
+  const [circulating_supply, set_circulating_supply] = useState(
     data.circulating_supply ? data.circulating_supply : ""
   );
   const [live_price, set_live_price] = useState(data.price ? data.price : "");
@@ -235,10 +319,13 @@ export default function tokenDetailsFunction({
   const [chart_tab, set_chart_tab] = useState(1);
   //console.log("chart_tab", chart_tab)
   const [tooltipVisible, setTooltipVisible] = useState(false);
-
+  const [indicator_source_type, set_indicator_source_type] = useState(1)
+  
   const [time_name, set_time_name] = useState("1D");
   const [intervals, set_intervals] = useState("10m");
-  const [count, set_count] = useState("144");
+  const [count, set_count] = useState("144")
+  const [indicator_data_status, set_indicator_data_status] = useState(false)
+  const [indicator_loader_status, set_indicator_loader_status] = useState(true)
 
   const [user_token, set_user_token] = useState(
     userAgent.user_token ? userAgent.user_token : ""
@@ -263,23 +350,26 @@ export default function tokenDetailsFunction({
   // SMA data assigned in state varibale 
   const [sma_list, set_sma_list] = useState([]);
   const [moving_averages_crossovers, set_moving_averages_crossovers] = useState([]);
-  const [macd_line, set_macd_line] = useState([]);
-  const [stochastic_values, set_stochastic_values] = useState([]);
+  const [macd_line, set_macd_line] = useState(0);
+  const [stochastic_values, set_stochastic_values] = useState("");
   const [hull_moving_average, set_hull_moving_average] = useState([]);
   const [average_true_range, set_average_true_range] = useState([]);
-  const [roc, set_roc] = useState([]);
-  const [cci , set_cci] = useState([]);
-  const [vwma , set_vwma] = useState([]);
+  const [roc, set_roc] = useState(0);
+  const [cci , set_cci] = useState(0);
+  const [vwma , set_vwma] = useState(0);
   const [bull_bear_power , set_bull_bear_power] = useState([]);
   const [williams_percent_range , set_williams_percent_range] = useState([]);
   const [bollinger_bands , set_bollinger_bands] = useState([]);
-  const [money_flow_index , set_money_flow_index] = useState([]);
-  const [rsi_value , set_rsi_value] = useState([]);
+  const [money_flow_index , set_money_flow_index] = useState(0);
+  const [rsi_value , set_rsi_value] = useState(0);
   const [ma_crossovers_bullish, set_ma_crossovers_bullish] = useState("")
   const [ma_crossovers_bearish, set_ma_crossovers_bearish] = useState("")
+  const [interval_type, set_interval_type] = useState(6)
+  const [hour_indicator_call_status, set_hour_indicator_call_status] = useState(false)
+  const [five_twenty_ma, set_five_twenty_ma] = useState("")
+  const [twenty_fifty_ma, set_twenty_fifty_ma] = useState("")
+  const [fifty_two_hundred_ma, set_fifty_two_hundred_ma] = useState("")
   
-
-
   const bullishCount = sma_list.filter(item => live_price > item.sma_value ).length;
   const bearishCount = sma_list.filter(item => live_price < item.sma_value ).length;
 
@@ -294,22 +384,21 @@ export default function tokenDetailsFunction({
 
   const averages = 70;
 
+  const percentage = (green_days / 30) * 100
 
- 
-
-
-  const [ringColor, setRingColor] = useState('#E0E3EB');
+  const [ringColor, setRingColor] = useState('#E0E3EB')
   const customNeedlePath = `<svg width="200" height="245" viewBox="0 0 200 245" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M6.57365 2.90619L9.82805 0.0395701L172.112 202.59L157.504 214.277L6.57365 2.90619Z" fill="#141822"/>
   <circle cx="173.43" cy="222.086" r="22.3987" fill="#141822"/>
   </svg>`; // Custom SVG path for needle
 
-  const dexPairGraph = async (pass_object) => {
+  const dexPairGraph = async (pass_object) => 
+  {
     //console.log("adsfasdff")
     await set_dex_pair_details(false);
     await set_dex_pair_object({});
     await set_dex_pair_object(pass_object);
-  };
+  }
 
   //pass_type 1:token value, 2:usd value
   const tokenConverter = async (pass_value, pass_type, pass_pair_value) => {
@@ -342,7 +431,52 @@ export default function tokenDetailsFunction({
       await set_token_converter_value("");
       await set_usd_converter_value("");
     }
-  };
+  }
+
+  const getDexVolumePriceFromChild = async (pass_object) => 
+  {
+    if(pass_object.tradeAmount)
+    {
+      set_dex_circulating_supply(pass_object.tradeAmount)
+    }
+    
+  }
+
+  const getChartPriceFromChild = async (pass_object) => 
+  {
+    //percent_change_30d
+    if(pass_object.price)
+    {
+      set_circulating_supply(pass_object.circulating_supply)
+      set_percent_change_1h((pass_object.percent_change_1h).toFixed(2))
+      set_volume(pass_object.volume_24h)
+      set_live_price(pass_object.price)
+      set_percentage_change_24h((pass_object.percent_change_24h).toFixed(2))
+      set_percentage_change_7d((pass_object.percent_change_7d).toFixed(2))
+    }
+  }
+
+
+  useEffect(() => 
+  {
+    if(userData.token)
+    {
+      actionAfterMenuLogin(userData)
+    }
+  }, [userData.token])
+
+  const actionAfterMenuLogin = async (pass_data) =>
+  {
+    await set_user_token(pass_data.token)
+    await set_request_config(pass_data.token)
+    
+    const res = await Axios.get(API_BASE_URL +"markets/cryptocurrency/individual_details/"+token_id, config(pass_data.token));
+    if(res.data) 
+    {
+      set_watchlist(res.data.message.watchlist_status)
+      set_voting_status(res.data.message.voting_status)
+    }
+  }
 
   const getDataFromChild = async (pass_object) => {
     await set_login_modal_status(false);
@@ -354,11 +488,11 @@ export default function tokenDetailsFunction({
       await setHandleModalVote(false);
       await vote(1);
     }
-  };
+  }
 
   const getLiquidityDataFromChild = async (pass_data) => {
     // console.log("price 3", pass_data.price);
-    //console.log("pass_data", pass_data)
+    console.log("LiquidityData", pass_data)
     if (!live_price) {
       if (pass_data.price) {
         set_live_price(pass_data.price);
@@ -371,14 +505,21 @@ export default function tokenDetailsFunction({
       }
     }
 
-    if (pass_data.total_balance_in_token) {
-      set_dex_circulating_supply(pass_data.total_balance_in_token);
-    }
+    // if (pass_data.total_balance_in_token) {
+    //   set_dex_circulating_supply(pass_data.total_balance_in_token);
+    // }
 
     if (pass_data.count_liquidity_pools) {
       set_count_liquidity_pools(pass_data.count_liquidity_pools);
     }
 
+    if(pass_data.liqudity_networks) 
+    {
+      set_liqudity_networks(pass_data.liqudity_networks)
+    }
+
+
+    
     if (pass_data.price >= 0.0000000001) {
       const save_obj = {
         token_id: token_id,
@@ -459,203 +600,263 @@ export default function tokenDetailsFunction({
     set_time_name(pass_time_name);
     set_intervals(pass_interval);
     set_count(pass_count);
-  };
+  }
 
-  const tokenOtherDetails = async () => 
+  const indicatorSourceType = async (pass_source_type) =>
   {
+    await set_indicator_source_type(pass_source_type)
+    await tokenOtherDetails(interval_type, pass_source_type)
+  }
+
   
-    const response = await Axios.get(API_BASE_URL +"markets/cryptocurrency/individual_bit_other_details/" + token_id,config(""));
+
+  const tokenOtherDetails = async (pass_type, pass_indicator_source_type) => 
+  {
+    await set_interval_type("")
+    await set_interval_type(pass_type)
+    await set_indicator_data_status(false)
+    await set_indicator_loader_status(true)
+    const response = await Axios.get(API_BASE_URL +"markets/cryptocurrency/individual_bit_other_details/" + token_id+"?interval_type="+pass_type+"&source_type="+pass_indicator_source_type,config(""));
     if(response.data) 
     {
-     
-      if(response.data.message.converter_currencies) 
+      await set_indicator_loader_status(false)
+      if(response.data.message.result_array.length)
       {
-        set_converter_pair_currencies( response.data.message.converter_currencies );
+        await set_hour_indicator_call_status(true)
+        set_indicator_data_status(true)
         
-        if(response.data.message.moving_averages_crossovers.data)
+        if(pass_type == 6)
         {
-          set_moving_averages_crossovers(response.data.message.moving_averages_crossovers.data);
-          set_ma_crossovers_bullish(response.data.message.moving_averages_crossovers.total_bullish);
-          set_ma_crossovers_bearish(response.data.message.moving_averages_crossovers.total_bearish)
+          set_green_days(response.data.message.green_days)
+          set_close_price_of_fifty(response.data.message.close_price_of_fifty)
+          set_close_price_of_two_hundred(response.data.message.close_price_of_two_hundred)
         }
-        
-        var sma_array = []
-        var temp_total_sma_buy = 0
-        var temp_total_sma_sell = 0
-        var temp_total_sma_neutral = 0
 
-        var temp_total_ema_buy = 0
-        var temp_total_ema_sell = 0
-        var temp_total_ema_neutral = 0
-        
-        if(response.data.message.moving_averages)
+
+        if(response.data.message.converter_currencies) 
         {
-          if(response.data.message.moving_averages.length > 0)
+          set_converter_pair_currencies( response.data.message.converter_currencies );
+          
+          if(response.data.message.moving_averages_crossovers)
           {
-            for(let run of response.data.message.moving_averages)
+            if(response.data.message.moving_averages_crossovers.data)
             {
-              var new_sma_object = {}
-              new_sma_object['day_number'] = run.day_number
-              new_sma_object['sma_value'] = run.sma_value
-              new_sma_object['ema_value'] = run.ema_value
+              set_moving_averages_crossovers(response.data.message.moving_averages_crossovers.data)
+              set_ma_crossovers_bullish(response.data.message.moving_averages_crossovers.total_bullish)
+              set_ma_crossovers_bearish(response.data.message.moving_averages_crossovers.total_bearish)
+              
+              for(let run of response.data.message.moving_averages_crossovers.data)
+              {
+                if((run.start_sma_day == 5) && (run.end_sma_day == 20))
+                {
+                  set_five_twenty_ma(run.signal_description)
+                }
+                
+                if((run.start_sma_day == 20) && (run.end_sma_day == 50))
+                {
+                  set_twenty_fifty_ma(run.signal_description)
+                }
 
-              if(live_price > run.sma_value) 
-              {
-                temp_total_sma_buy++;
-                new_sma_object['sma_status'] = 1
-              } 
-              else if (live_price < run.sma_value) 
-              {
-                temp_total_sma_sell++;
-                new_sma_object['sma_status'] = 2
-              } 
-              else 
-              {
-                temp_total_sma_neutral++;
-                new_sma_object['sma_status'] = 3
+                if((run.start_sma_day == 50) && (run.end_sma_day == 200))
+                {
+                  set_fifty_two_hundred_ma(run.signal_description)
+                }
               }
-
-              if(live_price > run.ema_value) 
-              {
-                temp_total_ema_buy++;
-                new_sma_object['ema_status'] = 1
-              } 
-              else if (live_price < run.ema_value) 
-              {
-                temp_total_ema_sell++;
-                new_sma_object['ema_status'] = 2
-              } 
-              else 
-              {
-                temp_total_ema_neutral++;
-                new_sma_object['ema_status'] = 3
-              }
-
-              await sma_array.push(new_sma_object)
             }
           }
-        } 
-        
+          
+          var sma_array = []
+          var temp_total_sma_buy = 0
+          var temp_total_sma_sell = 0
+          var temp_total_sma_neutral = 0
 
-        // temp_total_sma_buy = 4
-        // temp_total_sma_sell = 3
-        // temp_total_sma_neutral = 0
-        const { speed_meter_name, speed_percentage } = await speedoMeterValues({total_sma_buy:temp_total_sma_buy, 
-                                                          total_sma_sell:temp_total_sma_sell, 
-                                                          total_sma_neutral:temp_total_sma_neutral
-                                                        })
-        await set_sma_speed_meter_name(speed_meter_name)
-        await set_sma_speedo_meter(speed_percentage)
-        
+          var temp_total_ema_buy = 0
+          var temp_total_ema_sell = 0
+          var temp_total_ema_neutral = 0
+          
+          if(response.data.message.moving_averages)
+          {
+            if(response.data.message.moving_averages.length > 0)
+            {
+              for(let run of response.data.message.moving_averages)
+              {
+                var new_sma_object = {}
+                new_sma_object['day_number'] = run.day_number
+                new_sma_object['sma_value'] = run.sma_value
+                new_sma_object['ema_value'] = run.ema_value
 
+                if(live_price > run.sma_value) 
+                {
+                  temp_total_sma_buy++;
+                  new_sma_object['sma_status'] = 1
+                } 
+                else if (live_price < run.sma_value) 
+                {
+                  temp_total_sma_sell++;
+                  new_sma_object['sma_status'] = 2
+                } 
+                else 
+                {
+                  temp_total_sma_neutral++;
+                  new_sma_object['sma_status'] = 3
+                }
+
+                if(live_price > run.ema_value) 
+                {
+                  temp_total_ema_buy++;
+                  new_sma_object['ema_status'] = 1
+                } 
+                else if (live_price < run.ema_value) 
+                {
+                  temp_total_ema_sell++;
+                  new_sma_object['ema_status'] = 2
+                } 
+                else 
+                {
+                  temp_total_ema_neutral++;
+                  new_sma_object['ema_status'] = 3
+                }
+
+                await sma_array.push(new_sma_object)
+              }
+            }
+          } 
+          
+
+          // temp_total_sma_buy = 4
+          // temp_total_sma_sell = 3
+          // temp_total_sma_neutral = 0
+          const { speed_meter_name, speed_percentage } = await speedoMeterValues({total_sma_buy:temp_total_sma_buy, 
+                                                            total_sma_sell:temp_total_sma_sell, 
+                                                            total_sma_neutral:temp_total_sma_neutral
+                                                          })
+          await set_sma_speed_meter_name(speed_meter_name)
+          await set_sma_speedo_meter(speed_percentage)
+          
+
+          
+          await set_sma_list(sma_array)
+          await set_total_sma_buy(temp_total_sma_buy)
+          await set_total_sma_sell(temp_total_sma_sell)
+          await set_total_sma_neutral(temp_total_sma_neutral)
+          await set_total_ema_buy(temp_total_ema_buy)
+          await set_total_ema_sell(temp_total_ema_sell)
+          await set_total_ema_neutral(temp_total_ema_neutral)
         
-        await set_sma_list(sma_array)
-        await set_total_sma_buy(temp_total_sma_buy)
-        await set_total_sma_sell(temp_total_sma_sell)
-        await set_total_sma_neutral(temp_total_sma_neutral)
-        await set_total_ema_buy(temp_total_ema_buy)
-        await set_total_ema_sell(temp_total_ema_sell)
-        await set_total_ema_neutral(temp_total_ema_neutral)
-       
-        var temp_oscillator_buy = 0
-        var temp_oscillator_sell = 0
-        var temp_oscillator_neutral = 0
-        set_macd_line(response.data.message.macd_line)
-        response.data.message.macd_line < 0 ? temp_oscillator_sell++ : response.data.message.macd_line > 0 ? temp_oscillator_buy++ : temp_oscillator_neutral++
+          var temp_oscillator_buy = 0
+          var temp_oscillator_sell = 0
+          var temp_oscillator_neutral = 0
+          set_macd_line(response.data.message.macd_line)
+          response.data.message.macd_line < 0 ? temp_oscillator_sell++ : response.data.message.macd_line > 0 ? temp_oscillator_buy++ : temp_oscillator_neutral++
+          
+          set_stochastic_values(response.data.message.stochastic_values)
+          if(response.data.message.stochastic_values)
+          {
+            response.data.message.stochastic_values.slow <= 45 ?  temp_oscillator_buy++ :  response.data.message.stochastic_values.slow >= 55 ? temp_oscillator_sell++ : temp_oscillator_neutral++
+          }
+          
+                                                          
+          set_roc(response.data.message.roc)
+          response.data.message.roc < 0 ? temp_oscillator_sell++ : response.data.message.roc > 0 ? temp_oscillator_buy++ : temp_oscillator_neutral++
         
-        set_stochastic_values(response.data.message.stochastic_values)
-        if(response.data.message.stochastic_values)
-        {
-          response.data.message.stochastic_values.slow <= 45 ?  temp_oscillator_buy++ :  response.data.message.stochastic_values.slow >= 55 ? temp_oscillator_sell++ : temp_oscillator_neutral++
+          set_cci(response.data.message.cci) 
+          response.data.message.cci > 50? temp_oscillator_buy++ : response.data.message.cci < -50 ? temp_oscillator_sell++ : temp_oscillator_neutral++
+
+
+          set_money_flow_index(response.data.message.money_flow_index)
+          response.data.message.money_flow_index <= 20 ? temp_oscillator_buy++ : response.data.message.money_flow_index > 80 ? temp_oscillator_sell++ : temp_oscillator_neutral++
+        
+          set_williams_percent_range(response.data.message.williams_percent_range)
+          response.data.message.williams_percent_range > -50 ? temp_oscillator_buy++ : response.data.message.williams_percent_range < -60? temp_oscillator_sell++ : temp_oscillator_neutral++
+                                                          
+          set_bull_bear_power(response.data.message.bull_bear_power)
+          response.data.message.bull_bear_power < 0 ? temp_oscillator_sell++ : response.data.message.bull_bear_power > 0 ? temp_oscillator_buy++ : temp_oscillator_neutral++                                                
+          
+          set_bollinger_bands(response.data.message.bollinger_bands)
+          if(response.data.message.bollinger_bands)
+          {
+            live_price >= response.data.message.bollinger_bands.upper_band ? temp_oscillator_sell++ : live_price <= response.data.message.bollinger_bands.lower_band ? temp_oscillator_buy++ : temp_oscillator_neutral++  
+          }
+          
+
+          set_rsi_value(response.data.message.rsi_value)
+          response.data.message.rsi_value < 30 ? temp_oscillator_sell++ : response.data.message.rsi_value > 70 ? temp_oscillator_buy++ : temp_oscillator_neutral++
+                                                          
+
+
+          set_hull_moving_average (response.data.message.hull_moving_average);
+          set_average_true_range(response.data.message.average_true_range);
+          
+          
+          set_vwma(response.data.message.vwma)
+          
+          
+          
+          set_volatility(response.data.message.volatility_30d)
+          // response.data.message.volatility_30d >= 5 && volatility < 10 ? temp_oscillator_sell++ :
+          // (response.data.message.volatility_30d >= 1 && volatility < 2 ? temp_oscillator_buy++ :
+          // (response.data.message.volatility_30d >= 2 && volatility < 5 ? temp_oscillator_neutral++ : null));
+          
+          // console.log("temp_oscillator_buy", temp_oscillator_buy)
+          // console.log("temp_oscillator_sell", temp_oscillator_sell)
+          // console.log("temp_oscillator_neutral", temp_oscillator_neutral)
+          
+          await set_oscillator_buy(temp_oscillator_buy)
+          await set_oscillator_sell(temp_oscillator_sell)
+          await set_oscillator_neutral(temp_oscillator_neutral)
+
+          const oscillator_speedo_meter_values = await speedoMeterValues({total_sma_buy:temp_oscillator_buy, 
+            total_sma_sell:temp_oscillator_sell, 
+            total_sma_neutral:temp_oscillator_neutral
+          })
+          await set_oscillator_speed_meter_name(oscillator_speedo_meter_values.speed_meter_name)
+          await set_oscillator_speedo_meter(oscillator_speedo_meter_values.speed_percentage)
+
+          var temp_summary_buy = await temp_oscillator_buy+temp_total_sma_buy
+          var temp_summary_sell = await temp_oscillator_sell+temp_total_sma_sell
+          var temp_summary_neutral = await temp_oscillator_neutral+temp_total_sma_neutral
+
+          await set_summary_buy(temp_summary_buy)
+          await set_summary_sell(temp_summary_sell)
+          await set_summary_neutral(temp_summary_neutral)
+
+          const summary_speedo_meter_values = await speedoMeterValues({
+            total_sma_buy : temp_oscillator_buy, 
+            total_sma_sell : temp_oscillator_sell, 
+            total_sma_neutral : temp_oscillator_neutral
+          })
+
+          await set_summary_speed_meter_name(summary_speedo_meter_values.speed_meter_name)
+          await set_summary_speedo_meter(summary_speedo_meter_values.speed_percentage)
+
+
+          await set_sma_speed_meter_name(speed_meter_name)
+          await set_sma_speedo_meter(speed_percentage)
         }
-        
-                                                        
-        set_roc(response.data.message.roc)
-        response.data.message.roc < 0 ? temp_oscillator_sell++ : response.data.message.roc > 0 ? temp_oscillator_buy++ : temp_oscillator_neutral++
-       
-        set_cci(response.data.message.cci) 
-        response.data.message.cci > 50? temp_oscillator_buy++ : response.data.message.cci < -50 ? temp_oscillator_sell++ : temp_oscillator_neutral++
-
-
-        set_money_flow_index(response.data.message.money_flow_index)
-        response.data.message.money_flow_index <= 20 ? temp_oscillator_buy++ : response.data.message.money_flow_index > 80 ? temp_oscillator_sell++ : temp_oscillator_neutral++
-       
-        set_williams_percent_range(response.data.message.williams_percent_range)
-        response.data.message.williams_percent_range > -50 ? temp_oscillator_buy++ : response.data.message.williams_percent_range < -60? temp_oscillator_sell++ : temp_oscillator_neutral++
-                                                        
-        set_bull_bear_power(response.data.message.bull_bear_power)
-        response.data.message.bull_bear_power < 0 ? temp_oscillator_sell++ : response.data.message.bull_bear_power > 0 ? temp_oscillator_buy++ : temp_oscillator_neutral++                                                
-        
-        set_bollinger_bands(response.data.message.bollinger_bands)
-        if(response.data.message.bollinger_bands)
-        {
-          live_price >= response.data.message.bollinger_bands.upper_band ? temp_oscillator_sell++ : live_price <= response.data.message.bollinger_bands.lower_band ? temp_oscillator_buy++ : temp_oscillator_neutral++  
-        }
-        
-
-        set_rsi_value(response.data.message.rsi_value)
-        response.data.message.rsi_value < 30 ? temp_oscillator_sell++ : response.data.message.rsi_value > 70 ? temp_oscillator_buy++ : temp_oscillator_neutral++
-                                                        
-
-
-        set_hull_moving_average (response.data.message.hull_moving_average);
-        set_average_true_range(response.data.message.average_true_range);
-        
-        
-        set_vwma(response.data.message.vwma)
-        
-        
-        
-        set_volatility(response.data.message.volatility_30d)
-        // response.data.message.volatility_30d >= 5 && volatility < 10 ? temp_oscillator_sell++ :
-        // (response.data.message.volatility_30d >= 1 && volatility < 2 ? temp_oscillator_buy++ :
-        // (response.data.message.volatility_30d >= 2 && volatility < 5 ? temp_oscillator_neutral++ : null));
-        
-        // console.log("temp_oscillator_buy", temp_oscillator_buy)
-        // console.log("temp_oscillator_sell", temp_oscillator_sell)
-        // console.log("temp_oscillator_neutral", temp_oscillator_neutral)
-        
-        await set_oscillator_buy(temp_oscillator_buy)
-        await set_oscillator_sell(temp_oscillator_sell)
-        await set_oscillator_neutral(temp_oscillator_neutral)
-
-        const oscillator_speedo_meter_values = await speedoMeterValues({total_sma_buy:temp_oscillator_buy, 
-          total_sma_sell:temp_oscillator_sell, 
-          total_sma_neutral:temp_oscillator_neutral
-        })
-        await set_oscillator_speed_meter_name(oscillator_speedo_meter_values.speed_meter_name)
-        await set_oscillator_speedo_meter(oscillator_speedo_meter_values.speed_percentage)
-
-        var temp_summary_buy = await temp_oscillator_buy+temp_total_sma_buy
-        var temp_summary_sell = await temp_oscillator_sell+temp_total_sma_sell
-        var temp_summary_neutral = await temp_oscillator_neutral+temp_total_sma_neutral
-
-        await set_summary_buy(temp_summary_buy)
-        await set_summary_sell(temp_summary_sell)
-        await set_summary_neutral(temp_summary_neutral)
-
-        const summary_speedo_meter_values = await speedoMeterValues({
-          total_sma_buy : temp_oscillator_buy, 
-          total_sma_sell : temp_oscillator_sell, 
-          total_sma_neutral : temp_oscillator_neutral
-        })
-
-        await set_summary_speed_meter_name(summary_speedo_meter_values.speed_meter_name)
-        await set_summary_speedo_meter(summary_speedo_meter_values.speed_percentage)
-
-
-        await set_sma_speed_meter_name(speed_meter_name)
-        await set_sma_speedo_meter(speed_percentage)
-
       }
+      else
+      {
+        if((pass_type == 6) && !hour_indicator_call_status)
+        {
+          await tokenOtherDetails(3, pass_indicator_source_type)
+          await set_hour_indicator_call_status(true)
+
+        }
+        else
+        {
+          set_hour_indicator_call_status(true)
+        }
+      }
+      
     }
-  };
+  }
 
-  const active_currency = useSelector((state) => state.active_currency);
-
-  const convertCurrency = (token_price) => {
-    if (token_price > 0.00001) {
-      if (active_currency.currency_value) {
+  const convertCurrency = (token_price) => 
+  {
+    if(token_price > 0.00001) 
+    {
+      if(active_currency.currency_value) 
+      {
         return (
           active_currency.currency_symbol +
           " " +
@@ -664,26 +865,31 @@ export default function tokenDetailsFunction({
       } else {
         return roundNumericValue(token_price);
       }
-    } else {
-      if (active_currency.currency_value) {
+    } 
+    else 
+    {
+      if(active_currency.currency_value) 
+      {
         return (
           <>
-            {active_currency.currency_symbol}{" "}
+            {active_currency.currency_symbol}
             {smallExponentialPrice(token_price)}
           </>
-        );
-      } else {
-        return <>{smallExponentialPrice(token_price)}</>;
+        )
+      } 
+      else 
+      {
+        return <>{smallExponentialPrice(token_price)}</>
       }
     }
-  };
+  }
 
   useEffect(() => {
     if (!is_client) {
       set_is_client(true);
     }
 
-    tokenOtherDetails();
+    tokenOtherDetails(6, indicator_source_type);
     if (switch_tab == "ico") {
       icoRef.current.scrollIntoView();
       set_main_tab(2);
@@ -728,7 +934,8 @@ export default function tokenDetailsFunction({
     };
   }, []);
 
-  const getPricingDetails = async () => {
+  const getPricingDetails = async () => 
+  {
     if (data.contract_addresses[0]) {
       if (data.contract_addresses[0].contract_address) {
         const token_basic_res = await tokenBasic(
@@ -736,12 +943,14 @@ export default function tokenDetailsFunction({
           data.contract_addresses[0].network_row_id
         );
         //console.log('token_basic_res', token_basic_res)
-        if (token_basic_res.status) {
+          if(token_basic_res.status) 
+          {
           if (!total_supply) {
             set_total_supply(token_basic_res.message.total_supply);
           }
 
-          if (token_basic_res.message.valid_status) {
+          if(token_basic_res.message.valid_status) 
+          {
             set_live_price(token_basic_res.message.live_price);
 
             var network_row_id = await data.contract_addresses[0]
@@ -798,8 +1007,10 @@ export default function tokenDetailsFunction({
             const response3 = await getHighLow24h(
               network_row_id,
               data.contract_addresses[0].contract_address
-            );
-            if (response3.status) {
+            )
+
+            if(response3.status) 
+            {
               set_high_24h(response3.message.high);
               set_low_24h(response3.message.low);
               set_open_24h(response3.message.open);
@@ -820,8 +1031,8 @@ export default function tokenDetailsFunction({
               percent_change_24h: save_percentage_change_24h,
               high_24h: save_high_24h,
               low_24h: save_low_24h,
-            };
-            await saveLivePriceDetails(save_obj);
+            }
+            await saveLivePriceDetails(save_obj)
           }
         }
       }
@@ -872,7 +1083,7 @@ export default function tokenDetailsFunction({
       currency: data.symbol ? data.symbol.toUpperCase() : "-",
       currentExchangeRate: {
         "@type": "UnitPriceSpecification",
-        price: roundNumericValue(live_price).replace("$", ""),
+        price: live_price ?roundNumericValue(live_price).replace("$", ""):"",
         priceCurrency: "USD",
       },
     };
@@ -932,6 +1143,7 @@ export default function tokenDetailsFunction({
     ).then((res) => {
       if (res.data.status) {
         set_watchlist(true);
+        set_total_watchlist_count(res.data.message.total_count)
       }
     });
   };
@@ -945,6 +1157,7 @@ export default function tokenDetailsFunction({
     ).then((res) => {
       if (res.data.status) {
         set_watchlist(false);
+        set_total_watchlist_count(res.data.message.total_count)
       }
     });
   };
@@ -1148,404 +1361,486 @@ export default function tokenDetailsFunction({
 
       <div className="page">
         <div className="market_token_details">
-          <div className="container-fluid p-0">
             <div ref={div} className="markets_header_token">
               <div className="container">
-                <div className="col-md-12">
-                  <div className="row">
-                    <div className="col-lg-6 col-xl-6 col-md-12 order-md-1 order-2">
-                      <div className="token_main_details">
-                        <div className="media">
-                          <div className="media-left align-self-center">
-                            <img
-                              src={
-                                data.token_image
-                                  ? image_base_url + data.token_image
-                                  : data.coinmarketcap_id
-                                  ? cmc_image_base_url +
-                                    data.coinmarketcap_id +
-                                    ".png"
-                                  : image_base_url + "default.svg"
-                              }
-                              onError={(e) =>
-                                (e.target.src = "/assets/img/default_token.png")
-                              }
-                              className="token_img"
-                              alt={data.token_name}
-                              width="100%"
-                              height="100%"
-                            />
-                          </div>
+                <div className="market_individual_header">
+                  <div className="col-md-12">
+                    <div className="row">
+                      <div className="col-lg-8 col-xl-8 col-md-8">
+                        <div className="breadcrumbs">
+                          <div className="breadcrumb-individual primary"><Link href="/">Cryptocurrencies</Link></div>
+                          <div className="breadcrumb-individual breadcrumb-arrow"> <img src="/assets/img/breadcrumb-arrow.svg" /> </div>
+                          <div className="breadcrumb-individual secondary">{data.token_name}</div>
 
-                          <div className="media-body align-self-center">
-                            <h1 className="media-heading">
-                              {data.token_name ? data.token_name : "-"} &nbsp;{" "}
-                              <span>
-                                {" "}
-                                ({data.symbol ? data.symbol.toUpperCase() : "-"}
-                                )
-                              </span>
-                              {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
-                            </h1>
-                            <p>
-                              {data.token_title ? (
-                                <>{data.token_title}</>
-                              ) : (
-                                <>
-                                  Stay ahead by tracking{" "}
-                                  {data.symbol
-                                    ? data.symbol.toUpperCase()
-                                    : "-"}{" "}
-                                  cryptocurrency trends and analyzing data.
-                                </>
-                              )}
-                            </p>
-                            <div>
-                              <ul className="category-ul">
-                                {data.categories ? (
-                                  <>
-                                    {data.categories.map((item, i) =>
-                                      i < 2 ? (
-                                        <li key={i}>
-                                          <Link
-                                            href={
-                                              "/category/" + item.category_id
-                                            }
-                                          >
-                                            {item.category_name}
-                                          </Link>
-                                        </li>
-                                      ) : (
-                                        ""
-                                      )
-                                    )}
-                                    {data.categories.length > 2 ? (
-                                      <li
-                                        onClick={() => set_category_modal(true)}
-                                      >
-                                        +{data.categories.length - 2} More
-                                      </li>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </>
+                        </div>
+                      </div>
+                      <div className="col-lg-4 col-xl-4 col-md-4">
+                        <div className="search_token_address">
+                          <Search_token />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-6 col-xl-6 col-md-12 order-md-1 order-2">
+                        <div className="token_main_details">
+                          <div className="media">
+                            <div className="media-left">
+                              <img
+                                src={
+                                  data.token_image
+                                    ? image_base_url + data.token_image
+                                    : data.coinmarketcap_id
+                                    ? cmc_image_base_url +
+                                      data.coinmarketcap_id +
+                                      ".png"
+                                    : image_base_url + "default.svg"
+                                }
+                                onError={(e) =>
+                                  (e.target.src = "/assets/img/default_token.png")
+                                }
+                                className="token_img"
+                                alt={data.token_name}
+                                width="100%"
+                                height="100%"
+                              />
+                            </div>
+
+                            <div className="media-body">
+                              <h1 className="media-heading">
+                                {data.token_name ? data.token_name : "-"}
+                                <span>
+                                  {data.symbol ? data.symbol.toUpperCase() : "-"}
+                                </span>
+                                {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
+                              </h1>
+                              <h5 title={live_price}>
+                            {live_price > 0 ? convertCurrency(live_price) : "NA"}
+                            {live_price ? (
+                            percentage_change_24h ? (
+                              <>
+                                  <span className="timings_price">&nbsp;24h
+                                  {percentage_change_24h > 0 ? (
+                                  
+                                    <span className="values_growth">
+                                      <span className="green">
+                                        <img
+                                          src="/assets/img/value_up.svg"
+                                          alt="Value Up"
+                                        />
+                                        {
+                                          percentage_change_24h ? percentage_change_24h
+                                          : 
+                                          ""
+                                        }
+                                        %
+                                      </span>
+                                    </span>
+                                  ) : (
+                                    <span className="values_growth">
+                                      <span className="red">
+                                        <img
+                                          src="/assets/img/value_down.svg"
+                                          alt="Value Down"
+                                        />
+                                        {percentage_change_24h ? percentage_change_24h
+                                          : "0"}
+                                        %
+                                      </span>
+                                    </span>
+                                  )}
+                                  &nbsp;
+                                  {convertCurrency(
+                                    ((percentage_change_24h * live_price) / 100).toFixed(4)
+                                  )}
+                                  </span>
+                              </>
+                            ) : null
+                          ) : null}
+                          </h5>
+
+                          
+                              {/* <p>
+                                {data.token_title ? (
+                                  <>{data.token_title}</>
                                 ) : (
-                                  ""
+                                  <>
+                                    Stay ahead by tracking{" "}
+                                    {data.symbol
+                                      ? data.symbol.toUpperCase()
+                                      : "-"}{" "}
+                                    cryptocurrency trends and analyzing data.
+                                  </>
                                 )}
+                              </p> */}
+                              
+                              <ul className="token_share_vote">
+                                {data.cp_rank ? <li>#{data.cp_rank} Rank</li> : ""}
+                                <li
+                                  onClick={() => set_share_modal_status(true)}
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  <img src="/assets/img/coin_share.svg" alt="Share" />
+                                </li>
+                                <li>
+                                  {user_token ? (
+                                    <>
+                                      {watchlist == true ? (
+                                        <span
+                                          onClick={() => removeFromWatchlist(data._id)}
+                                        >
+                                          <img
+                                            src="/assets/img/watchlist_filled.svg"
+                                            alt="Watchlist"
+                                          />
+                                        </span>
+                                      ) : (
+                                        <span onClick={() => addToWatchlist(data._id)}>
+                                          <img
+                                            src="/assets/img/watchlist_outline.svg"
+                                            alt="Watchlist"
+                                           
+                                          />
+                                        </span>
+                                      )}
+                                    </>
+                                  ) : (
+                                    <a onClick={() => loginModalStatus(data._id, 1)}>
+                                      <img
+                                        src="/assets/img/watchlist_outline.svg"
+                                        alt="Watchlist"
+                                        
+                                      />
+                                    </a>
+                                  )}
+                                  {total_watchlist_count ? <> {total_watchlist_count} Watchlists</>:""}
+                                </li>
                               </ul>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="col-lg-3 col-xl-3 col-md-6 order-md-2 order-3">
-                      <div className="token_price_block airdrop_data_content">
-                        <h5 title={live_price}>
-                          {/* {live_price > 0 ? "$" + roundNumericValue(live_price) : "NA"} */}
-                          {live_price > 0 ? convertCurrency(live_price) : "NA"}
-                        </h5>
+                      <div className="col-lg-3 col-xl-3 col-md-6 order-md-2 order-3">
+                        <div className="token_price_block airdrop_data_content">
 
-                        {live_price ? (
-                          percentage_change_24h ? (
-                            <>
-                              <h6>
-                                <span className="timings_price">&nbsp;24h</span>
-                                {percentage_change_24h > 0 ? (
-                                  <span className="values_growth">
-                                    <span className="green">
-                                      <img
-                                        src="/assets/img/value_up.svg"
-                                        alt="Value Up"
-                                      />
-                                      {percentage_change_24h
-                                        ? percentage_change_24h
-                                        : ""}
-                                      %
-                                    </span>
-                                  </span>
-                                ) : (
-                                  <span className="values_growth">
-                                    <span className="red">
-                                      <img
-                                        src="/assets/img/value_down.svg"
-                                        alt="Value Down"
-                                      />
-                                      {percentage_change_24h
-                                        ? percentage_change_24h
-                                        : "0"}
-                                      %
-                                    </span>
-                                  </span>
-                                )}
-                                &nbsp;(
-                                {convertCurrency(
-                                  ((percentage_change_24h * live_price) / 100).toFixed(4)
-                                )}
-                                )
-                              </h6>
-                            </>
-                          ) : null
-                        ) : null}
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="col-lg-3 col-xl-3 col-md-6 order-md-3 order-1 ">
-                      <div className="row">
-                        <div className="col-md-12 ">
-                          <Search_token />
+                      <div className="col-lg-3 col-xl-3 col-md-6 order-md-3 order-1 ">
+                        <div className="row">
+                          <div className="col-md-12 ">
+                            
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="row token_header_cols">
-                    <div className="col-lg-3 col-xl-3 col-md-12 pr-0">
-                      <ul className="token_share_vote">
-                        {/* <li className='airdrop_name'><span></span>Airdrop Live</li> */}
-                        {data.cp_rank ? <li>#{data.cp_rank} Rank</li> : ""}
 
-                        {/* {
-                          user_token
-                            ?
-                            <>
-                              {
-                                voting_status == false ?
-                                  <li onClick={() => ModalVote()} style={{ cursor: "pointer" }}><img src="/assets/img/coin_vote.svg" alt="Votes" />&nbsp; {votes}</li>
-                                  :
-                                  <li onClick={() => ModalVote()} style={{ cursor: "pointer" }}><img src="/assets/img/coin_vote.svg" alt="Votes" />&nbsp; {votes}</li>
-                              }
-                            </>
-                            :
-                            <li style={{ cursor: "pointer" }} >
-                              <a onClick={() => ModalVote()} >
-                                <img src="/assets/img/coin_vote.svg" alt="Votes" /> {votes}
-                              </a>
-                            </li>
-                        } */}
-
-                        {/* <li>{data.list_type == 1 ? "Coin" : "Token"}</li> */}
-                        <li
-                          onClick={() => set_share_modal_status(true)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <img src="/assets/img/coin_share.svg" alt="Share" />{" "}
-                          Share
-                        </li>
-                        <li>
-                          {user_token ? (
-                            <>
-                              {watchlist == true ? (
-                                <span
-                                  onClick={() => removeFromWatchlist(data._id)}
-                                >
-                                  <img
-                                    src="/assets/img/watchlist_filled.svg"
-                                    alt="Watchlist"
-                                    style={{ width: "18px" }}
-                                  />
-                                </span>
-                              ) : (
-                                <span onClick={() => addToWatchlist(data._id)}>
-                                  <img
-                                    src="/assets/img/watchlist_outline.svg"
-                                    alt="Watchlist"
-                                    style={{ width: "18px" }}
-                                  />
-                                </span>
-                              )}
-                            </>
-                          ) : (
-                            <a onClick={() => loginModalStatus(data._id, 1)}>
-                              <img
-                                src="/assets/img/watchlist_outline.svg"
-                                alt="Watchlist"
-                                style={{ width: "18px" }}
-                              />
-                            </a>
-                          )}
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="col-lg-9 col-xl-9 col-md-12">
-                      <ul className="token_list_data">
-                        <li>
-                          <div className="token_list_content">
-                            <h4>
-                              {" "}
-                              Market Cap{" "}
-                              <OverlayTrigger
-                                delay={{ hide: 450, show: 300 }}
-                                overlay={(props) => (
-                                  <Tooltip
-                                    {...props}
-                                    className="custom_pophover"
-                                  >
-                                    <p>
-                                      Market capitalization is a measure used to
-                                      determine the total value of a publicly
-                                      traded cryptocurrency. It is calculated by
-                                      multiplying the current market price of a
-                                      single coin/token X total supply of the
-                                      coin/token.
-                                    </p>
-                                  </Tooltip>
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div>
+                          <ul className="category-ul">
+                            {data.categories ? (
+                              <>
+                                {data.categories.map((item, i) =>
+                                  i < 2 ? (
+                                    <li key={i}>
+                                      <Link
+                                        href={
+                                          "/category/" + item.category_id
+                                        }
+                                      >
+                                        {item.category_name}
+                                      </Link>
+                                    </li>
+                                  ) : (
+                                    ""
+                                  )
                                 )}
-                                placement="bottom"
-                              >
-                                <span className="info_col">
-                                  <img src="/assets/img/info.png" alt="Info" />
-                                </span>
-                              </OverlayTrigger>{" "}
-                              : &nbsp;
-                              {circulating_supply > 0 ? (
-                                <span className="responsive_value_display">
-                                  {convertCurrency(
-                                    circulating_supply * live_price
-                                  )}
-                                </span>
+                                {data.categories.length > 2 ? (
+                                  <li
+                                    onClick={() => set_category_modal(true)}
+                                  >
+                                    +{data.categories.length - 2} More
+                                  </li>
+                                ) : (
+                                  ""
+                                )}
+                              </>
+                            ) : (
+                              ""
+                            )}
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="row">
+                          <div className="col-md-3 col-6">
+                            <div className="token_list_values">
+                              <h4>1 hour change</h4>
+                              {data.percent_change_1h ? (
+                                data.percent_change_1h > 0 ? (
+                                  <h5 className="values_growth">
+                                    <span className="green">
+                                      <img
+                                        src="/assets/img/markets/high.png"
+                                        alt="High price"
+                                      />
+                                      {data.percent_change_1h.toFixed(2) +"%"}
+                                    </span>
+                                  </h5>
+                                ) : (
+                                  <h5 className="values_growth">
+                                    <span className="red">
+                                      <img
+                                        src="/assets/img/markets/low.png"
+                                        alt="Low price"
+                                      />
+                                      {data.percent_change_1h.toFixed(2).replace("-", "") + "%"}
+                                    </span>
+                                  </h5>
+                                )
                               ) : (
-                                "NA"
+                                "-"
                               )}
-                            </h4>
-                            {/* <h4>Dex Market Cap <OverlayTrigger
-                                delay={{ hide: 450, show: 300 }}
+                            </div>
+                          </div>
+                          <div className="col-md-3 col-6 mobile_padding_left">
+                            <div className="token_list_values">
+                              <h4>7 days change</h4>
+                              {percentage_change_7d ? (
+                                percentage_change_7d > 0 ? (
+                                  <h5 className="values_growth">
+                                    <span className="green">
+                                      <img
+                                        src="/assets/img/markets/high.png"
+                                        alt="High price"
+                                      />
+                                      {roundNumericValue(
+                                        percentage_change_7d
+                                      ) + "%"}
+                                    </span>
+                                  </h5>
+                                ) : (
+                                  <h5 className="values_growth">
+                                    <span className="red">
+                                      <img
+                                        src="/assets/img/markets/low.png"
+                                        alt="Low price"
+                                      />
+                                      {roundNumericValue(
+                                        percentage_change_7d
+                                      ) + "%"}
+                                    </span>
+                                  </h5>
+                                )
+                              ) : (
+                                "-"
+                              )}
+                            </div>
+                          </div>
+                          <div className="col-md-3 col-6 mobile_padding_left">
+                            <div className="token_list_values">
+                              <h4>24hr Low</h4>
+                              <h5>
+                                {low_24h ? convertCurrency(low_24h): "NA"}{" "}
+                                &nbsp;
+                                {low_24h ? (
+                                  <span className="values_growth">
+                                    <span className="green">
+                                      {(
+                                        ((live_price - low_24h) /
+                                          low_24h) *
+                                        100
+                                      ).toFixed(2)}
+                                      %
+                                    </span>
+                                  </span>
+                                ) : (
+                                  ""
+                                )}
+                                
+                              </h5>
+                            </div>
+                          </div>
+                          <div className="col-md-3 col-6 mobile_padding_right">
+                            <div className="token_list_values">
+                              <h4>24hr High</h4>
+                              <h5>
+                                {high_24h
+                                  ? convertCurrency(high_24h)
+                                  : "NA"}{" "}
+                                &nbsp;
+                                {high_24h ? (
+                                  <span className="values_growth">
+                                    <span className="red">{(((live_price - high_24h) /high_24h) *100).toFixed(2)} % </span>
+                                  </span>
+                                ) : (
+                                  ""
+                                )}
+                                {/* {
+                                ath_change_percentage ?
+                                  ath_change_percentage > 0 ?
+                                    <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
+                                    :
+                                    <span className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
+                                  :
+                                  <span className="values_growth"></span>
+                              } */}
+                              </h5>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                                
+
+                    {/* <div className="row token_header_cols">
+                      <div className="col-lg-3 col-xl-3 col-md-12 pr-0">
+                        
+                      </div>
+                      <div className="col-lg-9 col-xl-9 col-md-12">
+                        <ul className="token_list_data">
+                          <li>
+                            <div className="token_list_content">
+                              <h4>
+                                {" "}
+                                Market Cap{" "}
+                                <OverlayTrigger
+                                  delay={{ hide: 450, show: 300 }}
                                   overlay={(props) => (
-                                    <Tooltip {...props} className="custom_pophover">
-                                      <p>Market capitalization is a measure used to determine the total value of a publicly traded cryptocurrency. It is calculated by multiplying the current market price of a single coin/token X total supply of the coin/token.</p>
+                                    <Tooltip
+                                      {...props}
+                                      className="custom_pophover"
+                                    >
+                                      <p>
+                                        Market capitalization is a measure used to
+                                        determine the total value of a publicly
+                                        traded cryptocurrency. It is calculated by
+                                        multiplying the current market price of a
+                                        single coin/token X total supply of the
+                                        coin/token.
+                                      </p>
                                     </Tooltip>
                                   )}
                                   placement="bottom"
-                                ><span className='info_col' ><img src="/assets/img/info.png" alt="Info" /></span>
-                                </OverlayTrigger> :  &nbsp;
-                                {
-                                  dex_circulating_supply && live_price ?
-                                  <span className="responsive_value_display">
-                                    {
-                                      "$ "+separator(((dex_circulating_supply*live_price)).toFixed(0))
-                                    }
+                                >
+                                  <span className="info_col">
+                                    <img src="/assets/img/info.png" alt="Info" />
                                   </span>
-                                  :
-                                  "NA"
-                                } 
-                              </h4> */}
-                          </div>
-                        </li>
-
-                        <li>
-                          <div className="token_list_content">
-                            <h4>
-                              24H Volume&nbsp;
-                              <OverlayTrigger
-                                delay={{ hide: 450, show: 300 }}
-                                overlay={(props) => (
-                                  <Tooltip
-                                    {...props}
-                                    className="custom_pophover"
-                                  >
-                                    <p>
-                                      Trading Volume is the Total vlaue of
-                                      tokens bought and sold in both centralized
-                                      and decentralized exchanges in 24 hours,
-                                      multiplied with number tokens traded, and
-                                      price in respective platforms, and added
-                                      together.
-                                    </p>
-                                  </Tooltip>
-                                )}
-                                placement="bottom"
-                              >
-                                <span className="info_col">
-                                  <img src="/assets/img/info.png" alt="Info" />
-                                </span>
-                              </OverlayTrigger>{" "}
-                              : &nbsp;
-                              <span className="responsive_value_display">
-                                {volume > 0 ? convertCurrency(volume) : "NA"}
-                              </span>
-                              <span className="values_growth"></span>
-                            </h4>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="token_list_content">
-                            <h4>
-                              Circulating Supply{" "}
-                              <OverlayTrigger
-                                delay={{ hide: 450, show: 300 }}
-                                overlay={(props) => (
-                                  <Tooltip
-                                    {...props}
-                                    className="custom_pophover"
-                                  >
-                                    <p>
-                                      Circulating supply refers to the total
-                                      number of coins/tokens that are currently
-                                      in circulation and available to the
-                                      public. It represents the portion of the
-                                      total supply of a cryptocurrency that is
-                                      actively being traded or held by
-                                      investors.
-                                    </p>
-                                  </Tooltip>
-                                )}
-                                placement="bottom"
-                              >
-                                <span className="info_col">
-                                  <img src="/assets/img/info.png" alt="Info" />
-                                </span>
-                              </OverlayTrigger>{" "}
-                              :&nbsp;
-                              <span className="responsive_value_display">
-                                {circulating_supply ? (
-                                  <>
-                                    {separator(circulating_supply.toFixed(0)) +
-                                      " " +
-                                      symbol.toUpperCase()}
-                                  </>
+                                </OverlayTrigger>{" "}
+                                : &nbsp;
+                                {circulating_supply > 0 ? (
+                                  <span className="responsive_value_display">
+                                    {convertCurrency(
+                                      circulating_supply * live_price
+                                    )}
+                                  </span>
                                 ) : (
                                   "NA"
                                 )}
-                              </span>
-                              {circulating_supply && data.max_supply ? (
-                                <small>
-                                  (
-                                  {(
-                                    (circulating_supply / data.max_supply) *
-                                    100
-                                  ).toFixed(2)}
-                                  %)
-                                </small>
-                              ) : (
-                                ""
-                              )}
-                            </h4>
+                              </h4>
+                              
+                            </div>
+                          </li>
 
-                            {/* <h4>Dex Circulating Supply <OverlayTrigger
-                                      delay={{ hide: 450, show: 300 }}
-                                      overlay={(props) => (
-                                        <Tooltip {...props} className="custom_pophover">
-                                          <p>Circulating supply refers to the total number of coins/tokens that are currently in circulation and available to the public. It represents the portion of the total supply of a cryptocurrency that is actively being traded or held by investors.</p>
-                                        </Tooltip>
-                                      )}
-                                      placement="bottom">
-                                      <span className='info_col' ><img src="/assets/img/info.png" alt="Info"/></span>
-                                    </OverlayTrigger> :&nbsp;
-                                    <span className="responsive_value_display">
-                                    {dex_circulating_supply ? 
+                          <li>
+                            <div className="token_list_content">
+                              <h4>
+                                24H Volume&nbsp;
+                                <OverlayTrigger
+                                  delay={{ hide: 450, show: 300 }}
+                                  overlay={(props) => (
+                                    <Tooltip
+                                      {...props}
+                                      className="custom_pophover"
+                                    >
+                                      <p>
+                                        Trading Volume is the Total vlaue of
+                                        tokens bought and sold in both centralized
+                                        and decentralized exchanges in 24 hours,
+                                        multiplied with number tokens traded, and
+                                        price in respective platforms, and added
+                                        together.
+                                      </p>
+                                    </Tooltip>
+                                  )}
+                                  placement="bottom"
+                                >
+                                  <span className="info_col">
+                                    <img src="/assets/img/info.png" alt="Info" />
+                                  </span>
+                                </OverlayTrigger>{" "}
+                                : &nbsp;
+                                <span className="responsive_value_display">
+                                  {volume > 0 ? convertCurrency(volume) : "NA"}
+                                </span>
+                                <span className="values_growth"></span>
+                              </h4>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="token_list_content">
+                              <h4>
+                                Circulating Supply{" "}
+                                <OverlayTrigger
+                                  delay={{ hide: 450, show: 300 }}
+                                  overlay={(props) => (
+                                    <Tooltip
+                                      {...props}
+                                      className="custom_pophover"
+                                    >
+                                      <p>
+                                        Circulating supply refers to the total
+                                        number of coins/tokens that are currently
+                                        in circulation and available to the
+                                        public. It represents the portion of the
+                                        total supply of a cryptocurrency that is
+                                        actively being traded or held by
+                                        investors.
+                                      </p>
+                                    </Tooltip>
+                                  )}
+                                  placement="bottom"
+                                >
+                                  <span className="info_col">
+                                    <img src="/assets/img/info.png" alt="Info" />
+                                  </span>
+                                </OverlayTrigger>{" "}
+                                :&nbsp;
+                                <span className="responsive_value_display">
+                                  {circulating_supply ? (
                                     <>
-                                    {separator((dex_circulating_supply).toFixed(0))+" "+(symbol).toUpperCase()}
+                                      {separator(circulating_supply) +
+                                        " " +
+                                        symbol.toUpperCase()}
                                     </>
-                                    
-                                    : "NA"} </span>
-                                    </h4> */}
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
+                                  ) : (
+                                    "NA"
+                                  )}
+                                </span>
+                                {circulating_supply && data.max_supply ? (
+                                  <small>
+                                    (
+                                    {(
+                                      (circulating_supply / data.max_supply) *
+                                      100
+                                    ).toFixed(2)}
+                                    %)
+                                  </small>
+                                ) : (
+                                  ""
+                                )}
+                              </h4>
+
+                             
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
-            </div>
           </div>
 
           <div className="container">
@@ -1604,13 +1899,6 @@ export default function tokenDetailsFunction({
                               </div>
                             </div>
                           </div>
-
-
-                      
-
-
-
-                          
 
                           <div className="row">
                             <div className="col-4 text-right token_share_block token_share_for_left">
@@ -1719,7 +2007,7 @@ export default function tokenDetailsFunction({
                                       </div>
                                     </div>
                                     {explorer_links ? (
-                                      <div className="dropdown_block badge_dropdown_block">
+                                      <div className={`dropdown_block badge_dropdown_block ${isOpen ? 'closed' : 'open'}`}>
                                         <ul>
                                           {explorers.map((e, i) => (
                                             <li key={i}>
@@ -1925,7 +2213,7 @@ export default function tokenDetailsFunction({
                                     </div>
                                   </div>
                                   {community_links ? (
-                                    <div className="dropdown_block badge_dropdown_block">
+                                    <div className={`dropdown_block badge_dropdown_block ${isOpen ? 'closed' : 'open'}`}>
                                       <ul>
                                         {communities.map((e, i) => (
                                           <li key={i}>
@@ -2003,7 +2291,7 @@ export default function tokenDetailsFunction({
                                   </div>
                                 </div>
                                 {category_list ? (
-                                  <div className="dropdown_block badge_dropdown_block">
+                                  <div className={`dropdown_block badge_dropdown_block ${isOpen ? 'closed' : 'open'}`}>
                                     <ul>
                                       {data.category_row_id_array.map(
                                         (e, i) => (
@@ -2054,7 +2342,7 @@ export default function tokenDetailsFunction({
                                         </div>
                                       </div>
                                       {contracts_addr_details ? (
-                                        <div className="dropdown_block badge_dropdown_block contracts_list">
+                                        <div className={`dropdown_block badge_dropdown_block contracts_list ${isOpen ? 'closed' : 'open'}`}>
                                           <ul>
                                             {data.contracts_array.map(
                                               (innerItem, i) => (
@@ -2177,82 +2465,161 @@ export default function tokenDetailsFunction({
                           </ul>
                         </div>
 
-                        <div>
-                          <div className="row">
-                            <div className="col-12">
-                              <h5 className="converter-title mt-2 mb-2">
-                                {symbol} to USD Converter
-                              </h5>
-                              <div className="input-group">
-                                <div className="input-group-prepend converter-label">
-                                  <span className="input-group-text">
-                                    {symbol}
-                                  </span>
-                                </div>
-                                <input
-                                  type="number"
-                                  value={token_converter_value}
-                                  onChange={(e) =>
-                                    tokenConverter(
-                                      e.target.value,
-                                      1,
-                                      converter_pair_currency
-                                    )
-                                  }
-                                  step="0.000001"
-                                  min="0.000001"
-                                  className="form-control converter-input"
-                                  placeholder="0"
-                                />
-                                <div className="input-group-append converter-label">
-                                  <span className="input-group-text converter-second-span">
-                                    <select
-                                      className="form-no-border"
-                                      onChange={(e) =>
-                                        tokenConverter(
-                                          token_converter_value,
-                                          1,
-                                          e.target.value
-                                        )
-                                      }
-                                    >
-                                      {converter_pair_currencies.map(
-                                        (item, i) =>
-                                          item.currency_name != data.symbol ? (
-                                            <option
-                                              value={item.currency_value}
-                                              selected={
-                                                converter_pair_currency ==
-                                                item.currency_value
-                                              }
-                                            >
-                                              {item.currency_name}
-                                            </option>
-                                          ) : (
-                                            ""
-                                          )
+                        <div className="row">
+                          <div className="col-md-7">
+                            <div className="token_details_circular_graph">
+                              <div class="media">
+                                <img src="/assets/img/circulating_supply.svg" alt="Circulating Supply" className="dots" />
+                                <div class="media-body">
+                                  <h4 className="quick_title"><span></span> Max Supply 
+                                    <OverlayTrigger
+                                      delay={{ hide: 450, show: 300 }}
+                                      overlay={(props) => (
+                                        <Tooltip
+                                          {...props}
+                                          className="custom_pophover"
+                                        >
+                                          <p>
+                                            The maximum supply, refers to the
+                                            maximum number of coins or tokens
+                                            that can ever exist for a specific
+                                            cryptocurrency. It represents an
+                                            upper limit or cap on the total
+                                            supply that will ever be reached.
+                                            The max supply defines the
+                                            absolute ceiling for the number of
+                                            coins that can be created or
+                                            minted.
+                                          </p>
+                                        </Tooltip>
                                       )}
-                                    </select>
-                                  </span>
+                                      placement="bottom"
+                                    >
+                                      <span> 
+                                        <img src="/assets/img/information_token.svg" alt="Information" />
+                                      </span>
+                                    </OverlayTrigger>
+                                  </h4>                              
+                                  <h5 className="quick_values">
+                                    {data.max_supply
+                                      ? separator(data.max_supply.toFixed(2))
+                                      : "NA"}
+                                  </h5>
                                 </div>
-                                <input
-                                  type="number"
-                                  value={usd_converter_value}
-                                  onChange={(e) =>
-                                    tokenConverter(
-                                      e.target.value,
-                                      2,
-                                      converter_pair_currency
-                                    )
-                                  }
-                                  step="0.000001"
-                                  min="0.000001"
-                                  className="form-control converter-input"
-                                  placeholder="0"
-                                />
                               </div>
+                            </div>
 
-                              <Community_scrore
+                            <div className="token_details_circular_graph">
+                              <div class="media">
+                                <img src="/assets/img/total_supply.svg" alt="Total Supply" className="dots" />
+                                <div class="media-body">
+                                  <h4 className="quick_title"><span></span> Total Supply 
+                                  <OverlayTrigger
+                                    delay={{ hide: 450, show: 300 }}
+                                    overlay={(props) => (
+                                      <Tooltip
+                                        {...props}
+                                        className="custom_pophover"
+                                      >
+                                        <p>
+                                          The total supply refers to the
+                                          current and total number of coins
+                                          or tokens that have been created
+                                          and are available in the
+                                          cryptocurrency's ecosystem. It
+                                          includes both the circulating
+                                          supply (coins in circulation) and
+                                          any locked, reserved, or unissued
+                                          coins. The total supply represents
+                                          the maximum number of coins that
+                                          can be found within the
+                                          cryptocurrency's network.
+                                        </p>
+                                      </Tooltip>
+                                    )}
+                                    placement="bottom"
+                                  >
+                                    <span> <img src="/assets/img/information_token.svg" alt="Information" /></span>
+                                  </OverlayTrigger>
+                                  </h4>                              
+                                  <h5 className="quick_values">
+                                    {total_supply
+                                      ? separator(total_supply.toFixed(2))
+                                      : "NA"}
+                                  </h5>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="token_details_circular_graph">
+                              <div class="media">
+                                <img src="/assets/img/max_supply.svg" alt="Circulating Supply " className="dots" />
+                                <div class="media-body">
+                                  <h4 className="quick_title"><span></span> Circulating Supply
+                                    <OverlayTrigger
+                                      delay={{ hide: 450, show: 300 }}
+                                      overlay={(props) => (
+                                        <Tooltip
+                                          {...props}
+                                          className="custom_pophover"
+                                        >
+                                          <p>
+                                            Circulating supply refers to the total
+                                            number of coins/tokens that are currently
+                                            in circulation and available to the
+                                            public. It represents the portion of the
+                                            total supply of a cryptocurrency that is
+                                            actively being traded or held by
+                                            investors.
+                                          </p>
+                                        </Tooltip>
+                                      )}
+                                      placement="bottom"
+                                    >
+                                    <span> <img src="/assets/img/information_token.svg" alt="Information" /></span>
+                                  </OverlayTrigger>
+                                  </h4>                              
+                                  <h5 className="quick_values">
+                                    {circulating_supply ? (
+                                      <>
+                                        {separator(circulating_supply) +
+                                          " " +
+                                          symbol.toUpperCase()}&nbsp;
+                                      </>
+                                    ) : (
+                                      "NA"
+                                    )}
+
+                                    {circulating_supply && data.max_supply ? (
+                                      <span>
+                                        (
+                                        {(
+                                          (circulating_supply / data.max_supply) *
+                                          100
+                                        ).toFixed(2)}
+                                        %)
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </h5>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-md-5">
+                            <div id="chart" className="quick_values_graph">
+                              <DynamicChartComponent
+                                options={chartData.options}
+                                series={chartData.series}
+                                type="radialBar"
+                                height={180}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <Community_scrore
                                 reqData={{
                                   token_row_id: data._id,
                                   my_voting_status: data.voting_status
@@ -2265,13 +2632,10 @@ export default function tokenDetailsFunction({
                                   request_config,
                                 }}
                               />
-                            </div>
-                          </div>
-                        </div>
-
-                        {data.open_close_details.total_days ? (
+                                
                           <>
-                            <div className="row">
+                          
+                            {/* <div className="row">
                               <div className="col-md-6 col-12">
                                 <div className="mobile_padding_right">
                                   <div className="token_list_values">
@@ -2308,28 +2672,22 @@ export default function tokenDetailsFunction({
                                       :
                                     </h4>
                                     <h5>
-                                      {data.open_close_details.green_days}/
-                                      {data.open_close_details.total_days >= 30
-                                        ? 30
-                                        : data.open_close_details
-                                            .total_days}{" "}
-                                      (
-                                      {(
-                                        (data.open_close_details.green_days /
-                                          (data.open_close_details.total_days >=
-                                          30
-                                            ? 30
-                                            : data.open_close_details
-                                                .total_days)) *
-                                        100
-                                      ).toFixed(2)}
-                                      %)
+                                      {
+                                        green_days ? 
+                                        <>
+                                        {green_days} / 30 {!isNaN(percentage) ? <>({percentage.toFixed(2)}%)</>:""}
+                                        </>
+                                        :
+                                        "NA"
+                                      }
+                                    
+
+                                     
                                     </h5>
                                   </div>
                                 </div>
                               </div>
 
-                              {data.open_close_details.total_days >= 50 ? (
                                 <div className="col-md-6 col-12">
                                   <div className="mobile_padding_right">
                                     <div className="token_list_values">
@@ -2362,14 +2720,9 @@ export default function tokenDetailsFunction({
                                         :
                                       </h4>
                                       <h5>
-                                        {total_supply ? (
+                                        {close_price_of_fifty ? (
                                           <>
-                                            {convertCurrency(
-                                              (
-                                                data.open_close_details
-                                                  .close_price_of_fifty / 50
-                                              ).toFixed(2)
-                                            )}
+                                            {convertCurrency(close_price_of_fifty)}
                                           </>
                                         ) : (
                                           "NA"
@@ -2379,12 +2732,9 @@ export default function tokenDetailsFunction({
                                     </div>
                                   </div>
                                 </div>
-                              ) : (
-                                ""
-                              )}
-                            </div>
-                            <div className="row">
-                              {data.open_close_details.total_days >= 200 ? (
+                            </div> */}
+                            
+                            {/* <div className="row">
                                 <div className="col-md-6 col-12">
                                   <div className="mobile_padding_right">
                                     <div className="token_list_values">
@@ -2417,15 +2767,9 @@ export default function tokenDetailsFunction({
                                         :
                                       </h4>
                                       <h5>
-                                        {total_supply ? (
+                                        {close_price_of_two_hundred ? (
                                           <>
-                                            {convertCurrency(
-                                              (
-                                                data.open_close_details
-                                                  .close_price_of_two_hundred /
-                                                200
-                                              ).toFixed(2)
-                                            )}
+                                            {convertCurrency(close_price_of_two_hundred)}
                                           </>
                                         ) : (
                                           "NA"
@@ -2435,85 +2779,10 @@ export default function tokenDetailsFunction({
                                     </div>
                                   </div>
                                 </div>
-                              ) : (
-                                ""
-                              )}
-
-                              {/* {data.open_close_details.total_days >= 200 ? (
-                                <div className="col-md-6 col-12">
-                                  <div className="mobile_padding_right">
-                                    <div className="token_list_values">
-                                      <h4>
-                                        {" "}
-                                        Volatility &nbsp;
-                                        <OverlayTrigger
-                                          delay={{ hide: 450, show: 300 }}
-                                          overlay={(props) => (
-                                            <Tooltip
-                                              {...props}
-                                              className="custom_pophover"
-                                            >
-                                              <p>
-                                                Volatility is a statistical
-                                                measure that is used to
-                                                determine the risk of a certain
-                                                asset. In general the higher the
-                                                volatility, the riskier is to
-                                                invest in the asset. Volatility
-                                                below 1% is very low, 1-2% low,
-                                                2-5% medium, 5-10% high, 10-20%
-                                                very high, and above 20%
-                                                extremely high.
-                                              </p>
-                                            </Tooltip>
-                                          )}
-                                          placement="bottom"
-                                        >
-                                          <span className="info_col">
-                                            <img
-                                              src="/assets/img/info.png"
-                                              alt="Info"
-                                            />
-                                          </span>
-                                        </OverlayTrigger>{" "}
-                                        :
-                                      </h4>
-                                      <h5>
-                                        {volatility ? (
-                                          <>
-                                            {volatility}% (
-                                            {volatility < 1
-                                              ? "Very Low"
-                                              : volatility >= 1 &&
-                                                volatility < 2
-                                              ? "Low"
-                                              : volatility >= 2 &&
-                                                volatility < 5
-                                              ? "Medium"
-                                              : volatility >= 5 &&
-                                                volatility < 10
-                                              ? "High"
-                                              : volatility >= 10 &&
-                                                volatility < 20
-                                              ? "Very High"
-                                              : "Extremely High"}
-                                            )
-                                          </>
-                                        ) : (
-                                          "NA"
-                                        )}
-                                      </h5>
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : (
-                                ""
-                              )} */}
-                            </div>
+                              
+                            </div> */}
                           </>
-                        ) : (
-                          ""
-                        )}
+                       
 
                         {/* total_marketcap */}
 
@@ -2522,7 +2791,208 @@ export default function tokenDetailsFunction({
                         </div>
                       </div>
                       <div className="col-md-4">
-                        <div className="row">
+                        <div className="speedometer_summary">
+                          <h5 className='sub_title_main'>Indicator Sentiment:</h5>
+                          <div className="row">
+                            <div className="col-md-12">
+                              <p className="strong_sell">Strong<br/>Sell</p>
+                              <p className="sell">Sell</p>
+                              <p className="neutral">Neutral</p>
+                              <p className="buy">Buy</p>
+                              <p className="strong_buy">Strong<br/>Buy</p> 
+                            </div>
+                          </div>
+                          <div className="speedometer-container">
+                          <img
+                            className="speedometer-image"
+                            src="/assets/img/speedometer_scale.svg"
+                            alt="Speedometer"
+                          />
+                          <ReactSpeedometer
+                            currentValueText={summary_speed_meter_name}
+                            textColor={'#000'}
+                            value={summary_speedo_meter}
+                            minValue={0}
+                            width={250}
+                            height={180}
+                            maxValue={100}
+                            needleColor="#131721"
+                            startColor={ringColor}
+                            segments={5}
+                            endColor="red"
+                            needleHeightRatio={0.6}
+                            segmentWidth={15}
+                            segmentLength={10}
+                            ringWidth={8}
+                            segmentColors={[
+                                '#FF5656',
+                                '#FF8888',
+                                '#FEE114',
+                                '#84BD32',
+                                '#30AD43'
+                            ]}
+                            customSegmentLabels={[
+                              {
+                                text: ' ',
+                                position: 'OUTSIDE'
+                              },
+                              {
+                                text: ' ',
+                                position: 'OUTSIDE'
+                              },
+                              {
+                                text: ' ',
+                                position: 'OUTSIDE'
+                              },
+                              {
+                                text: ' ',
+                                position: 'OUTSIDE'
+                              },
+                              {
+                                text: '   ',
+                                position: 'OUTSIDE'
+                              },
+                            ]}
+                            needleTransition
+                            needleTransitionDuration={500}
+                            needleTransitionEasing="easeElastic"
+                            needleTransitionDelay={0}
+                            customNeedle={customNeedlePath}
+                          />
+                          </div>
+                          <h6><span>Full analysis <img src="/assets/img/blue-right.svg" /></span></h6>
+                        </div>
+                        <div className="token_list_content">
+                          <div className="row">
+                            <div className="col-md-4">
+                              <h4 className="quick_title">Market Cap</h4>
+                            </div>
+                            <div className="col-md-8">
+                              <h5 className="quick_values">
+                              {
+                                circulating_supply > 0 ? (
+                                <>
+                                  {convertCurrency(
+                                    circulating_supply * live_price
+                                  )}
+                                </>
+                                ) : (
+                                  "NA"
+                                )
+                              }
+                              </h5>
+                            </div>
+                          </div>
+                          {ath_price ? (
+                          <div className="row">
+                            <div className="col-md-4">
+                            <h4 className="quick_title">All Time Low</h4>
+                            </div>
+                            <div className="col-md-8">
+                              <h5 className="quick_values">
+                              {
+                                convertCurrency(atl_price)}
+                                <span className="values_growth">
+                                  <span className="green">
+                                    {(
+                                      ((live_price - atl_price) /
+                                        atl_price) *
+                                      100
+                                    ).toFixed(2)}
+                                    %
+                                  </span>
+                                </span>
+                                {/* {atl_price_date && is_client ? (
+                                  <span className="alh-date">
+                                    {moment(atl_price_date).format(
+                                      "ll"
+                                    )}{" "}
+                                    ({moment(atl_price_date).fromNow()})
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              } */}
+                              </h5>
+                            </div>
+                          </div>):""}
+                          
+                          {ath_price ? (
+                          <div className="row">
+                            <div className="col-md-4">
+                            <h4 className="quick_title">All Time High</h4>
+                            </div>
+                            <div className="col-md-8">
+                              <h5 className="quick_values">
+                              {convertCurrency(ath_price)} &nbsp;{" "}
+                              <span className="values_growth">
+                                <span className="red">
+                                  {(
+                                    ((live_price - ath_price) /
+                                      ath_price) *
+                                    100
+                                  ).toFixed(2)}
+                                  %
+                                </span>
+                              </span>
+                              </h5>
+                            </div>
+                          </div>):""}
+
+                          <div className="row">
+                            <div className="col-md-4">
+                            <h4 className="quick_title">Green Days</h4>
+                            </div>
+                            <div className="col-md-8">
+                              <h5 className="quick_values">
+                              {
+                                green_days ? 
+                                <>
+                                {green_days} / 30 {!isNaN(percentage) ? <>({percentage.toFixed(2)}%)</>:""}
+                                </>
+                                :
+                                "NA"
+                              }
+                              </h5>
+                            </div>
+                          </div>
+
+                          <div className="row">
+                            <div className="col-md-4">
+                            <h4 className="quick_title">50-Day SMA</h4>
+                            </div>
+                            <div className="col-md-8">
+                              <h5 className="quick_values">
+                              {close_price_of_fifty ? (
+                                <>
+                                  {convertCurrency(close_price_of_fifty)}
+                                </>
+                              ) : (
+                                "NA"
+                              )}
+                              </h5>
+                            </div>
+                          </div>
+
+                          <div className="row">
+                            <div className="col-md-4">
+                              <h4 className="quick_title">200-Day SMA</h4>
+                            </div>
+                            <div className="col-md-8">
+                              <h5 className="quick_values">
+                              {close_price_of_two_hundred ? (
+                                <>
+                                  {convertCurrency(close_price_of_two_hundred)}
+                                </>
+                              ) : (
+                                "NA"
+                              )}
+                              </h5>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* <div className="row">
                           <div className="col-md-6 col-12">
                             <div className="token_left_border">
                               <div className="row">
@@ -2618,34 +3088,6 @@ export default function tokenDetailsFunction({
                                   </div>
                                 </div>
 
-                                <div className="col-md-12 col-6 mobile_padding_right">
-                                  <div className="token_list_values">
-                                    <h4>24h Time High : &nbsp;</h4>
-                                    <h5>
-                                      {high_24h
-                                        ? convertCurrency(high_24h)
-                                        : "NA"}{" "}
-                                      &nbsp;
-                                      {high_24h ? (
-                                        <span className="values_growth">
-                                          <span className="red">{(((live_price - high_24h) /high_24h) *100).toFixed(2)} % </span>
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                      {/* {
-                                      ath_change_percentage ?
-                                        ath_change_percentage > 0 ?
-                                          <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
-                                          :
-                                          <span className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
-                                        :
-                                        <span className="values_growth"></span>
-                                    } */}
-                                    </h5>
-                                  </div>
-                                </div>
-
                                 {ath_price ? (
                                   <div className="col-md-12 col-6 mobile_padding_right">
                                     <div className="token_list_values">
@@ -2664,7 +3106,7 @@ export default function tokenDetailsFunction({
                                             %
                                           </span>
                                         </span>
-                                        <br />
+                                        
                                         {ath_price_date && is_client ? (
                                           <span className="alh-date">
                                             {moment(ath_price_date).format(
@@ -2687,102 +3129,10 @@ export default function tokenDetailsFunction({
                           <div className="col-md-6 col-12">
                             <div className="token_left_border">
                               <div className="row">
-                                <div className="col-md-12 col-6 mobile_padding_right">
-                                  <div className="token_list_values">
-                                    <h4>1 hour % change : &nbsp;</h4>
-                                    {data.percent_change_1h ? (
-                                      data.percent_change_1h > 0 ? (
-                                        <h5 className="values_growth">
-                                          <span className="green">
-                                            <img
-                                              src="/assets/img/markets/high.png"
-                                              alt="High price"
-                                            />
-                                            {data.percent_change_1h.toFixed(2) +"%"}
-                                          </span>
-                                        </h5>
-                                      ) : (
-                                        <h5 className="values_growth">
-                                          <span className="red">
-                                            <img
-                                              src="/assets/img/markets/low.png"
-                                              alt="Low price"
-                                            />
-                                            {data.percent_change_1h.toFixed(2).replace("-", "") + "%"}
-                                          </span>
-                                        </h5>
-                                      )
-                                    ) : (
-                                      "-"
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="col-md-12 col-6 mobile_padding_left">
-                                  <div className="token_list_values">
-                                    <h4>7 days % change : &nbsp;</h4>
-                                    {percentage_change_7d ? (
-                                      percentage_change_7d > 0 ? (
-                                        <h5 className="values_growth">
-                                          <span className="green">
-                                            <img
-                                              src="/assets/img/markets/high.png"
-                                              alt="High price"
-                                            />
-                                            {roundNumericValue(
-                                              percentage_change_7d
-                                            ) + "%"}
-                                          </span>
-                                        </h5>
-                                      ) : (
-                                        <h5 className="values_growth">
-                                          <span className="red">
-                                            <img
-                                              src="/assets/img/markets/low.png"
-                                              alt="Low price"
-                                            />
-                                            {roundNumericValue(
-                                              percentage_change_7d
-                                            ) + "%"}
-                                          </span>
-                                        </h5>
-                                      )
-                                    ) : (
-                                      "-"
-                                    )}
-                                  </div>
-                                </div>
+                                
+                                
 
-                                <div className="col-md-12 col-6 mobile_padding_left">
-                                  <div className="token_list_values">
-                                    <h4>24h Time Low: &nbsp;</h4>
-                                    <h5>
-                                      {low_24h ? convertCurrency(low_24h): "NA"}{" "}
-                                      &nbsp;
-                                      {low_24h ? (
-                                        <span className="values_growth">
-                                          <span className="green">
-                                            {(
-                                              ((live_price - low_24h) /
-                                                low_24h) *
-                                              100
-                                            ).toFixed(2)}
-                                            %
-                                          </span>
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                      {/* {atl_change_percentage ?
-                                        atl_change_percentage > 0 ?
-                                          <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{atl_change_percentage.toFixed(2) + "%"}</span></span>
-                                          :
-                                          <span className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{atl_change_percentage.toFixed(2) + "%"}</span></span>
-                                        :
-                                        <span className="values_growth"></span>
-                                      } */}
-                                    </h5>
-                                  </div>
-                                </div>
+                                
 
                                 {atl_price ? (
                                   <div className="col-md-12 col-6 mobile_padding_right">
@@ -2820,17 +3170,9 @@ export default function tokenDetailsFunction({
                                   ""
                                 )}
                               </div>
-
-                              {/* <div className="token_list_values">
-                                <h4>Liquidity <span onClick={() => change(6)}><img src='/assets/img/info.png'  /></span></h4>
-                                <h5>{liquidity ? "$" : null}{liquidity ? separator(liquidity.toFixed(4)) : "NA"}</h5>
-                              </div> */}
                             </div>
                           </div>
-
-                          {/* open_24h
-close_24h */}
-                        </div>
+                        </div> */}
                       </div>
 
                       <div className="col-md-4 col-12">
@@ -2841,8 +3183,96 @@ close_24h */}
                             token_symbol: data.symbol,
                             token_price: live_price,
                             volume: volume,
+                            callback : getDexVolumePriceFromChild
                           }}
                         />
+
+                        <div>
+                          <div className="row">
+                            <div className="col-12">
+                              <h5 className="sub_title_main">
+                                {symbol} to USD Converter
+                              </h5>
+                              <div className="usd_converter">
+                                <img className="interchamge_icon" src="/assets/img/interchange_icon.svg" alt="Exchange" />
+                              <div className="input-group">
+                                <div className="input-group-prepend converter-label">
+                                  <span className="input-group-text">
+                                    <img src="/assets/img/uni_icon.svg" alt="UNI" /> &nbsp; {symbol}
+                                  </span>
+                                </div>
+                                <input
+                                  type="number"
+                                  value={token_converter_value}
+                                  onChange={(e) =>
+                                    tokenConverter(
+                                      e.target.value,
+                                      1,
+                                      converter_pair_currency
+                                    )
+                                  }
+                                  step="0.000001"
+                                  min="0.000001"
+                                  className="form-control converter-input"
+                                  placeholder="0"
+                                />
+                            </div>
+
+                          <div className="input-group">
+
+                                <div className="input-group-prepend converter-label">
+                                  <span className="input-group-text converter-second-span">
+                                  <img src="/assets/img/usdt_icon.svg" alt="USDT" />&nbsp;
+                                    <select
+                                     className={`form-no-border ${isOpen ? 'closed' : 'open'}`} 
+                                      onChange={(e) =>
+                                        tokenConverter(
+                                          token_converter_value,
+                                          1,
+                                          e.target.value
+                                        )
+                                      }
+                                    >
+                                      {converter_pair_currencies.map(
+                                        (item, i) =>
+                                          item.currency_name != data.symbol ? (
+                                            <option
+                                              value={item.currency_value}
+                                              selected={
+                                                converter_pair_currency ==
+                                                item.currency_value
+                                              }
+                                            >
+                                              {item.currency_name}
+                                            </option>
+                                          ) : (
+                                            ""
+                                          )
+                                      )}
+                                    </select>
+                                  </span>
+                                </div>
+                                <input
+                                  type="number"
+                                  value={usd_converter_value}
+                                  onChange={(e) =>
+                                    tokenConverter(
+                                      e.target.value,
+                                      2,
+                                      converter_pair_currency
+                                    )
+                                  }
+                                  step="0.000001"
+                                  min="0.000001"
+                                  className="form-control converter-input"
+                                  placeholder="0"
+                                />
+                              </div>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2980,8 +3410,7 @@ close_24h */}
                               ""
                             )}
 
-                            {
-                              data.list_type == 2 ?
+                              
                               <li className="nav-item">
                                 <a
                                   className={
@@ -2992,9 +3421,6 @@ close_24h */}
                                     Analysis
                                 </a>
                               </li>
-                              :
-                              ""
-                            }
                             
 
                             {/* <li className="nav-item">
@@ -3014,7 +3440,7 @@ close_24h */}
                                 }
                                 onClick={() => set_main_tab(8)}
                               >
-                                Price Prediction
+                                Prediction
                               </a>
                             </li>
 
@@ -3062,8 +3488,8 @@ close_24h */}
                                   <div className="row">
                                     <div className="col-md-6 col-12">
                                       {/* <h5 className='price_chart'>{(symbol).toUpperCase()} Price Chart</h5> */}
-                                      <div className="charts_date_tab float-left charts_price_tabs">
-                                        <ul className="nav nav-tabs">
+                                      <div className="charts_price_tabs mt-1">
+                                        <ul className="nav nav-tabs nav-pills border-0">
                                           <li className="nav-item">
                                             <a
                                               className={
@@ -3131,7 +3557,22 @@ close_24h */}
                                     <div className="col-md-6 col-12">
                                       {chart_tab == 1 || chart_tab == 2 ? (
                                         <div className="charts_date_tab date_chart_interval">
-                                          <ul className="nav nav-tabs">
+
+<div className='dex_filter'>
+  <div className="dropdown">
+    <button className="dex_filter_button dropdown-toggle" type="button" id="volumeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      24 hours <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" className="dropdown_arrow_img" />
+    </button>
+    <div className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`} aria-labelledby="volumeDropdown">
+      {cmc_graph_ranges.length ? cmc_graph_ranges.map((item, i) => (
+        <a key={i} className={`dropdown-item ${time_name === item.time_name ? 'active' : ''}`} onClick={() => plotGraph(item.time_name, item.intervals, item.count)}>
+          <span>{item.time_name}</span>
+        </a>
+      )) : null}
+    </div>
+  </div>
+</div>
+                                          {/* <ul className="nav nav-tabs">
                                             {cmc_graph_ranges.length
                                               ? cmc_graph_ranges.map(
                                                   (item, i) => (
@@ -3163,7 +3604,7 @@ close_24h */}
                                                   )
                                                 )
                                               : ""}
-                                          </ul>
+                                          </ul> */}
                                         </div>
                                       ) : chart_tab == 4 ? (
                                         <>
@@ -3251,7 +3692,7 @@ close_24h */}
                                                 </div>
 
                                                 {dex_pair_details ? (
-                                                  <div className="dropdown_block badge_dropdown_block dex_pairs_list mt-2">
+                                                  <div className={`dropdown_block badge_dropdown_block dex_pairs_list mt-2 ${isOpen ? 'closed' : 'open'}`}>
                                                     <ul>
                                                       {data.liquidity_addresses.map(
                                                         (innerItem, i) => (
@@ -3365,6 +3806,7 @@ close_24h */}
                                             circulating_supply,
                                             max_supply: data.max_supply,
                                             live_price,
+                                            callback: getChartPriceFromChild,
                                           }}
                                         />
                                         {data.rsi_value ? (
@@ -3632,874 +4074,919 @@ close_24h */}
                                 </div>
                               </div>
 
-                              
-
-
-{/* 
-
-
-
-
-
- */}
-
-
                               <div id="technical_analysis" className={ "tab-pane fade " + (main_tab == 11 ? "show active" : "") }>
-                                <div className="row">
-                                  <div className="col-md-4">
-                                    <div className="text-center small_guage">
-                                      <h3 className="heading">Oscillator</h3>
-                                      <ReactSpeedometer
-                                        currentValueText={oscillator_speed_meter_name}
-                                        textColor={'#000'}
-                                        value={oscillator_speedo_meter}
-                                        minValue={0}
-                                        maxValue={100}
-                                        needleColor="#131721"
-                                        startColor={ringColor}
-                                        segments={5}
-                                        width={200}
-                                        height={150}
-                                        endColor="red"
-                                        needleHeightRatio={0.7}
-                                        segmentWidth={15}
-                                        segmentLength={10}
-                                        ringWidth={8}
-                                        segmentColors={[
-                                          '#d4405f',
-                                          '#f18da1',
-                                          '#e0e3eb',
-                                          '#9ed4ff',
-                                          '#45a7f5'
-                                        ]}
-                                        customSegmentLabels={[
-                                          {
-                                            text: 'Strong Sell',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Sell',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Neutral',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Buy',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Strong Buy',
-                                            position: 'OUTSIDE'
-                                          },
-                                        ]}
-                                        needleTransition
-                                        needleTransitionDuration={500}
-                                        needleTransitionEasing="easeElastic"
-                                        needleTransitionDelay={0}
-                                        customNeedle={customNeedlePath}
-                                      />
+                                <div className="row  mb-4">
+                                  <div className="col-md-2">
+                                    <div className="form-group">
+                                        <select className="form-control" onChange={(e)=>indicatorSourceType(e.target.value)}>
+                                          <option value={1} selected={indicator_source_type == 1}>Coinpedia</option>
+                                          <option value={2} selected={indicator_source_type == 2}>On Chain</option>
+                                          <option value={3} selected={indicator_source_type == 3}>Binance</option>
+                                        </select>
                                     </div>
-                                    <div className="row">
-                                      <div className="col-md-1">&nbsp;</div>
-                                      <div className="col-md-10">
-                                        <div className="row">
-                                          <div className="col-md-4">
-                                            <div className="overview_analysis">
-                                              <h5>Sell</h5>
-                                              <h4>{oscillator_sell}</h4>
-                                            </div>
-                                          </div>
-                                          <div className="col-md-4">
-                                            <div className="overview_analysis">
-                                              <h5>Neutral</h5>
-                                              <h4>{oscillator_neutral}</h4>
-                                            </div>
-                                          </div>
-                                          <div className="col-md-4">
-                                            <div className="overview_analysis">
-                                              <h5>Buy</h5>
-                                              <h4>{oscillator_buy}</h4>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
+                               
                                   </div>
-
-                                  
-
-                                  <div className="col-md-4">
-                                    <div className="text-center">
-                                      <h3 className="heading">Summary</h3>
-                                      <ReactSpeedometer
-                                        currentValueText={summary_speed_meter_name}
-                                        textColor={'#000'}
-                                        value={summary_speedo_meter}
-                                        minValue={0}
-                                        width={250}
-                                        height={180}
-                                        maxValue={100}
-                                        needleColor="#131721"
-                                        startColor={ringColor}
-                                        segments={5}
-                                        endColor="red"
-                                        needleHeightRatio={0.7}
-                                        segmentWidth={15}
-                                        segmentLength={10}
-                                        ringWidth={8}
-                                        segmentColors={[
-                                            '#d4405f',
-                                            '#f18da1',
-                                            '#e0e3eb',
-                                            '#9ed4ff',
-                                            '#45a7f5'
-                                        ]}
-                                        customSegmentLabels={[
-                                          {
-                                            text: 'Strong Sell',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Sell',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Neutral',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Buy',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Strong Buy',
-                                            position: 'OUTSIDE'
-                                          },
-                                        ]}
-                                        needleTransition
-                                        needleTransitionDuration={500}
-                                        needleTransitionEasing="easeElastic"
-                                        needleTransitionDelay={0}
-                                        customNeedle={customNeedlePath}
-                                      />
-                                    </div>
-                                    <div className="row">
-                                      <div className="col-md-1">&nbsp;</div>
-                                      <div className="col-md-10">
-                                        <div className="row">
-                                          <div className="col-md-4">
-                                            <div className="overview_analysis">
-                                              <h5>Sell</h5>
-                                              <h4>{summary_sell}</h4>
-                                            </div>
-                                          </div>
-                                          <div className="col-md-4">
-                                            <div className="overview_analysis">
-                                              <h5>Neutral</h5>
-                                              <h4>{summary_neutral}</h4>
-                                            </div>
-                                          </div>
-                                          <div className="col-md-4">
-                                            <div className="overview_analysis">
-                                              <h5>Buy</h5>
-                                              <h4>{summary_buy}</h4>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  
-
-                                  
-
-
-                                  <div className="col-md-4">
-                                    <div className="text-center small_guage">
-                                      <h3 className="heading">Moving Average</h3>
-                                      <ReactSpeedometer
-                                        currentValueText={sma_speed_meter_name}
-                                        textColor={'#000'}
-                                        width={200}
-                                        height={150}
-                                        value={sma_speedo_meter}
-                                        minValue={0}
-                                        maxValue={100}
-                                        needleColor="#131721"
-                                        startColor={ringColor}
-                                        segments={5}
-                                        endColor="red"
-                                        needleHeightRatio={0.7}
-                                        segmentWidth={15}
-                                        segmentLength={10}
-                                        ringWidth={8}
-                                        segmentColors={[
-                                          '#d4405f',
-                                          '#f18da1',
-                                          '#e0e3eb',
-                                          '#9ed4ff',
-                                          '#45a7f5'
-                                        ]
+                                  <div className="col-md-10 text-right">
+                                    <ul className="indicator-ul">
+                                        {
+                                          indicator_time_series.length ?
+                                            indicator_time_series.map((item, i) =>
+                                              (indicator_source_type == 3) && item.binance ?
+                                              <li className={(item.interval_type == interval_type ? "active":"")} onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
+                                              :
+                                              (indicator_source_type == 1) && item.cmc ?
+                                              <li className={(item.interval_type == interval_type ? "active":"")} onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
+                                              :
+                                              (indicator_source_type == 2) && item.bitquery ?
+                                              <li className={(item.interval_type == interval_type ? "active":"")} onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
+                                              :
+                                              ""
+                                            )
+                                          :
+                                          ""
                                         }
-                                        customSegmentLabels={[
-                                          {
-                                            text: 'Strong Sell',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Sell',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Neutral',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Buy',
-                                            position: 'OUTSIDE'
-                                          },
-                                          {
-                                            text: 'Strong Buy',
-                                            position: 'OUTSIDE'
-                                          },
-                                        ]}
-                                        needleTransition
-                                        needleTransitionDuration={500}
-                                        needleTransitionEasing="easeElastic"
-                                        needleTransitionDelay={0}
-                                        customNeedle={customNeedlePath}
-                                      />
-                                    </div>
-                                    
-
-
-                                    <div className="row">
-                                      <div className="col-md-1">&nbsp;</div>
-                                      <div className="col-md-10">
-                                        <div className="row">
-                                          <div className="col-md-4">
-                                            <div className="overview_analysis">
-                                              <h5>Sell</h5>
-                                              <h4>{total_sma_sell}</h4>
-                                            </div>
-                                          </div>
-                                          <div className="col-md-4">
-                                            <div className="overview_analysis">
-                                              <h5>Neutral</h5>
-                                              <h4>{total_sma_neutral}</h4>
-                                            </div>
-                                          </div>
-                                          <div className="col-md-4">
-                                            <div className="overview_analysis">
-                                              <h5>Buy</h5>
-                                              <h4>{total_sma_buy}</h4>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
+                                      </ul>
                                   </div>
                                 </div>
-  <div className="row">
-  <div className="col-md-6">
-  <div className="analysis_values">
-        <h4 className="">Simple Moving Averages(SMA)</h4>
-        <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
-          <span style={{ position: "absolute", top: "-5px", right: "0" }}>
-          {bearishCount !== 0 && (
-              <strong  className="bearish">{bearishCount}</strong>
-            )}
-          </span>
-          <span style={{ position: "absolute", top: "-5px", left: "0" }}>
-            {bullishCount !== 0 && (
-              <strong className="bullish">{bullishCount}</strong>
-            )}
-          </span>
-          <div className="progress gainer-progress">
-            <div
-              className="progress-bar bg-success"
-              role="progressbar"
-              style={{ width: `${(bullishCount / total) * 100}%` }}
-            ></div>
-            <div
-              className="progress-bar bg-danger"
-              role="progressbar"
-              style={{ width: `${(bearishCount / total) * 100}%` }}
-            ></div>
-          </div>
-        </div>
-
-        <div className="technical_anaylysis_table simple_analysis">
-          <table width="100%" className="" cellpadding="0" cellspacing="0" border="0">
-            <thead>
-              <tr className="inner_table_average">
-                <th>
-                  <p className="">Period</p>
-                </th>
-                
-                <th>
-                  <p className="">Value</p>
-                </th>
-                <th>
-                  <p className="">Action</p>
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {sma_list.length > 0 ? (
-                sma_list.map((item, i) => 
-                {
-                  if(live_price > item.sma_value) 
-                  {
-                    sma_buy_count++;
-                  } else if (live_price < item.sma_value) {
-                    sma_sell_count++;
-                  } else {
-                    sma_neutral_count++;
-                  }
-                  
-                  return (
-                    <tr key={i}>
-                      <td> SMA {item.day_number}</td>
-                      <td>
-                        <span>
-                          {roundNumericValue(item.sma_value)}
-                        </span>
-                      </td>
-                      <td>
-                          {
-                            live_price > item.sma_value ? 
-                            <span className="bullish">Buy</span>
-                            : 
-                            live_price < item.sma_value ? 
-                            <span className="bearish">Sell</span>
-                            : 
-                            <span className="neutral">Neutral</span>
-                          }
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td>No Data Found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-          <p className="total_buy_sell_neutral">
-            <span>Buy: {total_sma_buy}</span> <span>Sell: {total_sma_sell}</span> <span>Neutral: {total_sma_neutral}</span>
-          </p>
-          <h3 className="summary_total">
-            Summary: <span className={total_sma_buy > total_sma_sell ? 'summary_bullish active' : 'summary_bearish active'}>
-              {total_sma_buy > total_sma_sell ? 'Strong Buy' : 'Strong Sell'}
-            </span>
-          </h3>
-        </div>
-        </div>
-  </div>
-
-  <div className="col-md-6">
-  <div className="analysis_values">
-        <h4 className="">Exponential Moving Averages (EMA)</h4>
-        <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
-          <span style={{ position: "absolute", top: "-5px", right: "0" }}>
-          {ema_bearish_count !== 0 && (
-              <strong  className="bearish">{ema_bearish_count}</strong>
-            )}
-          </span>
-          <span style={{ position: "absolute", top: "-5px", left: "0" }}>
-            {ema_bullish_count !== 0 && (
-              <strong className="bullish">{ema_bullish_count}</strong>
-            )}
-          </span>
-          <div className="progress gainer-progress">
-            <div
-              className="progress-bar bg-success"
-              role="progressbar"
-              style={{ width: `${(ema_bullish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
-            ></div>
-            
-
-            <div
-              className="progress-bar bg-danger"
-              role="progressbar"
-              style={{ width: `${(ema_bearish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
-            ></div>
-          </div>
-        </div>
-
-        <div className="technical_anaylysis_table simple_analysis">
-          <table width="100%" className="" cellpadding="0" cellspacing="0" border="0">
-            <thead>
-              <tr className="inner_table_average">
-                <th>
-                  <p className="">Period</p>
-                </th>
-                <th>
-                  <p className="">Value</p>
-                </th>
-                <th>
-                  <p className="">Action</p>
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {sma_list.length > 0 ? (
-                sma_list.map((item, i) => {
-                  if(live_price > item.ema_value) 
-                  {
-                    ema_buy_count++;
-                  } else if (live_price < item.ema_value ) 
-                  {
-                    ema_sell_count++;
-                  }
-                  else 
-                  {
-                    ema_neutral_count++;
-                  }
-
-                  return (
-                    <tr key={i}>
-                      <td> EMA {item.day_number}</td>
-                      <td>
-                        <span>
-                        {roundNumericValue(item.ema_value)}
-                        </span>
-                      </td>
-                      <td>
-                          {
-                            live_price > item.ema_value ? 
-                            <span className="bullish">Buy</span>
-                            : 
-                            live_price < item.ema_value ? 
-                            <span className="bearish">Sell</span>
-                            : 
-                            <span className="neutral">Neutral</span>
-                          }
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td>No Data Found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
-          
-          <p className="total_buy_sell_neutral">
-            <span>Buy: {total_ema_buy}</span> <span>Sell: {total_ema_sell}</span> <span>Neutral: {total_ema_neutral}</span>
-          </p>
-          <h3 className="summary_total">
-            Summary: <span className={total_ema_buy > total_ema_sell ? 'summary_bullish active' : 'summary_bearish active'}>
-              {total_ema_buy > total_ema_sell ? 'Strong Buy' : 'Strong Sell'}
-            </span>
-          </h3>
-        </div>
-        </div>
-  </div>
-  </div>
-
-
-  <div className="row">
-  <div className="col-md-6">
-    <div className="analysis_values">
-    <h4 className="">Moving Averages Crossovers</h4>     
-    {/* <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
-      <span style={{ position: "absolute", top: "-5px", right: "0" }}>
-      {bearishCount1 !== 0 && (
-          <strong className="bearish">{bearishCount1}</strong>
-        )}
-      </span>
-      <span style={{ position: "absolute", top: "-5px", left: "0" }}>
-      
-          {bullishCount1 !== 0 && (
-          <strong className="bullish">{bullishCount1}</strong>
-        )}
-      </span>
-      <div className="progress gainer-progress">
-        <div
-          className="progress-bar bg-success"
-          role="progressbar"
-          style={{ width: `${(bullishCount1 / total1) * 100}%` }}
-        ></div>
-        <div
-          className="progress-bar bg-danger"
-          role="progressbar"
-          style={{ width: `${(bearishCount1 / total1) * 100}%` }}
-        ></div>
-      </div>
-    </div> */}
-            
-    <div className="technical_anaylysis_table">
-      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
-        <thead>
-          <tr className="inner_table_average">
-            <th colspan="0">
-              <p className="">Period</p>
-            </th>
-            <th colspan="0">
-              <p className="">Moving Average Crossover</p>
-            </th>
-            <th colspan="0">
-              <p className="">Indication</p>
-            </th>
-          </tr>
-        </thead>
-      
-        <tbody>
-        {moving_averages_crossovers.length > 0 ? moving_averages_crossovers.map((item, i) => (
-        <tr key={i}>
-            <td> {item.term}</td>
-            <td>
-              <span className="">
-                {item.start_sma_day} & {item.end_sma_day} DMA Crossover
-              </span>
-            </td>
-            <td>
-              <span  className={`Capital_Singnal ${
-                  item.signal_description === 'bearish'
-                    ? 'bearish'
-                    : item.signal_description === 'bullish'
-                    ? 'bullish'
-                    : item.signal_description === 'neutral'
-                    ? 'neutral'
-                    : ''
-                }`}>  
-                {item.signal_description}
-              </span>
-            </td>
-          </tr>
-          )):
-          <tr>
-            <td>No Data Found</td>
-          </tr>
-          
-          }
-        </tbody>
-      </table>
-      <p className="total_buy_sell_neutral"><span>Bullish: {ma_crossovers_bullish}</span> <span>Bearish: {ma_crossovers_bearish}</span> </p>
-    </div>
-    </div>
-  </div>
-  
-  <div className="col-md-6">
-    <div className="analysis_values">
-      <h4 className="">Other Moving Averages</h4> 
-      <div className="technical_anaylysis_table">
-      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
-        <thead>
-          <tr className="inner_table_average">
-            <th colspan="0">
-              <p className="">Period</p>
-            </th>
-            <th colspan="0">
-              <p className="">Value</p>
-            </th>
-            <th colspan="0">
-              <p className="">Action</p>
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td>HMA(9)</td>
-            <td>{roundNumericValue(hull_moving_average)}</td>
-            <td>
-                {
-                  live_price > hull_moving_average ? 
-                  <span className="bullish">Buy</span>
-                  : 
-                  live_price < hull_moving_average ? 
-                  <span className="bearish">Sell</span>
-                  : 
-                  <span className="neutral">Neutral</span>
-                }
-            </td>
-          </tr>
-          <tr>
-            <td>VWMA(20)</td>
-            <td>{roundNumericValue(vwma)}</td>
-            <td>
-              {
-                live_price > vwma ? 
-                <span className="bullish">Buy</span>
-                : 
-                live_price < vwma ? 
-                <span className="bearish">Sell</span>
-                : 
-                <span className="neutral">Neutral</span>
-              }
-            </td>
-          </tr>
-        </tbody>
-        </table>
-        </div>
-    </div>  
-  </div>
-
-  </div>
-
-                            {moving_averages_crossovers && sma_list.length > 0 && (
-                              <div className="">
-                                <div className="row ">
-                                  <div className="col-md-12 ">
-                                    <div className="analysis_values">
-                                    <h4 className="">Technical Indicators</h4>
-                                    <div className="technical_anaylysis_table simple_analysis">
-                                      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
-                                          <thead>
-                                            <tr className="inner_table_average">
-                                              <th style={{minWidth: '185px'}}>
-                                                <p className="">Name</p>
-                                              </th>
-                                              <th >
-                                                <p className="">Value</p>
-                                              </th>
-                                              <th>
-                                                <p className="">Action</p>
-                                              </th>
-                                            </tr>
-                                          </thead>
-                                        
-                                          <tbody>
-                                            
-                                            <tr>
-                                              <td>Volatility</td>
-                                              <td>{volatility} %</td>
-                                              <td>
+                                {
+                                  !indicator_loader_status ?
+                                  <>
+                                   {
+                                  indicator_data_status ?
+                                  <>
+                                  <div className="row">
+                                      <div className="col-md-4"> 
+                                        <div className="text-center small_guage">
+                                          <h3 className="heading">Oscillator</h3>
+                                          <ReactSpeedometer
+                                            currentValueText={oscillator_speed_meter_name}
+                                            textColor={'#000'}
+                                            value={oscillator_speedo_meter}
+                                            minValue={0}
+                                            maxValue={100}
+                                            needleColor="#131721"
+                                            startColor={ringColor}
+                                            segments={5}
+                                            width={200}
+                                            height={150}
+                                            endColor="red"
+                                            needleHeightRatio={0.7}
+                                            segmentWidth={15}
+                                            segmentLength={10}
+                                            ringWidth={8}
+                                            segmentColors={[
+                                              '#d4405f',
+                                              '#f18da1',
+                                              '#e0e3eb',
+                                              '#9ed4ff',
+                                              '#45a7f5'
+                                            ]}
+                                            customSegmentLabels={[
                                               {
-                                                volatility ? (
-                                                <>
-                                                    {
-                                                        volatility < 1  ? 
-                                                        <span className="bearish sell">Very Low</span>
-                                                        : 
-                                                        volatility >= 1 && volatility < 2 ? 
-                                                        <span className="bearish sell">Low</span>
-                                                        :
-                                                        volatility >= 2 && volatility < 5 ? 
-                                                        <span className="neutral">Neutral</span>
-                                                        :
-                                                        volatility >= 5 && volatility < 10 ? 
-                                                        <span className="bullish buy">High</span>
-                                                        : 
-                                                        volatility >= 10 && volatility < 20 ?
-                                                        <span className="bullish buy">Very High</span>
-                                                        : 
-                                                        <span className="bullish buy">Extremely High</span>
-                                                    }
-                                                </>
-                                              ) : (
-                                                "NA"
-                                              )}
-                                                {/* <span class="bearish">Sell</span> */}
-                                              </td>
-                                            </tr>
-                                            <tr>
-                                              <td>RSI</td>
-                                              <td>{rsi_value}</td>
-                                              <td>
-                                                <span className={`${
-                                                  rsi_value < 30 ? 'bearish sell' : rsi_value > 70 ? 'bullish buy' : 'neutral'
-                                                }`}>
-                                                {rsi_value < 30 ? 'Sell' : rsi_value > 70 ? 'Buy' : 'Neutral'}
-                                                </span>
-                                              </td>
-                                            </tr>
-                                          
-
-                            
-                                            <tr>
-                                                <td>MACD (12,26) </td>
-                                                <td>{roundNumericValue(macd_line)}</td>
-                                                <td>
-                                                    <span className={`${
-                                                    macd_line < 0 ? 'bearish sell' : macd_line > 0 ? 'bullish buy' : 'neutral'
-                                                    }`}>
-                                                    {macd_line < 0 ? 'Sell' : macd_line > 0 ? 'Buy' : 'Neutral'}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                           
-                                            <tr>
-                                              <td>Stochastic (20,3) &nbsp;
-                                            <OverlayTrigger
-                                              delay={{ hide: 450, show: 300 }}
-                                              overlay={(props) => (
-                                                <Tooltip
-                                                  {...props}
-                                                  className="custom_pophover"
-                                                >
-                                                  <p>
-                                                  20 Indicates the Number of periods
-                                                  &
-                                                  3 Indicates the Last 3 values of 20 % k SMA Value
-                                                  </p>
-                                                </Tooltip>
-                                              )}
-                                              placement="bottom"
-                                            >
-                                              <span className="info_col">
-                                                <img
-                                                  src="/assets/img/info.png"
-                                                  alt="Info"
-                                                />
-                                              </span>
-                                            </OverlayTrigger>
-                                            </td>
-                                            <td>{roundNumericValue(stochastic_values.slow)}</td>
-                                            <td>
-                                                {
-                                                  stochastic_values.slow <= 45 ? 
-                                                  <span className="bullish buy">Buy</span>
-                                                  : 
-                                                  stochastic_values.slow >= 55 ? 
-                                                  <span className="bearish sell">Sell</span>
-                                                  : 
-                                                  <span className="neutral">Neutral</span>
-                                                }
-                                            </td>
-                                        </tr>
-
-                                            <tr>
-                                              <td>ATR (14)</td>
-                                              <td>{roundNumericValue(average_true_range)}</td>
-                                              <td>
-                                                {/* <span class="bearish">Sell</span> */}
-                                              </td>
-                                            </tr>
-                                            {/* <tr>
-                                              <td>ADX (14)</td>
-                                              <td>74.20</td>
-                                              <td><span class="bearish">Sell</span></td>
-                                              
-                                            </tr> */}
-                                           
-                                            <tr>
-                                              <td>ROC</td>
-                                              <td>{roundNumericValue(roc)}</td>
-                                              <td>
-                                                {
-                                                  roc < 0 ?
-                                                  <span className="bearish sell">Sell</span>
-                                                  :
-                                                  roc > 0 ?
-                                                  <span className="bullish buy">Buy</span>
-                                                  :
-                                                  <span className="neutral">Neutral</span>
-                                                } 
-                                            </td>
-                                            </tr>
-                                            
-                                            <tr>
-                                              <td>CCI (20)</td>
-                                              <td>{roundNumericValue(cci)}</td>  
-                                              <td>
-                                                {
-                                                  cci > 50?
-                                                  <span className="bullish buy">Buy</span>
-                                                  :
-                                                  cci < -50?
-                                                  <span className="bearish sell">Sell</span>
-                                                  :
-                                                  <span className="neutral">Neutral</span>
-                                                }
-                                              </td>
-                                            </tr>
-                                            <tr>
-                                              <td>MFI</td>
-                                              <td>{roundNumericValue(money_flow_index)}</td>
-                                              <td>
-                                                {
-                                                  money_flow_index <= 20?
-                                                  <span className="bullish buy">Buy</span>
-                                                  :
-                                                  money_flow_index > 80?
-                                                  <span className="bearish sell">Sell</span>
-                                                  :
-                                                  <span className="neutral">Neutral</span>
-                                                }
-                                              </td>
-                                            </tr>
-                                            <tr>
-                                              <td>WPR (14)</td>
-                                              <td>{roundNumericValue(williams_percent_range)}</td>
-                                              <td>
-                                                {
-                                                  williams_percent_range > -50?
-                                                  <span className="bullish buy">Buy</span>
-                                                  :
-                                                  williams_percent_range < -60?
-                                                  <span className="bearish sell">Sell</span>
-                                                  :
-                                                  <span className="neutral">Neutral</span>
-                                                }
-                                              </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Bull Bear Power</td>
-                                                <td>{roundNumericValue(bull_bear_power)}</td>
-                                                <td>
-                                                  <span className={`${
-                                                    bull_bear_power < 0 ? 'bearish sell' : bull_bear_power > 0 ? 'bullish buy' : 'neutral'
-                                                  }`}>
-                                                    {bull_bear_power < 0 ? 'Sell' : bull_bear_power > 0 ? 'Buy' : 'Neutral'}
-                                                  </span>
-                                                </td>
-                                              </tr>
-
-                                            <tr className="bollinger_bands_space">
-                                              <td><br/> Bollinger Bands</td>
-                                              <td>
-                                                SMA20: {roundNumericValue(bollinger_bands.sma20)}
-                                                <br/>UB: {roundNumericValue(bollinger_bands.upper_band)}  
-                                                <br/>LB: {roundNumericValue(bollinger_bands.lower_band)}
-                                              </td>
-                                              <td>
-                                                <br/>
-                                                <span className={`${
-                                                live_price >= bollinger_bands.upper_band ? 'bearish sell' :
-                                                live_price <= bollinger_bands.lower_band ? 'bullish buy' :
-                                                'neutral'
-                                            }`}>
-                                                {live_price >= bollinger_bands.upper_band ? 'Sell' :
-                                                live_price <= bollinger_bands.lower_band ? 'Buy' :
-                                                'Neutral'}
-                                            </span>
-                                              </td>
-                                            </tr>
-                                            
-                                          </tbody>
-                                        </table>
+                                                text: 'Strong Sell',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Sell',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Neutral',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Buy',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Strong Buy',
+                                                position: 'OUTSIDE'
+                                              },
+                                            ]}
+                                            needleTransition
+                                            needleTransitionDuration={500}
+                                            needleTransitionEasing="easeElastic"
+                                            needleTransitionDelay={0}
+                                            customNeedle={customNeedlePath}
+                                          />
+                                        </div>
+                                        <div className="row">
+                                          <div className="col-md-1">&nbsp;</div>
+                                          <div className="col-md-10">
+                                            <div className="row">
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Sell</h5>
+                                                  <h4>{oscillator_sell}</h4>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Neutral</h5>
+                                                  <h4>{oscillator_neutral}</h4>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Buy</h5>
+                                                  <h4>{oscillator_buy}</h4>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
                                       </div>
-                                      <p className="total_buy_sell_neutral"><span>Buy: {oscillator_buy}</span> <span>Sell: {oscillator_sell}</span> <span>Neutral: {oscillator_neutral}</span></p>
-                                        <h3 className="summary_total">
-                                          Summary: <span className={oscillator_buy > oscillator_sell ? 'summary_bullish active' : 'summary_bearish active'}>
-                                            {oscillator_buy > oscillator_sell ? 'Strong Buy' : 'Strong Sell'}
-                                          </span>
-                                        </h3> 
-                                    </div>
+
+                                      
+
+                                      <div className="col-md-4">
+                                        <div className="text-center">
+                                          <h3 className="heading">Summary</h3>
+                                          <ReactSpeedometer
+                                            currentValueText={summary_speed_meter_name}
+                                            textColor={'#000'}
+                                            value={summary_speedo_meter}
+                                            minValue={0}
+                                            width={250}
+                                            height={180}
+                                            maxValue={100}
+                                            needleColor="#131721"
+                                            startColor={ringColor}
+                                            segments={5}
+                                            endColor="red"
+                                            needleHeightRatio={0.7}
+                                            segmentWidth={15}
+                                            segmentLength={10}
+                                            ringWidth={8}
+                                            segmentColors={[
+                                                '#d4405f',
+                                                '#f18da1',
+                                                '#e0e3eb',
+                                                '#9ed4ff',
+                                                '#45a7f5'
+                                            ]}
+                                            customSegmentLabels={[
+                                              {
+                                                text: 'Strong Sell',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Sell',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Neutral',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Buy',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Strong Buy',
+                                                position: 'OUTSIDE'
+                                              },
+                                            ]}
+                                            needleTransition
+                                            needleTransitionDuration={500}
+                                            needleTransitionEasing="easeElastic"
+                                            needleTransitionDelay={0}
+                                            customNeedle={customNeedlePath}
+                                          />
+                                        </div>
+                                        <div className="row">
+                                          <div className="col-md-1">&nbsp;</div>
+                                          <div className="col-md-10">
+                                            <div className="row">
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Sell</h5>
+                                                  <h4>{summary_sell}</h4>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Neutral</h5>
+                                                  <h4>{summary_neutral}</h4>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Buy</h5>
+                                                  <h4>{summary_buy}</h4>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      
+
+                                      
+
+
+                                      <div className="col-md-4">
+                                        <div className="text-center small_guage">
+                                          <h3 className="heading">Moving Average</h3>
+                                          <ReactSpeedometer
+                                            currentValueText={sma_speed_meter_name}
+                                            textColor={'#000'}
+                                            width={200}
+                                            height={150}
+                                            value={sma_speedo_meter}
+                                            minValue={0}
+                                            maxValue={100}
+                                            needleColor="#131721"
+                                            startColor={ringColor}
+                                            segments={5}
+                                            endColor="red"
+                                            needleHeightRatio={0.7}
+                                            segmentWidth={15}
+                                            segmentLength={10}
+                                            ringWidth={8}
+                                            segmentColors={[
+                                              '#d4405f',
+                                              '#f18da1',
+                                              '#e0e3eb',
+                                              '#9ed4ff',
+                                              '#45a7f5'
+                                            ]
+                                            }
+                                            customSegmentLabels={[
+                                              {
+                                                text: 'Strong Sell',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Sell',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Neutral',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Buy',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: 'Strong Buy',
+                                                position: 'OUTSIDE'
+                                              },
+                                            ]}
+                                            needleTransition
+                                            needleTransitionDuration={500}
+                                            needleTransitionEasing="easeElastic"
+                                            needleTransitionDelay={0}
+                                            customNeedle={customNeedlePath}
+                                          />
+                                        </div>
+                                        
+
+
+                                        <div className="row">
+                                          <div className="col-md-1">&nbsp;</div>
+                                          <div className="col-md-10">
+                                            <div className="row">
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Sell</h5>
+                                                  <h4>{total_sma_sell}</h4>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Neutral</h5>
+                                                  <h4>{total_sma_neutral}</h4>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Buy</h5>
+                                                  <h4>{total_sma_buy}</h4>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
                                   </div>
 
+                                  <div className="row">
+                                  <div className="col-md-6">
+                                  <div className="analysis_values">
+                                        <h4 className="">Simple Moving Averages(SMA)</h4>
+                                        <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
+                                          <span style={{ position: "absolute", top: "-5px", right: "0" }}>
+                                          {bearishCount !== 0 && (
+                                              <strong  className="bearish">{bearishCount}</strong>
+                                            )}
+                                          </span>
+                                          <span style={{ position: "absolute", top: "-5px", left: "0" }}>
+                                            {bullishCount !== 0 && (
+                                              <strong className="bullish">{bullishCount}</strong>
+                                            )}
+                                          </span>
+                                          <div className="progress gainer-progress">
+                                            <div
+                                              className="progress-bar bg-success"
+                                              role="progressbar"
+                                              style={{ width: `${(bullishCount / total) * 100}%` }}
+                                            ></div>
+                                            <div
+                                              className="progress-bar bg-danger"
+                                              role="progressbar"
+                                              style={{ width: `${(bearishCount / total) * 100}%` }}
+                                            ></div>
+                                          </div>
+                                        </div>
+
+                                        <div className="technical_anaylysis_table simple_analysis">
+                                          <table width="100%" className="" cellpadding="0" cellspacing="0" border="0">
+                                            <thead>
+                                              <tr className="inner_table_average">
+                                                <th>
+                                                  <p className="">Period</p>
+                                                </th>
+                                                
+                                                <th>
+                                                  <p className="">Value</p>
+                                                </th>
+                                                <th>
+                                                  <p className="">Action</p>
+                                                </th>
+                                              </tr>
+                                            </thead>
+
+                                            <tbody>
+                                              {sma_list.length > 0 ? (
+                                                sma_list.map((item, i) => 
+                                                {
+                                                  if(live_price > item.sma_value) 
+                                                  {
+                                                    sma_buy_count++;
+                                                  } else if (live_price < item.sma_value) {
+                                                    sma_sell_count++;
+                                                  } else {
+                                                    sma_neutral_count++;
+                                                  }
+                                                  
+                                                  return (
+                                                    <tr key={i}>
+                                                      <td> SMA {item.day_number}</td>
+                                                      <td>
+                                                        <span>
+                                                          {roundNumericValue(item.sma_value)}
+                                                        </span>
+                                                      </td>
+                                                      <td>
+                                                          {
+                                                            live_price > item.sma_value ? 
+                                                            <span className="bullish">Buy</span>
+                                                            : 
+                                                            live_price < item.sma_value ? 
+                                                            <span className="bearish">Sell</span>
+                                                            : 
+                                                            <span className="neutral">Neutral</span>
+                                                          }
+                                                      </td>
+                                                    </tr>
+                                                  );
+                                                })
+                                              ) : (
+                                                <tr>
+                                                  <td>No Data Found</td>
+                                                </tr>
+                                              )}
+                                            </tbody>
+                                          </table>
+                                          <p className="total_buy_sell_neutral">
+                                            <span>Buy: {total_sma_buy}</span> <span>Sell: {total_sma_sell}</span> <span>Neutral: {total_sma_neutral}</span>
+                                          </p>
+                                          <h3 className="summary_total">
+                                            Summary: <span className={total_sma_buy > total_sma_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                                              {total_sma_buy > total_sma_sell ? 'Strong Buy' : 'Strong Sell'}
+                                            </span>
+                                          </h3>
+                                        </div>
+                                        </div>
+                                  </div>
+
+                                  <div className="col-md-6">
+                                  <div className="analysis_values">
+                                        <h4 className="">Exponential Moving Averages (EMA)</h4>
+                                        <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
+                                          <span style={{ position: "absolute", top: "-5px", right: "0" }}>
+                                          {ema_bearish_count !== 0 && (
+                                              <strong  className="bearish">{ema_bearish_count}</strong>
+                                            )}
+                                          </span>
+                                          <span style={{ position: "absolute", top: "-5px", left: "0" }}>
+                                            {ema_bullish_count !== 0 && (
+                                              <strong className="bullish">{ema_bullish_count}</strong>
+                                            )}
+                                          </span>
+                                          <div className="progress gainer-progress">
+                                            <div
+                                              className="progress-bar bg-success"
+                                              role="progressbar"
+                                              style={{ width: `${(ema_bullish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
+                                            ></div>
+                                            
+
+                                            <div
+                                              className="progress-bar bg-danger"
+                                              role="progressbar"
+                                              style={{ width: `${(ema_bearish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
+                                            ></div>
+                                          </div>
+                                        </div>
+
+                                        <div className="technical_anaylysis_table simple_analysis">
+                                          <table width="100%" className="" cellpadding="0" cellspacing="0" border="0">
+                                            <thead>
+                                              <tr className="inner_table_average">
+                                                <th>
+                                                  <p className="">Period</p>
+                                                </th>
+                                                <th>
+                                                  <p className="">Value</p>
+                                                </th>
+                                                <th>
+                                                  <p className="">Action</p>
+                                                </th>
+                                              </tr>
+                                            </thead>
+
+                                            <tbody>
+                                              {sma_list.length > 0 ? (
+                                                sma_list.map((item, i) => {
+                                                  if(live_price > item.ema_value) 
+                                                  {
+                                                    ema_buy_count++;
+                                                  } else if (live_price < item.ema_value ) 
+                                                  {
+                                                    ema_sell_count++;
+                                                  }
+                                                  else 
+                                                  {
+                                                    ema_neutral_count++;
+                                                  }
+
+                                                  return (
+                                                    <tr key={i}>
+                                                      <td> EMA {item.day_number}</td>
+                                                      <td>
+                                                        <span>
+                                                        {roundNumericValue(item.ema_value)}
+                                                        </span>
+                                                      </td>
+                                                      <td>
+                                                          {
+                                                            live_price > item.ema_value ? 
+                                                            <span className="bullish">Buy</span>
+                                                            : 
+                                                            live_price < item.ema_value ? 
+                                                            <span className="bearish">Sell</span>
+                                                            : 
+                                                            <span className="neutral">Neutral</span>
+                                                          }
+                                                      </td>
+                                                    </tr>
+                                                  );
+                                                })
+                                              ) : (
+                                                <tr>
+                                                  <td>No Data Found</td>
+                                                </tr>
+                                              )}
+                                            </tbody>
+                                          </table>
+
+                                          
+                                          <p className="total_buy_sell_neutral">
+                                            <span>Buy: {total_ema_buy}</span> <span>Sell: {total_ema_sell}</span> <span>Neutral: {total_ema_neutral}</span>
+                                          </p>
+                                          <h3 className="summary_total">
+                                            Summary: <span className={total_ema_buy > total_ema_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                                              {total_ema_buy > total_ema_sell ? 'Strong Buy' : 'Strong Sell'}
+                                            </span>
+                                          </h3>
+                                        </div>
+                                        </div>
+                                  </div>
+                                  </div>
+
+
+                                  <div className="row">
+                                  <div className="col-md-6">
+                                    <div className="analysis_values">
+                                    <h4 className="">Moving Averages Crossovers</h4>     
+                                    {/* <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
+                                      <span style={{ position: "absolute", top: "-5px", right: "0" }}>
+                                      {bearishCount1 !== 0 && (
+                                          <strong className="bearish">{bearishCount1}</strong>
+                                        )}
+                                      </span>
+                                      <span style={{ position: "absolute", top: "-5px", left: "0" }}>
                                       
-                                    </div>
-                                    <div className="row ml-0 mr-0">
-                                      <div className="col-md-12 col-sm-12 ">
-                                      
+                                          {bullishCount1 !== 0 && (
+                                          <strong className="bullish">{bullishCount1}</strong>
+                                        )}
+                                      </span>
+                                      <div className="progress gainer-progress">
+                                        <div
+                                          className="progress-bar bg-success"
+                                          role="progressbar"
+                                          style={{ width: `${(bullishCount1 / total1) * 100}%` }}
+                                        ></div>
+                                        <div
+                                          className="progress-bar bg-danger"
+                                          role="progressbar"
+                                          style={{ width: `${(bearishCount1 / total1) * 100}%` }}
+                                        ></div>
                                       </div>
+                                    </div> */}
+                                            
+                                    <div className="technical_anaylysis_table">
+                                      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
+                                        <thead>
+                                          <tr className="inner_table_average">
+                                            <th colspan="0">
+                                              <p className="">Period</p>
+                                            </th>
+                                            <th colspan="0">
+                                              <p className="">Moving Average Crossover</p>
+                                            </th>
+                                            <th colspan="0">
+                                              <p className="">Indication</p>
+                                            </th>
+                                          </tr>
+                                        </thead>
+                                      
+                                        <tbody>
+                                        {moving_averages_crossovers.length > 0 ? moving_averages_crossovers.map((item, i) => (
+                                        <tr key={i}>
+                                            <td> {item.term}</td>
+                                            <td>
+                                              <span className="">
+                                                {item.start_sma_day} & {item.end_sma_day} DMA Crossover
+                                              </span>
+                                            </td>
+                                            <td>
+                                              <span  className={`Capital_Singnal ${
+                                                  item.signal_description === 'bearish'
+                                                    ? 'bearish'
+                                                    : item.signal_description === 'bullish'
+                                                    ? 'bullish'
+                                                    : item.signal_description === 'neutral'
+                                                    ? 'neutral'
+                                                    : ''
+                                                }`}>  
+                                                {item.signal_description}
+                                              </span>
+                                            </td>
+                                          </tr>
+                                          )):
+                                          <tr>
+                                            <td>No Data Found</td>
+                                          </tr>
+                                          
+                                          }
+                                        </tbody>
+                                      </table>
+                                      <p className="total_buy_sell_neutral"><span>Bullish: {ma_crossovers_bullish}</span> <span>Bearish: {ma_crossovers_bearish}</span> </p>
                                     </div>
-                                  </div> 
-                                )}
+                                    </div>
+                                  </div>
+                                  
+                                  <div className="col-md-6">
+                                    <div className="analysis_values">
+                                      <h4 className="">Other Moving Averages</h4> 
+                                      <div className="technical_anaylysis_table">
+                                      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
+                                        <thead>
+                                          <tr className="inner_table_average">
+                                            <th colspan="0">
+                                              <p className="">Period</p>
+                                            </th>
+                                            <th colspan="0">
+                                              <p className="">Value</p>
+                                            </th>
+                                            <th colspan="0">
+                                              <p className="">Action</p>
+                                            </th>
+                                          </tr>
+                                        </thead>
+
+                                        <tbody>
+                                          <tr>
+                                            <td>HMA(9)</td>
+                                            <td>{roundNumericValue(hull_moving_average)}</td>
+                                            <td>
+                                                {
+                                                  live_price > hull_moving_average ? 
+                                                  <span className="bullish">Buy</span>
+                                                  : 
+                                                  live_price < hull_moving_average ? 
+                                                  <span className="bearish">Sell</span>
+                                                  : 
+                                                  <span className="neutral">Neutral</span>
+                                                }
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <td>VWMA(20)</td>
+                                            <td>{roundNumericValue(vwma)}</td>
+                                            <td>
+                                              {
+                                                live_price > vwma ? 
+                                                <span className="bullish">Buy</span>
+                                                : 
+                                                live_price < vwma ? 
+                                                <span className="bearish">Sell</span>
+                                                : 
+                                                <span className="neutral">Neutral</span>
+                                              }
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                        </table>
+                                        </div>
+                                    </div>  
+                                  </div>
+
+                                  </div>
+
+                                  {moving_averages_crossovers && sma_list.length > 0 && (
+                                  <div className="">
+                                    <div className="row ">
+                                      <div className="col-md-12 ">
+                                        <div className="analysis_values">
+                                        <h4 className="">Technical Indicators</h4>
+                                        <div className="technical_anaylysis_table simple_analysis">
+                                          <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
+                                              <thead>
+                                                <tr className="inner_table_average">
+                                                  <th style={{minWidth: '185px'}}>
+                                                    <p className="">Name</p>
+                                                  </th>
+                                                  <th >
+                                                    <p className="">Value</p>
+                                                  </th>
+                                                  <th>
+                                                    <p className="">Action</p>
+                                                  </th>
+                                                </tr>
+                                              </thead>
+                                            
+                                              <tbody>
+                                                
+                                                <tr>
+                                                  <td>Volatility</td>
+                                                  <td>{volatility} %</td>
+                                                  <td>
+                                                  {
+                                                    volatility ? (
+                                                    <>
+                                                        {
+                                                            volatility < 1  ? 
+                                                            <span className="bearish sell">Very Low</span>
+                                                            : 
+                                                            volatility >= 1 && volatility < 2 ? 
+                                                            <span className="bearish sell">Low</span>
+                                                            :
+                                                            volatility >= 2 && volatility < 5 ? 
+                                                            <span className="neutral">Neutral</span>
+                                                            :
+                                                            volatility >= 5 && volatility < 10 ? 
+                                                            <span className="bullish buy">High</span>
+                                                            : 
+                                                            volatility >= 10 && volatility < 20 ?
+                                                            <span className="bullish buy">Very High</span>
+                                                            : 
+                                                            <span className="bullish buy">Extremely High</span>
+                                                        }
+                                                    </>
+                                                  ) : (
+                                                    "NA"
+                                                  )}
+                                                    {/* <span className="bearish">Sell</span> */}
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td>RSI</td>
+                                                  <td>{rsi_value}</td>
+                                                  <td>
+                                                    <span className={`${
+                                                      rsi_value < 30 ? 'bearish sell' : rsi_value > 70 ? 'bullish buy' : 'neutral'
+                                                    }`}>
+                                                    {rsi_value < 30 ? 'Sell' : rsi_value > 70 ? 'Buy' : 'Neutral'}
+                                                    </span>
+                                                  </td>
+                                                </tr>
+                                              
+
+                                
+                                                <tr>
+                                                    <td>MACD (12,26) </td>
+                                                    <td>{roundNumericValue(macd_line)}</td>
+                                                    <td>
+                                                        <span className={`${
+                                                        macd_line < 0 ? 'bearish sell' : macd_line > 0 ? 'bullish buy' : 'neutral'
+                                                        }`}>
+                                                        {macd_line < 0 ? 'Sell' : macd_line > 0 ? 'Buy' : 'Neutral'}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                              
+                                                <tr>
+                                                  <td>Stochastic (20,3) &nbsp;
+                                                <OverlayTrigger
+                                                  delay={{ hide: 450, show: 300 }}
+                                                  overlay={(props) => (
+                                                    <Tooltip
+                                                      {...props}
+                                                      className="custom_pophover"
+                                                    >
+                                                      <p>
+                                                      20 Indicates the Number of periods
+                                                      &
+                                                      3 Indicates the Last 3 values of 20 % k SMA Value
+                                                      </p>
+                                                    </Tooltip>
+                                                  )}
+                                                  placement="bottom"
+                                                >
+                                                  <span className="info_col">
+                                                    <img
+                                                      src="/assets/img/info.png"
+                                                      alt="Info"
+                                                    />
+                                                  </span>
+                                                </OverlayTrigger>
+                                                </td>
+                                                <td>{roundNumericValue(stochastic_values.slow)}</td>
+                                                <td>
+                                                    {
+                                                      stochastic_values.slow <= 45 ? 
+                                                      <span className="bullish buy">Buy</span>
+                                                      : 
+                                                      stochastic_values.slow >= 55 ? 
+                                                      <span className="bearish sell">Sell</span>
+                                                      : 
+                                                      <span className="neutral">Neutral</span>
+                                                    }
+                                                </td>
+                                            </tr>
+
+                                                <tr>
+                                                  <td>ATR (14)</td>
+                                                  <td>{roundNumericValue(average_true_range)}</td>
+                                                  <td>
+                                                    {/* <span className="bearish">Sell</span> */}
+                                                  </td>
+                                                </tr>
+                                                {/* <tr>
+                                                  <td>ADX (14)</td>
+                                                  <td>74.20</td>
+                                                  <td><span className="bearish">Sell</span></td>
+                                                  
+                                                </tr> */}
+                                              
+                                                <tr>
+                                                  <td>ROC</td>
+                                                  <td>{roundNumericValue(roc)}</td>
+                                                  <td>
+                                                    {
+                                                      roc < 0 ?
+                                                      <span className="bearish sell">Sell</span>
+                                                      :
+                                                      roc > 0 ?
+                                                      <span className="bullish buy">Buy</span>
+                                                      :
+                                                      <span className="neutral">Neutral</span>
+                                                    } 
+                                                </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                  <td>CCI (20)</td>
+                                                  <td>{roundNumericValue(cci)}</td>  
+                                                  <td>
+                                                    {
+                                                      cci > 50?
+                                                      <span className="bullish buy">Buy</span>
+                                                      :
+                                                      cci < -50?
+                                                      <span className="bearish sell">Sell</span>
+                                                      :
+                                                      <span className="neutral">Neutral</span>
+                                                    }
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td>MFI</td>
+                                                  <td>{roundNumericValue(money_flow_index)}</td>
+                                                  <td>
+                                                    {
+                                                      money_flow_index <= 20?
+                                                      <span className="bullish buy">Buy</span>
+                                                      :
+                                                      money_flow_index > 80?
+                                                      <span className="bearish sell">Sell</span>
+                                                      :
+                                                      <span className="neutral">Neutral</span>
+                                                    }
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td>WPR (14)</td>
+                                                  <td>{roundNumericValue(williams_percent_range)}</td>
+                                                  <td>
+                                                    {
+                                                      williams_percent_range > -50?
+                                                      <span className="bullish buy">Buy</span>
+                                                      :
+                                                      williams_percent_range < -60?
+                                                      <span className="bearish sell">Sell</span>
+                                                      :
+                                                      <span className="neutral">Neutral</span>
+                                                    }
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Bull Bear Power</td>
+                                                    <td>{roundNumericValue(bull_bear_power)}</td>
+                                                    <td>
+                                                      <span className={`${
+                                                        bull_bear_power < 0 ? 'bearish sell' : bull_bear_power > 0 ? 'bullish buy' : 'neutral'
+                                                      }`}>
+                                                        {bull_bear_power < 0 ? 'Sell' : bull_bear_power > 0 ? 'Buy' : 'Neutral'}
+                                                      </span>
+                                                    </td>
+                                                  </tr>
+
+                                                <tr className="bollinger_bands_space">
+                                                  <td><br/> Bollinger Bands</td>
+                                                  <td>
+                                                    UB: {roundNumericValue(bollinger_bands.upper_band)}  
+                                                    <br/> SMA20: {roundNumericValue(bollinger_bands.sma20)}
+                                                    <br/>LB: {roundNumericValue(bollinger_bands.lower_band)}
+                                                  </td>
+                                                  <td>
+                                                    <br/>
+                                                    <span className={`${
+                                                    live_price >= bollinger_bands.upper_band ? 'bearish sell' :
+                                                    live_price <= bollinger_bands.lower_band ? 'bullish buy' :
+                                                    'neutral'
+                                                }`}>
+                                                    {live_price >= bollinger_bands.upper_band ? 'Sell' :
+                                                    live_price <= bollinger_bands.lower_band ? 'Buy' :
+                                                    'Neutral'}
+                                                </span>
+                                                  </td>
+                                                </tr>
+                                                
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                          <p className="total_buy_sell_neutral"><span>Buy: {oscillator_buy}</span> <span>Sell: {oscillator_sell}</span> <span>Neutral: {oscillator_neutral}</span></p>
+                                            <h3 className="summary_total">
+                                              Summary: <span className={oscillator_buy > oscillator_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                                                {oscillator_buy > oscillator_sell ? 'Strong Buy' : 'Strong Sell'}
+                                              </span>
+                                            </h3> 
+                                        </div>
+                                      </div>
+
+                                          
+                                        </div>
+                                        <div className="row ml-0 mr-0">
+                                          <div className="col-md-12 col-sm-12 ">
+                                          
+                                          </div>
+                                        </div>
+                                      </div> 
+                                    )}
+                                  
+                                  </>
+                                  :
+                                  <div className="text-center">
+                                    <h6>Technical Analysis Data Not Found.</h6>
+                                    <p>Oops! No Technical Analysis data found for this source. Please try a different source.</p>
+                                  </div>
+                                }
+                                  </>
+                                  :
+                                  <div className="text-center">
+                                    <h6>Please wait...</h6>
+                                    <p>We are loading your technical analysis data for selected source.</p>
+                                  </div>
+                                }
+                               
+                           
                               </div>
                             </div>
                           </div>
@@ -4554,11 +5041,267 @@ close_24h */}
                     </div>
                   </div>
 
-                  <div className="token_list_values mt-2">
-                    <h5 className="summary-title">
-                      Summary of {data.token_name}
-                    </h5>
-                    {data.marketcap > 0 ? (
+    <div className="token_list_values mt-2">
+      <div className="row">
+          <div className="col-md-8">
+          <h5 className="summary-title">
+            Summary of {data.token_name}
+          </h5>
+          <div className="about_token_details">
+            <p className="mb-2 summary-p">
+              The live price of {data.token_name} is at <span title={live_price}><b>{convertCurrency(live_price)}</b></span> {volume ? <> with 24 hours volume of <b>{convertCurrency(volume)}</b>.</>:"."}         
+              {
+                percent_change_1h ?
+                <>
+                &nbsp; The chart above shows <b>{symbol}</b> is currently by <b className={percent_change_1h > 0 ? "positive_value":"negative_value"}>{percent_change_1h ? percent_change_1h:""}%</b> in the past hour and <b className={percentage_change_24h > 0 ? "positive_value":"negative_value"}>{percentage_change_24h ? (percentage_change_24h):""}%</b> by since yesterday.
+                </>
+                :
+                ""
+              }
+              {               
+                circulating_supply > 0 ?
+                <>
+                    &nbsp;The total circulating supply of {data.token_name} {data.list_type == 1 ? "coin":"token"} is  <b>{separator(circulating_supply)} {symbol.toUpperCase()}</b>
+                </>
+                :
+                ""
+              }  
+              {data.max_supply ? <> and the max supply is  <b>{separator(data.max_supply)} {symbol.toUpperCase()}</b>. </>:""}
+            </p>
+            
+              {
+                volume ?
+                <p className="mb-2 summary-p">
+                    Over the last 24 hours, <b>{data.token_name} {data.list_type == 1 ? "":"token"}</b> experienced trading activity amounting to {active_currency.currency_code == "USD" ? <b>${convertvalue(volume)}</b>:<b>{convertCurrency(volume)}</b>}. {
+                    data.list_type == 2 ?
+                    <>
+                    The decentralized exchange (DEX) volume accounted for {active_currency.currency_code == "USD" ? <b>${convertvalue(dex_circulating_supply)}</b>:<b>{convertCurrency(dex_circulating_supply)}</b>}, 
+                    while centralized exchanges (CEX) stood at {active_currency.currency_code == "USD" ?<b>${convertvalue((volume-dex_circulating_supply))}</b>:<b>{convertCurrency((volume-dex_circulating_supply))}</b>}.
+                    </>
+                    :
+                    ""
+                    }
+                </p>
+                :
+                ""
+              }
+           
+
+            <p className="mb-2 summary-p">
+            {
+              data.first_trade_price ?
+              <>
+                Starting in <b>{moment(data.first_trade_on).format("ll")}</b> with an opening price of <b>{convertCurrency(data.first_trade_price)} {active_currency.currency_code ? active_currency.currency_code:"USD"}</b>, &nbsp;
+              </>
+              :
+              ""
+            }
+
+            {
+              ath_price && atl_price ?
+              <>
+                {data.token_name} {data.list_type == 1 ? "":"token"} reached an all-time high of <b>{convertCurrency(ath_price)}</b> on <b>{ath_price_date && is_client ? moment(ath_price_date).format("ll"):""}</b>&nbsp;
+                and an all-time low of <b>{convertCurrency(atl_price)}</b> on <b>{atl_price_date && is_client ? moment(atl_price_date).format("ll"):""}</b>.
+              </>
+              :
+              ""
+            }
+            </p>
+            {
+              atl_price && ath_price ?
+              <p className="mb-4 summary-p">
+                Falling <b className="negative_value">{(((atl_price-ath_price)/ath_price)*100).toFixed(2)}%</b> from its ATH is a Disappointment, Rising <b className="positive_value">+{(((ath_price-atl_price)/atl_price)*100).toFixed(2)}%</b> from ATL is a major correction to the next appreciation.
+              </p>
+              :
+              ""
+            }
+            
+
+            {
+              data.max_supply ?
+              <p className="mb-2 summary-p">
+              {data.token_name} is a {data.max_supply > circulating_supply ? "deflationary":"inflationary"} cryptocurrency with a 
+              max supply of <b>{separator(data.max_supply.toFixed(0))} {symbol}</b> with <b>{separator(circulating_supply)} {symbol}</b> in circulation. 
+              </p> 
+              :
+              ""
+            }  
+          
+          
+         
+            {
+              liqudity_networks.length && dex_circulating_supply ?
+              <p className="mb-2 summary-p"> 
+                Coinpedia Onchain data of {data.token_name} {data.list_type == 1 ? "coin":"token"} says that has dex liquidity of <b>{separator(dex_circulating_supply)} {symbol.toUpperCase()}</b> &nbsp;
+                among <b>{count_liquidity_pools}</b> active pools from the last 6 months on the &nbsp; 
+                {
+                  liqudity_networks.length ? 
+                  liqudity_networks.map((item, i) =>
+                  <>
+                  {item}{liqudity_networks.length == ++i ? " ":", "} 
+                  </>
+                  )
+                  :
+                  ""
+                }
+                &nbsp; network{liqudity_networks.length > 1 ? "s":""}.
+              </p> 
+              :
+              ""
+            }    
+        
+
+            {
+              close_price_of_fifty && close_price_of_two_hundred ?
+              <p className="mb-2 summary-p">
+                The 50-day Simple Moving Average (SMA) at <b>{convertCurrency(close_price_of_fifty)}</b> provides a glimpse into short-term trends,
+                while the 200-day SMA at <b>{convertCurrency(close_price_of_two_hundred)}</b> offers a broader perspective.
+              </p> 
+              :
+              "" 
+            }
+          
+            {
+              five_twenty_ma && twenty_fifty_ma ?
+              <p className="mb-2 summary-p">
+                First, looking at the Simple Moving Averages (SMA), the short-term 5-day and 20-day moving averages 
+                show a <b>{five_twenty_ma}</b> crossover, indicating <b className={twenty_fifty_ma == "bullish" ? "positive_value":"negative_value"}>{twenty_fifty_ma == "bullish" ? "positive":"negative"}</b> price momentum in the short term. However, 
+                the medium-term 20-day and 50-day moving averages have a <b>{twenty_fifty_ma}</b> crossover, 
+                which suggests potential <b>{twenty_fifty_ma == "bullish" ? "strength":"weakness"}</b> in the medium term. 
+              </p>
+              :
+              ""
+            }
+          
+            {
+                fifty_two_hundred_ma ?
+                <p className="mb-2 summary-p">
+                  Furthermore, the long-term 50-day and 200-day moving averages also have a <b>{fifty_two_hundred_ma}</b> crossover, 
+                  signaling a more extended bearish trend. 
+                </p>
+                :
+                ""
+            }
+
+            {
+              volatility && rsi_value && macd_line ?
+                <p className="mb-2 summary-p">
+                {
+                  volatility ?
+                  <>
+                  The Volatility is relatively <b>{
+                                              volatility < 1  ? 
+                                              <span className="bearish sell">Very Low</span>
+                                              : 
+                                              volatility >= 1 && volatility < 2 ? 
+                                              <span className="bearish sell">Low</span>
+                                              :
+                                              volatility >= 2 && volatility < 5 ? 
+                                              <span className="neutral">Neutral</span>
+                                              :
+                                              volatility >= 5 && volatility < 10 ? 
+                                              <span className="bullish buy">High</span>
+                                              : 
+                                              volatility >= 10 && volatility < 20 ?
+                                              <span className="bullish buy">Very High</span>
+                                              : 
+                                              <span className="bullish buy">Extremely High</span>
+                                          }</b> at <b className="positive_value">{volatility}%</b>, which indicates a relatively stable price movement. &nbsp;
+                  </>
+                  :
+                  ""
+                }
+                {
+                  rsi_value ?
+                  <>
+                  The Relative Strength Index (RSI) stands at <b className="positive_value">{rsi_value}</b>, suggesting that {symbol} is in neutral territory in terms of overbought or oversold conditions.&nbsp;
+                  </>
+                  :
+                  ""
+                }
+
+                {
+                  macd_line ?
+                  <>
+                    {macd_line}The MACD is slightly {macd_line >= 0 ? "positive":"negative"} at <b className="positive_value">{roundNumericValue(macd_line)}</b>, indicating some <b className={macd_line < 0 ? "negative_value":"positive_value"}>{macd_line < 0 ? "downward":"upward"}</b> pressure. 
+                  </>
+                  :
+                  ""
+                }
+              </p>
+              :
+              ""
+            }
+                
+          {/* <p className="mb-4 summary-p"> On the positive side, the Average True Range (ATR) is low at 0.31, suggesting limited price fluctuations.</p> 
+            */}
+
+            {
+              stochastic_values && roc && money_flow_index ?
+              <p className="mb-2 summary-p">
+                {
+                  stochastic_values ?
+                  <>
+                  The Stochastic K at <b>{roundNumericValue(stochastic_values.slow)}</b> is in the {
+                    stochastic_values.slow <= 45 ? 
+                    <>bulls zone.</>
+                    : 
+                    stochastic_values.slow >= 55 ? 
+                    <>bears zone.</>
+                    : 
+                    <>neutral zone, not strongly favoring either bulls or bears.</>
+                  }
+                  </>
+                  :
+                  ""
+                }&nbsp;
+                
+                {
+                  roc ?
+                  <>
+                  The Rate of Change (ROC) is <b>{roundNumericValue(roc)}</b>, indicating a modest <b className={roc >= 0 ? "positive_value":"negative_value"}>{roc >= 0 ? "positive":"negative"}</b> price momentum.&nbsp;
+                  </>
+                  :
+                  ""
+                }
+
+                {
+                  money_flow_index ?
+                  <>
+                  The Money Flow Index (MFI) at <b>{roundNumericValue(money_flow_index)}</b> suggests a healthy level of market participation.
+                  </>
+                  :
+                  ""
+                }
+              </p>
+              :
+              ""
+            }
+          
+
+          
+            {/* {data.description ? (
+              <h4 className="tabs_title_token">
+                About {data.token_name ? data.token_name : "-"}
+              </h4>
+            ) : null} */}
+
+            <div  dangerouslySetInnerHTML={{ __html: data.description }}
+            ></div>
+          </div>
+
+          </div>     
+      </div>
+                  
+                                 
+                  
+
+
+                   
+                                     
+                                       
+        
+                    {/* {data.marketcap > 0 ? (
                       <p className="mb-2" style={{ fontSize: "18px" }}>
                         <b>{data.token_name}</b> holds a market dominance of{" "}
                         <b>
@@ -4572,9 +5315,9 @@ close_24h */}
                       </p>
                     ) : (
                       ""
-                    )}
+                    )} */}
 
-                    {data.first_trade_price > 0 ? (
+                    {/* {data.first_trade_price > 0 ? (
                       <p style={{ fontSize: "18px" }}>
                         First trade occurred on{" "}
                         <b>{moment(data.first_trade_on).format("ll")}</b> with a
@@ -4600,20 +5343,10 @@ close_24h */}
                       </p>
                     ) : (
                       ""
-                    )}
+                    )} */}
                   </div>
 
-                  <div className="about_token_details">
-                    {data.token_description ? (
-                      <h4 className="tabs_title_token">
-                        About {data.token_name ? data.token_name : "-"}
-                      </h4>
-                    ) : null}
-
-                    <div
-                      dangerouslySetInnerHTML={{ __html: data.description }}
-                    ></div>
-                  </div>
+                  
 
                   <div className="how_do_you_feel">
                     <div className="row">

@@ -83,41 +83,34 @@ export default function MyFunction({ reqData }) {
 
   return (
     <div>
-      <section className='col-12 community-trust mt-3'>
+      <section className='community-trust mt-5'>
+        <h5 className='sub_title_main'>
+          Community Trust
+          <span>
+            <OverlayTrigger
+              delay={{ hide: 450, show: 300 }}
+              overlay={(props) => (
+                <Tooltip {...props} className="custom_pophover">
+                  <p>This bar represents the trust of the Coinpedia community in this token. Each member has one vote per token, and they can modify their trust accordingly.</p>
+                </Tooltip>
+              )}
+              placement="bottom">
+              <span className='info_col' > <img src="/assets/img/information_token.svg" alt="Info" />
+              
+              </span>
+            </OverlayTrigger>
 
+          </span> &nbsp;:
+        </h5>
+        <div className='community_block_data'>
         <div className='row'>
-          <h5 className='converter-title'>Community trust</h5>
-          &nbsp; &nbsp;
-          <h5 className='converter-title'>
-            <span>
-              <OverlayTrigger
-                delay={{ hide: 450, show: 300 }}
-                overlay={(props) => (
-                  <Tooltip {...props} className="custom_pophover">
-                    <p>This bar represents the trust of the Coinpedia community in this token. Each member has one vote per token, and they can modify their trust accordingly.</p>
-                  </Tooltip>
-                )}
-                placement="bottom">
-                <span className='info_col' ><img src="/assets/img/info.png" alt="Info" />
-                
-                </span>
-              </OverlayTrigger>
 
-            </span> &nbsp;  :
-          </h5>  &nbsp; &nbsp;
+          <div className='col-3 text-center'>
 
-
-          <h5 className='converter-title'>{total_vote_count} Votes  </h5>
-
-
-
-        </div>
-        <div className='row mt-1 mb-3 mr-3'>
-
-          <div className='col-2 text-center'>
-
-            <span>
-              {
+                <span className='like_text_color like_dislike_text'>
+                            { total_vote_count ?((positive_vote_count/total_vote_count) * 100).toFixed(1):"0.00"}%
+                         
+                          {
                 my_vote_status != 2 ?
                 <OverlayTrigger
                 delay={{ hide: 450, show: 300 }}
@@ -148,104 +141,81 @@ export default function MyFunction({ reqData }) {
                 placement="bottom">
                 {
                   user_token ?
-                  <span className={'info_col '+(my_vote_status == 1 ? " community-bigger":" community-smaller")} onClick={()=>updateVotingDetails(1)}> <img src="/assets/img/like.png" alt="like" /></span>
+                  <span className={(my_vote_status == 1 ? " community-bigger":" community-smaller")} onClick={()=>updateVotingDetails(1)}> <img src="/assets/img/like.svg" alt="like" /></span>
                   :
-                  <span className='info_col ' onClick={() => loginModalStatus(token_row_id, 1)}> <img src="/assets/img/like.png" alt="like" /></span>
+                  <span onClick={() => loginModalStatus(token_row_id, 1)}> <img src="/assets/img/like.svg" alt="like" /></span>
                 } 
                 </OverlayTrigger>
                 :
-                 <span className={'info_col '+(my_vote_status == 1 ? " community-bigger":" community-smaller")} onClick={()=>updateVotingDetails(1)}> <img src="/assets/img/like.png" alt="like" /></span>
+                 <span className={(my_vote_status == 1 ? " community-bigger":" community-smaller")} onClick={()=>updateVotingDetails(1)}> <img src="/assets/img/like.svg" alt="like" /></span>
               }
+                          </span>
               
-            </span>
-            <span>
-              { total_vote_count ?((positive_vote_count/total_vote_count) * 100).toFixed(1):"0.00"}%
-            </span>
-
-            
 
           </div>
-          <div className='col-6 progress1'>
-
-            <div style={{ maxWidth: "177px" }}>
-              <div className="progress gainer-progress">
-                <div
-                  className="progress-bar bg-success"
-                  role="progressbar"
-                  style={{ width: ((positive_vote_count/total_vote_count) * 100) + "%" }}
-                >
-                  {/* {e.total_voting_count} Gainers */}
-                </div>
-                <div
-                  className="progress-bar bg-danger"
-                  role="progressbar"
-                  style={{ width: ((((total_vote_count-positive_vote_count)/total_vote_count))* 100) + "%" }}
-                >
-                  {/* {e.total_tokens-e.total_gainers} Losers */}
-                </div>
+          <div className='col-6'>
+            <h5 className='converter-title text-center'>{total_vote_count} Votes  </h5>
+            <div className="progress gainer-progress">
+              <div
+                className="progress-bar bg-success"
+                role="progressbar"
+                style={{ width: ((positive_vote_count/total_vote_count) * 100) + "%" }}
+              >
+                {/* {e.total_voting_count} Gainers */}
               </div>
-
-              {/* <div>
-                <span><strong>{e.total_gainers}</strong> <small>({((e.total_gainers * 100) / e.total_tokens).toFixed(0)}%)</small></span>
-                <span style={{ float: "right" }}><strong>{e.total_tokens - e.total_gainers}</strong> <small>({(100 - ((e.total_gainers * 100) / e.total_tokens)).toFixed(0)}%)</small></span>
-              </div> */}
-
+              <div
+                className="progress-bar bg-danger"
+                role="progressbar"
+                style={{ width: ((((total_vote_count-positive_vote_count)/total_vote_count))* 100) + "%" }}
+              >
+                {/* {e.total_tokens-e.total_gainers} Losers */}
+              </div>
             </div>
-
-            {/* <ProgressBar className='rounded-pill progress'>
-              <ProgressBar variant="success" now={70} key={1} />
-
-              <ProgressBar variant="danger" now={30} key={3} />
-            </ProgressBar> */}
           </div>
-          <div className='col-2 text-center'>
-            <span>
-              {
-                  my_vote_status != 1 ?
-                    <OverlayTrigger delay={{ hide: 450, show: 300 }}  overlay={(props) => (
-                      <Tooltip {...props} className="custom_pophover" >
-                        <p>
-                          {
-                            user_token ?
-                            <>
-                            {
-                              (my_vote_status == 1) ?
-                              <></>
-                              :
-                              (my_vote_status == 2) ?
-                              <>You don't trust this token</>
-                              :
-                              <>Do not trust in this token</>
-                            }
-                            </>
-                            :
-                            <>
-                           Sign in to untrust this token.
-                            </>
-                          }
-                        </p>
-                      </Tooltip>
-                    )}
-                    placement="bottom">
-                    {
-                      user_token ?
-                      <span className={'info_col '+(my_vote_status == 2 ? " community-bigger":" community-smaller")} onClick={()=>updateVotingDetails(2)}>  <img src="/assets/img/dislike.png" alt="like" /></span>
-                      :
-                      <span className='info_col' onClick={() => loginModalStatus(token_row_id, 2)}>  <img src="/assets/img/dislike.png" alt="like" /></span>
-                    } 
-                  </OverlayTrigger>
+          <div className='col-3 text-center'>
+            <span className='dislike_text_color like_dislike_text'>
+            {
+              my_vote_status != 1 ?
+                <OverlayTrigger delay={{ hide: 450, show: 300 }}  overlay={(props) => (
+                  <Tooltip {...props} className="custom_pophover" >
+                    <p>
+                      {
+                        user_token ?
+                        <>
+                        {
+                          (my_vote_status == 1) ?
+                          <></>
+                          :
+                          (my_vote_status == 2) ?
+                          <>You don't trust this token</>
+                          :
+                          <>Do not trust in this token</>
+                        }
+                        </>
+                        :
+                        <>
+                        Sign in to untrust this token.
+                        </>
+                      }
+                    </p>
+                  </Tooltip>
+                )}
+                placement="bottom">
+                {
+                  user_token ?
+                  <span className={(my_vote_status == 2 ? " community-bigger":" community-smaller")} onClick={()=>updateVotingDetails(2)}>  <img src="/assets/img/dislike.svg" alt="like" /></span>
                   :
-                  <span className={'info_col '+(my_vote_status == 2 ? " community-bigger":" community-smaller")} onClick={()=>updateVotingDetails(2)}>  <img src="/assets/img/dislike.png" alt="like" /></span> 
-              }
-              
-
+                  <span onClick={() => loginModalStatus(token_row_id, 2)}>  <img src="/assets/img/dislike.svg" alt="like" /></span>
+                } 
+              </OverlayTrigger>
+              :
+              <span className={(my_vote_status == 2 ? " community-bigger":" community-smaller")} onClick={()=>updateVotingDetails(2)}>  <img src="/assets/img/dislike.svg" alt="like" /></span> 
+            }
+            {total_vote_count ? ((((total_vote_count-positive_vote_count)/total_vote_count))* 100).toFixed(1):"0.00"}% 
             </span>
-            <span>
-            {total_vote_count ? ((((total_vote_count-positive_vote_count)/total_vote_count))* 100).toFixed(1):"0.00"}%
-            </span>
-
           </div>
-          <div className='col-2'></div>
+          {/* <div className='col-2'></div> */}
+        </div>
         </div>
       </section>
 

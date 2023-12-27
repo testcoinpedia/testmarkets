@@ -3,6 +3,7 @@ import { graphql_headers, graphqlApiURL } from '../../constants'
 const liquidityQuery = (type, pass_address) =>
 {   
     const one_month_before_date = ((new Date(Date.now() - 180*24 * 60 * 60 * 1000)).toISOString())
+    console.log('one_month_before_date', one_month_before_date)
     //1:ETH, 2:BNB
     var network_id = ''
     if(type == 6)
@@ -411,7 +412,7 @@ export const tradeHistory = async (pass_array)=>
     }
 }
 
-const tradeHistoryQueryForTV = ({network_type, liquidity_address}) =>
+const tradeHistoryQueryForTV = ({network_type, liquidity_address, limit, offset}) =>
 {   
     const start_date = ((new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)).toISOString())
 
@@ -428,7 +429,7 @@ const tradeHistoryQueryForTV = ({network_type, liquidity_address}) =>
     {
         network_id = 'bsc'
     }
-
+    // (time: {since: "`+start_date+`"})
     if(network_id)
     {
         return  `   
@@ -436,7 +437,7 @@ const tradeHistoryQueryForTV = ({network_type, liquidity_address}) =>
                 ethereum(network: `+network_id+`) 
                 {
                     dexTrades(
-                        options: {asc: "block.timestamp.time"}
+                        options: {desc: "block.timestamp.time", limit:`+limit+`, offset:`+offset+`}
                         any: {smartContractAddress: {is: "`+liquidity_address+`"}}
                     ) 
                     {
@@ -452,7 +453,7 @@ const tradeHistoryQueryForTV = ({network_type, liquidity_address}) =>
                         quoteCurrency {
                         address
                         }
-                        block(time: {since: "`+start_date+`"}) {
+                        block {
                             timestamp {
                                 time(format: "%Y-%m-%dT%H:%M:%SZ")
                             }
@@ -484,9 +485,9 @@ const tradeHistoryQueryForTV = ({network_type, liquidity_address}) =>
 }
 
 
-const tradeHistoryFetchQueryForTV = async ({network_type, liquidity_address}) =>
+const tradeHistoryFetchQueryForTV = async (pass_array) =>
 {   
-    const query = tradeHistoryQueryForTV({network_type, liquidity_address})
+    const query = tradeHistoryQueryForTV(pass_array)
     const opts = {
         method: "POST",
         headers : graphql_headers,
@@ -502,7 +503,7 @@ const tradeHistoryFetchQueryForTV = async ({network_type, liquidity_address}) =>
         {   
             if(result.data.ethereum.dexTrades)
             {   
-                return {status:true, message:result.data.ethereum.dexTrades}
+                return {status:true, message:(result.data.ethereum.dexTrades).reverse()}
             }
         }
     }

@@ -328,11 +328,11 @@ return(
 
 {/* 
     <div className='container'>
-        <div class="progress">
+        <div className="progress">
   <div className="progress-bar  bg-success" role="progressbar" aria-valuenow="0"aria-valuemin="0" aria-valuemax="100"
  style={{width:`${positiveValue}%`}} >{positiveValue.toFixed(0)}%</div>
 </div>
-<div class="progress">
+<div className="progress">
   <div className="progress-bar bg-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
  style={{width:`${negativeValue}%`}} >{negativeValue.toFixed(0)}%</div>
 </div>

@@ -9,9 +9,9 @@ export default function Popupmodal(props){
      
       <div className="popup_modal_for_all modal" style={ showmodal ? { display: 'block' } : { display: 'none' }} id="myModal">
        
-        <div className="modal-dialog modal-sm">
+        <div className="modal-dialog">
           <div className="modal-content">
-            <div className="modal-body">
+            <div className="modal-body" style={{padding:"30px"}}>
               <button type="button" className="close" onClick={()=> setShowModal(!showmodal)} data-dismiss="modal"><span><img src="/assets/img/close_icon.svg"  alt = " Close"  /></span></button>
               <div className="text-center">
                 <div className="">{icon ? <img className="prop_modal_img" alt="icon" src={icon} /> : null}</div>

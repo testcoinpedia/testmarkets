@@ -12,10 +12,11 @@ import CategoriesTab from '../components/categoriesTabs'
 import TableContentLoader from '../components/loaders/tableLoader'
 import moment from 'moment'
 import WatchList from '../components/watchlist'
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
-
+import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 // import Select from 'react-select'
+import Popupmodal from '../components/popupmodal'
 import { useRouter } from 'next/navigation'
+import Search_token from '../components/search_token'
 
 export default function Companies({user_token, config, userAgent})
 { 
@@ -38,6 +39,8 @@ export default function Companies({user_token, config, userAgent})
     const [image_base_url] = useState(IMAGE_BASE_URL+'/markets/cryptocurrencies/')
     const [cmc_image_base_url] = useState('https://s2.coinmarketcap.com/static/img/coins/64x64/')
     const [category_row_id, set_category_row_id] = useState((active_category_tab > 0) ? active_category_tab : "") 
+    const [unsubscribe_status, set_unsubscribe_status] = useState(false)
+    const [modal_data, set_modal_data] = useState({icon:"", title:"", content:""})
     
 
     const active_currency = useSelector(state => state.active_currency)
@@ -66,6 +69,38 @@ export default function Companies({user_token, config, userAgent})
         tokensList({selected : 0})
         // getCategoryList()
     },[per_page_count, search_title, category_row_id]) 
+
+    useEffect(()=>
+    {  
+      watchlistOverveiw()
+    },[]) 
+    
+    const watchlistOverveiw = async () =>
+    {  
+        const res = await Axios.get(API_BASE_URL+"markets/cryptocurrency/watchlist_overview", config)
+        if(res.data)
+        {
+          if(res.data.status)
+          {      
+              set_unsubscribe_status(res.data.message.unsubscribe_status)
+          }
+        }
+    }
+
+
+    const subscribeToWatchlist = async () =>
+    { 
+      set_modal_data({icon:"", title:"", content:""})
+      const res = await Axios.get(API_BASE_URL+"markets/subscribe/email_subscribe/1", config)
+      if(res.data)
+      {
+        if(res.data.status)
+        {  
+          set_modal_data({icon: "/assets/img/update-successful.png", title: "Thank You!", content: res.data.message.alert_message})
+          set_unsubscribe_status(false)
+        } 
+      }
+    }
 
 
     const getCategoryList = () =>
@@ -228,12 +263,31 @@ return (
           <div className="container">
             <div className="col-md-12">
               <div className="row market_insights ">
-                <div className="col-md-12 col-lg-12">
+                <div className="col-md-6 col-lg-6 ">
+                <div className='row'>
+                  <div className='col-8 col-md-12'>
                   <h1 className="page_title">My Watchlist</h1>
-                  {/* by Market Cap */}
-                  <p>Add and remove assets to your personalized monitoring list.</p>
+                  <p className='hide_mobile_view'>Add and remove assets to your personalized monitoring list.</p>  
+                  </div>
+                  <div className='col-4 d-md-none d-lg-none d-sm-block text-right pull-right'>
+                      {
+                        unsubscribe_status  ?
+                        <button className="btn btn-primary mobile-subscribe"  onClick={()=>subscribeToPortfolio()}>Subscribe </button>
+                        :
+                        ""
+                      }
+                 </div>
+
+
+                 
+                 <p className='hide_desktop_view ml-3 mt-1 mb-3'>Add and remove assets to your personalized monitoring list.</p> 
+                  
                 </div>
-                
+                </div>
+                <div className="col-md-1 col-lg-2"></div>
+                <div className="col-md-5 col-lg-4 " >
+                  <Search_token /> 
+                </div>
               </div>
               <div>
               <div className="all-categories-list">
@@ -252,18 +306,22 @@ return (
                 <div className="row">
                   <div className="col-md-12 col-12">
                   <div className="row">
-                         <div className="col-md-12 col-lg-8 col-12">
+                         <div className="col-md-12 col-lg-7 col-12">
+                        
                           <ul className="category_list">
                             {/* <li>Watchlist</li> */}
                           </ul>
                         </div>
-                       <div className="col-md-12 col-lg-4 col-12 filter-category-section">
+                       <div className="col-md-12 col-lg-5 col-12 filter-category-section">
                   
                       <div className="row">
-                      <div className="col-md-3 col-6 ">
-                            
-                            </div>
-                        <div className="col-md-9 col-12 col-sm-6">
+                          {
+                            !unsubscribe_status  ?
+                            <div className="col-md-4 col-6 "> </div>
+                            :
+                            ""
+                          }
+                        <div className="col-md-8 col-12 col-sm-6">
                           <div className="input-group search_filter">
                             <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token" />
                               <div className="input-group-prepend ">
@@ -273,16 +331,36 @@ return (
                          
                           </div>
 
+                          {
+                            unsubscribe_status  ?
+                            <div className="col-xl-4 col-md-4 col-lg-4 d-none d-md-block d-sm-none d-lg-block">
+                              <button className="btn btn-primary  " style={{padding:"0px 9px"}} onClick={()=>subscribeToWatchlist()}>Subscribe  </button> 
+                            </div>
+                            :
+                            ""
+                          }
+                          
                           
                         </div>
+
+
                         </div>     
                  </div>   
                 </div>
                    
-                  
+                {
+                             tokens_list.length > 0 ?
+                             <div></div>
+                             :
+                             ""
+                }
                 </div>
                 <div className="market_page_data">
+                {
+                             tokens_list.length > 0 ?
+                             tokens_list.map((e, i) => 
                      <div className="table-responsive">
+                    
                        <table className="table table-borderless">
                          <thead>
                             <tr>
@@ -337,10 +415,7 @@ return (
                          <tbody>
                            {
                             loader_status ?
-                           <>
-                           {
-                             tokens_list.length > 0 ?
-                             tokens_list.map((e, i) => 
+                           <>                           
                              <tr key={i}>
                                  
                                      <td className='mobile_fixed_first'>
@@ -531,14 +606,7 @@ return (
                                        }
                                        </td>  */}
                                </tr> 
-                             ) 
-                             :
-                             <tr >
-                               <td className="text-lg-center text-md-left" colSpan="12">
-                                   Sorry, No related data found.
-                               </td>
-                             </tr>
-                           }
+                             
                              </>
                              :
                              <TableContentLoader row="10" col="11" />  
@@ -546,7 +614,23 @@ return (
                            
                          </tbody>
                        </table>
+                             
                      </div>
+                     )
+                       :
+                       <div className="row">
+                  <div className="col-md-8 col-lg-8 col-xl-7 mx-auto">
+                <div className="account_approval_status">
+                      <img src="/assets/img/watchlist_markets.svg" alt="pending" title="pending" />
+                <h6 className="text-center text-capitalize">You haven't personalized your Watchlist with any Crypto Tokens or Coins yet.</h6>
+              <p className="text-center welcome_manage_event">Explore the <a href="/"> Live Market List</a> to discover and add your preferred tokens or coins to your watchlist. Enabling you to stay updated with real-time information and track the performance of assets that interest you.</p>
+              
+              
+              
+              </div>
+              </div>
+              </div>
+                     }
                    </div> 
                 
 
@@ -585,9 +669,7 @@ return (
                       </div>
                     </div>
 
-
-
-
+                         
                   {/* {
                     alltokens > 10
                     ? 
@@ -612,6 +694,8 @@ return (
             </div>
           </div>
       </div>
+
+      { modal_data.title ? <Popupmodal name={modal_data} />:null }
 
         <div className="modal" id="trending-modal">
           <div className="modal-dialog modal-lg">

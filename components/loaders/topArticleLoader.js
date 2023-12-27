@@ -10,7 +10,7 @@ export default function topArticleLoader(props)
         for (var i=0; i < props.col; i++) {
             list.push(
                 <>
-                <div key={i} className="media"  key={i+'test'} style={{marginBottom:"10px"}}>
+                <div  className="media"  key={i+'test'} style={{marginBottom:"10px"}}>
                     <img className="mr-3" alt="" key={i+'test'} style={{marginBottom:"10px"}}/>
                     <ContentLoader speed={1} backgroundColor="#f0f0f3" foregroundColor="#fff"  width="100%" height="40px" >
                             <rect x="0" y="0" rx="0" width="100%" height="100%" />

@@ -117,6 +117,7 @@ export default function Exchange({reqData})
         {   
             var i=0
             var final_result = []
+            var liqudity_networks = []
             var live_price_object = { pair_token_balance:0, pair_token_price:0, token_balance:0, percent_change_24h:0 }
             for(let pass_obj of contracts_array)
             {   
@@ -127,6 +128,7 @@ export default function Exchange({reqData})
                     
                     const network_name = pass_obj.network_name
                     const network_image = pass_obj.token_image
+                    await liqudity_networks.push(network_name)
 
                     const response = await getLiquidityAddresses(network_row_id, contract_address)
                     // console.log("get liquidity addresses", response)
@@ -267,6 +269,7 @@ export default function Exchange({reqData})
                 price : live_price_object.token_balance ? (live_price_object.pair_token_balance*live_price_object.pair_token_price)/live_price_object.token_balance:0,
                 percent_change_24h : live_price_object.percent_change_24h ? live_price_object.percent_change_24h:0,
                 total_balance_in_token : total_balance_in_token_var, 
+                liqudity_networks,
                 count_liquidity_pools : final_result.length
             })
             await updateInBackend(final_result)

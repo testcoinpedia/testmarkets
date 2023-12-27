@@ -10,6 +10,9 @@ import JsCookie from "js-cookie"
 // export const favicon =  '/assets/img/favicon.png'
 // export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
 // export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
+// export const API_BASE_URL = 'https://marketsapi.coinpedia.org/'
+// export const MAIN_API_BASE_URL = 'https://api.coinpedia.org/'
+// export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
 
 //Test links
 export const coinpedia_url="https://maintest.coinpedia.org/"
@@ -21,6 +24,9 @@ export const logo = '/assets/img/logo.png'
 export const favicon = '/assets/img/favicon.png'
 export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
 export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
+export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
+export const API_BASE_URL = 'https://marketsapi.coinpedia.org/'
+export const MAIN_API_BASE_URL = 'https://shark-app-q5yj6.ondigitalocean.app/'
 
 // Local Links
 // export const coinpedia_url="http://192.168.1.100:81/cpnews/"
@@ -31,21 +37,11 @@ export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
 // export const logo =  '/assets/img/dummy-logo.png'
 // export const favicon =  '/assets/img/dummy-favicon.png'
 // export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
+// export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
 // export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
-
-
-// BQY1XNDUiyQLTCiyS2BbBOrOlAhhckt5
-//API local links
-// export const API_BASE_URL = 'http://192.168.1.100:3500/'
+//  export const API_BASE_URL = 'http://192.168.1.100:3500/'
 // export const MAIN_API_BASE_URL = 'http://192.168.1.100:3010/'
 
-//API TEST links
-// export const API_BASE_URL = 'https://hammerhead-app-4vdn3.ondigitalocean.app/'
-// export const MAIN_API_BASE_URL = 'https://shark-app-q5yj6.ondigitalocean.app/'
-
-// //API live links
-export const API_BASE_URL = 'https://hammerhead-app-4vdn3.ondigitalocean.app/'
-export const MAIN_API_BASE_URL = 'https://markets-nodejs-api-l9lg8.ondigitalocean.app/'
 
 
 export const separator=(numb)=> {
@@ -74,6 +70,99 @@ export const config=(user_token)=>
       }}
   }
 }
+
+
+// var interval = '1d'
+// if(interval_type == 1)
+// {
+//     interval = '5m'
+// }
+// else if(interval_type == 2)
+// {
+//     interval = '30m'
+// }
+// else if(interval_type == 3)
+// {
+//     interval = '1h'
+// }
+// else if(interval_type == 4)
+// {
+//     interval = '4h'
+// }
+// else if(interval_type == 5)
+// {
+//     interval = '12h'
+// }
+// else if(interval_type == 6)
+// {
+//     interval = '1d'
+// }
+// else if(interval_type == 7)
+// {
+//     interval = '1w'
+// }
+
+export const indicator_time_series = [
+  {
+    interval_type:1,
+    interval_time:"5 minutes",
+    bitquery:true,
+    cmc:false,
+    binance:true,
+    search_bitquery:false
+  },
+  {
+    interval_type:2,
+    interval_time:"30 minutes",
+    bitquery:true,
+    cmc:false,
+    binance:true,
+    search_bitquery:false
+  },
+  {
+    interval_type:3,
+    interval_time:"1 hour",
+    bitquery:true,
+    cmc:true,
+    binance:true,
+    search_bitquery:false
+  },
+  {
+    interval_type:4,
+    interval_time:"4 hours",
+    bitquery:true,
+    cmc:false,
+    binance:true,
+    search_bitquery:true
+  },
+  {
+    interval_type:5,
+    interval_time:"12 hours",
+    bitquery:true,
+    cmc:false,
+    binance:true,
+    search_bitquery:true
+  },
+  {
+    interval_type:6,
+    interval_time:"1 day",
+    bitquery:true,
+    cmc:true,
+    binance:true,
+    search_bitquery:true
+  },
+  {
+    interval_type:7,
+    interval_time:"1 week",
+    bitquery:true,
+    cmc:true,
+    binance:true,
+    search_bitquery:true
+  }
+]
+
+
+
 
 export const googleClientId = "120903672784-tgvt3apka33k6jj3s5c0htg84g23ej07.apps.googleusercontent.com"
 
@@ -153,6 +242,84 @@ export const getDomainName = (link)=>
   }
   
 }
+
+export const arrayColumn = async (anArray, columnNumber) => 
+{   
+    const new_array = []
+    for(let run of anArray)
+    {   
+        console.log("run", run)
+        if(run[columnNumber])
+        {
+            await new_array.push(run[columnNumber])
+        }
+    }
+    return new_array
+}
+
+
+export const arrayBalanceContractsColumn = async (anArray) => 
+{   
+    const new_array = []
+    for(let run of anArray)
+    {   
+       // console.log("run", run)
+        if(run.currency.address)
+        {
+          if((run.currency.address != '-') && (run.value > 0))
+          { 
+            await new_array.push((run.currency.address).toLowerCase())
+          }
+        }
+    }
+    return new_array
+}
+
+
+export const arrayContractsColumn = async (anArray, columnNumber) => 
+{   
+  const new_array = []
+  for(let run of anArray)
+  {   
+    //console.log("run", run)
+    if(run[columnNumber])
+    {
+      if(run[columnNumber] != '-')
+      { 
+        await new_array.push(run[columnNumber])
+      }
+    }
+  }
+  return new_array
+}
+
+
+export const calling_network = [
+  {
+    network : "ethereum",
+    id : 1 
+  },
+  {
+    network : "bsc",
+    id : 56
+  },
+  {
+    network : "matic",
+    id : 137
+  },
+  {
+    network : "fantom",
+    id : 250
+  },
+  {
+    network : "avalanche",
+    id : 43114
+  }
+]
+
+
+
+
 
 export const speedoMeterValues = async ({total_sma_buy, total_sma_sell, total_sma_neutral}) =>
 {
@@ -352,7 +519,7 @@ export const roundNumericValue=(value) =>
   }
   else
   {
-    return "-"
+    return 0
   }
 }
 
@@ -1703,7 +1870,7 @@ export const setLoginData=(message) =>
     {
     country_id: "91",
     sortname: "XU",
-    country_code: "+44-1481",
+    country_code: "+44",
     country_name: "Guernsey and Alderney",
     country_flag: "xu.png",
     currency_code: "GGP",
