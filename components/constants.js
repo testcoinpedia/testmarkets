@@ -314,6 +314,14 @@ export const calling_network = [
   {
     network : "avalanche",
     id : 43114
+  },
+  {
+    network:"arbitrun",
+    id:42161
+  },
+  {
+    network:"klaytn",
+    id:8217
   }
 ]
 
@@ -706,13 +714,22 @@ export const setLoginData=(message) =>
     JsCookie.set("user_email_status", true,{ expires:expire_time, domain: cookieDomainExtension })
     JsCookie.set("user_approval_status", message.approval_status,{ expires:expire_time, domain: cookieDomainExtension })
     JsCookie.set("user_email_id", message.email_id,{ expires:expire_time, domain: cookieDomainExtension })
-    JsCookie.set("user_profile_image", message.profile_image,{ expires:expire_time, domain: cookieDomainExtension })  
+    JsCookie.set("user_full_name", message.full_name, { expires:expire_time, domain: cookieDomainExtension })
+    if(message.profile_image)
+    {
+      JsCookie.set("user_profile_image", message.profile_image, { expires:expire_time, domain: cookieDomainExtension })  
+    }
+    
     if(message.user_name)
     {
-        JsCookie.set("user_username", message.user_name,{ expires:expire_time, domain: cookieDomainExtension })  
+        JsCookie.set("user_username", message.user_name, { expires:expire_time, domain: cookieDomainExtension })  
     }
-    JsCookie.set("user_full_name", message.full_name,{ expires:expire_time, domain: cookieDomainExtension })
-    JsCookie.set("user_wallet_address", message.wallet_address,{ expires:expire_time, domain: cookieDomainExtension })
+    
+    if(message.wallet_address)
+    {
+      JsCookie.set("user_wallet_address", message.wallet_address,{ expires:expire_time, domain: cookieDomainExtension })
+    }
+    
     JsCookie.set("user_company_listed_status", message.company_listed_status,{ expires:expire_time, domain: cookieDomainExtension })
     
     //JsCookie.set('register_type', {domain:cookieDomainExtension})

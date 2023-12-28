@@ -138,9 +138,9 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
   return(
     <>
         {/* <h4 className='tabs_title_token'>Exchange</h4> */}
-        <div className='tokendetail_charts exchange_page'>
-        <div className='volume-tabs exchange-tabs'>
-            <ul className="nav nav-tabs">
+        <div className='tokendetail_charts'>
+        <div className='charts_price_tabs'>
+            <ul className="nav nav-tabs nav-pills border-0">
                 <li className="nav-item" onClick={()=>set_exchange_tab_id(1)}>
                     <a className={"nav-link "+(1 == exchange_tab_id ? "active":"")} data-toggle="tab">
                         <span>Cex Exchanges</span>
@@ -162,8 +162,9 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
                 <thead>
                     <tr>
                         <th className='mobile_fixed_first'>Exchange</th>
-                        <th>Pairs</th>
                         <th>Price</th>
+                        <th>Pairs</th>
+                        
                         <th>24h Volume</th>
                         <th>Volume %</th>
                         <th className="trust_score">Trust Score</th>
@@ -186,25 +187,26 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
                                     {e.exchange_name}
                                     </div>
                                     </div></td>
+                                    <td>{e.price ? convertCurrency(e.price) : "--"}</td>
                                 <td >{e.pair_one_name}/{e.pair_two_name}</td>
-                                <td>{e.price ? convertCurrency(e.price) : "--"}</td>
+                               
                                 <td>{e.volume ? convertCurrency(e.volume.toFixed(2)) : "--"}</td>
                                 <td>{e.volume_percentage ? e.volume_percentage.toFixed(2) + "%" : "--"}</td>
                                 {/* <td>{moment(e.last_traded_at).fromNow()}</td> */}
                             {
                                 e.trust_score=="green" ?
                                 <td className='green_dot'>
-                                    <div></div>
+                                    <div><img src="/assets/img/green_dot.svg" alt="High" /> High</div>
                                 </td>
                                 :
                                 e.trust_score=="red"?
                                 <td className='red_dot'>
-                                    <div></div>
+                                    <div><img src="/assets/img/red_dot.svg" alt="High" /> Low</div>
                                 </td> 
                                 :
                                 e.trust_score=="yellow"?
                                 <td className='yellow_dot'>
-                                    <div></div>
+                                    <div>Neutral</div>
                                 </td> 
                                 :
                                 ""
@@ -243,18 +245,18 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
                             {
                                 e.trust_score=="green" ?
                                 <td className='green_dot'>
-                                    <div></div>
-                                </td>
+                                <div><img src="/assets/img/green_dot.svg" alt="High" /> High</div>
+                            </td>
                                 :
                                 e.trust_score=="red"?
                                 <td className='red_dot'>
-                                    <div></div>
+                                    <div><img src="/assets/img/red_dot.svg" alt="High" /> Low</div>
                                 </td> 
                                 :
                                 e.trust_score=="yellow"?
                                 <td className='yellow_dot'>
-                                    <div></div>
-                                </td> 
+                                <div>Neutral</div>
+                            </td> 
                                 :
                                 ""
                             }

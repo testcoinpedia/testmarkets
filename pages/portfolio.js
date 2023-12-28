@@ -62,11 +62,13 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   const [tokens_list_as_list_view, set_tokens_list_as_list_view] = useState([])
   const [tokens_grand_total, set_tokens_grand_total] = useState(0)
   const [wallet_listing_limit] = useState(4)
-  const [active_networks, set_active_networks] = useState([1, 56, 137, 250, 43114])
+  const [active_networks, set_active_networks] = useState([1, 56, 137, 250, 43114,8217])
+  console.log("active_networks",active_networks)
   const [image_base_url] = useState(IMAGE_BASE_URL + "/markets/cryptocurrencies/")
   const [wallet_menu_show_status, set_wallet_menu_show_status] = useState("")
   const [copy_wallet_address, set_copy_wallet_address] = useState("")
-  const [crypto_networks_list, set_crypto_networks_list] = useState(cryptoNetworksList({ ethereum: 0, bsc: 0, polygon: 0, fantom: 0, avalanche: 0 }))
+  const [crypto_networks_list, set_crypto_networks_list] = useState(cryptoNetworksList({ ethereum: 0, bsc: 0, polygon: 0, fantom: 0, avalanche: 0, klayton:0 }))
+  console.log("crypto_networks_list",crypto_networks_list)
   const [display_tokens_balance, set_display_tokens_balance] = useState(0)
   const [tokens_view_type, set_tokens_view_type] = useState(1)
   const [filter_tokens_list_as_account_view, set_filter_tokens_list_as_account_view] = useState([])
@@ -92,7 +94,8 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
   const [loader_status, set_loader_status] = useState(false)
   const [loader, set_loader] = useState("")
-
+  const [token_ids_list, set_token_ids_list] = useState("")
+  
   const [network_list_show_status, set_network_list_show_status] = useState(false)
   const [wallet_list_show_status, set_wallet_list_show_status] = useState(false)
   const [search_wallet_address, set_search_wallet_address] = useState("")
@@ -105,7 +108,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   
 
   const [pi_chart_values, set_pi_chart_values] = useState([])
-  const [pi_chart_names, set_pi_chart_names] = useState(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche'])
+  const [pi_chart_names, set_pi_chart_names] = useState(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche','klayton'])
   const [pi_chart_colors] = useState(['#647fe6', '#ffc107', '#6f42c1', '#00bcd4', '#f44336'])
 
 
@@ -560,7 +563,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
             type_value  = run.symbol
           }
 
-          const cp_single_data = await getCpSingleData(price_list, token_type, type_value)
+          const cp_single_data = await getCpSingleData(price_list, token_type, type_value, run.network)
           if(cp_single_data)
           {
             if(cp_single_data.token_name)
@@ -694,6 +697,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     var polygon = 0
     var fantom = 0
     var avalanche = 0
+    var klaytn= 0
     var obj2 = []
     var total_24h_change = 0
     for (var prop in tokens_final_array) {
@@ -723,6 +727,9 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
           else if (inner_run.network == 43114) {
             avalanche += !isNaN(parseFloat(inner_run.balance) * parseFloat(inner_run.price)) ? parseFloat(inner_run.balance) * parseFloat(inner_run.price) : 0
           }
+          else if (inner_run.network == 8217) {
+            klaytn += !isNaN(parseFloat(inner_run.balance) * parseFloat(inner_run.price)) ? parseFloat(inner_run.balance) * parseFloat(inner_run.price) : 0
+          }
         }
       }
     }
@@ -739,9 +746,9 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     // }
 
 
-    const network_balances_list = await cryptoNetworksList({ ethereum, bsc, polygon, fantom, avalanche })
+    const network_balances_list = await cryptoNetworksList({ ethereum, bsc, polygon, fantom, avalanche, klaytn })
     await set_crypto_networks_list(network_balances_list)
-    // console.log("network_balances_list", network_balances_list)
+    console.log("network_balances_list", network_balances_list)
 
 
     var total_balances = 0
@@ -877,12 +884,16 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     const avalanche_query = graphqlBasicTokenData(pass_address, "avalanche")
     const avalanche_opts = fetchAPIQuery(avalanche_query)
 
+    const klaytn_query=graphqlBasicTokenData(pass_address,"klaytn")
+    const klaytn_opts = fetchAPIQuery(klaytn_query)
+
     const bal_req = await Promise.all([
       fetch(graphqlApiURL, ethereum_opts),
       fetch(graphqlApiURL, binance_opts),
       fetch(graphqlApiURL, polygon_opts),
       fetch(graphqlApiURL, fantom_opts),
-      fetch(graphqlApiURL, avalanche_opts)
+      fetch(graphqlApiURL, avalanche_opts),
+      fetch(graphqlApiURL,klaytn_opts)
     ])
    
     const balance_array = []
@@ -960,11 +971,40 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     // console.log("Alltokens", tokens)
   }
 
+  const getCBNetworkID = (pass_network) =>
+  {
+    console.log("pass_network",pass_network)
+    if(pass_network == 1)
+    {
+        return 6
+    }
+    else if(pass_network == 56)
+    {
+        return 2
+    }
+    else if(pass_network == 137)
+    { 
+        return 14 //Polygon
+    }
+    
+    else if(pass_network == 250)
+    {
+        return 13  //Fantom
+    }
+    else if(pass_network == 8217)
+    { 
+        return  //klaytn
+    }
+    else if(pass_network == 43114)
+    {
+        return 15  //Avalanche
+    }
+  }
 
    // pass_type 1: native token, 2:other token
-   const getCpSingleData = async (pass_data, pass_type, pass_type_data) =>
+   const getCpSingleData = async (pass_data, pass_type, pass_type_data, pass_network) =>
    {
-      
+     const coinpedia_network_id = await getCBNetworkID(pass_network)
      var return_object = ""
      if(pass_data.length)
      { 
@@ -979,10 +1019,13 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
          { 
            if(run.contract_addresses)
            { 
-             const index = await ( run.contract_addresses).findIndex(item => (item.contract_address).toLowerCase() == pass_type_data.toLowerCase())
-             if(index != -1)
+             var filteredFriends = (run.contract_addresses).filter((item) => (((item.contract_address).toLowerCase() == pass_type_data.toLowerCase())));
+             if(filteredFriends.length)
              {
-               return_object = await run
+              if(filteredFriends[0].network_row_id == coinpedia_network_id)
+              {
+                return_object = await run
+              }
              }
            }
          }
@@ -1021,7 +1064,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
               token_type = 1
               type_value  = run.currency.symbol
             }
-            const cp_single_data = await getCpSingleData(pass_prices, token_type, type_value)
+            const cp_single_data = await getCpSingleData(pass_prices, token_type, type_value, pass_network)
             if(cp_single_data)
             {
               if(cp_single_data.token_name)
@@ -1081,6 +1124,11 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
             if(res_price_list.data.message.history)
             { 
               history_list = await res_price_list.data.message.history
+            }
+
+            if(res_price_list.data.message.tokens_ids)
+            {
+              await set_token_ids_list(res_price_list.data.message.tokens_ids)
             }
         }
       }
@@ -1208,6 +1256,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     var total_polygon_value = 0
     var total_fantom_value = 0
     var total_avalanche_value = 0
+    var total_klyton_value=0
     var token_allocation_value = []
     var token_allocation_name = []
     for (let j of final_array) {
@@ -1226,6 +1275,10 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       else if (j.network == 43114) {
         total_avalanche_value += await !isNaN(parseFloat(j.price) * parseFloat(j.balance)) ? parseFloat(j.price) * parseFloat(j.balance) : 0
       }
+      else if (j.network == 8217) {
+        
+      total_klyton_value+= await !isNaN(parseFloat(j.price) * parseFloat(j.balance)) ? parseFloat(j.price) * parseFloat(j.balance) : 0
+      }
 
       await token_allocation_name.push(j.symbol ? (j.symbol).substring(0, 13) : "")
       var before_allocation_value = await !isNaN((j.price * j.balance * 100) / total_balance) ? ((j.price * j.balance * 100) / total_balance) : 0
@@ -1242,7 +1295,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       const pi_chart_value = await [total_ethereum_value, total_bnb_value, total_polygon_value, total_fantom_value, total_avalanche_value]
       // console.log("pi_chart_value", pi_chart_value)
       set_pi_chart_values(pi_chart_value)
-      set_pi_chart_names(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche'])
+      set_pi_chart_names(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche','klaytn'])
     }
   }
 
@@ -1263,7 +1316,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     // set_loader_status(false)
     var my_active_networks = []
     if (pass_type == 1) {
-      my_active_networks = [1, 56, 137, 250, 43114]
+      my_active_networks = [1, 56, 137, 250, 43114,8217]
       // set_loader_status(true)
     }
 
@@ -2203,7 +2256,7 @@ const checkUserWalletAddress = async(pass_address) =>
                                     <ul className="wallet-list-li network_display_dropdown networks_display">
                                       <li className="network_select">Networks
                                         {
-                                          active_networks.length < 4 ?
+                                          active_networks.length < 5 ?
                                             <span onClick={() => makeAllNetworksActive(1)}>
                                               <img src="/assets/img/tick.png" alt="Tick" /> Select All
                                             </span>

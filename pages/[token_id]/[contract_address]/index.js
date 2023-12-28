@@ -126,6 +126,7 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
   const [oscillator_speedo_meter, set_oscillator_speedo_meter] = useState(0)
   const [summary_speed_meter_name, set_summary_speed_meter_name] = useState("") 
   const [summary_speedo_meter, set_summary_speedo_meter] = useState(0)
+
  
   const [sma_speedo_meter, set_sma_speedo_meter] = useState(0)
   const [sma_speed_meter_name, set_sma_speed_meter_name] = useState("")
@@ -139,7 +140,7 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
   const [close_price_of_fifty, set_close_price_of_fifty] = useState(0)
   const [close_price_of_two_hundred, set_close_price_of_two_hundred] = useState(0)
 
- 
+
   
   const [sma_list, set_sma_list] = useState([]);
   const [moving_averages_crossovers, set_moving_averages_crossovers] = useState([]);
@@ -624,6 +625,11 @@ const getMarketCap = async (id, decval, usd_price) =>
 
 }
 
+const [isOpen, setIsOpen] = useState(false);
+
+const toggleDropdown = () => {
+  setIsOpen(!isOpen);
+};
 
   var yesterday = moment()
   function valid(current) {
@@ -2018,6 +2024,21 @@ const getMarketCap = async (id, decval, usd_price) =>
             <div className="container">
                 <div className="col-md-12">
                 <div className="row">
+                      <div className="col-lg-8 col-xl-8 col-md-8">
+                        {/* <div className="breadcrumbs">
+                          <div className="breadcrumb-individual primary"><Link href="/">Cryptocurrencies</Link></div>
+                          <div className="breadcrumb-individual breadcrumb-arrow"> <img src="/assets/img/breadcrumb-arrow.svg" /> </div>
+                          <div className="breadcrumb-individual secondary">{data.token_name}</div>
+
+                        </div> */}
+                      </div>
+                      <div className="col-lg-4 col-xl-4 col-md-4">
+                        <div className="search_token_address">
+                          <Search_token />
+                        </div>
+                      </div>
+                    </div>
+                <div className="row">
                     <div className="col-lg-6 col-xl-6 col-md-12 order-md-1 order-2">
                         <div className="token_main_details">
                             <div className="media">
@@ -2068,7 +2089,7 @@ const getMarketCap = async (id, decval, usd_price) =>
                       </div>
                     </div>
                     <div className="col-lg-3 col-xl-3 col-md-6 order-md-3 order-1 ">
-                    <Search_token />
+                    {/* <Search_token /> */}
                     </div>
                 </div>
                 <div className="row token_header_cols">
@@ -2533,7 +2554,10 @@ const getMarketCap = async (id, decval, usd_price) =>
                     <div className='token_details_tabs_row'>
                       <ul className="nav nav-tabs ">
                         <li className="nav-item">
-                          <a data-toggle="tab" onClick={()=>setMainTab(1)} className={"nav-link "+(main_tab == 1? " active":"")} ><span>Chart</span></a>
+                          <a data-toggle="tab" onClick={()=>setMainTab(1)} className={"nav-link "+(main_tab == 1? " active":"")} ><span>Chartdsf</span></a>
+                        </li>
+                        <li className="nav-item" >
+                          <a className={"nav-link "+(main_tab == 11 ? "active":"")} onClick={()=>set_main_tab(11)}>Analysis</a>
                         </li>
                         <li className="nav-item" >
                           <a className={"nav-link " + (main_tab == 9 ? "active" : "")} onClick={() => set_main_tab(9)}>Liquidity Pools</a>
@@ -2542,9 +2566,7 @@ const getMarketCap = async (id, decval, usd_price) =>
                           <a className={"nav-link " + (main_tab == 10 ? "active" : "")} onClick={() => set_main_tab(10)}>Trade History</a>
                         </li>
 
-                        <li className="nav-item" >
-                          <a className={"nav-link "+(main_tab == 11 ? "active":"")} onClick={()=>set_main_tab(11)}>Analysis</a>
-                        </li>
+                      
 
                          {/* <li className="nav-item">
                           <a data-toggle="tab" onClick={()=>set_main_tab(2)} className={"nav-link "+(main_tab == 2 ? " active":"")} ><span>Exchange</span></a>
@@ -2558,7 +2580,7 @@ const getMarketCap = async (id, decval, usd_price) =>
                            <a className={"nav-link "+(main_tab == 7 ? "active":"")} onClick={()=>set_main_tab(4)}>Price Analysis</a>
                         </li>
                         <li className="nav-item" >
-                          <a className={"nav-link "+(main_tab == 8 ? "active":"")} onClick={()=>set_main_tab(5)}>Price Prediction</a>
+                          <a className={"nav-link "+(main_tab == 8 ? "active":"")} onClick={()=>set_main_tab(5)}>Prediction</a>
                         </li>
                        
                         
@@ -2606,10 +2628,12 @@ const getMarketCap = async (id, decval, usd_price) =>
                           main_tab==1 ?
                             graph_date_type ?
                             <>
+                            <div className='charts_price_tabs'>
                             <TradingView reqData={{symbol:(tokenData.symbol?(tokenData.symbol).toLowerCase():"ETH"), network_row_id: tokenData.network_row_id, contract_address: address }} />
                             {/* <Price_chart reqData={{address:address, contract_type:tokenData.contract_type, graph_date_type:graph_date_type}}/> */}
                             
                             <br/>
+                            </div>
                             </>
                             :
                             ""
@@ -2725,12 +2749,25 @@ const getMarketCap = async (id, decval, usd_price) =>
           {/* Technical analysis code starts here */}
 
           <div id="technical_analysis" className={"tab-pane fade " + (main_tab == 11 ? "show active" : "")}>
-              <div className="container text-center mb-4">
-                <ul>
+
+               <div className='row'>
+                <div className='col-md-6'>
+
+                </div>
+                <div className='col-md-6'>
+                <div className="charts_date_tab date_chart_interval">
+                                  <div className='dex_filter mb-3'>
+            <div class="dropdown">
+                <button className="dex_filter_button dropdown-toggle" value={1} onChange={(e)=>indicatorSourceType(e.target.value)} type="button" id="dropdownSortBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                5 Minutes <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
+                </button>
+                <div  className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`}
+                    aria-labelledby="dropdownSortBy">
+                                     <ul>
                   {indicator_time_series.length ?
                     indicator_time_series.map((item, i) =>
                       item.search_bitquery == true ?
-                      <li className={(item.interval_type == interval_type ? "active" : "")} onClick={() => tokenOtherDetails(item.interval_type)}>
+                      <li className="dropdown-item" onClick={() => tokenOtherDetails(item.interval_type)}>
                         {item.interval_time}
                       </li>
                       :
@@ -2740,47 +2777,101 @@ const getMarketCap = async (id, decval, usd_price) =>
                     ""
                   }
                 </ul>
-              </div>
+                                      </div></div></div>
+                                  </div>
+                  </div>
+               </div>
+
+
+              
               <div className="row">
                 <div className="col-md-4">
                   <div className="text-center small_guage">
                     <h3 className="heading">Oscillator</h3>
-                    <ReactSpeedometer
-                      currentValueText={oscillator_speed_meter_name}
-                      textColor={'#000'}
-                      value={oscillator_speedo_meter}
-                      minValue={0}
-                      maxValue={100}
-                      needleColor="#131721"
-                      startColor={ringColor}
-                      segments={5}
-                      width={200}
-                      height={150}
-                      endColor="red"
-                      needleHeightRatio={0.7}
-                      segmentWidth={15}
-                      segmentLength={10}
-                      ringWidth={8}
-                      segmentColors={[
-                        '#d4405f',
-                        '#f18da1',
-                        '#e0e3eb',
-                        '#9ed4ff',
-                        '#45a7f5'
-                      ]}
-                      customSegmentLabels={[
-                        { text: 'Strong Sell', position: 'OUTSIDE' },
-                        { text: 'Sell', position: 'OUTSIDE' },
-                        { text: 'Neutral', position: 'OUTSIDE' },
-                        { text: 'Buy', position: 'OUTSIDE' },
-                        { text: 'Strong Buy', position: 'OUTSIDE' },
-                      ]}
-                      needleTransition
-                      needleTransitionDuration={500}
-                      needleTransitionEasing="easeElastic"
-                      needleTransitionDelay={0}
-                      customNeedle={customNeedlePath}
-                    />
+                    <div className="row">
+                                            <div className="col-md-12">
+                                              <p className="analysis_tab_secondary_strong_sell">Strong<br/>Sell</p>
+                                              <p className="analysis_tab_secondary_sell">Sell</p>
+                                              <p className="analysis_tab_secondary_neutral">Neutral</p>
+                                              <p className="analysis_tab_secondary_buy">Buy</p>
+                                              <p className="analysis_tab_secondary_strong_buy">Strong<br/>Buy</p> 
+                                            </div>
+                                          </div>
+                                            <div>
+                                              {(oscillator_speedo_meter >= 60 )? (
+                                                <img
+                                                  className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                                  src="/assets/img/speedometer_green.svg"
+                                                  alt="Speedometer"
+                                                />
+                                              ) : 
+                                              (oscillator_speedo_meter <= 40) ?
+                                              (
+                                                <img
+                                                  className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                                  src="/assets/img/speedometer_red.svg"
+                                                  alt="Red Speedometer"
+                                                />
+                                              )
+                                            :
+                                            <img
+                                            className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                            src="/assets/img/speedometer_yellow.svg"
+                                            alt="Red Speedometer"
+                                          />
+                                            }
+                                            </div>
+                                          <ReactSpeedometer
+                                            currentValueText={oscillator_speed_meter_name}
+                                            textColor={'#000'}
+                                            value={oscillator_speedo_meter}
+                                            minValue={0}
+                                            maxValue={100}
+                                            needleColor="#131721"
+                                            startColor={ringColor}
+                                            segments={5}
+                                            width={200}
+                                            height={150}
+                                            endColor="red"
+                                            needleHeightRatio={0.6}
+                                            segmentWidth={15}
+                                            segmentLength={10}
+                                            ringWidth={8}
+                                            segmentColors={[
+                                              '#FF5656',
+                                              '#FF8888',
+                                              '#FEE114',
+                                              '#84BD32',
+                                              '#30AD43'
+                                            ]}
+                                            customSegmentLabels={[
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                            ]}
+                                            needleTransition
+                                            needleTransitionDuration={500}
+                                            needleTransitionEasing="easeElastic"
+                                            needleTransitionDelay={0}
+                                            customNeedle={customNeedlePath}
+                                          />
                   </div>
                   <div className="row">
                     <div className="col-md-1">&nbsp;</div>
@@ -2809,112 +2900,210 @@ const getMarketCap = async (id, decval, usd_price) =>
                   </div>
                 </div>
 
-                <div className="col-md-4">
-                  <div className="text-center">
-                    <h3 className="heading">Summary</h3>
-                    <ReactSpeedometer
-                      currentValueText={summary_speed_meter_name}
-                      textColor={'#000'}
-                      value={summary_speedo_meter}
-                      minValue={0}
-                      width={250}
-                      height={180}
-                      maxValue={100}
-                      needleColor="#131721"
-                      startColor={ringColor}
-                      segments={5}
-                      endColor="red"
-                      needleHeightRatio={0.7}
-                      segmentWidth={15}
-                      segmentLength={10}
-                      ringWidth={8}
-                      segmentColors={[
-                        '#d4405f',
-                        '#f18da1',
-                        '#e0e3eb',
-                        '#9ed4ff',
-                        '#45a7f5'
-                      ]}
-                      customSegmentLabels={[
-                        { text: 'Strong Sell', position: 'OUTSIDE' },
-                        { text: 'Sell', position: 'OUTSIDE' },
-                        { text: 'Neutral', position: 'OUTSIDE' },
-                        { text: 'Buy', position: 'OUTSIDE' },
-                        { text: 'Strong Buy', position: 'OUTSIDE' },
-                      ]}
-                      needleTransition
-                      needleTransitionDuration={500}
-                      needleTransitionEasing="easeElastic"
-                      needleTransitionDelay={0}
-                      customNeedle={customNeedlePath}
-                    />
-                  </div>
-                  <div className="row">
-                    <div className="col-md-1">&nbsp;</div>
-                    <div className="col-md-10">
-                      <div className="row">
-                        <div className="col-md-4">
-                          <div className="overview_analysis">
-                            <h5>Sell</h5>
-                            <h4>{summary_sell}</h4>
-                          </div>
-                        </div>
-                        <div className="col-md-4">
-                          <div className="overview_analysis">
-                            <h5>Neutral</h5>
-                            <h4>{summary_neutral}</h4>
-                          </div>
-                        </div>
-                        <div className="col-md-4">
-                          <div className="overview_analysis">
-                            <h5>Buy</h5>
-                            <h4>{summary_buy}</h4>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                   <div className="col-md-4">
+                                        <div className="text-center analysis_summary">
+                                          <h3 className="heading">Summary</h3>
+                                          <div className="row">
+                                            <div className="col-md-12">
+                                              <p className="analysis_tab_primary_strong_sell">Strong<br/>Sell</p>
+                                              <p className="analysis_tab_primary_sell">Sell</p>
+                                              <p className="analysis_tab_primary_neutral">Neutral</p>
+                                              <p className="analysis_tab_primary_buy">Buy</p>
+                                              <p className="analysis_tab_primary_strong_buy">Strong<br/>Buy</p> 
+                                            </div>
+                                          </div>
 
-                <div className="col-md-4">
-                  <div className="text-center small_guage">
-                    <h3 className="heading">Moving Average</h3>
-                    <ReactSpeedometer
-                      currentValueText={sma_speed_meter_name}
-                      textColor={'#000'}
-                      width={200}
-                      height={150}
-                      value={sma_speedo_meter}
-                      minValue={0}
-                      maxValue={100}
-                      needleColor="#131721"
-                      startColor={ringColor}
-                      segments={5}
-                      endColor="red"
-                      needleHeightRatio={0.7}
-                      segmentWidth={15}
-                      segmentLength={10}
-                      ringWidth={8}
-                      segmentColors={[
-                        '#d4405f',
-                        '#f18da1',
-                        '#e0e3eb',
-                        '#9ed4ff',
-                        '#45a7f5'
-                      ]}
-                      customSegmentLabels={[
-                        { text: 'Strong Sell', position: 'OUTSIDE' },
-                        { text: 'Sell', position: 'OUTSIDE' },
-                        { text: 'Neutral', position: 'OUTSIDE' },
-                        { text: 'Buy', position: 'OUTSIDE' },
-                        { text: 'Strong Buy', position: 'OUTSIDE' },
-                      ]}
-                      needleTransition
-                      needleTransitionDuration={500}
-                      needleTransitionEasing="easeElastic"
-                      needleTransitionDelay={0}
-                      customNeedle={customNeedlePath}
-                    />
+                                            <div>
+                                              {(summary_speedo_meter >= 60 )? (
+                                                <img
+                                                  className="analysis_tab_primary_strong_buy_speedometer_image"
+                                                  src="/assets/img/speedometer_green.svg"
+                                                  alt="Speedometer"
+                                                />
+                                              ) : 
+                                              (summary_speedo_meter <= 40) ?
+                                              (
+                                                <img
+                                                  className="analysis_tab_primary_strong_buy_speedometer_image"
+                                                  src="/assets/img/speedometer_red.svg"
+                                                  alt="Red Speedometer"
+                                                />
+                                              )
+                                            :
+                                            <img
+                                            className="analysis_tab_primary_strong_buy_speedometer_image"
+                                            src="/assets/img/speedometer_yellow.svg"
+                                            alt="Red Speedometer"
+                                          />
+                                            }
+                                            </div>
+                                          <ReactSpeedometer
+                                            currentValueText={summary_speed_meter_name}
+                                            textColor={'#000'}
+                                            value={summary_speedo_meter}
+                                            minValue={0}
+                                            width={250}
+                                            height={180}
+                                            maxValue={100}
+                                            needleColor="#131721"
+                                            startColor={ringColor}
+                                            segments={5}
+                                            endColor="red"
+                                            needleHeightRatio={0.7}
+                                            segmentWidth={15}
+                                            segmentLength={10}
+                                            ringWidth={8}
+                                            segmentColors={[
+                                              '#FF5656',
+                                              '#FF8888',
+                                              '#FEE114',
+                                              '#84BD32',
+                                              '#30AD43'
+                                            ]}
+                                            customSegmentLabels={[
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                            ]}
+                                            needleTransition
+                                            needleTransitionDuration={500}
+                                            needleTransitionEasing="easeElastic"
+                                            needleTransitionDelay={0}
+                                            customNeedle={customNeedlePath}
+                                          />
+                                        </div>
+                                        <div className="row">
+                                          <div className="col-md-1">&nbsp;</div>
+                                          <div className="col-md-10">
+                                            <div className="row">
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Sell</h5>
+                                                  <h4>{summary_sell}</h4>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Neutral</h5>
+                                                  <h4>{summary_neutral}</h4>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-4">
+                                                <div className="overview_analysis">
+                                                  <h5>Buy</h5>
+                                                  <h4>{summary_buy}</h4>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                    <div className="col-md-4">
+                                      <div className="text-center small_guage">
+                                        <h3 className="heading">Moving Average</h3>
+                                        <div className="row">
+                                            <div className="col-md-12">
+                                              <p className="analysis_tab_secondary_strong_sell">Strong<br/>Sell</p>
+                                              <p className="analysis_tab_secondary_sell">Sell</p>
+                                              <p className="analysis_tab_secondary_neutral">Neutral</p>
+                                              <p className="analysis_tab_secondary_buy">Buy</p>
+                                              <p className="analysis_tab_secondary_strong_buy">Strong<br/>Buy</p> 
+                                            </div>
+                                          </div>
+                                          <div>
+                                                {(sma_speedo_meter >= 60 )? (
+                                                  <img
+                                                    className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                                    src="/assets/img/speedometer_green.svg"
+                                                    alt="Speedometer"
+                                                  />
+                                                ) : 
+                                                (sma_speedo_meter <= 40) ?
+                                                (
+                                                  <img
+                                                    className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                                    src="/assets/img/speedometer_red.svg"
+                                                    alt="Red Speedometer"
+                                                  />
+                                                )
+                                              :
+                                              <img
+                                              className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                              src="/assets/img/speedometer_yellow.svg"
+                                              alt="Red Speedometer"
+                                            />
+                                              }
+                                              </div>
+                                          <ReactSpeedometer
+                                            currentValueText={sma_speed_meter_name}
+                                            textColor={'#000'}
+                                            width={200}
+                                            height={150}
+                                            value={sma_speedo_meter}
+                                            minValue={0}
+                                            maxValue={100}
+                                            needleColor="#131721"
+                                            startColor={ringColor}
+                                            segments={5}
+                                            endColor="red"
+                                            needleHeightRatio={0.6}
+                                            segmentWidth={15}
+                                            segmentLength={10}
+                                            ringWidth={8}
+                                            segmentColors={[
+                                              '#FF5656',
+                                              '#FF8888',
+                                              '#FEE114',
+                                              '#84BD32',
+                                              '#30AD43'
+                                            ]
+                                            }
+                                            customSegmentLabels={[
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                              {
+                                                text: '',
+                                                position: 'OUTSIDE'
+                                              },
+                                            ]}
+                                            needleTransition
+                                            needleTransitionDuration={500}
+                                            needleTransitionEasing="easeElastic"
+                                            needleTransitionDelay={0}
+                                            customNeedle={customNeedlePath}
+                                          />
                   </div>
 
                   <div className="row">
@@ -2945,339 +3134,22 @@ const getMarketCap = async (id, decval, usd_price) =>
                 </div>
               </div>
            
-
-
-              <div className='row'>
-              <div className="col-md-6">
-                <div className="analysis_values">
-                      <h4 className="">Simple Moving Averages(SMA)</h4>
-                      <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
-                        <span style={{ position: "absolute", top: "-5px", right: "0" }}>
-                        {bearishCount !== 0 && (
-                            <strong  className="bearish">{bearishCount}</strong>
-                          )}
-                        </span>
-                        <span style={{ position: "absolute", top: "-5px", left: "0" }}>
-                          {bullishCount !== 0 && (
-                            <strong className="bullish">{bullishCount}</strong>
-                          )}
-                        </span>
-                        <div className="progress gainer-progress">
-                          <div
-                            className="progress-bar bg-success"
-                            role="progressbar"
-                            style={{ width: `${(bullishCount / total) * 100}%` }}
-                          ></div>
-                          <div
-                            className="progress-bar bg-danger"
-                            role="progressbar"
-                            style={{ width: `${(bearishCount / total) * 100}%` }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className="technical_anaylysis_table simple_analysis">
-                        <table width="100%" className="" cellpadding="0" cellspacing="0" border="0">
-                          <thead>
-                            <tr className="inner_table_average">
-                              <th>
-                                <p className="">Period</p>
-                              </th>
+              <div className="row ">
+              {moving_averages_crossovers && sma_list.length > 0 && (
                               
-                              <th>
-                                <p className="">Value</p>
-                              </th>
-                              <th>
-                                <p className="">Action</p>
-                              </th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            {sma_list.length > 0 ? (
-                              sma_list.map((item, i) => 
-                              {
-                                if(live_price > item.sma_value) 
-                                {
-                                  sma_buy_count++;
-                                } else if (live_price < item.sma_value) {
-                                  sma_sell_count++;
-                                } else {
-                                  sma_neutral_count++;
-                                }
-                                
-                                return (
-                                  <tr key={i}>
-                                    <td> SMA {item.day_number}</td>
-                                    <td>
-                                      <span>
-                                        {roundNumericValue(item.sma_value)}
-                                      </span>
-                                    </td>
-                                    <td>
-                                        {
-                                          live_price > item.sma_value ? 
-                                          <span className="bullish">Buy</span>
-                                          : 
-                                          live_price < item.sma_value ? 
-                                          <span className="bearish">Sell</span>
-                                          : 
-                                          <span className="neutral">Neutral</span>
-                                        }
-                                    </td>
-                                  </tr>
-                                );
-                              })
-                            ) : (
-                              <tr>
-                                <td>No Data Found</td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                        <p className="total_buy_sell_neutral">
-                          <span>Buy: {total_sma_buy}</span> <span>Sell: {total_sma_sell}</span> <span>Neutral: {total_sma_neutral}</span>
-                        </p>
-                        <h3 className="summary_total">
-                          Summary: <span className={total_sma_buy > total_sma_sell ? 'summary_bullish active' : 'summary_bearish active'}>
-                            {total_sma_buy > total_sma_sell ? 'Strong Buy' : 'Strong Sell'}
-                          </span>
-                        </h3>
-                      </div>
-                      </div>
-                </div>
-                <div className="col-md-6">
-  <div className="analysis_values">
-        <h4 className="">Exponential Moving Averages (EMA)</h4>
-        <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
-          <span style={{ position: "absolute", top: "-5px", right: "0" }}>
-          {ema_bearish_count !== 0 && (
-              <strong  className="bearish">{ema_bearish_count}</strong>
-            )}
-          </span>
-          <span style={{ position: "absolute", top: "-5px", left: "0" }}>
-            {ema_bullish_count !== 0 && (
-              <strong className="bullish">{ema_bullish_count}</strong>
-            )}
-          </span>
-          <div className="progress gainer-progress">
-            <div
-              className="progress-bar bg-success"
-              role="progressbar"
-              style={{ width: `${(ema_bullish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
-            ></div>
-            
-
-            <div
-              className="progress-bar bg-danger"
-              role="progressbar"
-              style={{ width: `${(ema_bearish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
-            ></div>
-          </div>
-        </div>
-
-        <div className="technical_anaylysis_table simple_analysis">
-          <table width="100%" className="" cellpadding="0" cellspacing="0" border="0">
-            <thead>
-              <tr className="inner_table_average">
-                <th>
-                  <p className="">Period</p>
-                </th>
-                <th>
-                  <p className="">Value</p>
-                </th>
-                <th>
-                  <p className="">Action</p>
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {sma_list.length > 0 ? (
-                sma_list.map((item, i) => {
-                  if(live_price > item.ema_value) 
-                  {
-                    ema_buy_count++;
-                  } else if (live_price < item.ema_value ) 
-                  {
-                    ema_sell_count++;
-                  }
-                  else 
-                  {
-                    ema_neutral_count++;
-                  }
-
-                  return (
-                    <tr key={i}>
-                      <td> EMA {item.day_number}</td>
-                      <td>
-                        <span>
-                        {roundNumericValue(item.ema_value)}
-                        </span>
-                      </td>
-                      <td>
-                          {
-                            live_price > item.ema_value ? 
-                            <span className="bullish">Buy</span>
-                            : 
-                            live_price < item.ema_value ? 
-                            <span className="bearish">Sell</span>
-                            : 
-                            <span className="neutral">Neutral</span>
-                          }
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td>No Data Found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
-          
-          <p className="total_buy_sell_neutral">
-            <span>Buy: {total_ema_buy}</span> <span>Sell: {total_ema_sell}</span> <span>Neutral: {total_ema_neutral}</span>
-          </p>
-          <h3 className="summary_total">
-            Summary: <span className={total_ema_buy > total_ema_sell ? 'summary_bullish active' : 'summary_bearish active'}>
-              {total_ema_buy > total_ema_sell ? 'Strong Buy' : 'Strong Sell'}
-            </span>
-          </h3>
-        </div>
-        </div>
-  </div>
-              </div>
-
-               <div className="row">
-  <div className="col-md-6">
-    <div className="analysis_values">
-    <h4 className="">Moving Averages Crossovers</h4>     
-    
-            
-    <div className="technical_anaylysis_table">
-      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
-        <thead>
-          <tr className="inner_table_average">
-            <th colspan="0">
-              <p className="">Period</p>
-            </th>
-            <th colspan="0">
-              <p className="">Moving Average Crossover</p>
-            </th>
-            <th colspan="0">
-              <p className="">Indication</p>
-            </th>
-          </tr>
-        </thead>
-      
-        <tbody>
-        {moving_averages_crossovers.length > 0 ? moving_averages_crossovers.map((item, i) => (
-        <tr key={i}>
-            <td> {item.term}</td>
-            <td>
-              <span className="">
-                {item.start_sma_day} & {item.end_sma_day} DMA Crossover
-              </span>
-            </td>
-            <td>
-              <span  className={`Capital_Singnal ${
-                  item.signal_description === 'bearish'
-                    ? 'bearish'
-                    : item.signal_description === 'bullish'
-                    ? 'bullish'
-                    : item.signal_description === 'neutral'
-                    ? 'neutral'
-                    : ''
-                }`}>  
-                {item.signal_description}
-              </span>
-            </td>
-          </tr>
-          )):
-          <tr>
-            <td>No Data Found</td>
-          </tr>
-          
-          }
-        </tbody>
-      </table>
-      <p className="total_buy_sell_neutral"><span>Bullish: {ma_crossovers_bullish}</span> <span>Bearish: {ma_crossovers_bearish}</span> </p>
-    </div>
-    </div>
-  </div>
-  
-  <div className="col-md-6">
-    <div className="analysis_values">
-      <h4 className="">Other Moving Averages</h4> 
-      <div className="technical_anaylysis_table">
-      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
-        <thead>
-          <tr className="inner_table_average">
-            <th colspan="0">
-              <p className="">Period</p>
-            </th>
-            <th colspan="0">
-              <p className="">Value</p>
-            </th>
-            <th colspan="0">
-              <p className="">Action</p>
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td>HMA(9)</td>
-            <td>{roundNumericValue(hull_moving_average)}</td>
-            <td>
-                {
-                  live_price > hull_moving_average ? 
-                  <span className="bullish">Buy</span>
-                  : 
-                  live_price < hull_moving_average ? 
-                  <span className="bearish">Sell</span>
-                  : 
-                  <span className="neutral">Neutral</span>
-                }
-            </td>
-          </tr>
-          <tr>
-            <td>VWMA(20)</td>
-            <td>{roundNumericValue(vwma)}</td>
-            <td>
-              {
-                live_price > vwma ? 
-                <span className="bullish">Buy</span>
-                : 
-                live_price < vwma ? 
-                <span className="bearish">Sell</span>
-                : 
-                <span className="neutral">Neutral</span>
-              }
-            </td>
-          </tr>
-        </tbody>
-        </table>
-        </div>
-    </div>  
-  </div>
-
-  </div>
-
-                  {moving_averages_crossovers && sma_list.length > 0 && (
-                              <div className="">
-                                <div className="row ">
-                                  <div className="col-md-12 ">
+                               
+                                  <div className="col-md-6 ">
                                     <div className="analysis_values">
-                                    <h4 className="">Technical Indicators</h4>
+                                    <h4 className="" style={{background: total_sma_buy > total_sma_sell ? 'linear-gradient(180deg, rgb(112 241 192) 0%, #fff 100%)' : 'linear-gradient(180deg, #ff7c8e 0%, #fff 90%)'}}>Technical Indicators
+                                    <span className={oscillator_buy > oscillator_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                                            {oscillator_buy > oscillator_sell ? 'Strong Buy' : 'Strong Sell'}
+                                          </span>
+                                    </h4>
                                     <div className="technical_anaylysis_table simple_analysis">
-                                      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
+                                          <table className="table">
                                           <thead>
                                             <tr className="inner_table_average">
-                                              <th style={{minWidth: '185px'}}>
+                                              <th >
                                                 <p className="">Name</p>
                                               </th>
                                               <th >
@@ -3499,25 +3371,304 @@ const getMarketCap = async (id, decval, usd_price) =>
 
                                           </tbody>
                                         </table>
+                                        <p className="total_buy_sell_neutral"><span>Buy: {oscillator_buy}</span> <span>Sell: {oscillator_sell}</span> <span>Neutral: {oscillator_neutral}</span></p>
+
                                       </div>
-                                      <p className="total_buy_sell_neutral"><span>Buy: {oscillator_buy}</span> <span>Sell: {oscillator_sell}</span> <span>Neutral: {oscillator_neutral}</span></p>
-                                        <h3 className="summary_total">
-                                          Summary: <span className={oscillator_buy > oscillator_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                                      
+                                    </div>
+                                 
+                                <div className="analysis_values">
+                                <h4 className="" style={{background: 'linear-gradient(180deg, rgb(112 241 192) 0%, #fff 100%)'}}>
+                                  Moving Averages Crossovers
+                                  <span className={'summary_bullish active'}>
+                                                                      Strong Buy
+                                                                    </span>
+                                                                    </h4>     
+                                
+                                        
+                                    <div className="technical_anaylysis_table simple_analysis">
+                                      <table className="table">
+                                    <thead>
+                                      <tr className="inner_table_average">
+                                        <th colspan="0">
+                                          <p className="">Period</p>
+                                        </th>
+                                        <th colspan="0">
+                                          <p className="">Moving Average Crossover</p>
+                                        </th>
+                                        <th colspan="0">
+                                          <p className="">Indication</p>
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                  
+                                    <tbody>
+                                    {moving_averages_crossovers.length > 0 ? moving_averages_crossovers.map((item, i) => (
+                                    <tr key={i}>
+                                        <td> {item.term}</td>
+                                        <td>
+                                          <span className="">
+                                            {item.start_sma_day} & {item.end_sma_day} DMA Crossover
+                                          </span>
+                                        </td>
+                                        <td>
+                                          <span  className={`Capital_Singnal ${
+                                              item.signal_description === 'bearish'
+                                                ? 'bearish'
+                                                : item.signal_description === 'bullish'
+                                                ? 'bullish'
+                                                : item.signal_description === 'neutral'
+                                                ? 'neutral'
+                                                : ''
+                                            }`}>  
+                                            {item.signal_description}
+                                          </span>
+                                        </td>
+                                      </tr>
+                                      )):
+                                      <tr>
+                                        <td>No Data Found</td>
+                                      </tr>
+                                      
+                                      }
+                                    </tbody>
+                                  </table>
+                                  <p className="total_buy_sell_neutral"><span>Bullish: {ma_crossovers_bullish}</span> <span>Bearish: {ma_crossovers_bearish}</span> </p>
+                                </div>
+                                </div>
+                              </div>
+                                 
+                                 
+                                )}
+
+              {/* <div className='row'>
+             
+                <div className="col-md-6">
+  <div className="analysis_values">
+        <h4 className="" style={{background: total_sma_buy > total_sma_sell ? 'linear-gradient(180deg, rgb(112 241 192) 0%, #fff 100%)' : 'linear-gradient(180deg, #ff7c8e 0%, #fff 90%)'}}>Exponential Moving Averages (EMA)
+        <span className={total_sma_buy > total_sma_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                                            {total_sma_buy > total_sma_sell ? 'Strong Buy' : 'Strong Sell'}
+                                          </span>
+        </h4>
+
+        <div className="technical_anaylysis_table simple_analysis">
+                                          <table className="table">
+            <thead>
+              <tr className="inner_table_average">
+                <th>
+                  <p className="">Period</p>
+                </th>
+                <th>
+                  <p className="">Value</p>
+                </th>
+                <th>
+                  <p className="">Action</p>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+             
+
+
+              
+            </tbody>
+          </table>
+
+          
+          <p className="total_buy_sell_neutral">
+            <span>Buy: {total_ema_buy}</span> <span>Sell: {total_ema_sell}</span> <span>Neutral: {total_ema_neutral}</span>
+          </p>
+        </div>
+        </div>
+  </div>
+              </div> */}
+
+
+  <div className="col-md-6">
+                <div className="analysis_values">
+                      <h4 className=""  
+                      style={{background: oscillator_buy > oscillator_sell ? 'linear-gradient(180deg, rgb(112 241 192) 0%, #fff 100%)' : 'linear-gradient(180deg, #ff7c8e 0%, #fff 90%)'}}>
+                        Moving Averages
+                      <span className={oscillator_buy > oscillator_sell ? 'summary_bullish active' : 'summary_bearish active'}>
                                             {oscillator_buy > oscillator_sell ? 'Strong Buy' : 'Strong Sell'}
                                           </span>
-                                        </h3> 
-                                    </div>
-                                  </div>
+                      </h4>
+                     
 
-                                      
-                                    </div>
-                                    <div className="row ml-0 mr-0">
-                                      <div className="col-md-12 col-sm-12 ">
-                                      
-                                      </div>
-                                    </div>
-                                  </div> 
-                                )}
+                  <div className="technical_anaylysis_table simple_analysis">
+                                          <table className="table">
+                          <thead>
+                            <tr className="inner_table_average">
+                              <th>
+                                <p className="">Period</p>
+                              </th>
+                              
+                              <th>
+                                <p className="">Value</p>
+                              </th>
+                              <th>
+                                <p className="">Action</p>
+                              </th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            {sma_list.length > 0 ? (
+                              sma_list.map((item, i) => 
+                              {
+                                if(live_price > item.sma_value) 
+                                {
+                                  sma_buy_count++;
+                                } else if (live_price < item.sma_value) {
+                                  sma_sell_count++;
+                                } else {
+                                  sma_neutral_count++;
+                                }
+                                
+                                return (
+                                  <tr key={i}>
+                                    <td> SMA {item.day_number}</td>
+                                    <td>
+                                      <span>
+                                        {roundNumericValue(item.sma_value)}
+                                      </span>
+                                    </td>
+                                    <td>
+                                        {
+                                          live_price > item.sma_value ? 
+                                          <span className="bullish">Buy</span>
+                                          : 
+                                          live_price < item.sma_value ? 
+                                          <span className="bearish">Sell</span>
+                                          : 
+                                          <span className="neutral">Neutral</span>
+                                        }
+                                    </td>
+
+                                    
+                                  </tr>
+                                );
+                              })
+                            ) : (
+                              <tr>
+                                <td>No Data Found</td>
+                              </tr>
+                            )}
+
+
+                            {sma_list.length > 0 ? (
+                                sma_list.map((item, i) => {
+                                  if(live_price > item.ema_value) 
+                                  {
+                                    ema_buy_count++;
+                                  } else if (live_price < item.ema_value ) 
+                                  {
+                                    ema_sell_count++;
+                                  }
+                                  else 
+                                  {
+                                    ema_neutral_count++;
+                                  }
+
+                                  return (
+                                    <tr key={i}>
+                                      <td> EMA {item.day_number}</td>
+                                      <td>
+                                        <span>
+                                        {roundNumericValue(item.ema_value)}
+                                        </span>
+                                      </td>
+                                      <td>
+                                          {
+                                            live_price > item.ema_value ? 
+                                            <span className="bullish">Buy</span>
+                                            : 
+                                            live_price < item.ema_value ? 
+                                            <span className="bearish">Sell</span>
+                                            : 
+                                            <span className="neutral">Neutral</span>
+                                          }
+                                      </td>
+                                    </tr>
+                                  );
+                                })
+                              ) : (
+                                <tr>
+                                  <td>No Data Found</td>
+                                </tr>
+                              )}
+                          </tbody>
+                        </table>
+                        <p className="total_buy_sell_neutral">
+                          <span>Buy: {total_sma_buy}</span> <span>Sell: {total_sma_sell}</span> <span>Neutral: {total_sma_neutral}</span>
+                        </p>
+                        {/* <h3 className="summary_total">
+                          Summary: <span className={total_sma_buy > total_sma_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                            {total_sma_buy > total_sma_sell ? 'Strong Buy' : 'Strong Sell'}
+                          </span>
+                        </h3> */}
+                      </div>
+                      </div>
+                
+    <div className="analysis_values">
+      <h4 className="">Other Moving Averages</h4> 
+      <div className="technical_anaylysis_table simple_analysis">
+                                          <table className="table">
+        <thead>
+          <tr className="inner_table_average">
+            <th colspan="0">
+              <p className="">Period</p>
+            </th>
+            <th colspan="0">
+              <p className="">Value</p>
+            </th>
+            <th colspan="0">
+              <p className="">Action</p>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>HMA(9)</td>
+            <td>{roundNumericValue(hull_moving_average)}</td>
+            <td>
+                {
+                  live_price > hull_moving_average ? 
+                  <span className="bullish">Buy</span>
+                  : 
+                  live_price < hull_moving_average ? 
+                  <span className="bearish">Sell</span>
+                  : 
+                  <span className="neutral">Neutral</span>
+                }
+            </td>
+          </tr>
+          <tr>
+            <td>VWMA(20)</td>
+            <td>{roundNumericValue(vwma)}</td>
+            <td>
+              {
+                live_price > vwma ? 
+                <span className="bullish">Buy</span>
+                : 
+                live_price < vwma ? 
+                <span className="bearish">Sell</span>
+                : 
+                <span className="neutral">Neutral</span>
+              }
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        </div>
+    </div>  
+  </div>
+
+  </div>
+
+                
 
   </div>
                         

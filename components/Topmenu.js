@@ -464,21 +464,22 @@ export default function Topmenu()
                                 {/* <Link href={app_coinpedia_url + "profile/my-nft-collection"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130548/menu-nft.svg" title="My NFT Collection" alt="My NFT Collection" /> My NFT Collection</Link> */}
                                
                                 {/* <Link href={app_coinpedia_url + "profile/my-nft-collection"} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/04/18130548/menu-nft.svg" title="My NFT Collection" alt="My NFT Collection" /> My NFT Collection</Link> */}
-
+                               
                                 {
-                                  parseInt(JsCookie.get('user_email_status')) === 0 && JsCookie.get('user_wallet_address') == "" ?
-                                    <p className="email_notification_verify">Please verify your email and wallet address</p>
-                                    :
-                                    parseInt(JsCookie.get('user_email_status')) == 0 ?
-                                      <p className="email_notification_verify">Please verify your email id</p>
-                                      :
-                                      !JsCookie.get('user_wallet_address') ?
-                                        <p className="email_notification_verify">Please verify your wallet address</p>
-                                        :
-                                        null
+                                  !JsCookie.get('user_wallet_address') ?
+                                  <p className="email_notification_verify">Please verify your wallet address</p>
+                                  :
+                                  null 
                                 }
 
                                 {
+                                    !JsCookie.get('user_wallet_address') ?
+                                    <a className="header_reg_btn" href={app_coinpedia_url + "/profile?type=wallet"}> Connect to Wallet </a>
+                                    :
+                                    <a className="header_reg_btn" href={app_coinpedia_url + "/profile?type=update"}> Update Wallet </a>
+                                }
+
+                                {/* {
                                   parseInt(JsCookie.get('user_email_status')) === 0 && JsCookie.get('user_wallet_address') == "" ?
                                     <a className="header_reg_btn" href={app_coinpedia_url+"verify-email"}> Verify </a>
                                     :
@@ -489,7 +490,7 @@ export default function Topmenu()
                                         <a className="header_reg_btn" href={app_coinpedia_url+"profile/"}> Connect to Wallet </a>
                                         :
                                         null
-                                }
+                                } */}
                                 {/* <a className="header_reg_btn" href="/register">Verify</a> */}
                                 {/* <Link href="/connections"><a className="dropdown-item"><img src="/assets/img/drop_referral_list.png" /> Connections</a></Link> */}
                                 <h6>Other</h6>
@@ -638,6 +639,9 @@ export default function Topmenu()
                           <li><a href={market_coinpedia_url + "token"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17134907/mobile-menu-manage-tokens.svg" alt="Menu Tokens" /> Manage Tokens</a></li>
                           <li><a href={market_coinpedia_url + "token/update"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17134908/mobile-menu-list-token.svg" alt="Menu List" /> List a Token</a></li>
                           {/* <li><a href={app_coinpedia_url + "profile/my-nft-collection"}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/17134908/mobile-menu-nft-collections.svg" alt="Menu Collection" /> My NFT Collection</a></li> */}
+                          
+                        
+
                           <li className="menu_company_list">Other</li>
                           <li><a href={events_coinpedia_url + "my-events"}><img src="https://image.coinpedia.org/wp-content/uploads/2023/09/22163650/menu_manage_event_white.svg" alt="Menu Company" className="manageevent_icon" /> Manage Events</a></li>
                         </ul>

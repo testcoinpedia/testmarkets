@@ -10162,42 +10162,7 @@ a:not([href]):not([class]):hover {
   width: 16px;
 }
 
-.analysis_values {
-  border: 1px solid #d2d2d2;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 25px;
-}
 
-.analysis_values .progress {
-  height: 7px;
-}
-
-.analysis_values h4 {
-  font-size: 18px;
-  font-weight: 700 !important;
-  margin-bottom: 20px;
-}
-
-.analysis_values .bearish{
-  color: #e02841;
-}
-
-.analysis_values .bullish{
-  color: #4ad05d;
-}
-
-.analysis_values .neutral {
-  color: #787878;
-}
-
-.analysis_values .bg-success {
-  background-color: #4ad05d !important;
-}
-
-.analysis_values .bg-danger {
-  background-color: #e02841 !important;
-}
 
 .no_data_found {
   font-size: 14px;
@@ -11339,8 +11304,14 @@ font-weight: 400;
 }
 
 .market_page_data tr td {
+  min-width: 120px !important;
+  padding: 15px 8px !important;
+  color: #002358;
+  font-weight: 500 !important;
   vertical-align: middle;
+  padding: 15px 8px !important;
 }
+
 
 .categories_table tr td {
   min-width: 180px !important;
@@ -11993,7 +11964,7 @@ font-weight: 500 !important;
   cursor: pointer;
 }
 
-.market_token_tabs .nav-tabs li a span{
+.market_token_tabs .charts_price_tabs li a span{
   font-weight: 600 !important;
   font-size: 15px;
 }
@@ -12004,12 +11975,28 @@ font-weight: 500 !important;
   border-bottom: 3px solid;
 }
 
+.charts_price_tabs {
+  margin: 20px 0;
+}
+
+.market_token_tabs .charts_price_tabs .nav-tabs li a {
+  padding-left: 0px !important;
+  padding-right: 25px;
+  padding-top: 0;
+  text-align: left !important;
+  cursor: pointer;
+}
+
 .market_token_tabs .charts_price_tabs .nav-tabs li a.active {
-  border-bottom: 3px solid transparent;
+  border: 1px solid transparent !important;
 }
 
 .market_token_tabs .nav-tabs li:last-child a {
   margin-right: 0 !important;
+}
+
+.market_token_tabs .token_details_tabs_row .nav-tabs {
+  border-bottom: 1px solid #CEE1FF;
 }
 
 .markets_header_token{
@@ -12018,13 +12005,10 @@ font-weight: 500 !important;
   width: 100%;
 }
 
-
-
 .events_tables_content{
   padding: 15px 0 15px 15px;
-  border: 1px solid #D8DDE1;
-    border-radius: 10px;
-    margin-bottom: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
 }
 
 .airdrop_tab_content {
@@ -12033,8 +12017,6 @@ font-weight: 500 !important;
   padding: 15px;
   border-radius: 10px;
 }
-
-
 
 /* Start Market Individual Page  */
 
@@ -12181,7 +12163,7 @@ font-weight: 500 !important;
 .token_list_values h5 {
   font-size: 16px;
   color: #002358;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
 }
 
 .token_list_values h5 span {
@@ -12235,6 +12217,7 @@ font-weight: 500 !important;
 
 .token_details_circular_graph .dots {
   margin-right: 10px;
+  margin-top: 2px;
 }
 
 .quick_values span {
@@ -12346,7 +12329,7 @@ font-weight: 500 !important;
   margin-top: -15px;
 }
 
-.strong_sell {
+.analysis_strong_sell {
   position: absolute;
   bottom: -90px;
   text-align: right;
@@ -12357,7 +12340,7 @@ font-weight: 500 !important;
   font-size: 12px;
 }
 
-.sell {
+.analysis_sell {
   position: absolute;
   bottom: -30px;
   color: #264D89;
@@ -12366,14 +12349,14 @@ font-weight: 500 !important;
   font-size: 12px;
 }
 
-.neutral {
+.analysis_neutral {
   color: #264D89;
   margin-top: 25px;
   text-transform: uppercase;
   font-size: 12px;
 }
 
-.buy {
+.analysis_buy {
   position: absolute;
   bottom: -30px;
   color: #264D89;
@@ -12382,7 +12365,7 @@ font-weight: 500 !important;
   font-size: 12px;
 }
 
-.strong_buy {
+.analysis_strong_buy {
   position: absolute;
   bottom: -90px;
   right: 50px;
@@ -12392,6 +12375,125 @@ font-weight: 500 !important;
   text-transform: uppercase;
   font-size: 12px;
 }
+
+/* Start Secondary Analysis Graph*/
+.analysis_tab_secondary_strong_sell {
+  position: absolute;
+  bottom: -70px;
+  text-align: right;
+  left: 30px;
+  line-height: 1.2;
+  color: #264D89;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.analysis_tab_secondary_sell {
+  position: absolute;
+  bottom: -25px;
+  color: #264D89;
+  left: 70px;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.analysis_tab_secondary_neutral {
+  color: #264D89;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.analysis_tab_secondary_buy {
+  position: absolute;
+  bottom: -25px;
+  color: #264D89;
+  right: 75px;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.analysis_tab_secondary_strong_buy {
+  position: absolute;
+  bottom: -70px;
+  right: 30px;
+  text-align: left;
+  line-height: 1.2;
+  color: #264D89;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.analysis_tab_secondary_strong_buy_speedometer_image {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 140px;
+  z-index: -1;
+}
+
+/* End Secondary Analysis Graph*/
+
+/* Start Primary Analysis Graph*/
+
+.analysis_tab_primary_strong_sell {
+  position: absolute;
+  bottom: -90px;
+  text-align: right;
+  left: 0px;
+  line-height: 1.2;
+  color: #264D89;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.analysis_tab_primary_sell {
+  position: absolute;
+  bottom: -30px;
+  color: #264D89;
+  left: 50px;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.analysis_tab_primary_neutral {
+  color: #264D89;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.analysis_tab_primary_buy {
+  position: absolute;
+  bottom: -30px;
+  color: #264D89;
+  right: 50px;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.analysis_tab_primary_strong_buy {
+  position: absolute;
+  bottom: -90px;
+  right: 0px;
+  text-align: left;
+  line-height: 1.2;
+  color: #264D89;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.analysis_tab_primary_strong_buy_speedometer_image {
+  position: absolute;
+  top: 75px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 190px;
+  z-index: -1;
+}
+
+/* End Primary Analysis Graph*/
 
 .speedometer_summary h6 {
   color: #0066FF;
@@ -12421,7 +12523,7 @@ font-weight: 500 !important;
   width: fit-content;
   float: right;
   border-radius: 5px;
-  margin-bottom: 25px;
+  margin: 15px 0 20px;
 }
 
 .charts_date_tab .nav-tabs{
@@ -12448,11 +12550,126 @@ font-weight: 500 !important;
 }
 
 .charts_price_tabs .nav-tabs li a:hover{
-  border: 0;
+  border: 1px solid transparent;
 }
 
 .price_chart{
   line-height: 2.5;
+}
+
+.apexcharts-canvas text {
+  font-family: 'Space Grotesk' !important;
+}
+
+.technical_anaylysis_table  {
+  padding: 15px;
+}
+
+.analysis_values {
+  border: 1px solid #d2d2d2;
+  border-radius: 10px;
+  margin-bottom: 25px;
+}
+
+.analysis_values .progress {
+  height: 7px;
+}
+
+.analysis_values h4 {
+  font-size: 15px;
+  font-weight: 600 !important;
+  margin-bottom: 0;
+  color: #264D89;
+  height: 50px;
+  line-height: 35px;
+  padding: 3px 15px;
+  border-radius: 8px 8px 0 0;
+}
+
+.analysis_values .bearish{
+  color: #e02841;
+}
+
+.analysis_values .bullish{
+  color: #4ad05d;
+}
+
+.analysis_values .neutral {
+  color: #FEE114;
+}
+
+.analysis_values .bg-success {
+  background-color: #4ad05d !important;
+}
+
+.analysis_values .bg-danger {
+  background-color: #e02841 !important;
+}
+
+.analysis_values .summary_bullish {
+  float: right;
+  background: #16C784;
+  color: #fff;
+  font-weight: 100;
+  font-size: 14px;
+  padding: 6px 20px;
+  border-radius: 3px;
+  line-height: 1.2;
+  margin-top: 5px;
+}
+
+.analysis_values .summary_bearish  {
+  float: right;
+  background: #DF233D;
+  color: #fff;
+  font-weight: 100;
+  font-size: 14px;
+  padding: 6px 20px;
+  border-radius: 3px;
+  line-height: 1.2;
+  margin-top: 5px;
+}
+
+.technical_anaylysis p {
+  font-size: 18px;
+  font-weight: 700 !important;
+ }
+ 
+ .technical_anaylysis_table tbody td{
+  color: #002358;
+  font-size: 14px;
+  line-height: 2.5;
+  margin-top: 5px;
+  font-weight: 500 !important;
+  padding: 0 15px;
+  border-bottom: 1px solid #F1F6FF !important;
+ }
+
+.technical_anaylysis_table table thead th{
+  padding: 6px 15px !important;
+  border: 0 !important;
+}
+
+.total_buy_sell_neutral {
+  font-size: 16px !important;
+  margin-top: 15px;
+}
+
+.total_buy_sell_neutral span {
+  margin-right: 15px;
+  font-weight: 600;
+}
+
+.small_guage {
+  margin-top: 27px;
+}
+
+.small_guage .speedometer {
+  margin-top: -15px;
+}
+
+.analysis_summary .speedometer {
+  margin-top: -15px;
 }
 
 /* End Market Individual Page  */
@@ -12523,7 +12740,6 @@ font-weight: 500 !important;
 
 .timing_event_score p{
   font-size: 16px;
-  font-family: 'Space Grotesk';
   font-weight: 600 !important;
 }
 
@@ -12533,12 +12749,11 @@ font-weight: 500 !important;
 
 .events_detail_score button{
   padding: 6px 10px;
-    font-size: 16px;
-    background: #16C784;
-    font-family: 'Space Grotesk';
+  font-size: 16px;
+  background: #16C784;
   font-weight: 400 !important;
-    color: #F5F5F5;
-    border-radius: 8px;
+  color: #F5F5F5;
+  border-radius: 8px;
 }
 
 /* .news_list_events{
@@ -12547,9 +12762,8 @@ font-weight: 500 !important;
 
 .news_list_events p{
   font-size: 14px;
-  color: #676767;
-  font-family: 'Space Grotesk';
-  font-weight: 500 !important;
+  color: #002358;
+  font-weight: 400 !important;
 }
 
 .news_list_events h4{
@@ -12562,7 +12776,7 @@ font-weight: 500 !important;
 
 
 .news_list_events li{
-  border-bottom: 1px solid #efefef;
+  border-bottom: 1px solid #CEE1FF;
   padding-bottom: 15px;
   margin-bottom: 10px;
 }
@@ -12583,7 +12797,6 @@ font-weight: 500 !important;
 .team_detail_token h6{
   font-size: 16px;
   margin-top: 10px;
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
   text-transform: capitalize;
 }
@@ -12591,7 +12804,6 @@ font-weight: 500 !important;
 .team_detail_token p{
   font-size: 12px;
   color: #ABABAB;
-  font-family: 'Space Grotesk';
   font-weight: 400 !important;
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -12624,15 +12836,13 @@ font-weight: 500 !important;
 
 .disclaimer_content h4{
   font-size: 22px;
-  font-family: 'Space Grotesk';
   font-weight: 700 !important;
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .disclaimer_content p{
   font-size: 18px;
   line-height: 1.8;
-  font-family: 'Space Grotesk';
   font-weight: 400 !important;
   color: #000;
 }
@@ -12653,7 +12863,6 @@ font-weight: 500 !important;
 }
 
 .token_price_block_airdrop h5{
-  font-family: 'Space Grotesk';
   font-weight: 700 !important;
   color: #000;
   font-size: 22px;
@@ -12696,19 +12905,17 @@ font-weight: 500 !important;
 }
 
 .airdrop_ico{
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
   color: #fff !important;
   background: #0029FF !important;
 }
 
 .airdrop_button{
-  font-family: 'Space Grotesk';
-    font-weight: 500 !important;
-    color: #fff !important;
-    background: #0029FF !important;
-    padding: 5px 10px;
-    border-radius: 8px;
+  font-weight: 500 !important;
+  color: #fff !important;
+  background: #0029FF !important;
+  padding: 5px 10px;
+  border-radius: 8px;
 }
 
 .airdrop_buy{
@@ -12813,8 +13020,6 @@ font-weight: 500 !important;
   font-size: 14px;
   font-weight: 300;
 }
-
-
 
 .profile_page_table .table thead {
   border-bottom: 1px solid #ddd !important;
@@ -13234,27 +13439,21 @@ color: #000000;
 }
 
 .exchange_table .green_dot div{
-  background: #16A11C !important;
-    border-radius: 50px;
-    width: 12px;
-    height: 12px;
-    margin: 0 auto;
+ color: #16C784;
 }
 
 .exchange_table .red_dot div{
-  background: #FC2D00 !important;
-    border-radius: 50px;
-    width: 12px;
-    height: 12px;
-    margin: 0 auto;
+color: #DF233D;
+}
+
+.exchange_table .green_dot img, .exchange_table .red_dot img {
+  position: relative;
+  bottom: 3px;
+  z-index: -1;
 }
 
 .exchange_table .yellow_dot div{
-  background: #FFFF00 !important;
-    border-radius: 50px;
-    width: 12px;
-    height: 12px;
-    margin: 0 auto;
+ color: #FFFF00;
 }
 
 .exchange_page {
@@ -13280,7 +13479,7 @@ color: #000000;
 }
 
 .news_list_events{
-  max-height: 568px;
+  max-height: 450px;
   overflow-y: scroll;
 }
 
@@ -13315,7 +13514,7 @@ color: #000000;
 .price_desc p{
   font-size: 14px;
   font-family: 'Space Grotesk' !important;
-  color: #676767;
+  color: #002358;
   font-weight: 500 !important;
 }
 
@@ -13323,7 +13522,7 @@ color: #000000;
   font-size: 15px;
     font-weight: 600 !important;
     font-family: 'Space Grotesk';
-    color: #181818;
+    color: #002358;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -13342,8 +13541,8 @@ color: #000000;
 }
 
 .tokenomic_table tr{
-  border: 1px solid #eee !important;
-  text-align: center;
+  /* border: 1px solid #eee !important; */
+  /* text-align: center; */
 }
 
 .tokenomic_table th{
@@ -13351,8 +13550,35 @@ color: #000000;
 }
 
 .tokenomic_table td{
-  padding: 10px;
-  border: 1px solid #eee !important;
+  padding: 10px 0;
+    border-bottom: 1px solid #CEE1FF !important;
+    font-weight: 400 !important;
+    color: #264D89;
+    font-size: 15px !important;
+}
+
+.tokenomic_table .heading_class td{
+  border-bottom: 0 !important;
+  font-weight: 500 !important;
+  font-size: 15px;
+}
+
+.percentage_class {
+  font-weight: 600 !important;
+  color: #002358;
+}
+
+.percentage_value{
+  font-size: 14px !important;
+}
+
+.tokenomic_table td:first-child{
+  text-align: left;
+   vertical-align: middle;
+}
+
+.tokenomic_table td:last-child{
+  text-align: right;
 }
 
 .tokenomics_block{
@@ -13368,9 +13594,11 @@ color: #000000;
 }
 
 .tokenomic_graph{
-  background: #EBEBEB;
-  border-radius: 10px;
-  padding: 12px 20px;
+
+}
+
+.tokenomic_tab {
+  margin-top: 20px;
 }
 
 .tokenomic_graph h6{
@@ -13380,6 +13608,7 @@ color: #000000;
 }
 
 .tokenomic_graph p{
+  color: #264D89;
   font-size: 14px;
   font-weight: 500 !important;
 }
@@ -13401,6 +13630,16 @@ color: #000000;
   width: 8px;
   border-radius: 10px;
   height: 8px;
+}
+
+.apexcharts-legend-text {
+  font-family: 'Space grotesk' !important;
+  font-weight: 500 !important;
+}
+
+.apexcharts-tooltip * {
+  font-family: 'Space grotesk' !important;
+  font-weight: 500 !important;
 }
 
 .market_growth {
@@ -16904,8 +17143,8 @@ border-radius: 8px;
   min-height: 80vh;
 }
 
-#technical_analysis ul li{
-  display:inline;
+/* #technical_analysis ul li{
+  display:block;
   padding: 8px 12px;
   font-weight: 500;
   cursor: pointer;
@@ -16915,7 +17154,7 @@ border-radius: 8px;
 background: rgb(217 217 217);
     color: #000;
     border-radius: 8px;
-}
+} */
 
 .market-overview-category
 {
@@ -18139,16 +18378,14 @@ padding: 5px 20px;
 }
 
 .trade-history .badge-secondary {
-  color: #fff !important;
-  background-color: #6c757d;
-  font-size: 13px !important;
+  color: #264D89 !important;
+  background-color: #F1F6FF;
 }
 
 .trade-history .maker-link
 {
-  color: #147acb;
-  font-weight: 500;
-  font-size: 13px;
+  color: #002358;
+  text-decoration: underline;
 }
 
 .pooled-span
@@ -18753,14 +18990,13 @@ padding: 5px 20px;
   margin-bottom: 0;
   font-weight: 500 !important;
   margin-top: 0;
+  color: #264D89;
 }
 
 .overview_analysis h4 {
-  font-size: 18px;
-}
-
-.small_guage {
-  margin-top: 25px;
+  font-size: 16px;
+  color: #002358;
+  font-weight: 500 !important;
 }
 
 h3.heading {
@@ -19061,7 +19297,7 @@ h3.heading {
 
 .quick_values_graph .apexcharts-radialbar-slice-0 {
   stroke: #FF007A !important;
-  stroke-width: 7px !important;
+  stroke-width: 9px !important;
   stroke-linecap: round !important;
   fill-opacity: 0.85 !important;
   stroke-opacity: 1 !important;
@@ -19069,7 +19305,7 @@ h3.heading {
 
 .quick_values_graph .apexcharts-radialbar-slice-1 {
   stroke: #FF007A80 !important;
-  stroke-width: 7px !important;
+  stroke-width: 9px !important;
   stroke-linecap: round !important;
   fill-opacity: 0.85 !important;
   stroke-opacity: 1 !important;
@@ -19077,10 +19313,37 @@ h3.heading {
 
 .quick_values_graph .apexcharts-radialbar-slice-2 {
   stroke: #FF007A33 !important;
-  stroke-width: 7px !important;
+  stroke-width: 9px !important;
   stroke-linecap: round !important;
   fill-opacity: 0.85 !important;
   stroke-opacity: 1 !important;
+}
+
+.tokenomic_graph .total_value{
+  text-align: center;
+  background: #ffffffe6;
+  position: absolute;
+  margin: 0 auto;
+  left: 0;
+  right: 110px;
+  border-radius: 100px;
+  padding: 70px 75px;
+  width: fit-content;
+  z-index: 9;
+  top: 120px;
+  color: #264D89;
+  font-weight: 400 !important;
+  font-size: 14px;
+}
+
+.apexcharts-tooltip-series-group {
+  z-index: 9999999999 !important;
+}
+
+.tokenomic_graph .total_value .percentage{
+  color: #002358;
+  font-weight: 600 !important;
+  font-size: 15px;
 }
 
 .apexcharts-radialbarTrack-0 {
@@ -19517,47 +19780,11 @@ h3.heading {
 
 .button_logged_in .text_content{
   font-size: 14px;
-    font-weight: 500;
-    position: relative;
-    top: 8px;
+  font-weight: 500;
+  position: relative;
+  top: 8px;
 }
  
-/* Technical Anaylysis CSS here */
-
-.technical_anaylysis p {
-  font-size: 18px;
-  font-weight: 700 !important;
- }
- 
- .technical_anaylysis_table tbody td{
-   color: #000;
-   font-size: 14px;
-   line-height: 2.5;
-   margin-top: 5px;
-   font-family: 'Space Grotesk';
-   font-weight: 500 !important;
-  
- }
-
-.simple_analysis table thead th {
-  min-width: 130px;
-}
- 
-.technical_anaylysis_table table thead th{
-  padding: 6px 0px !important;
-  border: 0 !important;
-}
-
-.total_buy_sell_neutral {
-  font-size: 16px !important;
-  margin-top: 15px;
-}
-
-.total_buy_sell_neutral span {
-  margin-right: 15px;
-  font-weight: 600;
-}
-
 .summary_total {
   font-size: 16px;
   font-weight: 600 !important;
@@ -19594,7 +19821,8 @@ h3.heading {
  
  .inner_table_average p{
   font-size: 14px !important;
-  font-weight: 400 !important;
+  font-weight: 700 !important;
+  color: #264D89;
  }
  
  .Capital_Singnal {
@@ -24488,18 +24716,25 @@ font-weight: 500 !important;
 .exchange-tabs
 {
   width: fit-content;
-  margin-top: 20px;
+  margin: 20px 0;
   height: 32px;
-  padding: 3px 4px;
+  padding: 0;
 }
 .exchange-tabs .nav-tabs
 {
   padding:0px;
 }
 
-.exchange-tabs .nav-tabs li a.active {
-  background: white;
-  
+
+.exchange-tabs .nav-tabs li a {
+  cursor: pointer;
+  padding-left: 0;
+  padding-right: 25px;
+  border: 1px solid transparent !important;
+}
+
+.exchange-tabs .nav-tabs li a:hover{
+  border: 1px solid transparent !important;
 }
 
 .price-chart-content
@@ -24542,7 +24777,7 @@ font-weight: 500 !important;
 
 .summary-title
 {
-  font-size: 22px;
+  font-size: 22px !important;
   margin-bottom: 15px;
   padding-top: 10px;
   font-family: 'Space Grotesk';
@@ -24823,7 +25058,10 @@ justify-content: end;
 .exchange_table table tr td{
   min-width: 120px !important;
   padding: 15px 8px !important;
+  color: #002358;
+  font-weight: 500 !important;
 }
+
 
 .exchange_table table thead th{
   border-top: 0px !important;
@@ -24836,13 +25074,29 @@ justify-content: end;
 .market_page_data table thead tr th{
   border-bottom: 0 !important;
   font-size: 15px;
-  color: #898989;
-  padding: 24px 10px ;
+  color: #264d89;
+  padding: 15px 8px ;
   font-family: 'Space Grotesk';
-  font-weight: 400 !important;
+  font-weight: 600 !important;
   min-width: unset;
 }
 
+.trade_filter {
+  display: flex;
+  float: right;
+  justify-content: right;
+}
+
+.traders_tab_title {
+  margin: 20px 0;
+}
+
+.trade_filter span{
+  margin-top: 4px;
+  color: #264D89;
+  font-size: 13px;
+  font-weight: 400 !important;
+}
 
 .market_page_data table tbody tr{
   border-bottom: 1px solid #eeeaec !important;
@@ -25066,13 +25320,14 @@ justify-content: end;
 }
 
 .dex_filter .dex_filter_button{
-  background: #e8edfa;
+  background: #F1F6FF;
   border: 0;
   color: #264D89;
   font-size: 14px;
   font-weight: 600;
-  padding: 5px 12px !important;
+  padding: 2px 12px !important;
   border-radius: 6px;
+  margin-top: 2px;
 }
 
 .subheading_token_title {
@@ -25118,6 +25373,7 @@ justify-content: end;
   background-color: #f2f6ff ;
   background: #f2f6ff ;
   margin-top: 40px;
+  will-change: auto !important;
 }
 .dex_filter .dropdown-item{
   font-size: 12px;
@@ -25138,7 +25394,7 @@ justify-content: end;
   left: 0;
   right: 0;
   z-index: 999;
-    top: 45px;
+  top: 55px;
 }
 
 .charts_price_tabs li .active{

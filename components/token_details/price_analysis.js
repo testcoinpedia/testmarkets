@@ -25,7 +25,7 @@ export default function MyFunction()
 }
 
     return (
-      <div className='tokendetail_charts price_detail_blocks'>
+      <div className='tokendetail_charts tokenomic_tab price_detail_blocks'>
       <div className='price_block'>
       <div className='row'>
       {

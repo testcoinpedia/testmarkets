@@ -10,7 +10,7 @@ export default function  MyFunction({tokenomics_list, total_supply, tokenomics_p
   const [series_values, set_series_values]=useState([])
   const [labels_values, set_labels_values]=useState([])
 
-  const [token_allocation_colors, set_token_allocation_colors]= useState(['#0088FE', '#00C49F', '#FFBB28', '#4b51cb', '#CF61B0','#909090','#5D69B1','#24796C','#E88310','#2F8AC4','#764E9F','#ED645A','#CC3A8E','#C1C1C1','#66C5CC','#F89C74','#DCB0F2','#87C55F','#9EB9F3','#FE88B1','#8BE0A4','#B497E7',
+  const [token_allocation_colors, set_token_allocation_colors]= useState(['#FFF072', '#00C49F', '#FFBB28', '#4b51cb', '#CF61B0','#909090','#5D69B1','#24796C','#E88310','#2F8AC4','#764E9F','#ED645A','#CC3A8E','#C1C1C1','#66C5CC','#F89C74','#DCB0F2','#87C55F','#9EB9F3','#FE88B1','#8BE0A4','#B497E7',
   '#D3B484','#B3B3B3','#E10B64','#E92828','#78B4A4','#604F00','#0060E9','#FF7DE3','#20c997','#6f42c1'])
 
   useEffect(() => 
@@ -27,37 +27,34 @@ export default function  MyFunction({tokenomics_list, total_supply, tokenomics_p
    // console.log("series", tokenomics_list)
   // console.log("labels", labels_values)
   var value = {
-    options: {},
-    series: series_values,
+    colors: ['#0100FF', '#FF4D4D', '#FF00A3', '#FFF072', '#00FF41', '#FF9F00', '#FF3951', '#744EC2'],
     labels: labels_values,
-
     chart: {
-      type: 'donut',
+      type: 'pie',
     },
-    
-    fill: {
-      type: 'gradient',
-    }
-  }
-
+  };
   
     return (
 
       // <h5 className='text-center'>Coming Soon</h5>
 
-        <div className='tokendetail_charts'>
+        <div className='tokendetail_charts tokenomic_tab'>
         {/* <h5>Spool DAO Token Tokenomics</h5> */}
         <div className='row'>
-          <div className='col-md-6'>
-            <h6 className='mb-3'>List of Tokenomics with Total Supply</h6>
+          <div className='col-md-5'>
+            {/* <h6 className='mb-3'>List of Tokenomics with Total Supply</h6> */}
           <div className='tokenomic_table table-responsive'>
-          <table className="table table-bordered">
+          <table className="table table-borderless">
              
               <tbody>
-                <tr>
-                  <td>Total Supply</td>
+                <tr className='heading_class'>
+                <td className='pt-0'>Category</td>
+                  <td className='pt-0'>Percentage</td>
+
+
+                  {/* <td>Total Supply</td>
                   <td>100%</td>
-                  <td>{total_supply ? (roundNumericValue(total_supply)).replace("$", ""):0}</td>
+                  <td>{total_supply ? (roundNumericValue(total_supply)).replace("$", ""):0}</td> */}
                 </tr>
 
                 {
@@ -65,8 +62,10 @@ export default function  MyFunction({tokenomics_list, total_supply, tokenomics_p
                   tokenomics_list.map((item, i) =>
                   <tr>
                     <td style={{textTransform:"capitalize"}}>{item.tokenomics_name}</td>
-                    <td>{item.percentage_of_total_supply}%</td>
-                    <td>{(roundNumericValue((item.percentage_of_total_supply*total_supply)/100)).replace("$", "")}</td>
+                    <td>
+                      <p className='percentage_class'>{item.percentage_of_total_supply}%</p>
+                    <span className='percentage_value'>{(roundNumericValue((item.percentage_of_total_supply*total_supply)/100)).replace("$", "")}</span>
+                    </td>
                   </tr> 
                   )
                   :
@@ -76,13 +75,16 @@ export default function  MyFunction({tokenomics_list, total_supply, tokenomics_p
             </table>
           </div>
           </div>
-          <div className='col-md-6'>
+          <div className='col-md-7'>
           <div className='tokenomic_graph'>
-            <h6>Tokenomics </h6>
+            {/* <h6>Tokenomics </h6> */}
             <p>Tokenomics refers to the economic and financial aspects of a cryptocurrency</p>
+            <div className='total_value'>
+              Total
+            <p className='percentage'> 100% </p></div>
             {
               series_values.length && labels_values.length ?
-              <ReactApexChart options={value} series={series_values} type="donut" />
+              <ReactApexChart options={value} series={series_values} type="pie" />
               :
               ""
             }

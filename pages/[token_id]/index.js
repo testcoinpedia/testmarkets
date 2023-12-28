@@ -1536,7 +1536,7 @@ export default function tokenDetailsFunction({
                     </div>
 
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-5">
                         <div>
                           <ul className="category-ul">
                             {data.categories ? (
@@ -1572,7 +1572,7 @@ export default function tokenDetailsFunction({
                           </ul>
                         </div>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-7">
                         <div className="row">
                           <div className="col-md-3 col-6">
                             <div className="token_list_values">
@@ -1647,6 +1647,10 @@ export default function tokenDetailsFunction({
                                 {low_24h ? (
                                   <span className="values_growth">
                                     <span className="green">
+                                      <img
+                                        src="/assets/img/markets/high.png"
+                                        alt="High price"
+                                      />
                                       {(
                                         ((live_price - low_24h) /
                                           low_24h) *
@@ -1672,7 +1676,12 @@ export default function tokenDetailsFunction({
                                 &nbsp;
                                 {high_24h ? (
                                   <span className="values_growth">
-                                    <span className="red">{(((live_price - high_24h) /high_24h) *100).toFixed(2)} % </span>
+                                    <span className="red">
+                                    <img
+                                        src="/assets/img/markets/low.png"
+                                        alt="Low price"
+                                      />
+                                      {(((live_price - high_24h) /high_24h) *100).toFixed(2)} % </span>
                                   </span>
                                 ) : (
                                   ""
@@ -2613,7 +2622,7 @@ export default function tokenDetailsFunction({
                                 options={chartData.options}
                                 series={chartData.series}
                                 type="radialBar"
-                                height={180}
+                                height={212}
                               />
                             </div>
                           </div>
@@ -2795,19 +2804,40 @@ export default function tokenDetailsFunction({
                           <h5 className='sub_title_main'>Indicator Sentiment:</h5>
                           <div className="row">
                             <div className="col-md-12">
-                              <p className="strong_sell">Strong<br/>Sell</p>
-                              <p className="sell">Sell</p>
-                              <p className="neutral">Neutral</p>
-                              <p className="buy">Buy</p>
-                              <p className="strong_buy">Strong<br/>Buy</p> 
+                              <p className="analysis_strong_sell">Strong<br/>Sell</p>
+                              <p className="analysis_sell">Sell</p>
+                              <p className="analysis_neutral">Neutral</p>
+                              <p className="analysis_buy">Buy</p>
+                              <p className="analysis_strong_buy">Strong<br/>Buy</p> 
                             </div>
                           </div>
                           <div className="speedometer-container">
-                          <img
+                            <div>
+                              {(summary_speedo_meter >= 60 )? (
+                                <img
+                                  className="speedometer-image"
+                                  src="/assets/img/speedometer_green.svg"
+                                  alt="Speedometer"
+                                />
+                              ) : 
+                              (summary_speedo_meter <= 40) ?
+                              (
+                                <img
+                                  className="speedometer-image"
+                                  src="/assets/img/speedometer_red.svg"
+                                  alt="Red Speedometer"
+                                />
+                              )
+                            :
+                            <img
                             className="speedometer-image"
-                            src="/assets/img/speedometer_scale.svg"
-                            alt="Speedometer"
+                            src="/assets/img/speedometer_yellow.svg"
+                            alt="Red Speedometer"
                           />
+                            }
+                          </div>
+
+
                           <ReactSpeedometer
                             currentValueText={summary_speed_meter_name}
                             textColor={'#000'}
@@ -2820,7 +2850,7 @@ export default function tokenDetailsFunction({
                             startColor={ringColor}
                             segments={5}
                             endColor="red"
-                            needleHeightRatio={0.6}
+                            needleHeightRatio={0.7}
                             segmentWidth={15}
                             segmentLength={10}
                             ringWidth={8}
@@ -2891,9 +2921,14 @@ export default function tokenDetailsFunction({
                             <div className="col-md-8">
                               <h5 className="quick_values">
                               {
-                                convertCurrency(atl_price)}
+                                convertCurrency(atl_price)} &nbsp;{" "}
                                 <span className="values_growth">
                                   <span className="green">
+                                  <img
+                                        src="/assets/img/markets/high.png"
+                                        alt="High price"
+                                      />
+
                                     {(
                                       ((live_price - atl_price) /
                                         atl_price) *
@@ -2927,6 +2962,10 @@ export default function tokenDetailsFunction({
                               {convertCurrency(ath_price)} &nbsp;{" "}
                               <span className="values_growth">
                                 <span className="red">
+                                <img
+                                        src="/assets/img/markets/low.png"
+                                        alt="High price"
+                                      />
                                   {(
                                     ((live_price - ath_price) /
                                       ath_price) *
@@ -3293,6 +3332,18 @@ export default function tokenDetailsFunction({
                               </a>
                             </li>
 
+                            <li className="nav-item">
+                              <a
+                                className={
+                                  "nav-link " + (main_tab == 11 ? "active" : "")
+                                }
+                                onClick={() => set_main_tab(11)}
+                              >
+                                  Analysis
+                              </a>
+                            </li>
+                            
+
                             {data.launchpads.length ? (
                               <li className="nav-item">
                                 <a
@@ -3411,17 +3462,7 @@ export default function tokenDetailsFunction({
                             )}
 
                               
-                              <li className="nav-item">
-                                <a
-                                  className={
-                                    "nav-link " + (main_tab == 11 ? "active" : "")
-                                  }
-                                  onClick={() => set_main_tab(11)}
-                                >
-                                    Analysis
-                                </a>
-                              </li>
-                            
+                              
 
                             {/* <li className="nav-item">
                               <a
@@ -3486,9 +3527,9 @@ export default function tokenDetailsFunction({
                                   style={{ minHeight: "456px" }}
                                 >
                                   <div className="row">
-                                    <div className="col-md-6 col-12">
+                                    <div className="col-md-8 col-12">
                                       {/* <h5 className='price_chart'>{(symbol).toUpperCase()} Price Chart</h5> */}
-                                      <div className="charts_price_tabs mt-1">
+                                      <div className="charts_price_tabs">
                                         <ul className="nav nav-tabs nav-pills border-0">
                                           <li className="nav-item">
                                             <a
@@ -3554,7 +3595,7 @@ export default function tokenDetailsFunction({
                                         </ul>
                                       </div>
                                     </div>
-                                    <div className="col-md-6 col-12">
+                                    <div className="col-md-4 col-12">
                                       {chart_tab == 1 || chart_tab == 2 ? (
                                         <div className="charts_date_tab date_chart_interval">
 
@@ -4076,29 +4117,57 @@ export default function tokenDetailsFunction({
 
                               <div id="technical_analysis" className={ "tab-pane fade " + (main_tab == 11 ? "show active" : "") }>
                                 <div className="row  mb-4">
-                                  <div className="col-md-2">
-                                    <div className="form-group">
+                                  <div className="col-md-4">
+
+                                  <div className='dex_filter mb-3'>
+                                  <div className="charts_date_tab date_chart_interval float-left">
+            <div class="dropdown">
+                <button className="dex_filter_button dropdown-toggle" value={1} onChange={(e)=>indicatorSourceType(e.target.value)} type="button" id="dropdownSortBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Recent trades <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
+                </button>
+                <div  className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`}
+                    aria-labelledby="dropdownSortBy">
+                <ul>
+                    <li class="dropdown-item" value={1} onClick={(e)=>indicatorSourceType(e.target.value)}>Coinpedia</li>
+                    <li class="dropdown-item" value={2} onClick={(e)=>indicatorSourceType(e.target.value)}>On Chain</li>
+                    <li class="dropdown-item" value={3} onClick={(e)=>indicatorSourceType(e.target.value)}>Binance</li>
+                </ul>
+                </div>
+                </div>
+                </div>
+                {/* <div className="form-group">
                                         <select className="form-control" onChange={(e)=>indicatorSourceType(e.target.value)}>
                                           <option value={1} selected={indicator_source_type == 1}>Coinpedia</option>
                                           <option value={2} selected={indicator_source_type == 2}>On Chain</option>
                                           <option value={3} selected={indicator_source_type == 3}>Binance</option>
                                         </select>
-                                    </div>
+                                    </div>  */}
+        </div>
+
+                                   
                                
                                   </div>
-                                  <div className="col-md-10 text-right">
-                                    <ul className="indicator-ul">
+                                  <div className="col-md-8 text-right">
+                                    <div className="charts_date_tab date_chart_interval">
+                                  <div className='dex_filter mb-3'>
+            <div class="dropdown">
+                <button className="dex_filter_button dropdown-toggle" value={1} onChange={(e)=>indicatorSourceType(e.target.value)} type="button" id="dropdownSortBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                5 Minutes <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
+                </button>
+                <div  className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`}
+                    aria-labelledby="dropdownSortBy">
+                                    <ul>
                                         {
                                           indicator_time_series.length ?
                                             indicator_time_series.map((item, i) =>
                                               (indicator_source_type == 3) && item.binance ?
-                                              <li className={(item.interval_type == interval_type ? "active":"")} onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
+                                              <li className="dropdown-item" onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
                                               :
                                               (indicator_source_type == 1) && item.cmc ?
-                                              <li className={(item.interval_type == interval_type ? "active":"")} onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
+                                              <li className="dropdown-item" onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
                                               :
                                               (indicator_source_type == 2) && item.bitquery ?
-                                              <li className={(item.interval_type == interval_type ? "active":"")} onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
+                                              <li className="dropdown-item" onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
                                               :
                                               ""
                                             )
@@ -4106,6 +4175,8 @@ export default function tokenDetailsFunction({
                                           ""
                                         }
                                       </ul>
+                                      </div></div></div>
+                                  </div>
                                   </div>
                                 </div>
                                 {
@@ -4118,6 +4189,41 @@ export default function tokenDetailsFunction({
                                       <div className="col-md-4"> 
                                         <div className="text-center small_guage">
                                           <h3 className="heading">Oscillator</h3>
+                                          <div className="row">
+                                            <div className="col-md-12">
+                                              <p className="analysis_tab_secondary_strong_sell">Strong<br/>Sell</p>
+                                              <p className="analysis_tab_secondary_sell">Sell</p>
+                                              <p className="analysis_tab_secondary_neutral">Neutral</p>
+                                              <p className="analysis_tab_secondary_buy">Buy</p>
+                                              <p className="analysis_tab_secondary_strong_buy">Strong<br/>Buy</p> 
+                                            </div>
+                                          </div>
+                                        
+
+                                          <div>
+                                                {(oscillator_speedo_meter >= 60 )? (
+                                                  <img
+                                                    className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                                    src="/assets/img/speedometer_green.svg"
+                                                    alt="Speedometer"
+                                                  />
+                                                ) : 
+                                                (oscillator_speedo_meter <= 40) ?
+                                                (
+                                                  <img
+                                                    className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                                    src="/assets/img/speedometer_red.svg"
+                                                    alt="Red Speedometer"
+                                                  />
+                                                )
+                                              :
+                                              <img
+                                              className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                              src="/assets/img/speedometer_yellow.svg"
+                                              alt="Red Speedometer"
+                                            />
+                                              }
+                                              </div>
                                           <ReactSpeedometer
                                             currentValueText={oscillator_speed_meter_name}
                                             textColor={'#000'}
@@ -4130,36 +4236,36 @@ export default function tokenDetailsFunction({
                                             width={200}
                                             height={150}
                                             endColor="red"
-                                            needleHeightRatio={0.7}
+                                            needleHeightRatio={0.6}
                                             segmentWidth={15}
                                             segmentLength={10}
                                             ringWidth={8}
                                             segmentColors={[
-                                              '#d4405f',
-                                              '#f18da1',
-                                              '#e0e3eb',
-                                              '#9ed4ff',
-                                              '#45a7f5'
+                                              '#FF5656',
+                                              '#FF8888',
+                                              '#FEE114',
+                                              '#84BD32',
+                                              '#30AD43'
                                             ]}
                                             customSegmentLabels={[
                                               {
-                                                text: 'Strong Sell',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Sell',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Neutral',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Buy',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Strong Buy',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                             ]}
@@ -4200,8 +4306,42 @@ export default function tokenDetailsFunction({
                                       
 
                                       <div className="col-md-4">
-                                        <div className="text-center">
+                                        <div className="text-center analysis_summary">
                                           <h3 className="heading">Summary</h3>
+                                          <div className="row">
+                                            <div className="col-md-12">
+                                              <p className="analysis_tab_primary_strong_sell">Strong<br/>Sell</p>
+                                              <p className="analysis_tab_primary_sell">Sell</p>
+                                              <p className="analysis_tab_primary_neutral">Neutral</p>
+                                              <p className="analysis_tab_primary_buy">Buy</p>
+                                              <p className="analysis_tab_primary_strong_buy">Strong<br/>Buy</p> 
+                                            </div>
+                                          </div>
+
+                                            <div>
+                                              {(summary_speedo_meter >= 60 )? (
+                                                <img
+                                                  className="analysis_tab_primary_strong_buy_speedometer_image"
+                                                  src="/assets/img/speedometer_green.svg"
+                                                  alt="Speedometer"
+                                                />
+                                              ) : 
+                                              (summary_speedo_meter <= 40) ?
+                                              (
+                                                <img
+                                                  className="analysis_tab_primary_strong_buy_speedometer_image"
+                                                  src="/assets/img/speedometer_red.svg"
+                                                  alt="Red Speedometer"
+                                                />
+                                              )
+                                            :
+                                            <img
+                                            className="analysis_tab_primary_strong_buy_speedometer_image"
+                                            src="/assets/img/speedometer_yellow.svg"
+                                            alt="Red Speedometer"
+                                          />
+                                            }
+                                            </div>
                                           <ReactSpeedometer
                                             currentValueText={summary_speed_meter_name}
                                             textColor={'#000'}
@@ -4219,31 +4359,31 @@ export default function tokenDetailsFunction({
                                             segmentLength={10}
                                             ringWidth={8}
                                             segmentColors={[
-                                                '#d4405f',
-                                                '#f18da1',
-                                                '#e0e3eb',
-                                                '#9ed4ff',
-                                                '#45a7f5'
+                                              '#FF5656',
+                                              '#FF8888',
+                                              '#FEE114',
+                                              '#84BD32',
+                                              '#30AD43'
                                             ]}
                                             customSegmentLabels={[
                                               {
-                                                text: 'Strong Sell',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Sell',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Neutral',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Buy',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Strong Buy',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                             ]}
@@ -4289,6 +4429,40 @@ export default function tokenDetailsFunction({
                                       <div className="col-md-4">
                                         <div className="text-center small_guage">
                                           <h3 className="heading">Moving Average</h3>
+                                          <div className="row">
+                                            <div className="col-md-12">
+                                              <p className="analysis_tab_secondary_strong_sell">Strong<br/>Sell</p>
+                                              <p className="analysis_tab_secondary_sell">Sell</p>
+                                              <p className="analysis_tab_secondary_neutral">Neutral</p>
+                                              <p className="analysis_tab_secondary_buy">Buy</p>
+                                              <p className="analysis_tab_secondary_strong_buy">Strong<br/>Buy</p> 
+                                            </div>
+                                          </div>
+
+                                                  <div>
+                                                {(sma_speedo_meter >= 60 )? (
+                                                  <img
+                                                    className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                                    src="/assets/img/speedometer_green.svg"
+                                                    alt="Speedometer"
+                                                  />
+                                                ) : 
+                                                (sma_speedo_meter <= 40) ?
+                                                (
+                                                  <img
+                                                    className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                                    src="/assets/img/speedometer_red.svg"
+                                                    alt="Red Speedometer"
+                                                  />
+                                                )
+                                              :
+                                              <img
+                                              className="analysis_tab_secondary_strong_buy_speedometer_image"
+                                              src="/assets/img/speedometer_yellow.svg"
+                                              alt="Red Speedometer"
+                                            />
+                                              }
+                                              </div>
                                           <ReactSpeedometer
                                             currentValueText={sma_speed_meter_name}
                                             textColor={'#000'}
@@ -4301,37 +4475,37 @@ export default function tokenDetailsFunction({
                                             startColor={ringColor}
                                             segments={5}
                                             endColor="red"
-                                            needleHeightRatio={0.7}
+                                            needleHeightRatio={0.6}
                                             segmentWidth={15}
                                             segmentLength={10}
                                             ringWidth={8}
                                             segmentColors={[
-                                              '#d4405f',
-                                              '#f18da1',
-                                              '#e0e3eb',
-                                              '#9ed4ff',
-                                              '#45a7f5'
+                                              '#FF5656',
+                                              '#FF8888',
+                                              '#FEE114',
+                                              '#84BD32',
+                                              '#30AD43'
                                             ]
                                             }
                                             customSegmentLabels={[
                                               {
-                                                text: 'Strong Sell',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Sell',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Neutral',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Buy',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                               {
-                                                text: 'Strong Buy',
+                                                text: '',
                                                 position: 'OUTSIDE'
                                               },
                                             ]}
@@ -4374,362 +4548,20 @@ export default function tokenDetailsFunction({
                                   </div>
 
                                   <div className="row">
-                                  <div className="col-md-6">
-                                  <div className="analysis_values">
-                                        <h4 className="">Simple Moving Averages(SMA)</h4>
-                                        <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
-                                          <span style={{ position: "absolute", top: "-5px", right: "0" }}>
-                                          {bearishCount !== 0 && (
-                                              <strong  className="bearish">{bearishCount}</strong>
-                                            )}
-                                          </span>
-                                          <span style={{ position: "absolute", top: "-5px", left: "0" }}>
-                                            {bullishCount !== 0 && (
-                                              <strong className="bullish">{bullishCount}</strong>
-                                            )}
-                                          </span>
-                                          <div className="progress gainer-progress">
-                                            <div
-                                              className="progress-bar bg-success"
-                                              role="progressbar"
-                                              style={{ width: `${(bullishCount / total) * 100}%` }}
-                                            ></div>
-                                            <div
-                                              className="progress-bar bg-danger"
-                                              role="progressbar"
-                                              style={{ width: `${(bearishCount / total) * 100}%` }}
-                                            ></div>
-                                          </div>
-                                        </div>
-
-                                        <div className="technical_anaylysis_table simple_analysis">
-                                          <table width="100%" className="" cellpadding="0" cellspacing="0" border="0">
-                                            <thead>
-                                              <tr className="inner_table_average">
-                                                <th>
-                                                  <p className="">Period</p>
-                                                </th>
-                                                
-                                                <th>
-                                                  <p className="">Value</p>
-                                                </th>
-                                                <th>
-                                                  <p className="">Action</p>
-                                                </th>
-                                              </tr>
-                                            </thead>
-
-                                            <tbody>
-                                              {sma_list.length > 0 ? (
-                                                sma_list.map((item, i) => 
-                                                {
-                                                  if(live_price > item.sma_value) 
-                                                  {
-                                                    sma_buy_count++;
-                                                  } else if (live_price < item.sma_value) {
-                                                    sma_sell_count++;
-                                                  } else {
-                                                    sma_neutral_count++;
-                                                  }
-                                                  
-                                                  return (
-                                                    <tr key={i}>
-                                                      <td> SMA {item.day_number}</td>
-                                                      <td>
-                                                        <span>
-                                                          {roundNumericValue(item.sma_value)}
-                                                        </span>
-                                                      </td>
-                                                      <td>
-                                                          {
-                                                            live_price > item.sma_value ? 
-                                                            <span className="bullish">Buy</span>
-                                                            : 
-                                                            live_price < item.sma_value ? 
-                                                            <span className="bearish">Sell</span>
-                                                            : 
-                                                            <span className="neutral">Neutral</span>
-                                                          }
-                                                      </td>
-                                                    </tr>
-                                                  );
-                                                })
-                                              ) : (
-                                                <tr>
-                                                  <td>No Data Found</td>
-                                                </tr>
-                                              )}
-                                            </tbody>
-                                          </table>
-                                          <p className="total_buy_sell_neutral">
-                                            <span>Buy: {total_sma_buy}</span> <span>Sell: {total_sma_sell}</span> <span>Neutral: {total_sma_neutral}</span>
-                                          </p>
-                                          <h3 className="summary_total">
-                                            Summary: <span className={total_sma_buy > total_sma_sell ? 'summary_bullish active' : 'summary_bearish active'}>
-                                              {total_sma_buy > total_sma_sell ? 'Strong Buy' : 'Strong Sell'}
-                                            </span>
-                                          </h3>
-                                        </div>
-                                        </div>
-                                  </div>
-
-                                  <div className="col-md-6">
-                                  <div className="analysis_values">
-                                        <h4 className="">Exponential Moving Averages (EMA)</h4>
-                                        <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
-                                          <span style={{ position: "absolute", top: "-5px", right: "0" }}>
-                                          {ema_bearish_count !== 0 && (
-                                              <strong  className="bearish">{ema_bearish_count}</strong>
-                                            )}
-                                          </span>
-                                          <span style={{ position: "absolute", top: "-5px", left: "0" }}>
-                                            {ema_bullish_count !== 0 && (
-                                              <strong className="bullish">{ema_bullish_count}</strong>
-                                            )}
-                                          </span>
-                                          <div className="progress gainer-progress">
-                                            <div
-                                              className="progress-bar bg-success"
-                                              role="progressbar"
-                                              style={{ width: `${(ema_bullish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
-                                            ></div>
-                                            
-
-                                            <div
-                                              className="progress-bar bg-danger"
-                                              role="progressbar"
-                                              style={{ width: `${(ema_bearish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
-                                            ></div>
-                                          </div>
-                                        </div>
-
-                                        <div className="technical_anaylysis_table simple_analysis">
-                                          <table width="100%" className="" cellpadding="0" cellspacing="0" border="0">
-                                            <thead>
-                                              <tr className="inner_table_average">
-                                                <th>
-                                                  <p className="">Period</p>
-                                                </th>
-                                                <th>
-                                                  <p className="">Value</p>
-                                                </th>
-                                                <th>
-                                                  <p className="">Action</p>
-                                                </th>
-                                              </tr>
-                                            </thead>
-
-                                            <tbody>
-                                              {sma_list.length > 0 ? (
-                                                sma_list.map((item, i) => {
-                                                  if(live_price > item.ema_value) 
-                                                  {
-                                                    ema_buy_count++;
-                                                  } else if (live_price < item.ema_value ) 
-                                                  {
-                                                    ema_sell_count++;
-                                                  }
-                                                  else 
-                                                  {
-                                                    ema_neutral_count++;
-                                                  }
-
-                                                  return (
-                                                    <tr key={i}>
-                                                      <td> EMA {item.day_number}</td>
-                                                      <td>
-                                                        <span>
-                                                        {roundNumericValue(item.ema_value)}
-                                                        </span>
-                                                      </td>
-                                                      <td>
-                                                          {
-                                                            live_price > item.ema_value ? 
-                                                            <span className="bullish">Buy</span>
-                                                            : 
-                                                            live_price < item.ema_value ? 
-                                                            <span className="bearish">Sell</span>
-                                                            : 
-                                                            <span className="neutral">Neutral</span>
-                                                          }
-                                                      </td>
-                                                    </tr>
-                                                  );
-                                                })
-                                              ) : (
-                                                <tr>
-                                                  <td>No Data Found</td>
-                                                </tr>
-                                              )}
-                                            </tbody>
-                                          </table>
-
-                                          
-                                          <p className="total_buy_sell_neutral">
-                                            <span>Buy: {total_ema_buy}</span> <span>Sell: {total_ema_sell}</span> <span>Neutral: {total_ema_neutral}</span>
-                                          </p>
-                                          <h3 className="summary_total">
-                                            Summary: <span className={total_ema_buy > total_ema_sell ? 'summary_bullish active' : 'summary_bearish active'}>
-                                              {total_ema_buy > total_ema_sell ? 'Strong Buy' : 'Strong Sell'}
-                                            </span>
-                                          </h3>
-                                        </div>
-                                        </div>
-                                  </div>
-                                  </div>
-
-
-                                  <div className="row">
-                                  <div className="col-md-6">
-                                    <div className="analysis_values">
-                                    <h4 className="">Moving Averages Crossovers</h4>     
-                                    {/* <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
-                                      <span style={{ position: "absolute", top: "-5px", right: "0" }}>
-                                      {bearishCount1 !== 0 && (
-                                          <strong className="bearish">{bearishCount1}</strong>
-                                        )}
-                                      </span>
-                                      <span style={{ position: "absolute", top: "-5px", left: "0" }}>
-                                      
-                                          {bullishCount1 !== 0 && (
-                                          <strong className="bullish">{bullishCount1}</strong>
-                                        )}
-                                      </span>
-                                      <div className="progress gainer-progress">
-                                        <div
-                                          className="progress-bar bg-success"
-                                          role="progressbar"
-                                          style={{ width: `${(bullishCount1 / total1) * 100}%` }}
-                                        ></div>
-                                        <div
-                                          className="progress-bar bg-danger"
-                                          role="progressbar"
-                                          style={{ width: `${(bearishCount1 / total1) * 100}%` }}
-                                        ></div>
-                                      </div>
-                                    </div> */}
-                                            
-                                    <div className="technical_anaylysis_table">
-                                      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
-                                        <thead>
-                                          <tr className="inner_table_average">
-                                            <th colspan="0">
-                                              <p className="">Period</p>
-                                            </th>
-                                            <th colspan="0">
-                                              <p className="">Moving Average Crossover</p>
-                                            </th>
-                                            <th colspan="0">
-                                              <p className="">Indication</p>
-                                            </th>
-                                          </tr>
-                                        </thead>
-                                      
-                                        <tbody>
-                                        {moving_averages_crossovers.length > 0 ? moving_averages_crossovers.map((item, i) => (
-                                        <tr key={i}>
-                                            <td> {item.term}</td>
-                                            <td>
-                                              <span className="">
-                                                {item.start_sma_day} & {item.end_sma_day} DMA Crossover
-                                              </span>
-                                            </td>
-                                            <td>
-                                              <span  className={`Capital_Singnal ${
-                                                  item.signal_description === 'bearish'
-                                                    ? 'bearish'
-                                                    : item.signal_description === 'bullish'
-                                                    ? 'bullish'
-                                                    : item.signal_description === 'neutral'
-                                                    ? 'neutral'
-                                                    : ''
-                                                }`}>  
-                                                {item.signal_description}
-                                              </span>
-                                            </td>
-                                          </tr>
-                                          )):
-                                          <tr>
-                                            <td>No Data Found</td>
-                                          </tr>
-                                          
-                                          }
-                                        </tbody>
-                                      </table>
-                                      <p className="total_buy_sell_neutral"><span>Bullish: {ma_crossovers_bullish}</span> <span>Bearish: {ma_crossovers_bearish}</span> </p>
-                                    </div>
-                                    </div>
-                                  </div>
-                                  
-                                  <div className="col-md-6">
-                                    <div className="analysis_values">
-                                      <h4 className="">Other Moving Averages</h4> 
-                                      <div className="technical_anaylysis_table">
-                                      <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
-                                        <thead>
-                                          <tr className="inner_table_average">
-                                            <th colspan="0">
-                                              <p className="">Period</p>
-                                            </th>
-                                            <th colspan="0">
-                                              <p className="">Value</p>
-                                            </th>
-                                            <th colspan="0">
-                                              <p className="">Action</p>
-                                            </th>
-                                          </tr>
-                                        </thead>
-
-                                        <tbody>
-                                          <tr>
-                                            <td>HMA(9)</td>
-                                            <td>{roundNumericValue(hull_moving_average)}</td>
-                                            <td>
-                                                {
-                                                  live_price > hull_moving_average ? 
-                                                  <span className="bullish">Buy</span>
-                                                  : 
-                                                  live_price < hull_moving_average ? 
-                                                  <span className="bearish">Sell</span>
-                                                  : 
-                                                  <span className="neutral">Neutral</span>
-                                                }
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td>VWMA(20)</td>
-                                            <td>{roundNumericValue(vwma)}</td>
-                                            <td>
-                                              {
-                                                live_price > vwma ? 
-                                                <span className="bullish">Buy</span>
-                                                : 
-                                                live_price < vwma ? 
-                                                <span className="bearish">Sell</span>
-                                                : 
-                                                <span className="neutral">Neutral</span>
-                                              }
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                        </table>
-                                        </div>
-                                    </div>  
-                                  </div>
-
-                                  </div>
-
-                                  {moving_averages_crossovers && sma_list.length > 0 && (
-                                  <div className="">
-                                    <div className="row ">
-                                      <div className="col-md-12 ">
+                                    {moving_averages_crossovers && sma_list.length > 0 && (
+                                      <div className="col-md-6 ">
                                         <div className="analysis_values">
-                                        <h4 className="">Technical Indicators</h4>
+                                        <h4 className="" style={{background: oscillator_buy > oscillator_sell ? 'linear-gradient(180deg, rgb(112 241 192) 0%, #fff 100%)' : 'linear-gradient(180deg, #ff7c8e 0%, #fff 90%)'}}>
+                                          Technical Indicators
+                                          <span className={oscillator_buy > oscillator_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                                            {oscillator_buy > oscillator_sell ? 'Strong Buy' : 'Strong Sell'}
+                                          </span>
+                                        </h4>
                                         <div className="technical_anaylysis_table simple_analysis">
-                                          <table width="100%" className="" cellpadding="0" cellspacing="0" border="0" >
+                                          <table className="table">
                                               <thead>
                                                 <tr className="inner_table_average">
-                                                  <th style={{minWidth: '185px'}}>
+                                                  <th>
                                                     <p className="">Name</p>
                                                   </th>
                                                   <th >
@@ -4929,7 +4761,7 @@ export default function tokenDetailsFunction({
                                                   </tr>
 
                                                 <tr className="bollinger_bands_space">
-                                                  <td><br/> Bollinger Bands</td>
+                                                  <td> Bollinger Bands</td>
                                                   <td>
                                                     UB: {roundNumericValue(bollinger_bands.upper_band)}  
                                                     <br/> SMA20: {roundNumericValue(bollinger_bands.sma20)}
@@ -4951,25 +4783,402 @@ export default function tokenDetailsFunction({
                                                 
                                               </tbody>
                                             </table>
-                                          </div>
+                                          
                                           <p className="total_buy_sell_neutral"><span>Buy: {oscillator_buy}</span> <span>Sell: {oscillator_sell}</span> <span>Neutral: {oscillator_neutral}</span></p>
-                                            <h3 className="summary_total">
-                                              Summary: <span className={oscillator_buy > oscillator_sell ? 'summary_bullish active' : 'summary_bearish active'}>
-                                                {oscillator_buy > oscillator_sell ? 'Strong Buy' : 'Strong Sell'}
-                                              </span>
-                                            </h3> 
+                                          </div>
                                         </div>
+
+                                        <div className="analysis_values">
+                                      <h4 className="" style={{background: 'linear-gradient(180deg, rgb(112 241 192) 0%, #fff 100%)'}}>
+                                        Moving Averages Crossovers
+                                        <span className={'summary_bullish active'}>
+                                          Strong Buy
+                                        </span>
+                                      </h4>    
+                                      {/* <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
+                                        <span style={{ position: "absolute", top: "-5px", right: "0" }}>
+                                        {bearishCount1 !== 0 && (
+                                            <strong className="bearish">{bearishCount1}</strong>
+                                          )}
+                                        </span>
+                                        <span style={{ position: "absolute", top: "-5px", left: "0" }}>
+                                        
+                                            {bullishCount1 !== 0 && (
+                                            <strong className="bullish">{bullishCount1}</strong>
+                                          )}
+                                        </span>
+                                        <div className="progress gainer-progress">
+                                          <div
+                                            className="progress-bar bg-success"
+                                            role="progressbar"
+                                            style={{ width: `${(bullishCount1 / total1) * 100}%` }}
+                                          ></div>
+                                          <div
+                                            className="progress-bar bg-danger"
+                                            role="progressbar"
+                                            style={{ width: `${(bearishCount1 / total1) * 100}%` }}
+                                          ></div>
+                                        </div>
+                                      </div> */}
+                                            
+                                    <div className="technical_anaylysis_table">
+                                      <table width="100%" className="table" cellpadding="0" cellspacing="0" border="0" >
+                                        <thead>
+                                          <tr className="inner_table_average">
+                                            <th colspan="0">
+                                              <p className="">Period</p>
+                                            </th>
+                                            <th colspan="0">
+                                              <p className="">Moving Average Crossover</p>
+                                            </th>
+                                            <th colspan="0">
+                                              <p className="">Indication</p>
+                                            </th>
+                                          </tr>
+                                        </thead>
+                                      
+                                        <tbody>
+                                        {moving_averages_crossovers.length > 0 ? moving_averages_crossovers.map((item, i) => (
+                                        <tr key={i}>
+                                            <td> {item.term}</td>
+                                            <td>
+                                              <span className="">
+                                                {item.start_sma_day} & {item.end_sma_day} DMA Crossover
+                                              </span>
+                                            </td>
+                                            <td>
+                                              <span  className={`Capital_Singnal ${
+                                                  item.signal_description === 'bearish'
+                                                    ? 'bearish'
+                                                    : item.signal_description === 'bullish'
+                                                    ? 'bullish'
+                                                    : item.signal_description === 'neutral'
+                                                    ? 'neutral'
+                                                    : ''
+                                                }`}>  
+                                                {item.signal_description}
+                                              </span>
+                                            </td>
+                                          </tr>
+                                          )):
+                                          <tr>
+                                            <td>No Data Found</td>
+                                          </tr>
+                                          
+                                          }
+                                        </tbody>
+                                      </table>
+                                      <p className="total_buy_sell_neutral"><span>Bullish: {ma_crossovers_bullish}</span> <span>Bearish: {ma_crossovers_bearish}</span> </p>
+                                    </div>
+                                    </div>
                                       </div>
+                                    )}
+
+                                    <div className="col-md-6">
+                                      <div className="analysis_values">
+                                        <h4 className="" style={{background: total_sma_buy > total_sma_sell ? 'linear-gradient(180deg, rgb(112 241 192) 0%, #fff 100%)' : 'linear-gradient(180deg, #ff7c8e 0%, #fff 90%)'}}>
+                                          Moving Averages 
+                                          <span className={total_sma_buy > total_sma_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                                            {total_sma_buy > total_sma_sell ? 'Strong Buy' : 'Strong Sell'}
+                                          </span>
+                                        </h4>
+                                        {/* <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
+                                          <span style={{ position: "absolute", top: "-5px", right: "0" }}>
+                                          {bearishCount !== 0 && (
+                                              <strong  className="bearish">{bearishCount}</strong>
+                                            )}
+                                          </span>
+                                          <span style={{ position: "absolute", top: "-5px", left: "0" }}>
+                                            {bullishCount !== 0 && (
+                                              <strong className="bullish">{bullishCount}</strong>
+                                            )}
+                                          </span>
+                                          <div className="progress gainer-progress">
+                                            <div
+                                              className="progress-bar bg-success"
+                                              role="progressbar"
+                                              style={{ width: `${(bullishCount / total) * 100}%` }}
+                                            ></div>
+                                            <div
+                                              className="progress-bar bg-danger"
+                                              role="progressbar"
+                                              style={{ width: `${(bearishCount / total) * 100}%` }}
+                                            ></div>
+                                          </div>
+                                        </div> */}
+
+                                        <div className="technical_anaylysis_table simple_analysis">
+                                          <table className="table">
+                                            <thead>
+                                              <tr className="inner_table_average">
+                                                <th>
+                                                  <p className="">Period</p>
+                                                </th>
+                                                
+                                                <th>
+                                                  <p className="">Value</p>
+                                                </th>
+                                                <th>
+                                                  <p className="">Action</p>
+                                                </th>
+                                              </tr>
+                                            </thead>
+
+                                            <tbody>
+                                              {sma_list.length > 0 ? (
+                                                sma_list.map((item, i) => 
+                                                {
+                                                  if(live_price > item.sma_value) 
+                                                  {
+                                                    sma_buy_count++;
+                                                  } else if (live_price < item.sma_value) {
+                                                    sma_sell_count++;
+                                                  } else {
+                                                    sma_neutral_count++;
+                                                  }
+                                                  
+                                                  return (
+                                                    <tr key={i}>
+                                                      <td> SMA {item.day_number}</td>
+                                                      <td>
+                                                        <span>
+                                                          {roundNumericValue(item.sma_value)}
+                                                        </span>
+                                                      </td>
+                                                      <td>
+                                                          {
+                                                            live_price > item.sma_value ? 
+                                                            <span className="bullish">Buy</span>
+                                                            : 
+                                                            live_price < item.sma_value ? 
+                                                            <span className="bearish">Sell</span>
+                                                            : 
+                                                            <span className="neutral">Neutral</span>
+                                                          }
+                                                      </td>
+                                                    </tr>
+                                                  );
+                                                })
+                                              ) : (
+                                                <tr>
+                                                  <td>No Data Found</td>
+                                                </tr>
+                                              )}
+
+                                              {sma_list.length > 0 ? (
+                                                sma_list.map((item, i) => {
+                                                  if(live_price > item.ema_value) 
+                                                  {
+                                                    ema_buy_count++;
+                                                  } else if (live_price < item.ema_value ) 
+                                                  {
+                                                    ema_sell_count++;
+                                                  }
+                                                  else 
+                                                  {
+                                                    ema_neutral_count++;
+                                                  }
+
+                                                  return (
+                                                    <tr key={i}>
+                                                      <td> EMA {item.day_number}</td>
+                                                      <td>
+                                                        <span>
+                                                        {roundNumericValue(item.ema_value)}
+                                                        </span>
+                                                      </td>
+                                                      <td>
+                                                          {
+                                                            live_price > item.ema_value ? 
+                                                            <span className="bullish">Buy</span>
+                                                            : 
+                                                            live_price < item.ema_value ? 
+                                                            <span className="bearish">Sell</span>
+                                                            : 
+                                                            <span className="neutral">Neutral</span>
+                                                          }
+                                                      </td>
+                                                    </tr>
+                                                  );
+                                                })
+                                              ) : (
+                                                <tr>
+                                                  <td>No Data Found</td>
+                                                </tr>
+                                              )}
+                                            </tbody>
+                                          </table>
+                                          <p className="total_buy_sell_neutral">
+                                            <span>Buy: {total_sma_buy}</span> <span>Sell: {total_sma_sell}</span> <span>Neutral: {total_sma_neutral}</span>
+                                          </p>
+                                          
+                                        </div>
+                                        </div>
+                                        <div className="analysis_values">
+                                      <h4 className="">Other Moving Averages</h4> 
+                                      <div className="technical_anaylysis_table">
+                                      <table className="table">
+                                        <thead>
+                                          <tr className="inner_table_average">
+                                            <th colspan="0">
+                                              <p className="">Period</p>
+                                            </th>
+                                            <th colspan="0">
+                                              <p className="">Value</p>
+                                            </th>
+                                            <th colspan="0">
+                                              <p className="">Action</p>
+                                            </th>
+                                          </tr>
+                                        </thead>
+
+                                        <tbody>
+                                          <tr>
+                                            <td>HMA(9)</td>
+                                            <td>{roundNumericValue(hull_moving_average)}</td>
+                                            <td>
+                                                {
+                                                  live_price > hull_moving_average ? 
+                                                  <span className="bullish">Buy</span>
+                                                  : 
+                                                  live_price < hull_moving_average ? 
+                                                  <span className="bearish">Sell</span>
+                                                  : 
+                                                  <span className="neutral">Neutral</span>
+                                                }
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <td>VWMA(20)</td>
+                                            <td>{roundNumericValue(vwma)}</td>
+                                            <td>
+                                              {
+                                                live_price > vwma ? 
+                                                <span className="bullish">Buy</span>
+                                                : 
+                                                live_price < vwma ? 
+                                                <span className="bearish">Sell</span>
+                                                : 
+                                                <span className="neutral">Neutral</span>
+                                              }
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                        </table>
+                                        </div>
+                                    </div> 
+                                  </div>
+                                  
+
+                                  {/* <div className="col-md-6">
+                                  <div className="analysis_values">
+                                        <h4 className="">Exponential Moving Averages (EMA)</h4>
+                                        <div className="progress_average" style={{ position: "relative", maxWidth: "100%" }}>
+                                          <span style={{ position: "absolute", top: "-5px", right: "0" }}>
+                                          {ema_bearish_count !== 0 && (
+                                              <strong  className="bearish">{ema_bearish_count}</strong>
+                                            )}
+                                          </span>
+                                          <span style={{ position: "absolute", top: "-5px", left: "0" }}>
+                                            {ema_bullish_count !== 0 && (
+                                              <strong className="bullish">{ema_bullish_count}</strong>
+                                            )}
+                                          </span>
+                                          <div className="progress gainer-progress">
+                                            <div
+                                              className="progress-bar bg-success"
+                                              role="progressbar"
+                                              style={{ width: `${(ema_bullish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
+                                            ></div>
+                                            
+
+                                            <div
+                                              className="progress-bar bg-danger"
+                                              role="progressbar"
+                                              style={{ width: `${(ema_bearish_count / (ema_bullish_count+ema_bearish_count)) * 100}%` }}
+                                            ></div>
+                                          </div>
+                                        </div>
+
+                                        <div className="technical_anaylysis_table simple_analysis">
+                                          <table width="100%" className="" cellpadding="0" cellspacing="0" border="0">
+                                            <thead>
+                                              <tr className="inner_table_average">
+                                                <th>
+                                                  <p className="">Period</p>
+                                                </th>
+                                                <th>
+                                                  <p className="">Value</p>
+                                                </th>
+                                                <th>
+                                                  <p className="">Action</p>
+                                                </th>
+                                              </tr>
+                                            </thead>
+
+                                            <tbody>
+                                              {sma_list.length > 0 ? (
+                                                sma_list.map((item, i) => {
+                                                  if(live_price > item.ema_value) 
+                                                  {
+                                                    ema_buy_count++;
+                                                  } else if (live_price < item.ema_value ) 
+                                                  {
+                                                    ema_sell_count++;
+                                                  }
+                                                  else 
+                                                  {
+                                                    ema_neutral_count++;
+                                                  }
+
+                                                  return (
+                                                    <tr key={i}>
+                                                      <td> EMA {item.day_number}</td>
+                                                      <td>
+                                                        <span>
+                                                        {roundNumericValue(item.ema_value)}
+                                                        </span>
+                                                      </td>
+                                                      <td>
+                                                          {
+                                                            live_price > item.ema_value ? 
+                                                            <span className="bullish">Buy</span>
+                                                            : 
+                                                            live_price < item.ema_value ? 
+                                                            <span className="bearish">Sell</span>
+                                                            : 
+                                                            <span className="neutral">Neutral</span>
+                                                          }
+                                                      </td>
+                                                    </tr>
+                                                  );
+                                                })
+                                              ) : (
+                                                <tr>
+                                                  <td>No Data Found</td>
+                                                </tr>
+                                              )}
+                                            </tbody>
+                                          </table>
 
                                           
+                                          <p className="total_buy_sell_neutral">
+                                            <span>Buy: {total_ema_buy}</span> <span>Sell: {total_ema_sell}</span> <span>Neutral: {total_ema_neutral}</span>
+                                          </p>
+                                          <h3 className="summary_total">
+                                            Summary: <span className={total_ema_buy > total_ema_sell ? 'summary_bullish active' : 'summary_bearish active'}>
+                                              {total_ema_buy > total_ema_sell ? 'Strong Buy' : 'Strong Sell'}
+                                            </span>
+                                          </h3>
                                         </div>
-                                        <div className="row ml-0 mr-0">
-                                          <div className="col-md-12 col-sm-12 ">
-                                          
-                                          </div>
                                         </div>
-                                      </div> 
-                                    )}
+                                  </div> */}
+                                  </div>
+
+
+                                 
+
+                                  
                                   
                                   </>
                                   :
@@ -4986,7 +5195,6 @@ export default function tokenDetailsFunction({
                                   </div>
                                 }
                                
-                           
                               </div>
                             </div>
                           </div>
@@ -5197,7 +5405,7 @@ export default function tokenDetailsFunction({
                                               <span className="bearish sell">Low</span>
                                               :
                                               volatility >= 2 && volatility < 5 ? 
-                                              <span className="neutral">Neutral</span>
+                                              <span className="">Neutral</span>
                                               :
                                               volatility >= 5 && volatility < 10 ? 
                                               <span className="bullish buy">High</span>

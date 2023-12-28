@@ -38,7 +38,7 @@ export default function Exchange({reqData})
                 <b>Yay! You have seen it all</b>
               </p>
             </div>
-          )
+          ) 
         } 
         else 
         {
@@ -130,27 +130,52 @@ export default function Exchange({reqData})
       //console.log("nDate",)
     }
 
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDropdown = () => {
+      setIsOpen(!isOpen);
+    };
    
     
   return(
     <div className='market_page_data  trade-history '>
         {/* <h6>Trade History</h6> */}
+        <div className='traders_tab_title'>
         <div className="row mb-2">
         <div className="col-6" >
-            <h6>Trade History List</h6>
+            {/* <h6>Trade History List</h6> */}
         </div>
-        <div className="col-2 text-right">
-            <span>Sort By:</span>
+        <div className="col-md-6 trade_filter col-offset-8">
+            <span>Sort By: &nbsp;</span>
+       
+        <div >
+                <div className='dex_filter mb-3'>
+            <div class="dropdown">
+                <button className="dex_filter_button dropdown-toggle"  type="button" id="dropdownSortBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Recent trades <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
+                </button>
+                <div  className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`}
+                    aria-labelledby="dropdownSortBy">
+                <ul >
+                    <li className="dropdown-item" value={1} onClick={(e)=>set_sort_type(e.target.value)}>Recent trades</li>
+                    <li className="dropdown-item" value={2} onClick={(e)=>set_sort_type(e.target.value)}>High amount</li>
+                    <li className="dropdown-item" value={3} onClick={(e)=>set_sort_type(e.target.value)}>Low amount</li>
+                    <li className="dropdown-item" value={4} onClick={(e)=>set_sort_type(e.target.value)}>Date and time</li>
+                </ul>
+                </div>
+                </div>
+                   
         </div>
-        <div className="col-4 col-offset-8">
-            <select className="form-control" onChange={(e)=>set_sort_type(e.target.value)}>
-                <option value={1} selected={sort_type == 1}>Recent trades</option>
-                <option value={2} selected={sort_type == 2}>High amount </option>
-                <option value={3} selected={sort_type == 3}>Low amount </option>
-                <option value={4} selected={sort_type == 4}>Date and time </option>
-            </select>
         </div>
         </div>
+        </div>
+        </div>
+         {/* <select className="form-control" onChange={(e)=>set_sort_type(e.target.value)}>
+                    <option value={1} selected={sort_type == 1}>Recent trades</option>
+                    <option value={2} selected={sort_type == 2}>High amount </option>
+                    <option value={3} selected={sort_type == 3}>Low amount </option>
+                    <option value={4} selected={sort_type == 4}>Date and time </option>
+                </select> */}
 
 
         <div id="scrollableDiv" className='trade-scroll' >

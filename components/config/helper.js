@@ -95,15 +95,16 @@ export const crypto_networks_list = [
   //   active_status:1
   // },
   
-  // {
-  //   _id:7,
-  //   network_name:"Arbitrum",
-  //   network_image:"",
-  //   active_status:1
-  // }
+  {
+    _id:7,
+    network_id:8217 ,
+    network_name:"klaytn",
+    network_image:"arbitrum.png",
+    active_status:1
+  }
 ]
 
-export const cryptoNetworksList = ({ethereum, bsc, polygon, fantom, avalanche}) =>
+export const cryptoNetworksList = ({ethereum, bsc, polygon, fantom, avalanche,klaytn}) =>
 {
   return [
     {
@@ -158,12 +159,14 @@ export const cryptoNetworksList = ({ethereum, bsc, polygon, fantom, avalanche}) 
     //   network_image:"",
     //   active_status:1
     // },
-    // {
-    //   _id:7,
-    //   network_name:"Arbitrum",
-    //   network_image:"",
-    //   active_status:1
-    // }
+    {
+      _id:7,
+       network_id:8217 ,
+      network_name:"klaytn",
+      network_image:"arbitrum.png",
+      network_balance:klaytn,
+      active_status:1
+    }
   ]
 }
 
@@ -585,7 +588,11 @@ export const getShortAddress=(wallet_address, length)=>
         network:"avalanche"
       }
     }
-    else
+    else if(id== 8217 ){
+      return {
+        network:"klaytn"
+      }
+    }
     {
       return {
         network:""
@@ -1022,11 +1029,6 @@ export const updateAddedWallet = async (pass_data, new_wallet_address) =>
       return ""
     }
   }
-
-
-  
-
-
   export const nftByWalletAddress = ({wallet_addresses, network, limit, offset}) => 
   {
     var addresses_str = ""
@@ -1184,6 +1186,11 @@ export  const graphqlPricingTokenData = (address, network) =>
     {
       return "avax.svg"
     }
+    else if(pass_network_id == 8217 )
+    {
+      return "arbitrum.svg"
+    }
+
   }
 
 
@@ -1208,6 +1215,9 @@ export  const graphqlPricingTokenData = (address, network) =>
     else if(pass_network_id == 43114)
     {
       return "Avalanche"
+    }
+    else if(pass_network_id==8217 ){
+      return "klaytn"
     }
   }
 
@@ -1234,6 +1244,10 @@ export  const graphqlPricingTokenData = (address, network) =>
     else if(pass_network_id == 43114)
     {
       return "https://avascan.info/blockchain/dfk/tx/"
+    }
+    else if(pass_network_id == 8217)
+    {
+      return "https://arbiscan.io/tx/"
     }
   }
 

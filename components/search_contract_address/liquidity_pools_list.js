@@ -371,6 +371,7 @@ return(
 </h6>
 </div> 
 </div> */}
+<div className='charts_price_tabs'>
 {   
     !loader_status ?
         liquidity_pools.length ?
@@ -522,6 +523,8 @@ return(
         </table>  
         </div>
         </div>  
+
+        </div>
 
   {/* <div className=''>
   <div className="accordion" id="assetview">
