@@ -134,6 +134,20 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
     }
   }
 
+ const [isMobileView, setIsMobileView] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 767);
+    };
+
+    handleResize(); 
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [])
+
 
   return(
     <>
@@ -157,6 +171,7 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
 
         
         <div className='market_page_data exchange_table'>
+        {!isMobileView ? (
         <div className="table-responsive">
             <table className="table table-borderless">
                 <thead>
@@ -227,6 +242,7 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
                         {
                             dex_exchange_list.length>0?
                             dex_exchange_list.map((e, i) => {
+
                             return <tr key={i}>
                                 <td className='mobile_fixed_first'>
                                     <div className='media'>
@@ -261,7 +277,9 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
                                 ""
                             }
                             </tr>
-                            })
+                            }
+                            
+                            )
                             :
                             <tr>
                                 <td colSpan={7} className='text-center'>
@@ -277,6 +295,142 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
                 </tbody>
                 </table>
         </div>
+
+        ) : (
+
+            <div >
+                 <div className='table_header_res'>
+                                   <div className='row'>
+                                       <div className='col-6 text-left'>
+                                           <h5>Exchange & Pairs</h5>
+                                       </div>
+                                       <div className='col-6 text-right'>
+                                       
+                                       <h5>Total Liquidity & Price</h5>
+                                           </div>
+                                           {/* <div className='col-4'>
+                                           <h5>Volume %</h5>
+                                           <h5>Trust Score</h5>
+                                           </div> */}
+                                   </div>
+                                   </div>
+                                   {
+                exchange_tab_id == 1 ?
+                                <>
+        {
+        exchange_list.length>0?
+        exchange_list.map((e, i) => {
+        return <div key={i}>
+        <div className='tables_mobile_view'>
+            <div className='table_header_res'>
+                
+                <div className='row'>
+                    <div className='col-6 text-left'>
+                        <h6 className='exchange_main_text'>  {e.exchange_name}</h6>
+                        <h6>{e.pair_one_name}/{e.pair_two_name}</h6>
+                    </div>
+                    <div className='col-6 text-right'>
+                    <h6 className='exchange_main_text'>{e.volume ? convertCurrency(e.volume.toFixed(2)) : "--"}</h6>
+                    <h6>{e.price ? convertCurrency(e.price) : "--"}</h6>
+                        </div>
+                        {/* <div className='col-4'>
+                        <h6>{e.volume_percentage ? e.volume_percentage.toFixed(2) + "%" : "--"}</h6>
+                        {
+                                e.trust_score=="green" ?
+                                <div className='green_dot'>
+                                <img src="/assets/img/green_dot.svg" alt="High" /> High
+                            </div>
+                                :
+                                e.trust_score=="red"?
+                                <div className='red_dot'>
+                                    <img src="/assets/img/red_dot.svg" alt="High" /> Low
+                                </div> 
+                                :
+                                e.trust_score=="yellow"?
+                                <div className='yellow_dot'>
+                                Neutral
+                            </div> 
+                                :
+                                ""
+                            }
+                        </div> */}
+                </div>
+            </div>
+        </div>
+        </div>
+        })
+        :
+        <div>
+            <p className='text-center'>
+                Sorry, No related data found
+            </p>
+        </div>
+        }
+                                </>
+                                :
+                        exchange_tab_id == 2 ?
+                        <>
+                        {
+                       dex_exchange_list.length>0?
+                       dex_exchange_list.map((e, i) => {
+
+                       return <div key={i}>
+                           <div className='tables_mobile_view'>
+                           <div className='table_header_res'>
+
+                                   <div className='row'>
+                                       <div className='col-6 text-left'>
+                                           <h6 className='exchange_main_text'>  {e.exchange_name}</h6>
+                                           <h6>{e.pair_one_name}/{e.pair_two_name}</h6>
+                                       </div>
+                                       <div className='col-6 text-right'>
+                                       <h6 className='exchange_main_text'>{e.volume ? convertCurrency(e.volume.toFixed(2)) : "--"} </h6>
+                                       <h6> {e.price ? convertCurrency(e.price) : "--"}</h6>
+                                           </div>
+                                           {/* <div className='col-4'>
+                                           <h6>{e.volume_percentage ? e.volume_percentage.toFixed(2) + "%" : "--"}</h6>
+                                           {
+                                                   e.trust_score=="green" ?
+                                                   <div className='green_dot'>
+                                                   <img src="/assets/img/green_dot.svg" alt="High" /> High
+                                               </div>
+                                                   :
+                                                   e.trust_score=="red"?
+                                                   <div className='red_dot'>
+                                                       <img src="/assets/img/red_dot.svg" alt="High" /> Low
+                                                   </div> 
+                                                   :
+                                                   e.trust_score=="yellow"?
+                                                   <div className='yellow_dot'>
+                                                   Neutral
+                                               </div> 
+                                                   :
+                                                   ""
+                                               }
+                                           </div> */}
+                                   </div>
+                                   </div>
+                               </div>
+                           </div>
+                           }
+                       
+                           )
+                           :
+                           <div>
+                               <p className='text-center'>
+                                   Sorry, No related data found
+                               </p>
+                           </div>
+                       }
+                       </>
+                      
+                       
+                       :""
+                    }
+                    </div>
+                        
+        )}
+
         </div>
         </div>
     </>            

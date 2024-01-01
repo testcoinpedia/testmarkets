@@ -135,6 +135,21 @@ export default function Exchange({reqData})
     const toggleDropdown = () => {
       setIsOpen(!isOpen);
     };
+
+
+    const [isMobileView, setIsMobileView] = useState(false);
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobileView(window.innerWidth <= 767);
+      };
+  
+      handleResize(); 
+      window.addEventListener('resize', handleResize);
+  
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, [])
    
     
   return(
@@ -177,7 +192,7 @@ export default function Exchange({reqData})
                     <option value={4} selected={sort_type == 4}>Date and time </option>
                 </select> */}
 
-
+{!isMobileView ? (
         <div id="scrollableDiv" className='trade-scroll' >
         <InfiniteScroll
                     dataLength={trade_history_list.length}
@@ -382,6 +397,89 @@ export default function Exchange({reqData})
                 </div>
                 </InfiniteScroll>  
         </div>
+
+
+
+        ) : (
+    <>
+     <div className='tables_mobile_view'>
+    <div className='table_header_res'>
+                                   <div className='row'>
+                                       <div className='col-6 text-left'>
+                                           <h5>Date & Type</h5>
+                                       </div>
+                                       <div className='col-6 text-right'>
+                                       
+                                       <h5>Price & TXCN</h5>
+                                           </div>
+                                           {/* <div className='col-4'>
+                                           <h5>Volume %</h5>
+                                           <h5>Trust Score</h5>
+                                           </div> */}
+                                   </div>
+                                   </div>
+                                   {   
+
+                                trade_history_list.length ?
+                                trade_history_list.map((innerItem, i) =>
+<div className='table_header_res'>
+                                   <div className='row'>
+                    <div className='col-6 text-left'>
+                        <h6 className='exchange_main_text'>{moment(innerItem.block.timestamp.time).format('MMM D YYYY')} {moment(innerItem.block.timestamp.time).format('h:mma')}</h6>
+                        <h6>                            
+                        {
+                                                        (innerItem.sellCurrency.address).toLowerCase() == (contracts_address).toLowerCase()  ?
+                                                        <span className='green'>
+                                                        Buy
+                                                        </span>
+                                                        :
+                                                        <span className='red'>
+                                                        Sell
+                                                        </span>
+                                                    }  </h6>
+                    </div>
+                    <div className='col-6 text-right'>
+                    <h6 className='exchange_main_text'>{
+                                                        (innerItem.sellCurrency.address).toLowerCase() == (contracts_address).toLowerCase()  ?
+                                                        <>
+                                                        {
+                                                            "$"+roundNumericValue(innerItem.buyAmountUSD / innerItem.sellAmount)
+                                                        }
+                                                        </>
+                                                        :
+                                                        <>
+                                                        {
+                                                            "$"+roundNumericValue(innerItem.sellAmountUSD / innerItem.buyAmount)
+                                                        }
+                                                        </>
+                                                    }</h6>
+                    <h6>
+                        <a className ="maker-link" href={(contracts_address.network_row_id == 6 ? "https://etherscan.io/address/":"https://bscscan.com/address/")+innerItem.transaction.txFrom.address}  
+                        target='_blank'>{getShortWalletAddress(innerItem.transaction.txFrom.address)}</a></h6>
+                        </div>
+                        
+                </div>
+                </div>
+                 )
+                 :
+                 ""
+             }
+
+{
+                                api_loader_status ?
+                                <TableContentLoader row="5" col="6" /> 
+                                :
+                                !trade_history_list.length ?
+                                <tr>
+                                    <td colSpan={6} className='text-center'>No related data found.</td>
+                                </tr>
+                                :
+                                ""
+                            }
+                                   </div>
+                                  
+    </>
+ )}
         
     </div>            
    )

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import moment from 'moment'
 import dynamic from 'next/dynamic'
 import { roundNumericValue } from '../../../components/config/helper'
-import Net_worth_chart from '../../../components/layouts/portfolio/charts/net_worth'
+import Net_worth_ranges from '../../layouts/portfolio/charts/net_worth_ranges'
 import { cookieDomainExtension, arrayBalanceContractsColumn, API_BASE_URL, MAIN_API_BASE_URL, graphqlApiURL, strLenTrim, separator, currency_object, config, count_live_price, validBalance, getShortWalletAddress, market_coinpedia_url, calling_network, IMAGE_BASE_URL } from '../../../components/constants'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
@@ -29,7 +29,10 @@ export default function AnalyticsFun({ data })
   }
   console.log("Analytics", data)
   
-  const { line_graph_values, line_graph_base_price, token_allocation_values, token_allocation_names } = data
+  
+
+
+  const { net_worth_price, change_24h, line_graph_values_1d, line_graph_values_7d, line_graph_base_price_1d, line_graph_base_price_7d, token_allocation_values, token_allocation_names } = data
   const [network] = useState(data.networks)
   const [image_base_url] = useState(IMAGE_BASE_URL + "/markets/cryptocurrencies/")
 
@@ -290,7 +293,7 @@ export default function AnalyticsFun({ data })
     var low_value = 0
     var high_value = 0
     let j = 0
-    for(let run of line_graph_values) 
+    for(let run of line_graph_values_1d) 
     {
       if(j > 14)
       {
@@ -321,13 +324,14 @@ export default function AnalyticsFun({ data })
     var values_array = []
     var times_array = []
     let i = 0
-    for(let run of line_graph_values) 
+    for(let run of line_graph_values_1d) 
     {
       if(i > 14)
       {
         if(moment(new Date(run.time*1000)).format("m") == 0)
         { 
-          const time = moment(new Date(run.time*1000)).format("ha")
+          //.format()
+          const time = moment.utc((new Date(run.time*1000))).format("ha MMM")
           await values_array.push(parseFloat((run.value - base_price).toFixed(2)))
           await times_array.push(time)
         }
@@ -539,7 +543,7 @@ export default function AnalyticsFun({ data })
 
           <div className="line-chart-asset-worth charts_subtitle dex-donot-pichart">
             <div className='row'>
-            <div className='col-12 col-md-12'>
+            {/* <div className='col-12 col-md-12'>
 
               <h6 className='portfolio-sub-title'>
                 <span className="net_worth_title">Net Worth:</span>
@@ -569,7 +573,7 @@ export default function AnalyticsFun({ data })
                 </span>
               </h6>
               <p className='net_worth_title'>Last 1day net worth based on present token holdings</p>
-            </div>
+            </div> */}
              
 
             <div className='col-md-6 col-6'>
@@ -591,10 +595,15 @@ export default function AnalyticsFun({ data })
             </div> 
           </div>
             
-             <Net_worth_chart
+             <Net_worth_ranges
               reqData={{
-                line_graph_values,
-                line_graph_base_price:line_graph_base_price
+                net_worth_status:true,
+                net_worth_price,
+                change_24h,
+                line_graph_values_1d,
+                line_graph_values_7d,
+                line_graph_base_price_1d,
+                line_graph_base_price_7d
               }}
             />
       </div>

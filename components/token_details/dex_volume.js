@@ -120,7 +120,7 @@ export default function MyFunction({reqData})
                         <div className='col-3'>
                        <div className='dex_filter'>
                        <div className="dropdown">
-                <button className="dex_filter_button dropdown-toggle" type="button" id="volumeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button className="dex_filter_button dropdown-toggle dex_block_bg" type="button" id="volumeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     24 h <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
                 </button>
                 <div className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`} aria-labelledby="volumeDropdown">

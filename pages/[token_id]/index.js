@@ -150,7 +150,7 @@ export default function tokenDetailsFunction({
         },
       },
       colors: ['#FF007A', '#FF007A', '#FF007A'],
-      labels: ['Max Supply', 'Total Supply', 'Circulating Supply'],
+      labels: ['Max', 'Total', 'Circulating'],
     },
   });
 
@@ -1110,12 +1110,17 @@ export default function tokenDetailsFunction({
     }
   };
 
+  const [copy_status, set_copy_status] = useState(0)
+
   const myReferrlaLink = () => {
+    set_copy_status(1)
+
     var copyText = document.getElementById("referral-link");
     copyText.select();
     document.execCommand("Copy");
-    var tooltip = document.getElementById("myTooltip");
-    tooltip.innerHTML = "Copied";
+    // var tooltip = document.getElementById("myTooltip");
+    // tooltip.innerHTML = "Copied";
+    setTimeout(() => set_copy_status(0), 2000)
   };
 
   const copyContract = (data) => {
@@ -1357,14 +1362,13 @@ export default function tokenDetailsFunction({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ExchangeList()) }}
         />
+
       </Head>
 
-      <div className="page">
-        <div className="market_token_details">
-            <div ref={div} className="markets_header_token">
+      <div ref={div} className="markets_header_token">
               <div className="container">
                 <div className="market_individual_header">
-                  <div className="col-md-12">
+                  <div className="">
                     <div className="row">
                       <div className="col-lg-8 col-xl-8 col-md-8">
                         <div className="breadcrumbs">
@@ -1457,27 +1461,12 @@ export default function tokenDetailsFunction({
                             ) : null
                           ) : null}
                           </h5>
-
-                          
-                              {/* <p>
-                                {data.token_title ? (
-                                  <>{data.token_title}</>
-                                ) : (
-                                  <>
-                                    Stay ahead by tracking{" "}
-                                    {data.symbol
-                                      ? data.symbol.toUpperCase()
-                                      : "-"}{" "}
-                                    cryptocurrency trends and analyzing data.
-                                  </>
-                                )}
-                              </p> */}
-                              
-                              <ul className="token_share_vote">
+                          <ul className="token_share_vote desktop_view" >
                                 {data.cp_rank ? <li>#{data.cp_rank} Rank</li> : ""}
                                 <li
                                   onClick={() => set_share_modal_status(true)}
                                   style={{ cursor: "pointer" }}
+                                  
                                 >
                                   <img src="/assets/img/coin_share.svg" alt="Share" />
                                 </li>
@@ -1515,15 +1504,74 @@ export default function tokenDetailsFunction({
                                   {total_watchlist_count ? <> {total_watchlist_count} Watchlists</>:""}
                                 </li>
                               </ul>
+                          
+                              {/* <p>
+                                {data.token_title ? (
+                                  <>{data.token_title}</>
+                                ) : (
+                                  <>
+                                    Stay ahead by tracking{" "}
+                                    {data.symbol
+                                      ? data.symbol.toUpperCase()
+                                      : "-"}{" "}
+                                    cryptocurrency trends and analyzing data.
+                                  </>
+                                )}
+                              </p> */}
+                              
+                              
                             </div>
                           </div>
+
+                          <ul className="token_share_vote mobile_view">
+                                {data.cp_rank ? <li>#{data.cp_rank} Rank</li> : ""}
+                                <li
+                                  onClick={() => set_share_modal_status(true)}
+                                  style={{ cursor: "pointer" }}
+                                  
+                                >
+                                  <img src="/assets/img/coin_share.svg" alt="Share" />
+                                </li>
+                                <li>
+                                  {user_token ? (
+                                    <>
+                                      {watchlist == true ? (
+                                        <span
+                                          onClick={() => removeFromWatchlist(data._id)}
+                                        >
+                                          <img
+                                            src="/assets/img/watchlist_filled.svg"
+                                            alt="Watchlist"
+                                          />
+                                        </span>
+                                      ) : (
+                                        <span onClick={() => addToWatchlist(data._id)}>
+                                          <img
+                                            src="/assets/img/watchlist_outline.svg"
+                                            alt="Watchlist"
+                                           
+                                          />
+                                        </span>
+                                      )}
+                                    </>
+                                  ) : (
+                                    <a onClick={() => loginModalStatus(data._id, 1)}>
+                                      <img
+                                        src="/assets/img/watchlist_outline.svg"
+                                        alt="Watchlist"
+                                        
+                                      />
+                                    </a>
+                                  )}
+                                  {total_watchlist_count ? <> {total_watchlist_count} Watchlists</>:""}
+                                </li>
+                              </ul>
+                         
                         </div>
                       </div>
 
                       <div className="col-lg-3 col-xl-3 col-md-6 order-md-2 order-3">
-                        <div className="token_price_block airdrop_data_content">
-
-                        </div>
+                        
                       </div>
 
                       <div className="col-lg-3 col-xl-3 col-md-6 order-md-3 order-1 ">
@@ -1573,8 +1621,9 @@ export default function tokenDetailsFunction({
                         </div>
                       </div>
                       <div className="col-md-7">
-                        <div className="row">
-                          <div className="col-md-3 col-6">
+                        <div className="token_list_data token_list_data_individual">
+                        <ul>
+                          <li>
                             <div className="token_list_values">
                               <h4>1 hour change</h4>
                               {data.percent_change_1h ? (
@@ -1603,8 +1652,8 @@ export default function tokenDetailsFunction({
                                 "-"
                               )}
                             </div>
-                          </div>
-                          <div className="col-md-3 col-6 mobile_padding_left">
+                          </li>
+                          <li>
                             <div className="token_list_values">
                               <h4>7 days change</h4>
                               {percentage_change_7d ? (
@@ -1637,8 +1686,8 @@ export default function tokenDetailsFunction({
                                 "-"
                               )}
                             </div>
-                          </div>
-                          <div className="col-md-3 col-6 mobile_padding_left">
+                          </li>
+                          <li>
                             <div className="token_list_values">
                               <h4>24hr Low</h4>
                               <h5>
@@ -1665,8 +1714,8 @@ export default function tokenDetailsFunction({
                                 
                               </h5>
                             </div>
-                          </div>
-                          <div className="col-md-3 col-6 mobile_padding_right">
+                          </li>
+                          <li>
                             <div className="token_list_values">
                               <h4>24hr High</h4>
                               <h5>
@@ -1697,7 +1746,8 @@ export default function tokenDetailsFunction({
                               } */}
                               </h5>
                             </div>
-                          </div>
+                          </li>
+                        </ul>
                         </div>
                       </div>
                     </div>
@@ -1852,6 +1902,11 @@ export default function tokenDetailsFunction({
               </div>
           </div>
 
+      <div className="page">
+        <div className="market_token_details">
+          
+            
+
           <div className="container">
             <div className="col-md-12">
               {/* <div className="breadcrumb_block">
@@ -1929,7 +1984,7 @@ export default function tokenDetailsFunction({
 
                   <div className="coin_details">
                     <div className="row">
-                      <div className="col-md-4">
+                      <div className="col-md-4 order-md-1 order-2" >
                         <div className="coin_main_links">
                           <ul className="coin_quick_details">
                             {data.website_link ==
@@ -2475,7 +2530,7 @@ export default function tokenDetailsFunction({
                         </div>
 
                         <div className="row">
-                          <div className="col-md-7">
+                          <div className="col-md-7 col-6">
                             <div className="token_details_circular_graph">
                               <div class="media">
                                 <img src="/assets/img/circulating_supply.svg" alt="Circulating Supply" className="dots" />
@@ -2616,7 +2671,7 @@ export default function tokenDetailsFunction({
                               </div>
                             </div>
                           </div>
-                          <div className="col-md-5">
+                          <div className="col-md-5 col-6">
                             <div id="chart" className="quick_values_graph">
                               <DynamicChartComponent
                                 options={chartData.options}
@@ -2799,7 +2854,7 @@ export default function tokenDetailsFunction({
                           <ul className="coin_quick_details"></ul>
                         </div>
                       </div>
-                      <div className="col-md-4">
+                      <div className="col-md-4 order-md-2 order-1">
                         <div className="speedometer_summary">
                           <h5 className='sub_title_main'>Indicator Sentiment:</h5>
                           <div className="row">
@@ -2894,10 +2949,10 @@ export default function tokenDetailsFunction({
                         </div>
                         <div className="token_list_content">
                           <div className="row">
-                            <div className="col-md-4">
+                            <div className="col-md-4 col-5">
                               <h4 className="quick_title">Market Cap</h4>
                             </div>
-                            <div className="col-md-8">
+                            <div className="col-md-8 col-7" >
                               <h5 className="quick_values">
                               {
                                 circulating_supply > 0 ? (
@@ -2915,10 +2970,10 @@ export default function tokenDetailsFunction({
                           </div>
                           {ath_price ? (
                           <div className="row">
-                            <div className="col-md-4">
+                            <div className="col-md-4 col-5">
                             <h4 className="quick_title">All Time Low</h4>
                             </div>
-                            <div className="col-md-8">
+                            <div className="col-md-8 col-7">
                               <h5 className="quick_values">
                               {
                                 convertCurrency(atl_price)} &nbsp;{" "}
@@ -2954,10 +3009,10 @@ export default function tokenDetailsFunction({
                           
                           {ath_price ? (
                           <div className="row">
-                            <div className="col-md-4">
+                            <div className="col-md-4 col-5">
                             <h4 className="quick_title">All Time High</h4>
                             </div>
-                            <div className="col-md-8">
+                            <div className="col-md-8 col-7">
                               <h5 className="quick_values">
                               {convertCurrency(ath_price)} &nbsp;{" "}
                               <span className="values_growth">
@@ -2979,10 +3034,10 @@ export default function tokenDetailsFunction({
                           </div>):""}
 
                           <div className="row">
-                            <div className="col-md-4">
+                            <div className="col-md-4 col-5">
                             <h4 className="quick_title">Green Days</h4>
                             </div>
-                            <div className="col-md-8">
+                            <div className="col-md-8 col-7">
                               <h5 className="quick_values">
                               {
                                 green_days ? 
@@ -2997,10 +3052,10 @@ export default function tokenDetailsFunction({
                           </div>
 
                           <div className="row">
-                            <div className="col-md-4">
+                            <div className="col-md-4 col-5">
                             <h4 className="quick_title">50-Day SMA</h4>
                             </div>
-                            <div className="col-md-8">
+                            <div className="col-md-8 col-7">
                               <h5 className="quick_values">
                               {close_price_of_fifty ? (
                                 <>
@@ -3014,10 +3069,10 @@ export default function tokenDetailsFunction({
                           </div>
 
                           <div className="row">
-                            <div className="col-md-4">
+                            <div className="col-md-4 col-5">
                               <h4 className="quick_title">200-Day SMA</h4>
                             </div>
-                            <div className="col-md-8">
+                            <div className="col-md-8 col-7">
                               <h5 className="quick_values">
                               {close_price_of_two_hundred ? (
                                 <>
@@ -3214,7 +3269,7 @@ export default function tokenDetailsFunction({
                         </div> */}
                       </div>
 
-                      <div className="col-md-4 col-12">
+                      <div className="col-md-4 col-12 order-md-3 order-3">
                         <Dex_volume
                           reqData={{
                             token_id: data.token_id,
@@ -3258,7 +3313,6 @@ export default function tokenDetailsFunction({
                             </div>
 
                           <div className="input-group">
-
                                 <div className="input-group-prepend converter-label">
                                   <span className="input-group-text converter-second-span">
                                   <img src="/assets/img/usdt_icon.svg" alt="USDT" />&nbsp;
@@ -3649,6 +3703,7 @@ export default function tokenDetailsFunction({
                                         </div>
                                       ) : chart_tab == 4 ? (
                                         <>
+                                        <div className="charts_date_tab date_chart_interval mb-3">
                                           <div className="dex_pair_dropdown">
                                             <ul>
                                               <li
@@ -3823,6 +3878,7 @@ export default function tokenDetailsFunction({
                                                 )}
                                               </li>
                                             </ul>
+                                          </div>
                                           </div>
                                         </>
                                       ) : (
@@ -4117,7 +4173,7 @@ export default function tokenDetailsFunction({
 
                               <div id="technical_analysis" className={ "tab-pane fade " + (main_tab == 11 ? "show active" : "") }>
                                 <div className="row  mb-4">
-                                  <div className="col-md-4">
+                                  <div className="col-md-4 col-6">
 
                                   <div className='dex_filter mb-3'>
                                   <div className="charts_date_tab date_chart_interval float-left">
@@ -4147,7 +4203,7 @@ export default function tokenDetailsFunction({
                                    
                                
                                   </div>
-                                  <div className="col-md-8 text-right">
+                                  <div className="col-md-8 col-6 text-right">
                                     <div className="charts_date_tab date_chart_interval">
                                   <div className='dex_filter mb-3'>
             <div class="dropdown">
@@ -4280,19 +4336,19 @@ export default function tokenDetailsFunction({
                                           <div className="col-md-1">&nbsp;</div>
                                           <div className="col-md-10">
                                             <div className="row">
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Sell</h5>
                                                   <h4>{oscillator_sell}</h4>
                                                 </div>
                                               </div>
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Neutral</h5>
                                                   <h4>{oscillator_neutral}</h4>
                                                 </div>
                                               </div>
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Buy</h5>
                                                   <h4>{oscillator_buy}</h4>
@@ -4398,19 +4454,19 @@ export default function tokenDetailsFunction({
                                           <div className="col-md-1">&nbsp;</div>
                                           <div className="col-md-10">
                                             <div className="row">
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Sell</h5>
                                                   <h4>{summary_sell}</h4>
                                                 </div>
                                               </div>
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Neutral</h5>
                                                   <h4>{summary_neutral}</h4>
                                                 </div>
                                               </div>
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Buy</h5>
                                                   <h4>{summary_buy}</h4>
@@ -4523,19 +4579,19 @@ export default function tokenDetailsFunction({
                                           <div className="col-md-1">&nbsp;</div>
                                           <div className="col-md-10">
                                             <div className="row">
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Sell</h5>
                                                   <h4>{total_sma_sell}</h4>
                                                 </div>
                                               </div>
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Neutral</h5>
                                                   <h4>{total_sma_neutral}</h4>
                                                 </div>
                                               </div>
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Buy</h5>
                                                   <h4>{total_sma_buy}</h4>
@@ -5199,59 +5255,10 @@ export default function tokenDetailsFunction({
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="col-md-12 col-sm-12 col-12 col-lg-4 col-xl-4">
-                        <div className="token_details_tabs_row">
-                          <ul className="nav nav-tabs token_events_tabs">
-                            <li className="nav-item">
-                              <a
-                                className="nav-link active"
-                                data-toggle="tab"
-                                href="#news"
-                              >
-                                <span>News</span>
-                              </a>
-                            </li>
 
-                            <li className="nav-item">
-                              <a
-                                className="nav-link "
-                                data-toggle="tab"
-                                href="#events"
-                              >
-                                <span>Events</span>
-                              </a>
-                            </li>
-
-                            {/* <li className="nav-item" >
-                                  <a className="nav-link" data-toggle="tab" href="#airdrop"><span>Airdrop</span></a>
-                            </li> */}
-                          </ul>
-                        </div>
-
-                        <div className="tab-content">
-                          <div
-                            id="news"
-                            className="tab-pane fade show in active "
-                          >
-                            <News />
-                          </div>
-
-                          <div id="events" className="tab-pane fade in">
-                            <Events />
-                          </div>
-
-                          <div id="airdrop" className="tab-pane fade in">
-                            <Airdrops />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-    <div className="token_list_values mt-2">
-      <div className="row">
-          <div className="col-md-8">
+                        <div className="token_list_values mt-2">
+     
+          <div >
           <h5 className="summary-title">
             Summary of {data.token_name}
           </h5>
@@ -5499,7 +5506,7 @@ export default function tokenDetailsFunction({
           </div>
 
           </div>     
-      </div>
+      
                   
                                  
                   
@@ -5553,6 +5560,58 @@ export default function tokenDetailsFunction({
                       ""
                     )} */}
                   </div>
+                      </div>
+                      
+                      <div className="col-md-12 col-sm-12 col-12 col-lg-4 col-xl-4">
+                        <div className="token_details_tabs_row">
+                          <ul className="nav nav-tabs token_events_tabs">
+                            <li className="nav-item">
+                              <a
+                                className="nav-link active"
+                                data-toggle="tab"
+                                href="#news"
+                              >
+                                <span>News</span>
+                              </a>
+                            </li>
+
+                            <li className="nav-item">
+                              <a
+                                className="nav-link "
+                                data-toggle="tab"
+                                href="#events"
+                              >
+                                <span>Events</span>
+                              </a>
+                            </li>
+
+                            {/* <li className="nav-item" >
+                                  <a className="nav-link" data-toggle="tab" href="#airdrop"><span>Airdrop</span></a>
+                            </li> */}
+                          </ul>
+                        </div>
+
+                        <div className="tab-content">
+                          <div
+                            id="news"
+                            className="tab-pane fade show in active "
+                          >
+                            <News />
+                          </div>
+
+                          <div id="events" className="tab-pane fade in">
+                            <Events />
+                          </div>
+
+                          <div id="airdrop" className="tab-pane fade in">
+                            <Airdrops />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+    
 
                   
 
@@ -5641,31 +5700,54 @@ export default function tokenDetailsFunction({
         </div>
       </div>
 
+
+
+
       <div
-        className={"modal " + (share_modal_status ? " modal_show" : " ")}
+        className={"modal share_popup_token  " + (share_modal_status ? " modal_show" : " ")}
         id="market_share_page"
       >
         <div className="modal-dialog">
           <div className="modal-content">
-            <div className="modal-header">
-              <h4 className="modal-title">Share</h4>
-              <button
+            <div className="modal-body">
+            <button
                 type="button"
                 className="close"
                 data-dismiss="modal"
                 onClick={() => set_share_modal_status(false)}
               >
                 <span>
-                  <img src="/assets/img/close_icon.svg" alt="Close" />
+                  <img src="/assets/img/close_popup.svg" alt="Close" />
                 </span>
               </button>
-            </div>
-            <div className="modal-body">
-              <div className="row">
-                <div className="col-md-1" />
-                <div className="col-md-10">
-                  <div className="input-group">
-                    <input
+              <h4>Share it with your friends!</h4>
+              <div className="share_token_img">
+              <img
+                                src={
+                                  data.token_image
+                                    ? image_base_url + data.token_image
+                                    : data.coinmarketcap_id
+                                    ? cmc_image_base_url +
+                                      data.coinmarketcap_id +
+                                      ".png"
+                                    : image_base_url + "default.svg"
+                                }
+                                onError={(e) =>
+                                  (e.target.src = "/assets/img/default_token.png")
+                                }
+                                className="token_img"
+                                alt={data.token_name}
+                                width="100%"
+                                height="100%"
+                              />
+              </div>
+              <h1 className="token_name_share">  {data.token_name ? data.token_name : "-"}
+                                <span>
+                                  {data.symbol ? data.symbol.toUpperCase() : "-"}
+                                </span> : {live_price > 0 ? convertCurrency(live_price): "NA"}</h1>
+              <div className="share_input_url">
+              <div className="input-group">
+              <input
                       type="text"
                       id="referral-link"
                       className="form-control"
@@ -5673,41 +5755,58 @@ export default function tokenDetailsFunction({
                       readOnly
                     />
                     <div className="input-group-prepend">
-                      <span
-                        className="input-group-text"
-                        id="myTooltip"
-                        onClick={() => myReferrlaLink()}
-                      >
-                        <img
-                          src="/assets/img/copy-file.png"
-                          alt="Copy"
-                          className="copy_link ml-2"
-                          width="100%"
-                          height="100%"
-                        />
-                      </span>
+                    {
+                      copy_status == 0 ?
+                        <span
+                          className="input-group-text"
+                          id="myTooltip"
+                          onClick={() => myReferrlaLink()}
+                        >
+                          <img
+                            src="/assets/img/copy_icon_url.svg"
+                            alt="Copy"
+                            className="copy_link ml-2"
+                            width="100%"
+                            height="100%"
+                          />
+                        </span>
+                        :
+                        <span
+                          className="input-group-text"
+                          id="myTooltip"
+                          onClick={() => myReferrlaLink()}
+                        >
+                         Copied!
+                        </span>
+                    }
                     </div>
                   </div>
-
-                  <h6>Share with </h6>
-                  <p className="share_social">
-                    <a
+                  
+              </div>
+              <h6>Or share it with</h6>
+              <div className="share_social_img">
+                <ul>
+                  <li>
+                  <a
                       rel="nofollow"
                       href={
                         "https://www.facebook.com/sharer/sharer.php?u=" +
                         market_coinpedia_url +
                         data.token_id
-                      }
-                      target="_blank"
+                      } target="_blank"
                     >
+                      <span>
                       <img
-                        src="/assets/img/facebook.png"
+                        src="/assets/img/facebook_img.svg"
                         alt="Facebook"
                         width="100%"
                         height="100%"
                       />
+                      </span>
                     </a>
-                    <a
+                  </li>
+                  <li>
+                  <a
                       rel="nofollow"
                       href={
                         "https://www.linkedin.com/shareArticle?mini=true&url=" +
@@ -5717,13 +5816,15 @@ export default function tokenDetailsFunction({
                       target="_blank"
                     >
                       <img
-                        src="/assets/img/linkedin.png"
+                        src="/assets/img/linkedin_img.svg"
                         alt="Linkedin"
                         width="100%"
                         height="100%"
                       />
                     </a>
-                    <a
+                  </li>
+                  <li>
+                  <a
                       rel="nofollow"
                       href={
                         "http://twitter.com/share?url=" +
@@ -5735,31 +5836,37 @@ export default function tokenDetailsFunction({
                       target="_blank"
                     >
                       <img
-                        src="/assets/img/twitter.png"
+                        src="/assets/img/twitter_img.svg"
                         alt="Twitter"
                         width="100%"
                         height="100%"
                       />
                     </a>
-                    <a
+                  </li>
+                  <li>
+                  <a
                       rel="nofollow"
                       href={"https://wa.me/?text=" + share_text}
                       target="_blank"
                     >
                       <img
-                        src="/assets/img/whatsapp.png"
+                        src="/assets/img/whatsapp_img.svg"
                         width="100%"
                         height="100%"
                         alt="Whatsapp"
                       />
                     </a>
-                  </p>
-                </div>
+                  </li>
+                </ul>
               </div>
             </div>
+          
+           
           </div>
         </div>
       </div>
+
+      
 
       <div className={"modal " + (category_modal ? " modal_show" : " ")}>
         <div className="modal-dialog">

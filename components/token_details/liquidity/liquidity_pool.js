@@ -42,7 +42,18 @@ export default function Exchange({reqData})
             fill: {
                 type: 'gradient',
             }
-        }
+        },
+        responsive: [{
+            breakpoint: 480,
+            options: {
+              chart: {
+                width:320,
+              },
+              legend: {
+                position: 'bottom',
+              }
+            }
+          }]
     }
 
     const arrangePiChartData = async ({list_data, grand_liquidity_value}) =>
@@ -354,7 +365,7 @@ export default function Exchange({reqData})
         !loader_status ?
             liquidity_pools.length ?
             <div className='row'>
-                <div className='col-md-5 mt-5'>
+                <div className='col-md-5 mt-3'>
                 
                     <h6>Dex top {token_name} liquidity distribution pie chart. </h6>
                     <p>How much top liquidity pools is available on decentralized exchanges(DEXes) for the selected paired token.</p>

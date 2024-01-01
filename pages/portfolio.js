@@ -37,7 +37,7 @@ import { USDFormatValue, getNetworkImageNameByID, getNetworkNameByID, addRemoveA
 import { cookieDomainExtension, roundNumericValue, arrayBalanceContractsColumn, API_BASE_URL, MAIN_API_BASE_URL, graphqlApiURL, strLenTrim, separator, currency_object, config, count_live_price, validBalance, getShortWalletAddress, market_coinpedia_url, calling_network, IMAGE_BASE_URL, arrayContractsColumn } from '../components/constants'
 import InfiniteScroll from "react-infinite-scroll-component";
 import Nft_loader from '../components/loaders/nft_loader'
-import Net_worth_chart from '../components/layouts/portfolio/charts/net_worth'
+import Net_worth_ranges from '../components/layouts/portfolio/charts/net_worth_ranges'
 
 
 export default function WalletDetails({ userAgent, prev_url, search_address }) 
@@ -62,23 +62,24 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   const [tokens_list_as_list_view, set_tokens_list_as_list_view] = useState([])
   const [tokens_grand_total, set_tokens_grand_total] = useState(0)
   const [wallet_listing_limit] = useState(4)
-  const [active_networks, set_active_networks] = useState([1, 56, 137, 250, 43114,8217])
-  console.log("active_networks",active_networks)
+  const [active_networks, set_active_networks] = useState([1, 56, 137, 250, 43114])
+  //console.log("active_networks",active_networks)
   const [image_base_url] = useState(IMAGE_BASE_URL + "/markets/cryptocurrencies/")
   const [wallet_menu_show_status, set_wallet_menu_show_status] = useState("")
   const [copy_wallet_address, set_copy_wallet_address] = useState("")
-  const [crypto_networks_list, set_crypto_networks_list] = useState(cryptoNetworksList({ ethereum: 0, bsc: 0, polygon: 0, fantom: 0, avalanche: 0, klayton:0 }))
-  console.log("crypto_networks_list",crypto_networks_list)
+  const [crypto_networks_list, set_crypto_networks_list] = useState(cryptoNetworksList({ ethereum: 0, bsc: 0, polygon: 0, fantom: 0, avalanche: 0 }))
+  //console.log("crypto_networks_list",crypto_networks_list)
   const [display_tokens_balance, set_display_tokens_balance] = useState(0)
   const [tokens_view_type, set_tokens_view_type] = useState(1)
   const [filter_tokens_list_as_account_view, set_filter_tokens_list_as_account_view] = useState([])
-  console.log("filter_tokens_list_as_account_view",filter_tokens_list_as_account_view)
+  //console.log("filter_tokens_list_as_account_view",filter_tokens_list_as_account_view)
   const [all_tokens, set_all_tokens] = useState([])
   const [token_minimum_balance] = useState(0.000000001)
   const [token_maximum_balance] = useState(10000000000 * 10000000000 * 1000)
+  const [backend_server_time, set_backend_server_time] = useState("")
   //Multiple Wallet Address Code Ends Here
   // console.log("address", address)
-
+  
 
   const [tab_active, set_tab_active] = useState((active_watchlist_tab > 0) ? 2 : 1)
 
@@ -108,7 +109,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   
 
   const [pi_chart_values, set_pi_chart_values] = useState([])
-  const [pi_chart_names, set_pi_chart_names] = useState(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche','klayton'])
+  const [pi_chart_names, set_pi_chart_names] = useState(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche'])
   const [pi_chart_colors] = useState(['#647fe6', '#ffc107', '#6f42c1', '#00bcd4', '#f44336'])
 
 
@@ -131,24 +132,27 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
   const tokens_count_length = tokens_list_as_list_view.filter((e) => active_networks.includes(e.network))
 
-  console.log("tokens_count_length",tokens_count_length)
+  // console.log("tokens_count_length",tokens_count_length)
   // console.log("tokens_grand_total",tokens_grand_total)
 
 
   const [user_token, set_user_token] = useState(userAgent.user_token ? userAgent.user_token : "");
   const [login_modal_status, set_login_modal_status] = useState(false)
   const [request_config, set_request_config] = useState(config(userAgent.user_token ? userAgent.user_token : ""))
-  const [line_graph_base_price, set_line_graph_base_price] = useState(0)
+  
 
   const [unsubscribe_status, set_unsubscribe_status] = useState(false)
   const [line_graph_days, set_line_graph_days] = useState([])
-  const [line_graph_values, set_line_graph_values] = useState([])
+  const [line_graph_values_1d, set_line_graph_values_1d] = useState([])
+  const [line_graph_values_7d, set_line_graph_values_7d] = useState([])
+  const [line_graph_base_price_1d, set_line_graph_base_price_1d] = useState(0)
+  const [line_graph_base_price_7d, set_line_graph_base_price_7d] = useState(0)
   const [worth_chart_type, set_worth_chart_type] = useState(2)
   
-  
+
   const line_chart_series = [{
     name: "Asset Worth",
-    data: line_graph_values
+    data: line_graph_values_1d
   }]
 
   const line_chart_options = {
@@ -283,23 +287,23 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   //       }
   //       // console.log("balance_list", balance_list)
   //       // console.log("sum_array", sum_array)
-  //       await set_line_graph_values(sum_array)
+  //       await set_line_graph_values_1d(sum_array)
   //   }
 
 
   const setChartWorth = async (pass_type) => 
   {
     set_loader_status(true)
-    console.log("pass_type", pass_type)
+    //console.log("pass_type", pass_type)
     set_worth_chart_type(pass_type)
     const get_days_res = await getDaysList(tokens_list_as_list_view, display_tokens_balance, pass_type)
     await set_line_graph_days(get_days_res.line_graph_days)
-    await set_line_graph_values(get_days_res.line_graph_values)
+    await set_line_graph_values_1d(get_days_res.line_graph_values_1d)
   }
 
   const getDataFromChild = async (pass_object) => 
   {
-    console.log("pass_object", pass_object)
+    //console.log("pass_object", pass_object)
     await set_login_modal_status(false)
     await set_user_token(JsCookie.get("user_token"))
     await set_request_config(JsCookie.get("user_token"))
@@ -396,6 +400,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   const multipleAddressList = async (pass_address, pass_nickname, pass_action_type, refresh_status) => 
   {
     // console.log("pass_action_type", pass_action_type)
+    var server_present_time = ""
     set_tab_active(1)
     set_loader_status(false)
     var my_active_nicknames = active_nicknames
@@ -428,12 +433,13 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     for(let run of my_active_addresses) 
     {
       var fetch_status = false
+      
       if(!refresh_status)
       {
         if(portfolio_wallets[run]) 
         {
           var { list, sub_total_balance, expire_at } = portfolio_wallets[run]
-          var present_time = new Date().getTime()
+          var local_present_time = new Date().getTime()
 
           // console.log("expire_at1", present_time)
           // console.log("expire_at2", expire_at)
@@ -442,34 +448,41 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
           {
             if(list.length > 0) 
             {
-              if(expire_at >= present_time) 
+              if(expire_at >= local_present_time) 
               {
                 const updated_token_list = await updateTokensPricing(list) 
 
                 fetch_status = true
                 var inner_tokens_list = {
-                  wallet_address: run,
-                  networks: list.map(item => item.network).filter((value, index, self) => self.indexOf(value) === index),
-                  tokens: updated_token_list.arrange_result,
-                  nick_name: await getNameByUsingWalletAddress(my_active_nicknames, run),
-                  sub_total_balance: updated_token_list.total_balance
+                  wallet_address : run,
+                  networks : list.map(item => item.network).filter((value, index, self) => self.indexOf(value) === index),
+                  tokens : updated_token_list.arrange_result,
+                  nick_name : await getNameByUsingWalletAddress(my_active_nicknames, run),
+                  sub_total_balance : updated_token_list.total_balance
                 }
 
                 await tokens_list.push(inner_tokens_list)
                 // console.log("qwerty",tokens_list)
                 list.map((e) => tokens.push(e.name))
+
+                if(!server_present_time)
+                {
+                  server_present_time = await updated_token_list.present_time
+                }
+                
                 
               }
             }
           }
         }
       }
+      
      
       if(!fetch_status) 
       {
-        console.log("asdfasdf")
-        var { wallet_tokens_list, total_balance, not_fetch_array } = await fetchNewWalletTokens(run)
-        console.log(not_fetch_array)
+        // console.log("asdfasdf")
+        var { wallet_tokens_list, total_balance, not_fetch_array, present_time } = await fetchNewWalletTokens(run)
+        // console.log(not_fetch_array)
         await savePortfolioInLocalStorage({ wallet_address: run, final_array: wallet_tokens_list, total_balance: total_balance })
 
         var inner_tokens_list = {
@@ -481,7 +494,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
         }
 
         await tokens_list.push(inner_tokens_list)
-        // console.log("qwerty1",tokens_list)
+        //console.log("qwerty1",tokens_list)
 
         wallet_tokens_list.map((e) => tokens.push(e.name))
         
@@ -492,14 +505,20 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
         if(wallet_tokens_list.length)
         {
-          users_wallets_tokens = await {wallet_address:run, tokens:wallet_tokens_list}
+          users_wallets_tokens = await { wallet_address:run, tokens:wallet_tokens_list }
         }
+
+        if(!server_present_time)
+        {
+          server_present_time = await present_time
+        }
+        
       }
     }
     set_all_tokens(tokens)
-    console.log("tokens1", tokens_list)
-    console.log("Alltokens", tokens)
-    await arrangeListViewTokens(tokens_list)
+    //console.log("tokens1", tokens_list)
+    //console.log("Alltokens", tokens)
+    await arrangeListViewTokens(tokens_list, server_present_time)
     await set_tokens_list_as_account_view(tokens_list)
 
     const { account_view_result, grand_total_balance, final_24h_change } = await tokenAccountViewList(active_networks, tokens_list)
@@ -515,18 +534,26 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     if(not_fetched_array.length)
     {
       await updateFetchedTokens(not_fetched_array)
-      console.log("not_fetched_array", not_fetched_array)
+      //console.log("not_fetched_array", not_fetched_array)
     }
 
     if(users_wallets_tokens.wallet_address)
     { 
       await updateUsersAssets(users_wallets_tokens)
-      console.log("users_wallets_tokens", users_wallets_tokens)
+      //console.log("users_wallets_tokens", users_wallets_tokens)
     }
-    
+
   }
   
   const updateFetchedTokens = async (pass_array) =>
+  {
+     
+    const response = await Axios.post(API_BASE_URL + 'markets/portfolio/chart_prices', { assets: pass_array }, config(""))
+    console.log("not_fetched_tokens", response)
+
+  }
+
+  const getChartPrices = async (pass_array) =>
   {
     //const response = 
     await Axios.post(API_BASE_URL + 'markets/portfolio/not_fetched_tokens', { assets: pass_array }, config(""))
@@ -536,10 +563,10 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   const updateTokensPricing = async (token_list) =>
   { 
     const array_arranged = await arrayContractsColumn(token_list, 'address')
-    const { price_list, history_list } = await getBalancesLivePrices(array_arranged)
-    console.log("token_list", token_list)
-    // console.log("price_list", price_list)
-    // console.log("history_list", history_list)
+    const { price_list, history_1d, history_7d, present_time } = await getBalancesLivePrices(array_arranged)
+  //   console.log("price_list", price_list)
+  //   console.log("history_1d", history_1d)
+  //  console.log("history_7d", history_7d)
 
     const arrange_result = []
     var total_balance = 0
@@ -580,15 +607,27 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
             inner_object['volume'] = cp_single_data.volume ? cp_single_data.volume:""
             inner_object['_id'] = cp_single_data._id ? cp_single_data._id:""
             
-            const index = await history_list.findIndex(item => item._id === cp_single_data._id)
+
+            const index = await history_1d.findIndex(item => item._id === cp_single_data._id)
             if(index != -1)
             {
-              inner_object['sparkline_in_7d'] = history_list[index].data
+              inner_object['sparkline_in_1d'] = history_1d[index].data
+            }
+            else
+            {
+              inner_object['sparkline_in_1d'] = []
+            }
+
+            const index2 = await history_7d.findIndex(item => item._id === cp_single_data._id)
+            if(index2 != -1)
+            {
+              inner_object['sparkline_in_7d'] = history_7d[index2].data
             }
             else
             {
               inner_object['sparkline_in_7d'] = []
             }
+            
             await arrange_result.push(inner_object)
 
             if(run.balance && cp_single_data.price) 
@@ -599,13 +638,14 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
         }
       }
 
-    console.log("arrange_result", arrange_result)
-    return await {total_balance, arrange_result}
+    //console.log("arrange_result", arrange_result)
+    return await { total_balance, arrange_result, present_time }
   } 
 
-  const arrangeListViewTokens = async (pass_tokens_list) => 
+  const arrangeListViewTokens = async (pass_tokens_list, server_present_time) => 
   {
-    // console.log("pass_address",pass_address)
+   
+    console.log("pass_tokens_list", pass_tokens_list)
     var tokens_final_array = []
     var grand_total_balance = 0
     if(pass_tokens_list.length) 
@@ -625,6 +665,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
             new_object['change_24h'] = inner_run.change_24h
             new_object['network'] = inner_run.network
             new_object['price'] = inner_run.price
+            new_object['sparkline_in_1d'] = inner_run.sparkline_in_1d
             new_object['sparkline_in_7d'] = inner_run.sparkline_in_7d
             new_object['symbol'] = inner_run.symbol
             new_object['high_24h'] = inner_run.high_24h
@@ -748,7 +789,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
     const network_balances_list = await cryptoNetworksList({ ethereum, bsc, polygon, fantom, avalanche, klaytn })
     await set_crypto_networks_list(network_balances_list)
-    console.log("network_balances_list", network_balances_list)
+    //console.log("network_balances_list", network_balances_list)
 
 
     var total_balances = 0
@@ -765,87 +806,167 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     const tokens_list_view = await obj2.sort((a, b) => (a.price * a.balance * 100) < (b.price * b.balance * 100) ? 1 : -1)
 
     await set_tokens_list_as_list_view(tokens_list_view)
-    const get_days_res = await setNetWorth(tokens_list_view, total_balances, 2)
+    const get_days_res = await setNetWorth(tokens_list_view, total_balances, server_present_time)
     // await set_line_graph_days(get_days_res.line_graph_days)
-    // await set_line_graph_values(get_days_res.line_graph_values)
+    // await set_line_graph_values_1d(get_days_res.line_graph_values_1d)
     setChartsData({ final_array: tokens_list_view, total_balance: total_balances })
   }
 
   
-  const setNetWorth = async (balance_list, balance, data_type) =>
+  const setNetWorth = async (balance_list, balance, server_present_time) =>
   { 
+    console.log("total_balances", balance)
+    console.log("server_present_time",server_present_time)
+    const format_server_present_time = await moment(server_present_time).format("YYYY-MM-DDTHH:mm:ss")+".000Z"
     await set_loader_status(false)
-    var date_array = []
+    var date_array_1d = []
     var low_value = 0
     var high_value = 0
+    for(let run of balance_list)
+    { 
+      if(run.sparkline_in_1d)
+      {
+        if(run.sparkline_in_1d.length)
+        {
+          date_array_1d = await run.sparkline_in_1d
+          break
+        }
+      }
+    }
+
+    const new_array_1d = []
+    if(date_array_1d)
+    {
+      for(let run in date_array_1d)
+      { 
+        var sumOne = 0
+        var counter = 0
+        for(let innerRun of balance_list)
+        {   
+          if((innerRun.sparkline_in_1d[run] && innerRun.balance))
+          {
+            sumOne += await innerRun.sparkline_in_1d[run].price*innerRun.balance
+            counter++
+          }
+          else if((innerRun.price && innerRun.balance))
+          { 
+            sumOne += await innerRun.price*innerRun.balance
+            counter++
+          }
+        }
+
+        if(run == 0)
+        {
+          low_value = await sumOne
+        }
+        else
+        {
+          if(sumOne < low_value)
+          {
+            low_value = await sumOne
+          }
+        }
+
+        if(sumOne > high_value)
+        {
+          high_value = await sumOne
+        }
+        const current_country_time = await moment(date_array_1d[run].date_n_time).format("YYYY-MM-DDTHH:mm:ss")+".000Z"
+        await new_array_1d.push({
+          value : sumOne,
+          // counter: counter,
+          time : Math.floor((new Date(current_country_time)).getTime()/1000)
+        })
+      }
+
+      
+      await new_array_1d.push({
+        value : balance,
+        // counter: counter,
+        time : Math.floor((new Date(format_server_present_time)).getTime()/1000)
+      })
+      
+
+    }
+    const base_price = await parseFloat(((low_value+high_value)/2).toFixed(2))
+
+    // console.log("new_array_1d", new_array_1d)
+    await set_line_graph_values_1d(new_array_1d)
+    await set_line_graph_base_price_1d(base_price)
+    
+    var date_array_7d = []
+    var low_value_7d = 0
+    var high_value_7d = 0
     for(let run of balance_list)
     { 
       if(run.sparkline_in_7d)
       {
         if(run.sparkline_in_7d.length)
         {
-         
-          date_array = await run.sparkline_in_7d
-          break;
+          date_array_7d = await run.sparkline_in_7d
+          break
         }
-        
       }
     }
-    const new_array = []
     
-      if(date_array)
-      {
-        for(let run in date_array)
-        { 
-            var sumOne = 0
-            var counter = 0
-            for(let innerRun of balance_list)
-            {   
-              if((innerRun.sparkline_in_7d[run] && innerRun.balance))
-              {
-                sumOne += await innerRun.sparkline_in_7d[run].price*innerRun.balance
-                counter++
-              }
-              else if((innerRun.price && innerRun.balance))
-              { 
-                sumOne += await innerRun.price*innerRun.balance
-                counter++
-              }
+    const new_array_7d = []
+    if(date_array_7d)
+    {
+      for(let run in date_array_7d)
+      { 
+          var sumTwo = 0
+          var counter = 0
+          for(let innerRun of balance_list)
+          {   
+            if((innerRun.sparkline_in_7d[run] && innerRun.balance))
+            {
+              sumTwo += await parseFloat(innerRun.sparkline_in_7d[run].price)*parseFloat(innerRun.balance)
+              counter++
             }
+            else if((innerRun.price && innerRun.balance))
+            { 
+              sumTwo += await parseFloat(innerRun.price)*parseFloat(innerRun.balance)
+              counter++
+            }
+          }
 
-            if(run == 0)
+          if(run == 0)
+          {
+            low_value_7d = await sumTwo
+          }
+          else
+          {
+            if(sumTwo < low_value_7d)
             {
-              low_value = await sumOne
+              low_value_7d = await sumTwo
             }
-            else
-            {
-              if(sumOne < low_value)
-              {
-                low_value = await sumOne
-              }
-            }
+          }
 
-            if(sumOne > high_value)
-            {
-              high_value = await sumOne
-            }
-            const current_country_time = await moment(date_array[run].date_n_time).format("YYYY-MM-DDTHH:mm:ss")+".000Z"
-            await new_array.push({
-              value : sumOne,
-              // counter: counter,
-              time : Math.floor((new Date(current_country_time)).getTime()/1000)
-            })
-        }
+          if(sumTwo > high_value_7d)
+          {
+            high_value_7d = await sumTwo
+          }
+          const current_country_time = await moment(date_array_7d[run].date_n_time).format("YYYY-MM-DDTHH:mm:ss")+".000Z"
+          await new_array_7d.push({
+            value : sumTwo,
+            // counter: counter,
+            time : Math.floor((new Date(current_country_time)).getTime()/1000)
+          })
       }
 
-      const base_price = await parseFloat(((low_value+high_value)/2).toFixed(2))
-
-      await set_line_graph_values(new_array)
-      await set_line_graph_base_price(base_price)
-      await set_loader_status(true)
-      console.log("low_value", low_value)
+      await new_array_7d.push({
+        value : balance,
+        // counter: counter,
+        time : Math.floor((new Date(format_server_present_time)).getTime()/1000)
+      })
+    }
+    const base_price_7d = await parseFloat(((low_value_7d+high_value_7d)/2).toFixed(2))
+    await set_line_graph_values_7d(new_array_7d)
+    await set_line_graph_base_price_7d(base_price_7d)
+    await set_loader_status(true)
+      //console.log("low_value", low_value)
       
-      console.log("high_value", high_value)
+      //console.log("high_value", high_value)
    
 
     // var initial_array = []
@@ -861,8 +982,6 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     //     return moment(date).format("DD-MM-YYYYTH:")+min_value+":00z"
     // })
     // const last_seven_days = past7Days.reverse()
-
-   
   }
 
 
@@ -920,7 +1039,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     }
 
     const array_arranged = await arrayBalanceContractsColumn(merge_array)
-    const { price_list, history_list } = await getBalancesLivePrices(array_arranged)
+    const { price_list, history_1d, history_7d, present_time } = await getBalancesLivePrices(array_arranged)
     
     var tokens = []
     var final_array = []
@@ -932,7 +1051,14 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       // var arranged_data = []
       if(run.data)
       {
-        const { arrange_result, network_balance, not_fetching_data } = await getArrangeBalanceData(pass_address, run.data, price_list, history_list, run.id)
+        const { arrange_result, network_balance, not_fetching_data } = await getArrangeBalanceData({
+          p_wallet_address : pass_address, 
+          p_balance_list : run.data, 
+          p_price_list : price_list, 
+          p_history_1d : history_1d,
+          p_history_7d : history_7d, 
+          p_network_id : run.id
+        })
         
        
         if(!isNaN(network_balance))
@@ -960,12 +1086,12 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     
     await set_all_tokens(tokens)
   
-    console.log("not_fetch_array", not_fetch_array)
+    //console.log("not_fetch_array", not_fetch_array)
 
     console.log("final_array", final_array)
-    console.log("total_balance", total_balance)
+    //console.log("total_balance", total_balance)
 
-    return { wallet_tokens_list: final_array, total_balance: total_balance, not_fetch_array }
+    return { wallet_tokens_list: final_array, total_balance: total_balance, not_fetch_array, present_time }
 
     // console.log("final_array", final_array)
     // console.log("Alltokens", tokens)
@@ -973,7 +1099,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
   const getCBNetworkID = (pass_network) =>
   {
-    console.log("pass_network",pass_network)
+    //console.log("pass_network",pass_network)
     if(pass_network == 1)
     {
         return 6
@@ -993,7 +1119,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     }
     else if(pass_network == 8217)
     { 
-        return  //klaytn
+        return 20 //klaytn
     }
     else if(pass_network == 43114)
     {
@@ -1035,24 +1161,25 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
    }
    
    
-   const getArrangeBalanceData = async (pass_address, pass_data, pass_prices, pass_history, pass_network) =>
+   
+   const getArrangeBalanceData = async ({p_wallet_address, p_balance_list, p_price_list, p_history_1d, p_history_7d, p_network_id}) =>
    {  
       const arrange_result = []
       const not_fetching_data = []
       var network_balance = 0
-      if(pass_data.length) 
+      if(p_balance_list.length) 
       {
-        for(let run of pass_data) 
+        for(let run of p_balance_list) 
         {
           if((run.value > token_minimum_balance) && (run.value < token_maximum_balance))
           { 
             let inner_object = {}
             inner_object['wallets'] = [{
-              wallet_address: pass_address,
+              wallet_address: p_wallet_address,
               balance: run.value
             }]
             inner_object['name'] = run.currency.name 
-            inner_object['network'] = pass_network
+            inner_object['network'] = p_network_id
             inner_object['symbol'] = run.currency.symbol
             inner_object['address'] = run.currency.address
             inner_object['balance'] = run.value 
@@ -1064,7 +1191,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
               token_type = 1
               type_value  = run.currency.symbol
             }
-            const cp_single_data = await getCpSingleData(pass_prices, token_type, type_value, pass_network)
+            const cp_single_data = await getCpSingleData(p_price_list, token_type, type_value, p_network_id)
             if(cp_single_data)
             {
               if(cp_single_data.token_name)
@@ -1080,16 +1207,28 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
               inner_object['token_id'] = cp_single_data.token_id ? cp_single_data.token_id:""
               inner_object['volume'] = cp_single_data.volume ? cp_single_data.volume:""
               inner_object['_id'] = cp_single_data._id ? cp_single_data._id:""
-              
-              const index = await pass_history.findIndex(item => item._id === cp_single_data._id)
+
+              const index = await p_history_1d.findIndex(item => item._id === cp_single_data._id)
               if(index != -1)
               {
-                inner_object['sparkline_in_7d'] = pass_history[index].data
+                inner_object['sparkline_in_1d'] = p_history_1d[index].data
+              }
+              else
+              {
+                inner_object['sparkline_in_1d'] = []
+              }
+              
+
+              const index2 = await p_history_7d.findIndex(item => item._id === cp_single_data._id)
+              if(index2 != -1)
+              {
+                inner_object['sparkline_in_7d'] = p_history_7d[index].data
               }
               else
               {
                 inner_object['sparkline_in_7d'] = []
               }
+
               await arrange_result.push(inner_object)
               
               if(run.value && cp_single_data.price) 
@@ -1110,29 +1249,37 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
    const getBalancesLivePrices = async (pass_assets) =>
    {  
       var price_list = []
-      var history_list = []
+      var history_1d = []
+      var history_7d = []
+      var present_time = []
       const res_price_list = await Axios.post(API_BASE_URL + "markets/portfolio/prices_list", { assets: pass_assets }, config(""))
       if(res_price_list.data)
       { 
         if(res_price_list.data.status)
         {
-            if(res_price_list.data.message.data)
-            {
-              price_list = await res_price_list.data.message.data
-            }
+          if(res_price_list.data.message.data)
+          {
+            price_list = await res_price_list.data.message.data
+          }
 
-            if(res_price_list.data.message.history)
-            { 
-              history_list = await res_price_list.data.message.history
-            }
+          if(res_price_list.data.message.history_1d)
+          { 
+            history_1d = await res_price_list.data.message.history_1d
+          }
 
-            if(res_price_list.data.message.tokens_ids)
-            {
-              await set_token_ids_list(res_price_list.data.message.tokens_ids)
-            }
+          if(res_price_list.data.message.history_7d)
+          {
+            history_7d = await res_price_list.data.message.history_7d
+          }
+
+          if(res_price_list.data.message.date_n_time)
+          {
+            await set_backend_server_time(res_price_list.data.message.date_n_time)
+            present_time = await res_price_list.data.message.date_n_time
+          }
         }
       }
-      return { price_list, history_list }
+      return { price_list, history_1d, history_7d, present_time }
    }
 
 
@@ -1143,13 +1290,14 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       if(tokens.length) 
       {
         const response = await Axios.post(API_BASE_URL + 'markets/portfolio/users_tokens/' + wallet_address, { assets: tokens }, config(JsCookie.get('user_token')))
-        console.log("update res UsersAssets", response)
+       // console.log("update res UsersAssets", response)
       }
     }
   }
 
   //type 1:force update, 2:check and update
-  const savePortfolioInLocalStorage = async ({ wallet_address, final_array, total_balance }) => {
+  const savePortfolioInLocalStorage = async ({ wallet_address, final_array, total_balance }) => 
+  {
     var expire_at = (new Date((180 * 60 * 1000) + (new Date().getTime()))).getTime()
 
     var portfolio_wallets = await localStorage.getItem("users_wallets") ? JSON.parse(localStorage.getItem("users_wallets")) : {}
@@ -1159,7 +1307,8 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
 
 
-  const setActiveNetworks = async (pass_network, pass_balance) => {
+  const setActiveNetworks = async (pass_network, pass_balance) => 
+  {
     set_tab_active(1)
     const my_active_networks = await setActiveNetworksArray(pass_network, active_networks)
     const { account_view_result, grand_total_balance, final_24h_change } = await tokenAccountViewList(my_active_networks, tokens_list_as_account_view)
@@ -1194,17 +1343,22 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
   }
 
-  const tokenAccountViewList = async (pass_networks, pass_tokens_list) => {
+  const tokenAccountViewList = async (pass_networks, pass_tokens_list) => 
+  {
     var account_view_result = []
     var grand_total_balance = 0
     var total_24h_change = 0
     var total_tokens = 0
-    for (let run of pass_tokens_list) {
-      if (run.tokens) {
+    
+    for(let run of pass_tokens_list) 
+    {
+      if(run.tokens) 
+      {
         var tokens_list = run.tokens
         var innner_result = []
         var total_balance = 0
-        for (let inner_run of tokens_list) {
+        for(let inner_run of tokens_list) 
+        {
           if (pass_networks.includes(inner_run.network)) {
             if (inner_run.balance && inner_run.price) {
               total_balance += await (inner_run.price * inner_run.balance)
@@ -1224,7 +1378,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       var final_24h_change = 0
       if (total_24h_change) {
         final_24h_change = (total_24h_change / total_tokens).toFixed(2)
-        console.log("final_24h_change", final_24h_change)
+        //console.log("final_24h_change", final_24h_change)
       }
 
       await account_view_result.push({
@@ -1334,7 +1488,8 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   // Multiple Wallet Select Code Ends Here
 
   //Search Wallet Address Code Starts HERE
-  useEffect(() => {
+  useEffect(() => 
+  {
    
     // if(localStorage.getItem('active_wallet_addresses'))
     // {
@@ -1389,20 +1544,23 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
     let fetch_status = false
     var tokens_list = []
-    if (portfolio_wallets[pass_address]) {
+    var server_present_time = ""
+    if(portfolio_wallets[pass_address]) 
+    {
       var { list, expire_at } = portfolio_wallets[pass_address]
-      var present_time = new Date().getTime()
+      var local_present_time = new Date().getTime()
 
       // console.log("expire_at1", present_time)
       // console.log("expire_at2", expire_at)
 
-      if (list) {
-        if (expire_at >= present_time) {
-          if (list.length) 
+      if(list) 
+      {
+        if(expire_at >= local_present_time) 
+        {
+          if(list.length) 
           {
-
             const updated_token_list = await updateTokensPricing(list) 
-
+           
             fetch_status = true
             var inner_tokens_list = {
               wallet_address: pass_address,
@@ -1414,15 +1572,13 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
             await tokens_list.push(inner_tokens_list)
           }
         }
-
       }
     }
-
 
     var not_fetched_array = []
     if(!fetch_status) 
     {
-      var { wallet_tokens_list, total_balance, not_fetch_array } = await fetchNewWalletTokens(pass_address)
+      var { wallet_tokens_list, total_balance, not_fetch_array, present_time } = await fetchNewWalletTokens(pass_address)
       await savePortfolioInLocalStorage({ wallet_address: pass_address, final_array: wallet_tokens_list, total_balance: total_balance })
 
       var inner_tokens_list = {
@@ -1433,14 +1589,16 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
         sub_total_balance: total_balance
       }
       await tokens_list.push(inner_tokens_list)
-
-      console.log("asf", not_fetch_array)
+      //console.log("asf", not_fetch_array)
       not_fetched_array = await not_fetch_array
+
+      if(!server_present_time)
+      {
+        server_present_time = await present_time
+      }
     }
-    console.log("tokens", tokens_list)
-
-
-    await arrangeListViewTokens(tokens_list)
+    // console.log("tokens", tokens_list)
+    await arrangeListViewTokens(tokens_list, server_present_time)
     await set_tokens_list_as_account_view(tokens_list)
 
     const { account_view_result, grand_total_balance, final_24h_change } = await tokenAccountViewList(active_networks, tokens_list)
@@ -1451,12 +1609,11 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       await JsCookie.set('display_tokens_balance', grand_total_balance, { domain: cookieDomainExtension })
       await set_net_worth_24h_change(final_24h_change)
     }
-
-    console.log("not_fetched_array", not_fetched_array)
   }
 
 
-  const searchWalletData = async (e) => {
+  const searchWalletData = async (e) => 
+  {
     e.preventDefault()
     set_err_search_wallet_address("")
     if (!search_wallet_address) {
@@ -1646,7 +1803,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
                         var first_address = accounts[0]
                         if ((typeof first_address != 'undefined')) {
 
-                            console.log("first_address", first_address, pass_default_address)
+                            //console.log("first_address", first_address, pass_default_address)
                             if ((first_address.toLocaleLowerCase()) == (pass_default_address.toLocaleLowerCase())) {
                                 // set_wallet_status(true)
                                 set_modal_data({ icon: "/assets/img/cancel.png", title: "Connection Error", 
@@ -1818,13 +1975,13 @@ const checkUserWalletAddress = async(pass_address) =>
           // console.log(res.data)
           //set_wallet_active_address(res.data.message[0].wallet_address)
           //set_active_addresses([res.data.message[0].wallet_address])
-
         }
       }
     }
   }
 
-  const walletConfirmRemove = async (remove_id, pass_address, pass_nickname) => {
+  const walletConfirmRemove = async (remove_id, pass_address, pass_nickname) => 
+  {
     await multipleAddressList(pass_address, pass_nickname, 2, false)
     await set_wallet_list_show_status(false)
     await set_wallet_menu_show_status(false)
@@ -1850,15 +2007,14 @@ const checkUserWalletAddress = async(pass_address) =>
 
 
 
-  const getTokenDetail = async (e) => {
+  const getTokenDetail = async (e) => 
+  {
     await set_token_detail("")
     await set_token_details_modal_status(true)
     await set_token_detail(e)
     //  const response = await getTokenInOutDetails(e)
     //  console.log("response", response)
   }
-
-
 
   // nft list
 
@@ -2332,60 +2488,15 @@ const checkUserWalletAddress = async(pass_address) =>
                                       tokens_list_as_list_view.length ?
                                       
                                         <div className='crypto-assets'>
-
-                                          <div className='row'>
-                                            <div className='col-12 col-md-12 col-sm-12'>
-                                              <h6 className='portfolio-sub-title mb-4'>
-                                                <span className="net_worth_title">Net Worth:</span>
-                                                <span className="net_worth_value">
-                                                  {
-                                                    display_tokens_balance ? convertCurrency(display_tokens_balance, 1) : 0.00
-                                                  }
-                                                  {
-                                                    net_worth_24h_change > 0 ?
-                                                      <span className="portfolio_growth growth_up">
-
-                                                        <img src="/assets/img/growth_up.svg" alt="Growth Up" /> +{net_worth_24h_change}%
-
-                                                      </span>
-                                                      :
-                                                      net_worth_24h_change < 0 ?
-                                                        <span className="portfolio_growth growth_down">
-                                                          <img src="/assets/img/growth_down.svg" alt="Growth Down" /> {net_worth_24h_change}%
-
-                                                        </span>
-                                                        :
-                                                        ""
-                                                  }
-                                                </span>
-                                              </h6>
-                                              {/* <p className='net_worth_title'>Last 1day net worth based on present token holdings</p> */}
-                                            </div>
-                                          
-                                           
-                                            <div className='col-6'>
-                                              {/* <div className="asset_view_tab">
-                                                <ul className="nav nav-tabs">
-                                                 
-                                                  <li className="nav-item" key={"asd"}>
-                                                    <a className={"nav-link " + (worth_chart_type == 2 ? "active" : "")} onClick={() => setChartWorth(2)}>
-                                                      <span>1 Day</span>
-                                                    </a>
-                                                  </li>
-                                                  <li className="nav-item" key={"adsf"}>
-                                                    <a className={"nav-link " + (worth_chart_type == 3 ? "active" : "")} onClick={() => setChartWorth(3)}>
-                                                      <span>1 Week</span>
-                                                    </a>
-                                                  </li>
-                                                </ul>
-                                              </div> */}
-                                            </div>
-                                          </div>
-                                          
-                                          <Net_worth_chart
+                                          <Net_worth_ranges
                                             reqData={{
-                                              line_graph_values,
-                                              line_graph_base_price:line_graph_base_price
+                                              net_worth_status:true,
+                                              net_worth_price : display_tokens_balance,
+                                              change_24h : net_worth_24h_change,
+                                              line_graph_values_1d,
+                                              line_graph_values_7d,
+                                              line_graph_base_price_7d,
+                                              line_graph_base_price_1d
                                             }}
                                           />
                                           {/* <ReactApexChart options={line_chart_options} series={line_chart_series} type="area" height={300} />
@@ -2928,17 +3039,20 @@ const checkUserWalletAddress = async(pass_address) =>
                                 <Analytics data={{ 
                                   options2: options2, 
                                   tokens_list: tokens_list_as_list_view, 
-                                  tokens_balance: display_tokens_balance,
-                                   net_worth:net_worth_24h_change,
-                                   networks: active_networks, 
-                                   addresses: active_addresses, 
-                                   token_allocation_values: token_allocation_values, 
-                                   token_allocation_names: token_allocation_names, 
-                                   pi_chart_values: pi_chart_values, 
-                                   pi_chart_names: pi_chart_names, 
-                                   net_worth: net_worth_24h_change,
-                                   line_graph_values,
-                                   line_graph_base_price:line_graph_base_price
+                                  net_worth:net_worth_24h_change,
+                                  networks: active_networks, 
+                                  addresses: active_addresses, 
+                                  token_allocation_values: token_allocation_values, 
+                                  token_allocation_names: token_allocation_names, 
+                                  pi_chart_values: pi_chart_values, 
+                                  pi_chart_names: pi_chart_names, 
+                                  net_worth_status:true,
+                                  net_worth_price : display_tokens_balance,
+                                  change_24h : net_worth_24h_change,
+                                  line_graph_values_1d,
+                                  line_graph_values_7d,
+                                  line_graph_base_price_1d,
+                                  line_graph_base_price_7d
                                   }} />
                                 :
                                 ""
@@ -3201,7 +3315,7 @@ const checkUserWalletAddress = async(pass_address) =>
                 <button type="button" className="close close_wallet" onClick={() => set_token_details_modal_status(false)} data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt="Close" /></button>
                 {
                   token_detail ?
-                    <TokenDetail tokens_balance= {tokens_grand_total} token={token_detail} total_balance={tokens_grand_total}  tokens_list= {tokens_list_as_list_view} net_worth={net_worth_24h_change} networks={active_networks} addresses={active_addresses}/>
+                    <TokenDetail backend_server_time={backend_server_time} tokens_balance= {tokens_grand_total} token={token_detail} total_balance={tokens_grand_total}  tokens_list= {tokens_list_as_list_view} net_worth={net_worth_24h_change} networks={active_networks} addresses={active_addresses}/>
                     :
                     ""
                 }

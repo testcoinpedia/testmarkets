@@ -520,182 +520,184 @@ return (
             <div className='markets_overview_mobile'>
               <div className="row">
                 <div className="col-md-4 mb-2">
-                    <div className='market-overview market-overview-category'>
-                      <div className="row header-section">
-                        <div className="col-12 col-xl-5 mb-2 ">
-                          <h5 className='overview-title'>Markets Index</h5>
-                        </div>   
-                        <div className="col-12 col-xl-7 ">
-                          <div className='row'>
-                            <div className="col-8">
-                              {
-                                total_categories ?
-                                <span className='category'>{total_categories} Categories</span> 
-                                :
-                                ""
-                              }
-                            </div>  
-                            <div className="col-4 text-right pull-right">
-                            <Link href="/categories"><img src="/assets/img/next.png"  className="media-object arrow-img market-overview-next " /></Link>  
-                            </div>   
-                          </div>
-                          
-                          
-                        </div>   
-                      </div>
-
+                  <div className='market-overview'>
+                    <h5 className='overview-title'>
+                      <img src="/assets/img/market_index.svg" className="market_overview_icon" /> 
+                      Markets Index
+                      
+                      <Link href="/categories"><img src="/assets/img/next-dark.svg"  className="media-object arrow-img market-overview-next " /></Link>  
                       {
+                        total_categories ?
+                        <Link href="/categories"><span className='category'>{total_categories} Categories</span></Link>
+                        :
+                        ""
+                      }
+                    </h5>
+                  
+                    <table class="market_overview_table">
+                      <tbody>
+                        {
                           gainers_category_list.length ?
                           gainers_category_list.map((item, i) =>
-                          <ul className="airdrops-list">
-                              <li>
-                                   <Link href={"/category/"+item.category_id}> 
-                                    <div className="media">
-                                      <div className="media-left align-self-center mr-4">
-                                      <b>{++i}</b>
-                                      </div>
-                                      <div className="media-body align-self-center">
-                                        <h6 className="media-heading token-name">{strLenTrim(item.category_name, 20)}</h6>
-                                        {/* <p className='token-symbol'>{(item.symbol).toUpperCase()}</p> */}
-                                      </div>
-                                      <div className="media-right ">
-                                      <h6 className="media-heading token-name"><span className='category-percent'>{(((item.total_gainers*100)/item.total_tokens)).toFixed(0)}%</span> Gainers
-                                      <img src="/assets/img/right-arrow.png"  className="media-object arrow-img" />
-                                     
-                                      </h6>
-                                      </div>
-                                    </div>
-                                  </Link>
-
-                                 
-                              </li>
-                          </ul>
+                            <tr>
+                              <td>
+                                <div className="media">
+                                  <div className="media-left align-self-center mr-4">
+                                    <b>{++i}</b>
+                                  </div>
+                                  <div className="media-body align-self-center">
+                                    <h6 className="media-heading token-name">{strLenTrim(item.category_name, 20)}</h6>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div className="media-right ">
+                                  <h6 className="media-heading token-name"><span className='category-percent'>{(((item.total_gainers*100)/item.total_tokens)).toFixed(0)}%</span></h6>
+                                </div>
+                              </td>
+                              <td>
+                                <div className="media-right ">
+                                  <h6 className="media-heading token-name">Gainers</h6>
+                                </div>
+                              </td>
+                            </tr>
+                            // <li>
+                            //   <Link href={"/category/"+item.category_id}> 
+                              
+                            //   </Link>
+                            // </li> 
                           )
                           :
                           ""
                         }
-
-                      
-                      
-                    </div>        
+                      </tbody>
+                    </table>
+                  </div>        
                 </div>
-                
-                
-
                 
                 <div className="col-md-4  mb-2">
                     <div className='market-overview '>
-                      <div className="row header-section">
-                        <div className="col-12 col-xl-4 mb-2">
-                        <h5 className='overview-title'>Airdrops</h5>
-                        </div>   
-                        <div className="col-12 col-xl-8 text-right pull-right">
-                          {
-                            active_airdrops ?
-                            <Link href="/airdrops"><span className='live-values'>{active_airdrops} Live</span> </Link>
-                            :
-                            ""
-                          }
-
-                          {
-                            upcoming_airdrops ?
-                            <Link href="/airdrops/upcoming"><span className='live-upcoming'>{upcoming_airdrops} Upcoming</span></Link>
-                            :
-                            ""
-                          }
-
-                          <Link href="/airdrops"><img src="/assets/img/next-black.png"  className="media-object arrow-img market-overview-next " /></Link>  
-                         
-                        </div>   
-                      </div>
-                       {
-                          airdrops_list.length ?
-                          airdrops_list.map((item, i) =>
-                          <ul className="airdrops-list">
-                              <li>
-                                  <Link href={"/"+item.token_id+"?tab=airdrop&tab_id="+item._id}>
-                                    <div className="media">
-                                      <div className="media-left align-self-center">
-                                        <img src={(item.token_image ? image_base_url+item.token_image: item.coinmarketcap_id ? cmc_image_base_url+item.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object token-img" />
-                                      </div>
-                                      <div className="media-body align-self-center">
-                                        <h6 className="media-heading token-name">{strLenTrim(item.token_name, 20)}</h6>
-                                        {/* <p className='token-symbol'>{(item.symbol).toUpperCase()}</p> */}
-                                      </div>
-                                      <div className="media-right ">
-                                      <h6 className="media-heading token-name">{convertCurrency(item.winner_price)}
-                                      <img src="/assets/img/right-arrow.png" alt={item.token_name}  className="media-object arrow-img" />
-                                     
-                                      </h6>
-                                      </div>
-                                    </div>
-                                  </Link>
-
-                                 
-                              </li>
-                          </ul>
-                          )
+                      
+                      <h5 className='overview-title'>
+                        <img src="/assets/img/airdrops.svg" className="market_overview_icon" /> 
+                        Airdrops
+                        <Link href="/airdrops"><img src="/assets/img/next-dark.svg"  className="media-object arrow-img market-overview-next " /></Link>  
+                        {
+                          active_airdrops ?
+                          <Link href="/airdrops"><span className='category'>{active_airdrops} Live</span> </Link>
                           :
                           ""
-                        } 
+                        }
+
+                        {
+                          upcoming_airdrops ?
+                          <Link href="/airdrops/upcoming"><span className='category'>{upcoming_airdrops} Upcoming</span></Link>
+                          :
+                          ""
+                        }
+
+                        
+                      </h5>
+
+                      <table class="market_overview_table">
+                        <tbody>
+                          {
+                            airdrops_list.length ?
+                            airdrops_list.map((item, i) =>
+                            <tr>
+                              <td>
+                                <Link href={"/"+item.token_id+"?tab=airdrop&tab_id="+item._id}>
+                                  <div className="media">
+                                    <div className="media-left align-self-center">
+                                      <img src={(item.token_image ? image_base_url+item.token_image: item.coinmarketcap_id ? cmc_image_base_url+item.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object token-img" />
+                                    </div>
+                                    <div className="media-body align-self-center">
+                                      <h6 className="media-heading token-name">{strLenTrim(item.token_name, 20)}</h6>
+                                      {/* <p className='token-symbol'>{(item.symbol).toUpperCase()}</p> */}
+                                    </div>
+                                    <div className="media-right ">
+                                    <h6 className="media-heading token-name">{convertCurrency(item.winner_price)}
+                                    {/* <img src="/assets/img/right-arrow.png" alt={item.token_name}  className="media-object arrow-img" /> */}
+                                  
+                                    </h6>
+                                    </div>
+                                  </div>
+                                </Link>  
+                              </td>
+                            </tr>
+                            )
+                            :
+                            ""
+                          } 
+                        </tbody>
+                      </table>
+                       
                     </div>
                 </div>
                 <div className="col-md-4  mb-2">
                   <div className='market-overview'>
-                      <div className="row header-section">
-                        <div className="col-12 col-xl-4 mb-2">
-                        <h5 className='overview-title'>Launchpads</h5>
-                        </div>   
-                        <div className="col-12 col-xl-8 text-right pull-right">
-                          {
-                            active_launchpads ?
-                            <Link href="/launchpad"><span className='live-values'>{active_launchpads} Live</span></Link>
-                            :
-                            ""
-                          }
-                          
-                          {
-                            upcoming_launchpads ?
-                            <Link href="/launchpad/upcoming"><span className='live-upcoming'>{upcoming_launchpads} Upcoming</span></Link>
-                            :
-                            ""
-                          }
-
-                          <Link href="/launchpad"><img src="/assets/img/next-black.png"  className="media-object arrow-img market-overview-next " /></Link>  
-                        </div>   
-                      </div>
-
+                    <h5 className='overview-title'>
+                      <img src="/assets/img/launchpads.svg" className="market_overview_icon" /> 
+                      Launchpads
+                      <Link href="/launchpad"><img src="/assets/img/next-dark.svg"  className="media-object arrow-img market-overview-next " /></Link>
                       {
+                        active_launchpads ?
+                        <Link href="/launchpad"><span className='category'>{active_launchpads} Live</span></Link>
+                        :
+                        ""
+                      }
+                      
+                      {
+                        upcoming_launchpads ?
+                        <Link href="/launchpad/upcoming"><span className='category'>{upcoming_launchpads} Upcoming</span></Link>
+                        :
+                        ""
+                      }
+
+                       
+                    </h5>  
+                    <table class="market_overview_table">
+                      <tbody>
+                        {
                           launchpads_list.length ?
                           launchpads_list.map((item, i) =>
-                          <ul className="airdrops-list">
-                              <li>
-                                  <Link href={"/"+item.token_id+"?tab=ico&tab_id="+item._id}>
-                                    <div className="media">
-                                      <div className="media-left align-self-center">
-                                        <img src={(item.token_image ? image_base_url+item.token_image: item.coinmarketcap_id ? cmc_image_base_url+item.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object token-img" />
-                                      </div>
-                                      <div className="media-body align-self-center">
-                                        <h6 className="media-heading token-name">{strLenTrim(item.token_name, 20)}</h6>
-                                        {/* <p className='token-symbol'>{(item.symbol).toUpperCase()}</p> */}
-                                      </div>
-                                      <div className="media-right ">
-                                      <h6 className="media-heading token-name">{getLaunchpadType(item.launchpad_type)}
-                                      <img src="/assets/img/right-arrow.png" onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object arrow-img" />
-                                     
-                                      </h6>
-                                      </div>
-                                    </div>
-                                  </Link>
+                          <tr>
+                            <td>
+                              <Link href={"/"+item.token_id+"?tab=airdrop&tab_id="+item._id}>
+                                <div className="media">
+                                  <div className="media-left align-self-center">
+                                    <img src={(item.token_image ? image_base_url+item.token_image: item.coinmarketcap_id ? cmc_image_base_url+item.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object token-img" />
+                                  </div>
+                                  <div className="media-body align-self-center">
+                                    <h6 className="media-heading token-name">{strLenTrim(item.token_name, 20)}</h6>
+                                  </div>
+                                </div>
+                              </Link>  
+                            </td>
+                            <td>
+                              <div className="media-right ">
+                                <h6 className="media-heading token-name">{getLaunchpadType(item.launchpad_type)}
+                                {/* <img src="/assets/img/right-arrow.png" onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object arrow-img" /> */}
+                                
+                                </h6>
+                              </div>
+                            </td>
+                          </tr>
+                          // <ul className="airdrops-list">
+                          //     <li>
+                          //         <Link href={"/"+item.token_id+"?tab=ico&tab_id="+item._id}>
+                                    
+                          //         </Link>
 
-                                 
-                              </li>
-                          </ul>
+                                  
+                          //     </li>
+                          // </ul>
                           )
                           :
                           ""
                         } 
-                    
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>

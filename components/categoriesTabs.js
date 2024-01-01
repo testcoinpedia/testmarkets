@@ -57,7 +57,7 @@ return (
                   {
                     user_token?
                     <li className="tabs_watchlist">
-                      <Link href="/watchlist" className={"nav-item nav-link categories__item "+(tab_status_connections === 11 ? "active_category":"")}><img src="/assets/img/wishlist_star_selected.svg" alt="Watchlist"/> Watchlist</Link>
+                      <Link href="/watchlist" className={"nav-item nav-link categories__item "+(tab_status_connections === 11 ? "active_category":"")}>Watchlist</Link>
                     </li>
                     :
                     <li className="tabs_watchlist">
@@ -131,9 +131,9 @@ return (
                   <li className='list-new-token text-right' style={{display:"block"}}>
                         {
                           user_token ?
-                          <Link href={"/token/update/"}  className="nav-item nav-link  " >List&nbsp;new&nbsp;token</Link>
+                          <Link href={"/token/update/"}  className="nav-item nav-link">New Token listing</Link>
                           :
-                          <a onClick={()=>loginModalStatus(2)}>List new token</a>
+                          <a onClick={()=>loginModalStatus(2)}>New Token listing</a>
                         }
                       </li>
               </div>

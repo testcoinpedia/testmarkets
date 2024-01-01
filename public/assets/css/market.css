@@ -8516,10 +8516,12 @@ h6 {
 
 
 .transaction_table_block {
-  border-radius: 5px;
+  border-radius: 0;
   margin-bottom: 0px;
   padding-bottom: 25px;
   margin-top: 25px;
+  border-top: 1px solid #CEE1FF;
+  padding-top: 17px;
 }
 
 /* .transaction_table_block .prices__head {
@@ -9152,7 +9154,7 @@ h6 {
 table thead th {
   padding: 10px 5px !important;
   background: transparent;
-  border-top: 1px solid #e6eaf2 !important;
+  border-top: 1px solid #CEE1FF !important;
   border-bottom: 1px solid #e6eaf2 !important;
   color: #000; 
   font-size: 14px;
@@ -9166,10 +9168,6 @@ table thead th {
 
 .new_markets_index table tbody tr:last-child {
   border-bottom: unset !important;
-}
-
-.new_markets_index table tbody tr {
-  border-bottom: 1px solid #eeeaec !important;
 }
 
 .new_markets_index table tbody tr td {
@@ -9311,12 +9309,25 @@ tbody td {
 }
 .dex_pair_dropdown
 {
-  padding: 2px 3px 3px;
-  width: fit-content;
-  float: right;
-  border-radius: 5px;
-  margin-bottom: 25px;
-  border: 1px solid #D9D9D9;
+  background: #F1F6FF;
+  border: 0;
+  color: #264D89;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 2px 12px !important;
+  border-radius: 6px;
+  margin-top: 2px;
+
+}
+
+.badge_dropdown_block {
+  background: #f2f6ff !important;
+    margin-top: 40px;
+    will-change: auto !important;
+}
+
+.badge_dropdown_block{
+  padding: 5px 10px;
 }
 
 .dex_pair_select .dropdown_arrow_img
@@ -9324,6 +9335,34 @@ tbody td {
   top: 6px;
   float: right;
 }
+
+.table_header_res h5{
+  font-size: 14px !important;
+  color: #264d89;
+  font-family: 'Space Grotesk' !important;
+  font-weight: 600 !important;
+  margin: 5px 0 !important;
+}
+
+.exchange_main_text {
+  font-size: 14px;
+  font-weight: 700 !important;
+}
+
+.tables_mobile_view h6{
+  font-size: 13px;
+    /* padding: 15px 8px !important; */
+    color: #002358;
+    font-weight: 500 ;
+    overflow: hidden;
+    margin: 5px 0;
+}
+
+.table_header_res {
+  border-bottom: 1px solid #CEE1FF;
+  padding: 10px 0;
+}
+
 /* 
 .js-rootresizer__contents
 {
@@ -10158,9 +10197,6 @@ a:not([href]):not([class]):hover {
   color: #fff;
 }
 
-.copy_link {
-  width: 16px;
-}
 
 
 
@@ -12001,8 +12037,17 @@ font-weight: 500 !important;
 
 .markets_header_token{
   padding: 25px 0 15px !important;
-  z-index: 9;
+  position: sticky;
+  top: 0px;
+  z-index: 0;
+  background: #fff;
+  z-index: 999;
+  transition: 0.5s ease-in infinite;
   width: 100%;
+}
+
+.mobile_view {
+  display: none;
 }
 
 .events_tables_content{
@@ -12017,6 +12062,111 @@ font-weight: 500 !important;
   padding: 15px;
   border-radius: 10px;
 }
+
+/* Start Market Main Page  */
+
+.market-overview .overview-title .market_overview_icon {
+  height: 18px;
+  margin-right: 6px;
+}
+
+.market-overview .overview-title .category {
+  background: #F1F6FF;
+  padding: 3px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #264D89;
+  float: right;
+}
+
+.market-overview .airdrops-list li {
+  border-bottom: 1px solid #CEE1FF;
+}
+
+.market-overview .airdrops-list li:last-child {
+  border-bottom: 0;
+}
+
+.market-overview .airdrops-list li .media {
+  width: 100%;
+  padding: 6px 0;
+}
+
+.market-overview-category .category
+{
+  background: #01c687;
+  color: white;
+  border: 1px solid #01c687;
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-weight: 400;
+  margin-right: 5px;
+}
+
+.market-overview
+{
+  border: 1px solid #CEE1FF;
+  border-radius: 10px;
+  padding: 10px 10px;
+}
+
+.market-overview .overview-title
+{
+  font-size: 16px;
+  font-weight: 600 !important;
+  color: #264D89;
+}
+
+.market-overview  .token-name .category-percent
+{
+  color: #01c687;
+}
+
+.market-overview .live-values {
+  color: #01c687;
+  border: 1px solid;
+  border-radius: 5px;
+  padding: 2px 7px;
+  background: #eafaf4;
+  font-weight: 500;
+  margin-right: 5px;
+}
+.market-overview .live-upcoming
+{
+  color: #2196F3;
+  border: 1px solid;
+  border-radius: 5px;
+  padding: 2px 7px;
+  background: #f6fbff;
+  font-weight: 500;
+  margin-right: 5px;
+}
+
+.market-overview .token-name {
+  color: #002358;
+  font-size: 14px;
+}
+
+.market-overview .market_overview_table {
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
+.market-overview tbody tr td {
+  padding: 7px 8px !important;
+}
+
+.market-overview tbody tr td .media img {
+  width: 22px;
+  border-radius: 20px;
+  margin-right: 5px;
+}
+
+.market-overview tbody tr {
+  border-bottom: 1px solid #CEE1FF !important;
+}
+
+/* End Market Main Page  */
 
 /* Start Market Individual Page  */
 
@@ -12113,6 +12263,7 @@ font-weight: 500 !important;
   font-family: 'Space Grotesk';
   font-weight: 500 !important;
   width: 75%;
+  margin-bottom: 2px;
 }
 
 .token_main_details .media h6{
@@ -12164,10 +12315,6 @@ font-weight: 500 !important;
   font-size: 16px;
   color: #002358;
   font-weight: 600 !important;
-}
-
-.token_list_values h5 span {
-  font-size: 16px;
 }
 
 .token_list_content {
@@ -12596,6 +12743,10 @@ font-weight: 500 !important;
 
 .analysis_values .neutral {
   color: #FEE114;
+}
+
+.dex_block_bg {
+  background-color: #e0ebff !important;
 }
 
 .analysis_values .bg-success {
@@ -17156,88 +17307,19 @@ background: rgb(217 217 217);
     border-radius: 8px;
 } */
 
-.market-overview-category
-{
-  background: #1868fa;
-  color: white;
-}
-
 .market-overview-next 
 {
-  width: 12px;
-  margin-bottom: 5px;
+  width: 7px;
+  margin-bottom: 0;
   margin-left: 20px;
   cursor: pointer;
-}
-
-.market-overview-category .category
-{
-  background: #01c687;
-  color: white;
-  border: 1px solid #01c687;
-  border-radius: 5px;
-  padding: 2px 7px;
-  font-weight: 400;
-  margin-right: 5px;
-}
-
-.market-overview .header-section
-{
-  padding: 7px 10px 16px 13px;
-}
-
-.market-overview
-{
-  border: 1px solid #e2e2e2;
-  border-radius: 10px;
-  padding: 10px 10px;
-  min-height: 170px;
-}
-.market-overview .overview-title
-{
-  font-size: 18px;
-  font-weight: 600 !important;
-}
-
-.market-overview  .token-name .category-percent
-{
-  color: #01c687;
-}
-
-.market-overview .live-values {
-    color: #01c687;
-    border: 1px solid;
-    border-radius: 5px;
-    padding: 2px 7px;
-    background: #eafaf4;
-    font-weight: 500;
-    margin-right: 5px;
-}
-.market-overview .live-upcoming
-{
-  color: #2196F3;
-  border: 1px solid;
-  border-radius: 5px;
-  padding: 2px 7px;
-  background: #f6fbff;
-  font-weight: 500;
-  margin-right: 5px;
+  float: right;
+  margin-top: 5px;
 }
 
 .airdrops-list .token-name
 {
   font-size: 14px;
-}
-
-.airdrops-list li
-{
-  margin-bottom: 5px;
-    background: #c7edef;
-    padding: 6px 10px;
-    border-radius: 10px;
-    color: #096578;
-    /* height: 42px; */
-    font-size: 11px;
 }
 
 .airdrops-list .media-right 
@@ -17290,7 +17372,10 @@ background: rgb(217 217 217);
 }
 
 .list-new-token a {
-  color:#0029FF !important;
+  color: #264D89 !important;
+  background: #F1F6FF;
+  border-radius: 5px;
+  padding: 4px 20px !important;
 }
 .add-token-link
 {
@@ -19875,10 +19960,116 @@ h3.heading {
   cursor: pointer;
  }
 
+ .share_popup_token {
+
+ }
+
+ .share_popup_token .modal-body {
+  padding: 20px 25px;
+ }
+
+ .token_name_share {
+  font-size: 22px;
+  font-weight: 700 !important;
+  color: #264D89;
+  text-align: center;
+}
+
+.token_name_share span {
+  font-weight: 400 !important;
+}
+
+.share_input_url {
+  margin-top: 15px;
+}
+
+.share_input_url .input-group {
+  border: 1px solid #7998c7 !important;
+  border-radius: 7px;
+
+}
+
+.share_input_url .input-group input{
+  height: 42px;
+  background: transparent;
+  color: #002358 !important;
+  font-weight: 500;
+  font-size: 14px !important;
+   
+}
+
+.share_token_img img{
+  width: 85px;
+  height: 85px;
+  margin: 15px auto;
+  display: block;
+}
+
+ .share_popup_token h4 {
+  font-size: 16px;
+  text-align: center;
+  margin-top: 5px;
+  color: #002358;
+  font-weight: 600;
+}
+
+.share_social_img ul{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.share_social_img li {
+  margin: 0 10px;
+}
+
+.share_social_img li img{
+  width: 40px;
+}
+
+.share_popup_token h6 {
+  color: #002358;
+  font-size: 14px;
+  font-weight: 500 !important;
+  margin-bottom: 12px !important;
+  margin-top: 20px !important;
+
+}
+
+.share_popup_token .modal-dialog {
+  margin-top: 18vh;
+}
+
+.share_popup_token .modal-content{
+  border-radius: 6px;
+  width: 450px;
+}
+
+.share_popup_token .close {
+  opacity: 1 !important;
+}
+
+.copy_link {
+  width: 16px;
+}
+
+.token_list_data_individual {
+  text-align: left;
+  float: right;
+}
+
+.token_list_data_individual ul {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
 
 
-
-
+.token_list_data_individual li{
+  margin-left: 20px;
+}
 
 
 
@@ -20216,6 +20407,15 @@ h3.heading {
     width: auto;
   }
 
+
+  .token_details_tabs_row ul {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+  }
+
   .team_detail_token h6 {
     font-size: 14px;
   }
@@ -20368,6 +20568,13 @@ h3.heading {
     margin-bottom: 15px;
   }
 
+  /* Start Market individual page */
+
+  .token_list_values h4 {
+    font-size: 13px;
+  }
+
+  /* End Market individual page */
 }
 
 
@@ -21816,6 +22023,39 @@ screen and (max-height: 300px) {
   .complete_button {
     margin-top: 15px;
   }
+
+  .token_list_data_individual li {
+    margin-left: 0;
+  }
+
+  .token_list_data_individual ul {
+    margin-top: 15px;
+  }
+
+  .mobile_view {
+    margin-top: 5px;
+  }
+
+  .category-ul li a {
+    font-size: 12px;
+  }
+
+  .token_share_vote  {
+    margin-top: 5px !important;
+  }
+
+  .sub_title_main {
+    font-size: 14px;
+  }
+
+  .quick_title {
+    font-size: 13px;
+  }
+  
+  .token_list_content .quick_values {
+    text-align: right;
+    font-size: 14px;
+  }
  
   
 .mobile-subscribe{
@@ -21827,10 +22067,19 @@ screen and (max-height: 300px) {
   }
 
   .token_share_vote{
-    /* float:left; */
+    float:left;
     justify-content: center;
     margin-top: 0;
   }
+
+  .category-ul {
+    margin-top: 0;
+    text-align: left;
+  }
+
+  .badge_dropdown_block {
+    min-width: 110px !important;
+}
 
   .select_category_gainers .cust_filters_dropdown{
     width: 100% !important;
@@ -21841,15 +22090,28 @@ screen and (max-height: 300px) {
     margin-top: 0px !important;
   }
 
-  .token_main_details .media {
+  /* .token_main_details .media {
     position: relative;
     z-index: 9;
     display: block;
     text-align: center;
+  } */
+
+  .token_main_details .media-body {
+    text-align: left;
   }
 
   .coin_main_links ul .coin_individual_list {
-    width: 50%;
+    width: fit-content;
+  }
+
+  .coin_main_links ul {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    margin-top: 20px;
   }
 
   .categories_table tr td {
@@ -21918,7 +22180,14 @@ screen and (max-height: 300px) {
 
   .exchange_table table thead tr th:first-child{
     position: sticky !important;
-    z-index: 999;
+    z-index: 99;
+  }
+  .tokenomic_tab {
+    margin-top: 0px;
+}
+
+  .traders_tab_title {
+    margin: 10px 0 0 !important;
   }
 
   .exchange_table table thead tr th:last-child{
@@ -21929,10 +22198,20 @@ screen and (max-height: 300px) {
     min-width: 80px !important;
   }
 
+  .tokenomic_graph .total_value {
+    padding: 10px 15px;
+    font-size: 12px;
+  }
+
   .markets_header_token{
     text-align: center;
+    padding: 5px 0 15px !important;
     /* border-bottom: 1px solid #eee;
     background: #fff !important; */
+  }
+
+  .technical_anaylysis_table {
+    overflow: hidden;
   }
 
   .markets_list_quick_links{
@@ -21943,6 +22222,9 @@ screen and (max-height: 300px) {
     text-align: center;
   }
 
+  .share_popup_token .modal-content{
+    width: auto;
+  }
   .dark_theme .error_page h3 {
     font-size: 18px;
   }
@@ -21977,9 +22259,9 @@ screen and (max-height: 300px) {
   }
 
   .charts_date_tab{
-    float: left;
-    width: 100%;
-    margin-bottom: 15px;
+    /* float: left;
+    width: 100%; */
+    margin: 0px;
   }
 
   .charts_date_tab .nav-tabs {
@@ -22023,7 +22305,7 @@ screen and (max-height: 300px) {
 
   .token_main_details .media .media-heading {
     margin-top: 5px;
-    font-size: 22px;
+    font-size: 18px;
   }
 
   .token_main_details .media .media-body h4 span img {
@@ -22032,8 +22314,14 @@ screen and (max-height: 300px) {
 
   .token_main_details .media h5 span {
     padding: 3px 10px;
-    font-size: 12px;
+    font-size: 13px;
+    display: contents;
   }
+
+  .token_list_values h5 {
+    font-size: 14px;
+  }
+
 
   .token_price_block p {
     font-size: 12px;
@@ -22377,7 +22665,7 @@ screen and (max-height: 300px) {
   }
 
   .quick_block_links .widgets__select a{
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .coin_details .token_list_values h4 {
@@ -22449,9 +22737,14 @@ screen and (max-height: 300px) {
     font-size: 16px;
   }
 
-  .coin_details .token_list_values {
+  /* .coin_details .token_list_values {
     padding: 5px 0 0 ;
     display: flex;
+  } */
+
+  .volume-details .volume-item .volume-value {
+    display: block !important;
+    margin-right: 20px;
   }
 
   .coin_details .token_list_values h5{
@@ -23692,6 +23985,7 @@ screen and (max-height: 300px) {
 
   .token_main_details .media h5 {
     margin-top: 3px;
+    font-size: 26px;
   }
 
   .token_price_block h5 {
@@ -24416,6 +24710,22 @@ screen and (max-height: 300px) {
     font-size: 12px;
   }
 
+  .tokenomic_graph .total_value {
+    top: 110px;
+  }
+
+}
+
+@media (max-width: 390px){
+  .tokenomic_graph .total_value {
+    top: 100px;
+  }  
+}
+
+@media (max-width: 375px){
+  .tokenomic_graph .total_value {
+    top: 90px;
+  }
 }
 
 @media (max-width: 320px) {
@@ -24625,8 +24935,6 @@ font-weight: 500 !important;
   white-space: pre-wrap;
 }
 .markets_new_design .search_filter.new_design_serach {
-  background: #EFF2F5;
-  /* padding: 4px; */
   font-weight: 500 !important;
     font-family: 'Space Grotesk';
 }
@@ -24850,7 +25158,7 @@ font-weight: 500 !important;
   margin: 24px 0;
 } */
 .all-categories-list li a {
-  color: #000;
+  color: #002358;
   font-size: 15px;
   padding: 6px 0;
   font-weight: 600 !important;
@@ -24860,12 +25168,13 @@ font-weight: 500 !important;
   margin-right: 0px;
 }
 .all-categories-list li .active_category{
-  background: rgba(239, 242, 245, 0.60) !important;
-    border: 0px solid #cad0d638;
-    border-radius: 6px;
+  background: #F1F6FF !important;
+  border: 0px solid #cad0d638;
+  border-radius: 6px;
   color: #424242;
   margin-right: 0px !important;
   transition: none;
+  color: #0066FF;
 }
 
 .all-categories-list li .active_category:focus{
@@ -25098,15 +25407,11 @@ justify-content: end;
   font-weight: 400 !important;
 }
 
-.market_page_data table tbody tr{
-  border-bottom: 1px solid #eeeaec !important;
-}
-
 .price-tracking-tbl table tbody tr{
   border-bottom: 0;
 }
 .price-tracking-tbl table tbody tr td, .price-tracking-tbl .market_page_data tr .media h4, .price-tracking-tbl .market_list_price .block_price{
-  color: #000;
+  color: #002358;
   white-space: nowrap;
   font-family: 'Space Grotesk';
   font-weight: 500 !important;
@@ -25360,6 +25665,8 @@ justify-content: end;
 
 .usd_converter select {
   font-weight: 600 !important;
+  background-color: transparent;
+  background: transparent;
 }
 
 .coin_details .dropdown_block{
@@ -25393,7 +25700,7 @@ justify-content: end;
   margin: 0 auto;
   left: 0;
   right: 0;
-  z-index: 999;
+  z-index: 99;
   top: 55px;
 }
 
@@ -25566,6 +25873,12 @@ justify-content: end;
     justify-content: start;
     margin-top: 14px;
   }
+
+  .breadcrumbs {
+    text-align: left;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
  
   .all-categories-list {
     margin: 8px 0;
@@ -25597,8 +25910,21 @@ justify-content: end;
     /* background: #eeeeee4d; */
   }
 
+  .desktop_view {
+    display: none;
+  }
+
+  .mobile_view {
+    display: inline;
+  }
+
+  .coin_details .dropdown_block {
+    left: 15px;
+    right: 15px;
+  }
+
   .coin_details .token_list_values h4 {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .coin_details .token_list_values h5 {
@@ -25613,9 +25939,37 @@ justify-content: end;
     width: 12px;
   }
 
-  .token_list_values .values_growth .green{
-    font-size: 11px;
+  .speedometer_summary h6 {
+    font-size: 13px;
   }
+
+  .token_list_content .values_growth {
+    font-size: 13px;
+  }
+
+  .dex_filter .dex_filter_button {
+    font-size: 13px;
+  }
+
+  .trading_volume {
+    font-size: 14px;
+  }
+
+  .value_dex {
+    font-size: 14px;
+  }
+
+  .market_token_tabs .charts_price_tabs li a span {
+    font-size: 14px;
+  }
+
+  .market_individual_header {
+    border-bottom: 0px solid #CEE1FF;
+    padding-bottom: 5px;
+  }
+
+ 
+
 
   .popup_modal_for_all h4 {
     margin-top: 0px;
@@ -25638,6 +25992,22 @@ justify-content: end;
     /* padding: 1px 5px 0; */
     min-width: 60px;
   }
+
+  .charts_price_tabs ul{
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+  }
+
+  .market_token_tabs .charts_price_tabs .nav-tabs li a {
+    padding-right: 15px;
+  }
+  .charts_price_tabs {
+    margin: 5px 0;
+  }
+
   .charts_date_tab .nav-tabs li a {
     padding: 1px 6px 0;
   }
@@ -25646,11 +26016,6 @@ justify-content: end;
     width: 9px;
     vertical-align: revert;
   }
-
-  .token_list_values .values_growth .red{
-    font-size: 11px;
-  }
-
 
   .all-categories-list li a{
     font-size: 14px;
@@ -25823,7 +26188,13 @@ justify-content: end;
   }
 
   .token_main_details .media .token_img {
-    width: 70px;
+    width: 60px;
+    margin-top: 8px;
+    margin-right: 5px;
+  }
+
+  .token_list_values h4 {
+    font-size: 13px;
   }
 
   .token_list_content{
@@ -25941,7 +26312,7 @@ justify-content: end;
   }
 
   .tokenomic_graph {
-    padding: 15px;
+    padding: 0 15px 15px;
   }
 
   .tokenomic_graph h6 {
@@ -25970,9 +26341,9 @@ justify-content: end;
 }
 
 @media(max-width: 568px){
-  .charts_price_tabs .nav-tabs li {
+  /* .charts_price_tabs .nav-tabs li {
     width: 33.33%;
-  }
+  } */
 
   .date_chart_interval .nav-tabs li {
     width: 14.28%;
@@ -26002,6 +26373,40 @@ justify-content: end;
 
   .category-ul li {
     font-size: 10px;
+  }
+}
+
+@media (max-width: 450px) {
+  .analysis_buy{
+    right: 70px;
+  }
+
+  .analysis_strong_buy{
+    right: 10px;
+  }
+
+  .analysis_sell{
+    left: 70px;
+  }
+
+  .analysis_strong_sell{
+    left: 10px;
+  }
+
+  .analysis_tab_primary_strong_buy {
+    right: 20px;
+  }
+
+  .analysis_tab_primary_buy {
+    right: 70px;
+  }
+
+  .analysis_tab_primary_sell {
+    left: 70px;
+  }
+
+  .analysis_tab_primary_strong_sell {
+    left: 20px;
   }
 }
 

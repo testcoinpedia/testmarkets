@@ -26,6 +26,8 @@ import ReactPaginate from 'react-paginate'
 import Price_chart from '../../../components/search_contract_address/charts/price'
 import { bitgquery_graph_ranges } from '../../../components/token_details/custom_functions' 
 
+const DynamicChartComponent = dynamic(() => import('react-apexcharts'), { ssr: false });
+
 
 let inputProps = {
   className: 'market-details-date-search my_input',
@@ -321,7 +323,87 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
  }
 
 
+ const [chartData, setChartData] = useState({
+  series: [100, 100, 50],
+  options: {
+    chart: {
+      height: '100%',
+      type: 'radialBar',
+      width: 4,
+    },
+    plotOptions: {
+      radialBar: {
+        dataLabels: {
+          name: {
+            fontSize: '14px',
+            // color: '#FF007A',
+          },
+          value: {
+            fontSize: '11px',
+            color: '#000',
+          },
+          
+          // total: {
+          //   show: true,
+          //   label: 'Total',
+          //   formatter: function (w) {
+          //     return 249; 
+          //   },
+          // },
+        },
+      },
+    },
+    colors: ['#FF007A', '#FF007A', '#FF007A'],
+    labels: ['Max Supply', 'Total Supply', 'Circulating Supply'],
+  },
+});
+
+
+
+
+const [circulating_supply, set_circulating_supply] = useState(
+  data.circulating_supply ? data.circulating_supply : ""
+);
+
+const [percentage_change_7d, set_percentage_change_7d] = useState(
+  data.percent_change_7d ? data.percent_change_7d : 0
+);
+
+const [ath_price, set_ath_price] = useState(
+  data.ath_price ? data.ath_price : ""
+);
+const [ath_price_date, set_ath_price_date] = useState(
+  data.ath_price_date ? data.ath_price_date : ""
+);
+const [atl_price, set_atl_price] = useState(
+  data.atl_price ? data.atl_price : ""
+);
+const [atl_price_date, set_atl_price_date] = useState(
+  data.atl_price_date ? data.atl_price_date : ""
+);
+
+
+const [dex_circulating_supply, set_dex_circulating_supply] = useState(0);
+const [count_liquidity_pools, set_count_liquidity_pools] = useState(0);
+
+const [fetch_data_type, set_fetch_data_type] = useState(
+  data.fetch_data_type ? data.fetch_data_type : 0
+);
+const [modal_data, setModalData] = useState({icon: "", title: "",content: "",});
+
+
+
+
+
+
+
+
+
+
 //  usd converter
+
+
+
 
 
 
@@ -1804,13 +1886,18 @@ const toggleDropdown = () => {
     }
   }
 
+  const [copy_status, set_copy_status] = useState(0)
+
   const myReferrlaLink = () => {
+    set_copy_status(1)
+
     var copyText = document.getElementById("referral-link");
     copyText.select();
     document.execCommand("Copy");
-    var tooltip = document.getElementById("myTooltip");
-    tooltip.innerHTML = "Copied";
-  }
+    // var tooltip = document.getElementById("myTooltip");
+    // tooltip.innerHTML = "Copied";
+    setTimeout(() => set_copy_status(0), 2000)
+  };
 
   const handleChange = (isBNB) => {
     // set_checked(isBNB)
@@ -2017,20 +2104,18 @@ const toggleDropdown = () => {
       <title>{tokenData.name} | {tokenData.symbol ? tokenData.symbol.toUpperCase() : "-"} Live Price, Chart & News | Coinpedia Markets</title>
     </Head>
 
-    <div className="page">
-    <div className="market_token_details">
-        <div className="container-fluid p-0">
             <div className="markets_header_token">
             <div className="container">
-                <div className="col-md-12">
+              <div className="market_individual_header">
+                <div className="">
                 <div className="row">
                       <div className="col-lg-8 col-xl-8 col-md-8">
-                        {/* <div className="breadcrumbs">
+                        <div className="breadcrumbs">
                           <div className="breadcrumb-individual primary"><Link href="/">Cryptocurrencies</Link></div>
                           <div className="breadcrumb-individual breadcrumb-arrow"> <img src="/assets/img/breadcrumb-arrow.svg" /> </div>
-                          <div className="breadcrumb-individual secondary">{data.token_name}</div>
+                          <div className="breadcrumb-individual secondary ">{tokenData.name}</div>
 
-                        </div> */}
+                        </div>
                       </div>
                       <div className="col-lg-4 col-xl-4 col-md-4">
                         <div className="search_token_address">
@@ -2047,10 +2132,34 @@ const toggleDropdown = () => {
                               </div>
 
                               <div className="media-body align-self-center">
-                                  <h4 className="media-heading">
+                                  <h1 className="media-heading">
                                   {tokenData.name}
-                                  &nbsp; <span> ({tokenData.symbol ? tokenData.symbol.toUpperCase() : "-"})</span>
-                                  </h4>
+                                  <span>{tokenData.symbol ? tokenData.symbol.toUpperCase() : "-"}</span>
+                                  </h1>
+
+                                  <h5 title={live_price}>
+                                        {live_price > 0 ? convertCurrency(live_price): "NA"}
+                                        {live_price > 0 ?
+                                        <span className="timings_price">&nbsp;24h</span>
+                                        :""}
+                                        <span className="timings_price">
+                                            
+                                            <span className="values_growth">
+                                                {
+                                                percentage_change_24h ?
+                                                percentage_change_24h > 0 ?
+                                                    <span className="green"> <img src="/assets/img/value_up.svg" alt="value up"/> {percentage_change_24h}%</span>
+                                                    :
+                                                    <span className="red"><img src="/assets/img/value_down.svg" alt="value down"/> {percentage_change_24h}% </span>
+
+                                                    :
+                                                    null
+                                                }
+                                            </span>
+                                        </span>
+                                        </h5>
+
+
                                   <p>{tokenData.contract_type == 1 ? "Ethereum (ERC20)": "BNB Smart Chain (BEP20)"} : {(address).slice(0, 8) + "..." + (address).slice(address.length - 8, address.length)}  <img onClick={() => { copyContract(address, 'ETH') }} src="/assets/img/copy.png" alt="copy" className="copy_link" style={{width:"14px"}} height="100%" />   
                                       {
                                           contract_copy_status === 'ETH' ?
@@ -2059,55 +2168,31 @@ const toggleDropdown = () => {
                                           null
                                       }
                                   </p>
+                               
                               </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className="col-lg-3 col-xl-3 col-md-6 order-md-2 order-3">
-                      <div className="token_price_block airdrop_data_content">
-                      <h5 title={live_price}>
-                          {live_price > 0 ? convertCurrency(live_price) : "NA"}
-                        </h5>
-                          <h6>
-                          <span className="timings_price">&nbsp;24h</span>{" "}
-                          <span>
-                              
-                              <span className="values_growth">
-                                  {
-                                  percentage_change_24h ?
-                                  percentage_change_24h > 0 ?
-                                      <span className="green"> <img src="/assets/img/value_up.svg" alt="value up"/> {percentage_change_24h}%</span>
-                                      :
-                                      <span className="red"><img src="/assets/img/value_down.svg" alt="value down"/> {percentage_change_24h}% </span>
-
-                                      :
-                                      null
-                                  }
-                              </span>
-                          </span>
-                          </h6>
-                      </div>
-                    </div>
-                    <div className="col-lg-3 col-xl-3 col-md-6 order-md-3 order-1 ">
-                    {/* <Search_token /> */}
-                    </div>
-                </div>
-                <div className="row token_header_cols">
-                    <div className="col-lg-3 col-xl-3 col-md-12 pr-0">
-                    <ul className="token_share_vote">
-                        {/* <li>#3 Rank</li> */}
+                            <ul className="token_share_vote">
+                                  {data.cp_rank ? <li>#{data.cp_rank} Rank</li> : ""}
                         {/* <li style={{ cursor: "pointer" }}>
                         <a href="https://app.coinpedia.org/login?prev_url=https://markets.coinpedia.org/tether">
                             <img src="/assets/img/coin_vote.svg" /> 1
                         </a>
                         </li> */}
-                        <li onClick={() => set_share_modal_status(true)} style={{ cursor: "pointer" }}><img src="/assets/img/coin_share.svg" alt="Share"/> Share</li>
+                        <li onClick={() => set_share_modal_status(true)} className='px-1' style={{ cursor: "pointer" }}><img src="/assets/img/coin_share.svg" alt="Share"/></li>
                         {/* <li>
                          <Link href={app_coinpedia_url + "login?prev_url=" + market_coinpedia_url + "address/"+address} >
                           <img src="/assets/img/watchlist_outline.svg"  style={{width:"18px"}} alt="watchlist" />
                           </Link>
                         </li> */}
                     </ul>
+                        </div>
+                    </div>
+                   
+                    
+                </div>
+                <div className="row token_header_cols">
+                    <div className="col-lg-3 col-xl-3 col-md-12 pr-0">
+                  
                     </div>
 
                      {/* <div className="token_list_values">
@@ -2119,35 +2204,19 @@ const toggleDropdown = () => {
                                     <h5>{contract_24h_volume?"$":null}{contract_24h_volume ? separator(contract_24h_volume.toFixed(4)): "NA"}</h5>
                                   </div> */}
                     <div className="col-lg-9 col-xl-9 col-md-12">
-                    <ul className="token_list_data">
+                    <div className="token_list_data token_list_data_individual">
+                      <ul>
+                       
                         <li>
-                        <div className="token_list_content">
+                        <div className="token_list_values">
                             <h4>
-                            Market Cap : &nbsp;
-                            <span className="responsive_value_display">
-                                {market_cap?"$":null}{market_cap ? separator(market_cap.toFixed(4)): "NA"}
-                            </span>
-                              <OverlayTrigger
-                                delay={{ hide: 450, show: 300 }}
-                                  overlay={(props) => (
-                                    <Tooltip {...props} className="custom_pophover">
-                                      <p>Market capitalization is a measure used to determine the total value of a publicly traded cryptocurrency. It is calculated by multiplying the current market price of a single coin/token X total supply of the coin/token.</p>
-                                    </Tooltip>
-                                  )}
-                                  placement="bottom"
-                                ><span className='info_col' ><img src="/assets/img/info.png"   alt="info"/></span>
-                              </OverlayTrigger>
+                            24h Volume
                             </h4>
-                        </div>
-                        </li>
-                        <li>
-                        <div className="token_list_content">
-                            <h4>
-                            24h Volume : &nbsp;
-                            <span className="responsive_value_display">
-                                 {contract_24h_volume?"$":null}{contract_24h_volume ? separator(contract_24h_volume.toFixed(4)): "NA"}
-                            </span>
-                            <OverlayTrigger
+                            <h5>                            
+                                 {contract_24h_volume?"$":null}{contract_24h_volume ? separator(contract_24h_volume.toFixed(4)): "NA"}                            
+                            </h5>
+                           
+                            {/* <OverlayTrigger
                               delay={{ hide: 450, show: 300 }}
                                 overlay={(props) => (
                                   <Tooltip {...props} className="custom_pophover">
@@ -2156,19 +2225,34 @@ const toggleDropdown = () => {
                                 )}
                                 placement="bottom"
                               ><span className='info_col' ><img src="/assets/img/info.png"  alt="info"/></span>
-                            </OverlayTrigger>
+                            </OverlayTrigger> */}
                             <span className="values_growth" />
-                            </h4>
-                        </div>
+                        </div>  
                         </li>
-                        
-                    </ul>
+                        <li>
+                        <div className="token_list_values">
+                                    <h4>Open 24h</h4>
+                                    <h5>${parseFloat(open_24h) ? (parseFloat(open_24h)).toFixed(4):"NA" }</h5>
+                                  </div>
+                          </li>
+                          <li>
+                          <div className="token_list_values">
+                                    <h4>Close 24h</h4>
+                                    <h5>${parseFloat(close_24h) ? (parseFloat(close_24h)).toFixed(4):"NA" }</h5>
+                                  </div>
+                          </li>
+                      </ul>
+                    </div>
                     </div>
                 </div>
                 </div>
             </div>
+            </div>
         </div>
-    </div>
+
+    <div className="page">
+    <div className="market_token_details">
+        
   
 
 
@@ -2180,18 +2264,431 @@ const toggleDropdown = () => {
                 <div className="col-md-12">
                   <div className="coin_details">
                     <div className="row">
-                    <div className="col-md-3">
+                    <div className="col-md-4 order-md-1 order-2">
+                    <div className="row">
+                          <div className="col-md-7 col-6">
+                            <div className="token_details_circular_graph">
+                              <div class="media">
+                                <img src="/assets/img/circulating_supply.svg" alt="Circulating Supply" className="dots" />
+                                <div class="media-body">
+                                  <h4 className="quick_title"><span></span> Max Supply 
+                                    <OverlayTrigger
+                                      delay={{ hide: 450, show: 300 }}
+                                      overlay={(props) => (
+                                        <Tooltip
+                                          {...props}
+                                          className="custom_pophover"
+                                        >
+                                          <p>
+                                            The maximum supply, refers to the
+                                            maximum number of coins or tokens
+                                            that can ever exist for a specific
+                                            cryptocurrency. It represents an
+                                            upper limit or cap on the total
+                                            supply that will ever be reached.
+                                            The max supply defines the
+                                            absolute ceiling for the number of
+                                            coins that can be created or
+                                            minted.
+                                          </p>
+                                        </Tooltip>
+                                      )}
+                                      placement="bottom"
+                                    >
+                                      <span> 
+                                        <img src="/assets/img/information_token.svg" alt="Information" />
+                                      </span>
+                                    </OverlayTrigger>
+                                  </h4>                              
+                                  <h5 className="quick_values">
+                                    {data.max_supply
+                                      ? separator(data.max_supply.toFixed(2))
+                                      : "NA"}
+                                  </h5>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="token_details_circular_graph">
+                              <div class="media">
+                                <img src="/assets/img/total_supply.svg" alt="Total Supply" className="dots" />
+                                <div class="media-body">
+                                  <h4 className="quick_title"><span></span> Total Supply 
+                                  <OverlayTrigger
+                                    delay={{ hide: 450, show: 300 }}
+                                    overlay={(props) => (
+                                      <Tooltip
+                                        {...props}
+                                        className="custom_pophover"
+                                      >
+                                        <p>
+                                          The total supply refers to the
+                                          current and total number of coins
+                                          or tokens that have been created
+                                          and are available in the
+                                          cryptocurrency's ecosystem. It
+                                          includes both the circulating
+                                          supply (coins in circulation) and
+                                          any locked, reserved, or unissued
+                                          coins. The total supply represents
+                                          the maximum number of coins that
+                                          can be found within the
+                                          cryptocurrency's network.
+                                        </p>
+                                      </Tooltip>
+                                    )}
+                                    placement="bottom"
+                                  >
+                                    <span> <img src="/assets/img/information_token.svg" alt="Information" /></span>
+                                  </OverlayTrigger>
+                                  </h4>                              
+                                  <h5 className="quick_values">
+                                    {total_supply
+                                      ? separator(total_supply.toFixed(2))
+                                      : "NA"}
+                                  </h5>
+
+                                 
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="token_details_circular_graph">
+                              <div class="media">
+                                <img src="/assets/img/max_supply.svg" alt="Circulating Supply " className="dots" />
+                                <div class="media-body">
+                                  <h4 className="quick_title"><span></span> Circulating Supply
+                                    <OverlayTrigger
+                                      delay={{ hide: 450, show: 300 }}
+                                      overlay={(props) => (
+                                        <Tooltip
+                                          {...props}
+                                          className="custom_pophover"
+                                        >
+                                          <p>
+                                            Circulating supply refers to the total
+                                            number of coins/tokens that are currently
+                                            in circulation and available to the
+                                            public. It represents the portion of the
+                                            total supply of a cryptocurrency that is
+                                            actively being traded or held by
+                                            investors.
+                                          </p>
+                                        </Tooltip>
+                                      )}
+                                      placement="bottom"
+                                    >
+                                    <span> <img src="/assets/img/information_token.svg" alt="Information" /></span>
+                                  </OverlayTrigger>
+                                  </h4>                              
+                                  <h5 className="quick_values">
+                                    {circulating_supply ? (
+                                      <>
+                                        {separator(circulating_supply) +
+                                          " " +
+                                          symbol.toUpperCase()}&nbsp;
+                                      </>
+                                    ) : (
+                                      "NA"
+                                    )}
+
+                                    {circulating_supply && data.max_supply ? (
+                                      <span>
+                                        (
+                                        {(
+                                          (circulating_supply / data.max_supply) *
+                                          100
+                                        ).toFixed(2)}
+                                        %)
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </h5>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-md-5 col-6">
+                            <div id="chart" className="quick_values_graph">
+                              <DynamicChartComponent
+                                options={chartData.options}
+                                series={chartData.series}
+                                type="radialBar"
+                                height={212}
+                              />
+                            </div>
+                          </div>
+                        </div>
                     <div>
-                          <div className='row'>
+                         
+                        </div>
+                                      
+
+                    </div>
+
+                    <div className="col-md-4 order-md-2 order-1">
+                        <div className="speedometer_summary">
+                          <h5 className='sub_title_main'>Indicator Sentiment:</h5>
+                          <div className="row">
+                            <div className="col-md-12">
+                              <p className="analysis_strong_sell">Strong<br/>Sell</p>
+                              <p className="analysis_sell">Sell</p>
+                              <p className="analysis_neutral">Neutral</p>
+                              <p className="analysis_buy">Buy</p>
+                              <p className="analysis_strong_buy">Strong<br/>Buy</p> 
+                            </div>
+                          </div>
+                          <div className="speedometer-container">
+                            <div>
+                              {(summary_speedo_meter >= 60 )? (
+                                <img
+                                  className="speedometer-image"
+                                  src="/assets/img/speedometer_green.svg"
+                                  alt="Speedometer"
+                                />
+                              ) : 
+                              (summary_speedo_meter <= 40) ?
+                              (
+                                <img
+                                  className="speedometer-image"
+                                  src="/assets/img/speedometer_red.svg"
+                                  alt="Red Speedometer"
+                                />
+                              )
+                            :
+                            <img
+                            className="speedometer-image"
+                            src="/assets/img/speedometer_yellow.svg"
+                            alt="Red Speedometer"
+                          />
+                            }
+                          </div>
+
+
+                          <ReactSpeedometer
+                            currentValueText={summary_speed_meter_name}
+                            textColor={'#000'}
+                            value={summary_speedo_meter}
+                            minValue={0}
+                            width={250}
+                            height={180}
+                            maxValue={100}
+                            needleColor="#131721"
+                            startColor={ringColor}
+                            segments={5}
+                            endColor="red"
+                            needleHeightRatio={0.7}
+                            segmentWidth={15}
+                            segmentLength={10}
+                            ringWidth={8}
+                            segmentColors={[
+                                '#FF5656',
+                                '#FF8888',
+                                '#FEE114',
+                                '#84BD32',
+                                '#30AD43'
+                            ]}
+                            customSegmentLabels={[
+                              {
+                                text: ' ',
+                                position: 'OUTSIDE'
+                              },
+                              {
+                                text: ' ',
+                                position: 'OUTSIDE'
+                              },
+                              {
+                                text: ' ',
+                                position: 'OUTSIDE'
+                              },
+                              {
+                                text: ' ',
+                                position: 'OUTSIDE'
+                              },
+                              {
+                                text: '   ',
+                                position: 'OUTSIDE'
+                              },
+                            ]}
+                            needleTransition
+                            needleTransitionDuration={500}
+                            needleTransitionEasing="easeElastic"
+                            needleTransitionDelay={0}
+                            customNeedle={customNeedlePath}
+                          />
+                          </div>
+                          <h6><span>Full analysis <img src="/assets/img/blue-right.svg" /></span></h6>
+                        </div>
+                        <div className="token_list_content">
+                          <div className="row">
+                            <div className="col-md-4 col-5">
+                              <h4 className="quick_title">Market Cap</h4>
+                            </div>
+                            <div className="col-md-8 col-7">
+                              <h5 className="quick_values">
+                              {
+                                circulating_supply > 0 ? (
+                                <>
+                                  {convertCurrency(
+                                    circulating_supply * live_price
+                                  )}
+                                </>
+                                ) : (
+                                  "NA"
+                                )
+                              }
+                              </h5>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-md-4 col-5">
+                                    <h4 className="quick_title">High 24h</h4>
+                                    </div>
+                                    <div className='col-md-8 col-7'>
+
+                                    
+                                    <h5 className="quick_values">${high_24h ?(parseFloat(high_24h)).toFixed(4):"NA"}</h5>
+                                  </div>
+                                  </div>
+                                  <div className="row">
+                            <div className="col-md-4 col-5">
+                                    <h4 className="quick_title">Low 24h</h4>
+                                    </div>
+                                    <div className='col-md-8 col-7'>
+                                    <h5 className="quick_values">${low_24h ? (parseFloat(low_24h)).toFixed(4):"NA"}</h5>
+                                  </div>
+                                </div>
+                          {/* {ath_price ? (
+                          <div className="row">
+                            <div className="col-md-4">
+                            <h4 className="quick_title">All Time Low</h4>
+                            </div>
+                            <div className="col-md-8">
+                              <h5 className="quick_values">
+                              {
+                                convertCurrency(atl_price)} &nbsp;{" "}
+                                <span className="values_growth">
+                                  <span className="green">
+                                  <img
+                                        src="/assets/img/markets/high.png"
+                                        alt="High price"
+                                      />
+
+                                    {(
+                                      ((live_price - atl_price) /
+                                        atl_price) *
+                                      100
+                                    ).toFixed(2)}
+                                    %
+                                  </span>
+                                </span>
+                              </h5>
+                            </div>
+                          </div>):""} */}
+                          
+                          {/* {ath_price ? (
+                          <div className="row">
+                            <div className="col-md-4">
+                            <h4 className="quick_title">All Time High</h4>
+                            </div>
+                            <div className="col-md-8">
+                              <h5 className="quick_values">
+                              {convertCurrency(ath_price)} &nbsp;{" "}
+                              <span className="values_growth">
+                                <span className="red">
+                                <img
+                                        src="/assets/img/markets/low.png"
+                                        alt="High price"
+                                      />
+                                  {(
+                                    ((live_price - ath_price) /
+                                      ath_price) *
+                                    100
+                                  ).toFixed(2)}
+                                  %
+                                </span>
+                              </span>
+                              </h5>
+                            </div>
+                          </div>):""} */}
+
+                          <div className="row">
+                            <div className="col-md-4 col-5">
+                            <h4 className="quick_title">Green Days</h4>
+                            </div>
+                            <div className="col-md-8 col-7">
+                              <h5 className="quick_values">
+                              {
+                                green_days ? 
+                                <>
+                                {green_days} / 30 {!isNaN(percentage) ? <>({percentage.toFixed(2)}%)</>:""}
+                                </>
+                                :
+                                "NA"
+                              }
+                              </h5>
+                            </div>
+                          </div>
+
+                          <div className="row">
+                            <div className="col-md-4 col-5">
+                            <h4 className="quick_title">50-Day SMA</h4>
+                            </div>
+                            <div className="col-md-8 col-7">
+                              <h5 className="quick_values">
+                              {close_price_of_fifty ? (
+                                <>
+                                  {convertCurrency(close_price_of_fifty)}
+                                </>
+                              ) : (
+                                "NA"
+                              )}
+                              </h5>
+                            </div>
+                          </div>
+
+                          <div className="row">
+                            <div className="col-md-4 col-5">
+                              <h4 className="quick_title">200-Day SMA</h4>
+                            </div>
+                            <div className="col-md-8 col-7">
+                              <h5 className="quick_values">
+                              {close_price_of_two_hundred ? (
+                                <>
+                                  {convertCurrency(close_price_of_two_hundred)}
+                                </>
+                              ) : (
+                                "NA"
+                              )}
+                              </h5>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      
+
+                      <div className="col-md-4 order-md-3 order-3">
+                      <Dex_overview reqData={{ contract_address: address, contract_type:tokenData.contract_type, token_symbol: tokenData.symbol, volume: 1232 }} />
+                      <div className='row'>
                             <div className='col-12'>
-                              <h5 className='converter-title mt-2 mb-2'>{tokenData.symbol} to USD Converter</h5>
+                              <h5 className="sub_title_main mt-2">{tokenData.symbol} to USD Converter</h5>
+                              <div className="usd_converter">
+                                <img className="interchamge_icon" src="/assets/img/interchange_icon.svg" alt="Exchange" />
+
+
                               <div className="input-group">
                                 <div className="input-group-prepend converter-label">
-                                  <span className="input-group-text">{tokenData.symbol}</span>
+                                  <span className="input-group-text"><img src="/assets/img/uni_icon.svg" alt="UNI" /> &nbsp;{tokenData.symbol}</span>
                                 </div>
                                 <input type="number" value={token_converter_value} onChange={(e) => tokenConverter(e.target.value, 1, converter_pair_currency)} step="0.000001" min="0.000001" className="form-control converter-input" placeholder="0" />
-                                <div className="input-group-append converter-label">
+                               
+                              </div>
+                              <div className="input-group">
+                              <div className="input-group-prepend converter-label">
                                   <span className="input-group-text converter-second-span">
+                                  <img src="/assets/img/uni_icon.svg" alt="UNI" /> &nbsp;
                                     <select className="form-no-border" onChange={(e) => tokenConverter(token_converter_value, 1, e.target.value)}>
                                       {
                                          converter_pair_currencies.map((item, i) =>
@@ -2206,342 +2703,11 @@ const toggleDropdown = () => {
                                 </div>
                                 <input type="number" value={usd_converter_value} onChange={(e) => tokenConverter(e.target.value, 2, converter_pair_currency)} step="0.000001" min="0.000001" className="form-control converter-input" placeholder="0" />
                               </div>
-                              
                                {/* <Community_scrore reqData={{token_row_id:data._id, my_voting_status:data.voting_status ? data.voting_status:0, total_voting_count:data.total_voting_count, positive_voting_counts:data.positive_voting_counts, parent_user_token:user_token, request_config}}/>  */}
                               
                             </div>
                           </div>
-                        </div>
-                      
-                        <>
-                          
-                          <div className="row">
-
-                            {/* {data.open_close_details.total_days >= 50 ? ( */}
-                              <div className="col-md-6 col-12">
-                                <div className="mobile_padding_right">
-                                  <div className="token_list_values">
-                                    <h4>
-                                      {" "}
-                                      50-Day SMA &nbsp;
-                                      <OverlayTrigger
-                                        delay={{ hide: 450, show: 300 }}
-                                        overlay={(props) => (
-                                          <Tooltip
-                                            {...props}
-                                            className="custom_pophover"
-                                          >
-                                            <p>
-                                              50 days Simple Moving Average :
-                                              The average closing price for
-                                              the last 50 days
-                                            </p>
-                                          </Tooltip>
-                                        )}
-                                        placement="bottom"
-                                      >
-                                        <span className="info_col">
-                                          <img
-                                            src="/assets/img/info.png"
-                                            alt="Info"
-                                          />
-                                        </span>
-                                      </OverlayTrigger>{" "}
-                                      :
-                                    </h4>
-                                    <h5>
-                                      {close_price_of_fifty ? (
-                                        <>
-                                          {convertCurrency(close_price_of_fifty)}
-                                        </>
-                                      ) : (
-                                        "NA"
-                                      )}
-                                      &nbsp;
-                                    </h5>
-                                  </div>
-                                </div>
-                              </div>
-
-
-                          
-                              <div className="col-md-6 col-12">
-                                <div className="mobile_padding_right">
-                                  <div className="token_list_values">
-                                    <h4>
-                                      {" "}
-                                      200-Day SMA &nbsp;
-                                      <OverlayTrigger
-                                        delay={{ hide: 450, show: 300 }}
-                                        overlay={(props) => (
-                                          <Tooltip
-                                            {...props}
-                                            className="custom_pophover"
-                                          >
-                                            <p>
-                                              200 days Simple Moving Average :
-                                              The average closing price for
-                                              the last 200 days
-                                            </p>
-                                          </Tooltip>
-                                        )}
-                                        placement="bottom"
-                                      >
-                                        <span className="info_col">
-                                          <img
-                                            src="/assets/img/info.png"
-                                            alt="Info"
-                                          />
-                                        </span>
-                                      </OverlayTrigger>{" "}
-                                      :
-                                    </h4>
-                                    <h5>
-                                      {close_price_of_two_hundred ? (
-                                        <>
-                                          {convertCurrency(close_price_of_two_hundred)}
-                                        </>
-                                      ) : (
-                                        "NA"
-                                      )}
-                                      &nbsp;
-                                    </h5>
-                                  </div>
-                                </div>
-                              </div>
-                            {/* ) : (
-                              ""
-                            )} */}
-
-                            {/* {data.open_close_details.total_days >= 200 ? (
-                              <div className="col-md-6 col-12">
-                                <div className="mobile_padding_right">
-                                  <div className="token_list_values">
-                                    <h4>
-                                      {" "}
-                                      Volatility &nbsp;
-                                      <OverlayTrigger
-                                        delay={{ hide: 450, show: 300 }}
-                                        overlay={(props) => (
-                                          <Tooltip
-                                            {...props}
-                                            className="custom_pophover"
-                                          >
-                                            <p>
-                                              Volatility is a statistical
-                                              measure that is used to
-                                              determine the risk of a certain
-                                              asset. In general the higher the
-                                              volatility, the riskier is to
-                                              invest in the asset. Volatility
-                                              below 1% is very low, 1-2% low,
-                                              2-5% medium, 5-10% high, 10-20%
-                                              very high, and above 20%
-                                              extremely high.
-                                            </p>
-                                          </Tooltip>
-                                        )}
-                                        placement="bottom"
-                                      >
-                                        <span className="info_col">
-                                          <img
-                                            src="/assets/img/info.png"
-                                            alt="Info"
-                                          />
-                                        </span>
-                                      </OverlayTrigger>{" "}
-                                      :
-                                    </h4>
-                                    <h5>
-                                      {volatility ? (
-                                        <>
-                                          {volatility}% (
-                                          {volatility < 1
-                                            ? "Very Low"
-                                            : volatility >= 1 &&
-                                              volatility < 2
-                                            ? "Low"
-                                            : volatility >= 2 &&
-                                              volatility < 5
-                                            ? "Medium"
-                                            : volatility >= 5 &&
-                                              volatility < 10
-                                            ? "High"
-                                            : volatility >= 10 &&
-                                              volatility < 20
-                                            ? "Very High"
-                                            : "Extremely High"}
-                                          )
-                                        </>
-                                      ) : (
-                                        "NA"
-                                      )}
-                                    </h5>
-                                  </div>
-                                </div>
-                              </div>
-                            ) : (
-                              ""
-                            )} */}
                           </div>
-                        </>               
-
-                                      
-
-                    </div>
-
-                      <div className="col-md-6">
-                        <div className="row">
-                          <div className="col-md-4 col-6">
-                            <div className="">
-                              <div className="token_list_values">
-                                <h4>Total Supply</h4>
-                                {/* <h5>
-                                {
-                                  token_supply ? 
-                                  <>
-                                  {separator(token_supply.toFixed(0))} {tokenData.symbol ? tokenData.symbol.toUpperCase() : ""}
-                                  </>
-                                  :
-                                  "NA"
-                                } 
-                                </h5> */}
-
-                                <h5>
-                                      {total_supply
-                                        ? separator(total_supply.toFixed(2))
-                                        : "NA"}
-                                      &nbsp;
-                                    </h5>
-                              </div>
-                              <div className="token_list_values">
-                                {/* <h4>Liquidity</h4>
-                                <h5>${separator((liquidity).toFixed(2))}</h5> */}
-                                <div className="mobile_padding_right">
-                                <div className="token_list_values">
-                                  <h4>
-                                    {" "}
-                                    Green Days &nbsp;
-                                    <OverlayTrigger
-                                      delay={{ hide: 450, show: 300 }}
-                                      overlay={(props) => (
-                                        <Tooltip
-                                          {...props}
-                                          className="custom_pophover"
-                                        >
-                                          <p>
-                                            If the open price on a day
-                                            beginning at any time is lower
-                                            than the closing price, the day
-                                            will be considered a "green day."{" "}
-                                            <br />
-                                            Here the number of Green Days in
-                                            last 30 days are displayed
-                                          </p>
-                                        </Tooltip>
-                                      )}
-                                      placement="bottom"
-                                    >
-                                      <span className="info_col">
-                                        <img
-                                          src="/assets/img/info.png"
-                                          alt="Info"
-                                        />
-                                      </span>
-                                    </OverlayTrigger>{" "}
-                                    :
-                                  </h4>
-                                  <h5>
-                                    {
-                                      green_days ? 
-                                      <>
-                                      {green_days} / 30 {!isNaN(percentage) ? <>({percentage.toFixed(2)}%)</>:""}
-                                      </>
-                                      :
-                                      "NA"
-                                    }
-                                  
-
-                                    {/* {data.open_close_details.green_days}/
-                                    {data.open_close_details.total_days >= 30
-                                      ? 30
-                                      : data.open_close_details
-                                          .total_days}{" "}
-                                    (
-                                    {(
-                                      (data.open_close_details.green_days /
-                                        (data.open_close_details.total_days >=
-                                        30
-                                          ? 30
-                                          : data.open_close_details
-                                              .total_days)) *
-                                      100
-                                    ).toFixed(2)}
-                                    %) */}
-                                  </h5>
-                                </div>
-                              </div>
-                              </div>
-
-                              {/* <div className="token_list_values">
-                                <h4>Liquidity*Trades</h4>
-                                <h5>${separator((cal_liquidity).toFixed(2))}</h5>
-                              </div> */}
-
-                              
-                              {/* <div className="token_list_values">
-                                <h4>Volume / Market Cap</h4>
-                                <h5>NA</h5>
-                              </div>
-                               */}
-
-                            </div>
-                          </div>
-                          <div className="col-md-4 col-6">
-                            <div className="token_left_border">
-
-                              <div className="col-md-12  col-sm-6 col-6">
-                                  <div className="token_list_values">
-                                    <h4>Open 24h</h4>
-                                    <h5>${parseFloat(open_24h) ? (parseFloat(open_24h)).toFixed(4):"NA" }</h5>
-                                  </div>
-                                </div>
-                                <div className="col-md-12  col-sm-6 col-6">
-                                  <div className="token_list_values">
-                                    <h4>Close 24h</h4>
-                                    <h5>${parseFloat(close_24h) ? (parseFloat(close_24h)).toFixed(4):"NA" }</h5>
-                                  </div>
-                                </div>
-                            </div>
-                          </div>
-                                  
-
-                          <div className="col-md-4 col-sm-12 col-12">
-                            <div className="token_left_border">
-                              <div className="row">
-                                <div className="col-md-12 col-sm-6 col-6">
-                                  <div className="token_list_values">
-                                    <h4>High 24h</h4>
-                                    <h5>${high_24h ?(parseFloat(high_24h)).toFixed(4):"NA"}</h5>
-                                  </div>
-                                </div>
-                                <div className="col-md-12  col-sm-6 col-6">
-                                  <div className="token_list_values">
-                                    <h4>Low 24h</h4>
-                                    <h5>${low_24h ? (parseFloat(low_24h)).toFixed(4):"NA"}</h5>
-                                  </div>
-                                </div>
-                                
-
-                              </div>
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-
-                      <div className="col-md-3">
-                      <Dex_overview reqData={{ contract_address: address, contract_type:tokenData.contract_type, token_symbol: tokenData.symbol, volume: 1232 }} />
                       </div>
                     </div>
                   </div>
@@ -2554,7 +2720,7 @@ const toggleDropdown = () => {
                     <div className='token_details_tabs_row'>
                       <ul className="nav nav-tabs ">
                         <li className="nav-item">
-                          <a data-toggle="tab" onClick={()=>setMainTab(1)} className={"nav-link "+(main_tab == 1? " active":"")} ><span>Chartdsf</span></a>
+                          <a data-toggle="tab" onClick={()=>setMainTab(1)} className={"nav-link "+(main_tab == 1? " active":"")} ><span>Charts</span></a>
                         </li>
                         <li className="nav-item" >
                           <a className={"nav-link "+(main_tab == 11 ? "active":"")} onClick={()=>set_main_tab(11)}>Analysis</a>
@@ -2877,19 +3043,19 @@ const toggleDropdown = () => {
                     <div className="col-md-1">&nbsp;</div>
                     <div className="col-md-10">
                       <div className="row">
-                        <div className="col-md-4">
+                        <div className="col-md-4 col-4">
                           <div className="overview_analysis">
                             <h5>Sell</h5>
                             <h4>{oscillator_sell}</h4>
                           </div>
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-4 col-4">
                           <div className="overview_analysis">
                             <h5>Neutral</h5>
                             <h4>{oscillator_neutral}</h4>
                           </div>
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-4 col-4">
                           <div className="overview_analysis">
                             <h5>Buy</h5>
                             <h4>{oscillator_buy}</h4>
@@ -2993,19 +3159,19 @@ const toggleDropdown = () => {
                                           <div className="col-md-1">&nbsp;</div>
                                           <div className="col-md-10">
                                             <div className="row">
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Sell</h5>
                                                   <h4>{summary_sell}</h4>
                                                 </div>
                                               </div>
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Neutral</h5>
                                                   <h4>{summary_neutral}</h4>
                                                 </div>
                                               </div>
-                                              <div className="col-md-4">
+                                              <div className="col-md-4 col-4">
                                                 <div className="overview_analysis">
                                                   <h5>Buy</h5>
                                                   <h4>{summary_buy}</h4>
@@ -3110,19 +3276,19 @@ const toggleDropdown = () => {
                     <div className="col-md-1">&nbsp;</div>
                     <div className="col-md-10">
                       <div className="row">
-                        <div className="col-md-4">
+                        <div className="col-md-4 col-4">
                           <div className="overview_analysis">
                             <h5>Sell</h5>
                             <h4>{total_sma_sell}</h4>
                           </div>
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-4 col-4">
                           <div className="overview_analysis">
                             <h5>Neutral</h5>
                             <h4>{total_sma_neutral}</h4>
                           </div>
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-4 col-4">
                           <div className="overview_analysis">
                             <h5>Buy</h5>
                             <h4>{total_sma_buy}</h4>
@@ -3872,7 +4038,140 @@ const toggleDropdown = () => {
         </div>
       </div>
 
-      <div className={"modal " + (share_modal_status ? " modal_show" : " ")} id="market_share_page">
+
+
+
+
+      <div
+        className={"modal share_popup_token  " + (share_modal_status ? " modal_show" : " ")}
+        id="market_share_page"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-body">
+            <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                onClick={() => set_share_modal_status(false)}
+              >
+                <span>
+                  <img src="/assets/img/close_popup.svg" alt="Close" />
+                </span>
+              </button>
+              <h4>Share it with your friends!</h4>
+              <div className="share_token_img">
+              <img src={"/assets/img/"+(tokenData.contract_type == 1 ? "default.png": "binance.svg")}  alt={tokenData.contract_type == 1 ? "Ethereum": "BSC"} width="100%" height="100%" />
+
+              </div>
+              <h1 className="token_name_share">{tokenData.name} - <span> {tokenData.symbol ? tokenData.symbol.toUpperCase() : "-"}</span> : {live_price > 0 ? convertCurrency(live_price): "NA"}</h1>
+              <div className="share_input_url">
+              <div className="input-group">
+              <input type="text" id="referral-link" className="form-control" defaultValue={market_coinpedia_url + "address/"+address} readOnly />
+                    <div className="input-group-prepend">
+                    {
+                      copy_status == 0 ?
+                        <span
+                          className="input-group-text"
+                          id="myTooltip"
+                          onClick={() => myReferrlaLink()}
+                        >
+                          <img
+                            src="/assets/img/copy_icon_url.svg"
+                            alt="Copy"
+                            className="copy_link ml-2"
+                            width="100%"
+                            height="100%"
+                          />
+                        </span>
+                        :
+                        <span
+                          className="input-group-text"
+                          id="myTooltip"
+                          onClick={() => myReferrlaLink()}
+                        >
+                         Copied!
+                        </span>
+                    }
+                    </div>
+                  </div>
+                  
+              </div>
+              <h6>Or share it with</h6>
+              <div className="share_social_img">
+                <ul>
+                  <li>
+                  <a
+                      rel="nofollow"
+                      href={"https://www.facebook.com/sharer/sharer.php?u=" + market_coinpedia_url + "address/"+address} target="_blank"
+                    >
+                      <span>
+                      <img
+                        src="/assets/img/facebook_img.svg"
+                        alt="Facebook"
+                        width="100%"
+                        height="100%"
+                      />
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                  <a
+                      rel="nofollow"
+                      href={"https://www.linkedin.com/shareArticle?mini=true&url=" + market_coinpedia_url + "address/"+address}
+                      target="_blank"
+                    >
+                      <img
+                        src="/assets/img/linkedin_img.svg"
+                        alt="Linkedin"
+                        width="100%"
+                        height="100%"
+                      />
+                    </a>
+                  </li>
+                  <li>
+                  <a
+                      rel="nofollow"
+                      href={"http://twitter.com/share?url=" + market_coinpedia_url + "address/"+address+"&text="+ data.token_name}
+                      target="_blank"
+                    >
+                      <img
+                        src="/assets/img/twitter_img.svg"
+                        alt="Twitter"
+                        width="100%"
+                        height="100%"
+                      />
+                    </a>
+                  </li>
+                  <li>
+                  <a
+                      rel="nofollow"
+                      href={"https://wa.me/?text=" + market_coinpedia_url + "address/"+address}
+                      target="_blank"
+                    >
+                      <img
+                        src="/assets/img/whatsapp_img.svg"
+                        width="100%"
+                        height="100%"
+                        alt="Whatsapp"
+                      />
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          
+           
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+      {/* <div className={"modal " + (share_modal_status ? " modal_show" : " ")} id="market_share_page">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
@@ -3903,7 +4202,7 @@ const toggleDropdown = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
     </>
   )

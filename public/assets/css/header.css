@@ -1446,12 +1446,12 @@ font-size: 18px !important;
   }
 }
 
-@media(min-width: 769px) {
+/* @media(min-width: 769px) {
   .container {
     padding-right: 0;
     padding-left: 0;
   }
-}
+} */
 
 @media (min-width: 768px) {
   .mobile_view {

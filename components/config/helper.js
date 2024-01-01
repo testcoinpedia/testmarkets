@@ -88,6 +88,13 @@ export const crypto_networks_list = [
     network_image:"avax.svg",
     active_status:1
   },
+  {
+    _id:7,
+    network_id:8217,
+    network_name:"Klaytn",
+    network_image:"arbitrum.svg",
+    active_status:1
+  }
   // {
   //   _id:5,
   //   network_name:"Optimism",
@@ -95,16 +102,15 @@ export const crypto_networks_list = [
   //   active_status:1
   // },
   
-  {
-    _id:7,
-    network_id:8217 ,
-    network_name:"klaytn",
-    network_image:"arbitrum.png",
-    active_status:1
-  }
+  // {
+  //   _id:7,
+  //   network_name:"Arbitrum",
+  //   network_image:"",
+  //   active_status:1
+  // }
 ]
 
-export const cryptoNetworksList = ({ethereum, bsc, polygon, fantom, avalanche,klaytn}) =>
+export const cryptoNetworksList = ({ethereum, bsc, polygon, fantom, avalanche}) =>
 {
   return [
     {
@@ -149,8 +155,8 @@ export const cryptoNetworksList = ({ethereum, bsc, polygon, fantom, avalanche,kl
     },
     // {
     //   _id:5,
-    //   network_name:"Optimism",
-    //   network_image:"",
+    //   network_name:"Klaytn",
+    //   network_image:"arbitrum.svg",
     //   active_status:1
     // },
     // {
@@ -159,18 +165,78 @@ export const cryptoNetworksList = ({ethereum, bsc, polygon, fantom, avalanche,kl
     //   network_image:"",
     //   active_status:1
     // },
-    {
-      _id:7,
-       network_id:8217 ,
-      network_name:"klaytn",
-      network_image:"arbitrum.png",
-      network_balance:klaytn,
-      active_status:1
-    }
+    // {
+    //   _id:7,
+    //   network_name:"Arbitrum",
+    //   network_image:"",
+    //   active_status:1
+    // }
   ]
 }
 
 
+export const getChartBasePrice = async ({chart_data, price, balance, backend_server_time}) =>
+{
+    var low_value = 0
+    var high_value = 0
+    const new_array = []
+    // console.log("pass_data", pass_data)
+    // console.log("pass_balance", pass_balance)
+    var i = 0
+    if(balance)
+    { 
+      if(chart_data.length)
+      {
+        for(let innerRun of chart_data)
+        {   
+          var sum = 0
+          if((innerRun.price))
+          {
+            sum = await parseFloat(innerRun.price)*parseFloat(balance)
+          }
+          else if((price && balance))
+          { 
+            sum = await parseFloat(price)*parseFloat(balance)
+          }
+
+          if(i == 0)
+          {
+            low_value = await sum
+          }
+          else
+          {
+            if(sum < low_value)
+            {
+              low_value = await sum
+            }
+          }
+
+          if(sum > high_value)
+          {
+            high_value = await sum
+          }
+
+          const current_country_time = await moment(innerRun.date_n_time).format("YYYY-MM-DDTHH:mm:ss")+".000Z"
+          
+          await new_array.push({
+            value : sum,
+            time : Math.floor((new Date(current_country_time)).getTime()/1000)
+          })
+          i++
+        }
+      }
+
+      const server_country_time = await moment(backend_server_time).format("YYYY-MM-DDTHH:mm:ss")+".000Z"
+      await new_array.push({
+        value : parseFloat(price)*parseFloat(balance),
+        time : Math.floor((new Date(server_country_time)).getTime()/1000)
+      })
+      
+    }
+
+    const base_price = await (parseFloat(((low_value+high_value)/2).toFixed(2)))
+    return {base_price , data_list:new_array}
+}
 
 
 
@@ -588,11 +654,7 @@ export const getShortAddress=(wallet_address, length)=>
         network:"avalanche"
       }
     }
-    else if(id== 8217 ){
-      return {
-        network:"klaytn"
-      }
-    }
+    else
     {
       return {
         network:""
@@ -1029,6 +1091,11 @@ export const updateAddedWallet = async (pass_data, new_wallet_address) =>
       return ""
     }
   }
+
+
+  
+
+
   export const nftByWalletAddress = ({wallet_addresses, network, limit, offset}) => 
   {
     var addresses_str = ""
@@ -1186,11 +1253,6 @@ export  const graphqlPricingTokenData = (address, network) =>
     {
       return "avax.svg"
     }
-    else if(pass_network_id == 8217 )
-    {
-      return "arbitrum.svg"
-    }
-
   }
 
 
@@ -1215,9 +1277,6 @@ export  const graphqlPricingTokenData = (address, network) =>
     else if(pass_network_id == 43114)
     {
       return "Avalanche"
-    }
-    else if(pass_network_id==8217 ){
-      return "klaytn"
     }
   }
 
@@ -1244,10 +1303,6 @@ export  const graphqlPricingTokenData = (address, network) =>
     else if(pass_network_id == 43114)
     {
       return "https://avascan.info/blockchain/dfk/tx/"
-    }
-    else if(pass_network_id == 8217)
-    {
-      return "https://arbiscan.io/tx/"
     }
   }
 

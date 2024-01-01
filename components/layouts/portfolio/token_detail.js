@@ -6,16 +6,15 @@ import moment from 'moment'
 import dynamic from 'next/dynamic' 
 import { useSelector, useDispatch } from 'react-redux'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
-import { getTokenInOutDetails, USDFormatValue, calAquisitionCost,roundNumericValue,getDaysList, getNetworkImageNameByID, getNetworkNameByID, getValueShortForm, getShortAddress,fetchAPIQuery,makeJobSchema,graphqlBasicTokenData,getTxnLinkByID, getGraphSparklineValues} from '../../../components/config/helper'
-import { IMAGE_BASE_URL, API_BASE_URL, config } from '../../../components/constants'
-import Net_worth_chart from '../../../components/layouts/portfolio/charts/net_worth'
+import { getTokenInOutDetails, USDFormatValue, calAquisitionCost,roundNumericValue,getDaysList, getNetworkImageNameByID, getNetworkNameByID, getValueShortForm, getShortAddress,fetchAPIQuery,makeJobSchema,graphqlBasicTokenData,getTxnLinkByID, getGraphSparklineValues, getChartBasePrice} from '../../../components/config/helper'
+import { IMAGE_BASE_URL, API_BASE_URL, config } from '../../constants'
+import Net_worth_ranges from '../../layouts/portfolio/charts/net_worth_ranges'
 import Link from 'next/link'
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
-
-export default function TokenDetail({token}) 
+export default function TokenDetail({token, backend_server_time}) 
 {   
-    // console.log("token", token)
+    console.log("token", token)
    
     const active_currency = useSelector(state => state.active_currency)
     const [line_graph_values, set_line_graph_values] = useState([])
@@ -46,7 +45,33 @@ export default function TokenDetail({token})
     const[price_change_7d,set_price_change_7d]=useState("")
     const[price_change_24h,set_price_change_24h]=useState("")
     const[token_other_details,set_token_other_details]=useState("")
-    console.log("token_other_details",token_other_details)
+
+    const[net_worth_price,set_net_worth_price]=useState("")
+    const[change_24h,set_change_24h]=useState("")
+    const[line_graph_values_1d,set_line_graph_values_1d]=useState("")
+    const[line_graph_values_7d,set_line_graph_values_7d]=useState("")
+    const[line_graph_base_price_7d,set_line_graph_base_price_7d]=useState("")
+    const[line_graph_base_price_1d,set_line_graph_base_price_1d]=useState("")
+    
+
+
+
+
+    console.log("token_other_details", token_other_details)
+    
+    
+    // sparkline_in_1d
+    // sparkline_in_7d
+    // price
+    // balance
+    // change_24h
+
+    // net_worth_price
+    // change_24h
+    // line_graph_values_1d
+    // line_graph_values_7d
+    // line_graph_base_price_7d
+    // line_graph_base_price_1d
 
     const convertCurrency = (token_price) =>
     {
@@ -67,18 +92,42 @@ export default function TokenDetail({token})
         }
     }
 
+   
+    
     useEffect(()=>
     {
       if(token)
       {
         getOtherDetails()
-        if(token.sparkline_in_7d)
-        {
-          setNetWorth(token.sparkline_in_7d, token.balance)
-        }
         
+        getNPassChartData({
+          price : token.price, 
+          balance : token.balance, 
+          sparkline_in_1d : token.sparkline_in_1d, 
+          sparkline_in_7d : token.sparkline_in_7d
+        })
       }
     },[true])
+
+
+    const getNPassChartData = async ({price, balance, sparkline_in_1d, sparkline_in_7d}) =>
+    {
+      await set_net_worth_price(price*balance)
+      await set_change_24h(balance)
+      
+      const chart_1d = await getChartBasePrice({chart_data : sparkline_in_1d, price, balance, backend_server_time})
+      console.log("chart_1d", chart_1d)
+      await set_line_graph_values_1d(chart_1d.data_list)
+      await set_line_graph_base_price_1d(chart_1d.base_price)
+
+      const chart_7d = await getChartBasePrice({chart_data : sparkline_in_7d, price, balance, backend_server_time})
+      console.log("chart_7d", chart_7d)
+      await set_line_graph_values_7d(chart_7d.data_list)
+      await set_line_graph_base_price_7d(chart_7d.base_price)
+      
+    }
+
+
 
     const setNetWorth = async (prices_list, balance) =>
     { 
@@ -464,7 +513,7 @@ export default function TokenDetail({token})
               {
                 token_price>0.1?
                 <div>
-<li className="nav-item" key={2}>
+                <li className="nav-item" key={2}>
                 <a className={"nav-link "+(tab_type == 2 ? "active":"")} onClick={()=>set_tab_type(2)}>
                   <span>Chart</span>
                 </a>
@@ -521,30 +570,24 @@ export default function TokenDetail({token})
                         "NA"
                     }
                     </h6>
-                 
-                  
                 </div>
               
                 <div className='col-4 col-md-4'>
-              
-                    
-                   
                     <label className='token-type-name'>24Hrs Growth</label>
                     <h6 className="values_growth">
-                          {
-                          price_change_24h?price_change_24h>0?
-                            <span className="green">
-                            {convertCurrency((price_change_24h*token.price*token.balance)/100)}
-                          </span>
-                          :
-                          <span className="red">
-                            {convertCurrency((price_change_24h*token.price*token.balance)/100)}
-                          </span>
-                          :
-                          "NA"
-                          }
-                          </h6>
-                      
+                        {
+                        price_change_24h?price_change_24h>0?
+                          <span className="green">
+                          {convertCurrency((price_change_24h*token.price*token.balance)/100)}
+                        </span>
+                        :
+                        <span className="red">
+                          {convertCurrency((price_change_24h*token.price*token.balance)/100)}
+                        </span>
+                        :
+                        "NA"
+                        }
+                    </h6>
                 </div>
 
               <div className='col-4 col-md-4'>
@@ -816,27 +859,31 @@ export default function TokenDetail({token})
                     </div>
                   </div> */}
                 </div>
-              
-                   {/* <p>{token.name} Asset Worth</p>  */}
-{
- token.sparkline_in_7d.length ?
-  <div className='mt-4'>
+                
 
-  <Net_worth_chart
-    reqData={{
-      line_graph_values,
-      line_graph_base_price:line_graph_base_price
-    }}
-  />
-  
+
+                   {/* <p>{token.name} Asset Worth</p>  */}
+
+{
+ line_graph_values_1d.length && line_graph_values_1d.length && line_graph_base_price_1d && line_graph_base_price_7d?
+  <div className='mt-4'>
+    <Net_worth_ranges
+      reqData={{
+        net_worth_status:false,
+        net_worth_price,
+        change_24h,
+        line_graph_values_1d,
+        line_graph_values_7d,
+        line_graph_base_price_7d,
+        line_graph_base_price_1d,
+      }}
+    />
   </div>
   :
   <div className='overveiw-chart-loader'>
-  <h6>Chart is empty </h6>
-  <p>No data available to display.</p>
-</div>
-
-
+    <h6>Chart is empty </h6>
+    <p>No data available to display.</p>
+  </div>
 }
                   {/* <div className='mt-4'>
 
