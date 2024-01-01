@@ -15,32 +15,32 @@ import JsCookie from "js-cookie"
 // export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
 
 //Test links
-// export const coinpedia_url="https://maintest.coinpedia.org/"
-// export const app_coinpedia_url = 'https://testapp.coinpedia.org/'
-// export const market_coinpedia_url = 'https://testmarkets.coinpedia.org/'
-// export const events_coinpedia_url = 'https://testevents.coinpedia.org/'
-// export const cookieDomainExtension = '.coinpedia.org'
-// export const logo = '/assets/img/logo.png'
-// export const favicon = '/assets/img/favicon.png'
-// export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
-// export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
-// export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
-// export const API_BASE_URL = 'https://marketsapi.coinpedia.org/'
-// export const MAIN_API_BASE_URL = 'https://shark-app-q5yj6.ondigitalocean.app/'
+export const coinpedia_url="https://maintest.coinpedia.org/"
+export const app_coinpedia_url = 'https://testapp.coinpedia.org/'
+export const market_coinpedia_url = 'https://testmarkets.coinpedia.org/'
+export const events_coinpedia_url = 'https://testevents.coinpedia.org/'
+export const cookieDomainExtension = '.coinpedia.org'
+export const logo = '/assets/img/logo.png'
+export const favicon = '/assets/img/favicon.png'
+export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
+export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
+export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
+export const API_BASE_URL = 'https://marketsapi.coinpedia.org/'
+export const MAIN_API_BASE_URL = 'https://shark-app-q5yj6.ondigitalocean.app/'
 
 // Local Links
-export const coinpedia_url="http://192.168.1.100:81/cpnews/"
-export const app_coinpedia_url="http://192.168.1.100:4400/"
-export const market_coinpedia_url = 'http://192.168.1.100:4500/' 
-export const events_coinpedia_url = 'http://192.168.1.100:4300/' 
-export const cookieDomainExtension = '192.168.1.100'
-export const logo =  '/assets/img/dummy-logo.png'
-export const favicon =  '/assets/img/dummy-favicon.png'
-export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
-export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
-export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
- export const API_BASE_URL = 'http://192.168.1.100:3500/'
-export const MAIN_API_BASE_URL = 'http://192.168.1.100:3010/'
+// export const coinpedia_url="http://192.168.1.100:81/cpnews/"
+// export const app_coinpedia_url="http://192.168.1.100:4400/"
+// export const market_coinpedia_url = 'http://192.168.1.100:4500/' 
+// export const events_coinpedia_url = 'http://192.168.1.100:4300/' 
+// export const cookieDomainExtension = '192.168.1.100'
+// export const logo =  '/assets/img/dummy-logo.png'
+// export const favicon =  '/assets/img/dummy-favicon.png'
+// export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
+// export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
+// export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
+//  export const API_BASE_URL = 'http://192.168.1.100:3500/'
+// export const MAIN_API_BASE_URL = 'http://192.168.1.100:3010/'
 
 
 
