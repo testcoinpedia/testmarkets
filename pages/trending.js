@@ -325,7 +325,7 @@ return (
                        <div className='row'>
                     <div className='col-md-12 col-lg-12 col-12'>
                           <div className="input-group search_filter">
-                            <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token" />
+                            <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Coin/Token" />
                               <div className="input-group-prepend ">
                                   <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                                 </div>

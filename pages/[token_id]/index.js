@@ -16,7 +16,8 @@ import { smallExponentialPrice, API_BASE_URL,config, separator,getURLWebsiteName
   convertvalue ,
   volume_time_list,
   speedoMeterValues,
-  indicator_time_series
+  indicator_time_series,
+  indicatorDurationName
 } from "../../components/constants";
 import {
   tokenBasic,
@@ -116,44 +117,8 @@ export default function tokenDetailsFunction({
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
-  };
-
-
-  const [chartData, setChartData] = useState({
-    series: [100, 100, 50],
-    options: {
-      chart: {
-        height: '100%',
-        type: 'radialBar',
-        width: 4,
-      },
-      plotOptions: {
-        radialBar: {
-          dataLabels: {
-            name: {
-              fontSize: '14px',
-              // color: '#FF007A',
-            },
-            value: {
-              fontSize: '11px',
-              color: '#000',
-            },
-            
-            // total: {
-            //   show: true,
-            //   label: 'Total',
-            //   formatter: function (w) {
-            //     return 249; 
-            //   },
-            // },
-          },
-        },
-      },
-      colors: ['#FF007A', '#FF007A', '#FF007A'],
-      labels: ['Max', 'Total', 'Circulating'],
-    },
-  });
-
+  }
+  
 
 
 
@@ -217,7 +182,7 @@ export default function tokenDetailsFunction({
     JsCookie.get("light_dark_mode")
   );
   const [is_client, set_is_client] = useState(false);
-  const [max_supply] = useState(data.max_supply ? data.max_supply : "");
+ 
   const [exchanges] = useState(data.exchanges ? data.exchanges : []);
   const [explorers] = useState(data.explorers ? data.explorers : []);
   const [communities] = useState(data.communities ? data.communities : []);
@@ -266,9 +231,7 @@ export default function tokenDetailsFunction({
   // data.fully_diluted_market_cap ? data.fully_diluted_market_cap:""
   // data.api_from_type
 
-  const [circulating_supply, set_circulating_supply] = useState(
-    data.circulating_supply ? data.circulating_supply : ""
-  );
+
   const [live_price, set_live_price] = useState(data.price ? data.price : "");
   const [percentage_change_24h, set_percentage_change_24h] = useState(
     data.percent_change_24h ? data.percent_change_24h.toFixed(2) : ""
@@ -304,9 +267,9 @@ export default function tokenDetailsFunction({
   );
   const [modal_data, setModalData] = useState({icon: "", title: "",content: "",});
 
-  const [total_supply, set_total_supply] = useState(
-    data.total_supply ? data.total_supply : 0
-  );
+  const [circulating_supply, set_circulating_supply] = useState(data.circulating_supply ? data.circulating_supply : "")
+  const [total_supply, set_total_supply] = useState(data.total_supply ? data.total_supply : 0)
+  const [max_supply] = useState(data.max_supply ? data.max_supply : "")
   const [other_contract, set_other_contract] = useState(false);
   const [contract_copy_status, set_contract_copy_status] = useState("");
 
@@ -321,7 +284,7 @@ export default function tokenDetailsFunction({
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [indicator_source_type, set_indicator_source_type] = useState(1)
   
-  const [time_name, set_time_name] = useState("1D");
+  const [time_name, set_time_name] = useState("24 Hours");
   const [intervals, set_intervals] = useState("10m");
   const [count, set_count] = useState("144")
   const [indicator_data_status, set_indicator_data_status] = useState(false)
@@ -369,6 +332,9 @@ export default function tokenDetailsFunction({
   const [five_twenty_ma, set_five_twenty_ma] = useState("")
   const [twenty_fifty_ma, set_twenty_fifty_ma] = useState("")
   const [fifty_two_hundred_ma, set_fifty_two_hundred_ma] = useState("")
+  const [converter_object, set_converter_object] = useState("")
+  const [indicator_source_duration, set_indicator_source_duration] = useState("")
+  
   
   const bullishCount = sma_list.filter(item => live_price > item.sma_value ).length;
   const bearishCount = sma_list.filter(item => live_price < item.sma_value ).length;
@@ -376,7 +342,6 @@ export default function tokenDetailsFunction({
   const ema_bullish_count = sma_list.filter(item => live_price > item.ema_value ).length;
   const ema_bearish_count = sma_list.filter(item => live_price < item.ema_value ).length;
   const total = sma_list.length;  
-  
 
   const oscillators = 30;
 
@@ -392,6 +357,80 @@ export default function tokenDetailsFunction({
   <circle cx="173.43" cy="222.086" r="22.3987" fill="#141822"/>
   </svg>`; // Custom SVG path for needle
 
+  // circulating_supply
+  
+  var supply_chart_values = []
+  var supply_chart_labels = []
+  var supply_chart_colors = []
+  var total_supply_percentage = 0
+  var circulating_supply_percentage = 0
+  if(max_supply)
+  {
+    if(max_supply && total_supply)
+    {
+      total_supply_percentage = ((total_supply/max_supply)*100).toFixed(0)
+    }
+    
+    if(max_supply && circulating_supply)
+    {
+      circulating_supply_percentage = ((circulating_supply/max_supply)*100).toFixed(0)
+    }
+
+    supply_chart_values = [100, total_supply_percentage, circulating_supply_percentage]
+    supply_chart_labels = ['Max', 'Total', 'Circulating']
+    supply_chart_colors = ['#FF007A', '#FF007A80', '#FF007A33']
+  }
+  else if(total_supply)
+  {
+    total_supply_percentage = 100
+    if(total_supply && circulating_supply)
+    {
+      circulating_supply_percentage = ((circulating_supply/total_supply)*100).toFixed(0)
+    }
+
+    supply_chart_values = [total_supply_percentage, circulating_supply_percentage]
+    supply_chart_labels = ['Total', 'Circulating']
+    supply_chart_colors= ['#FF007A80', '#FF007A33']
+  }
+  
+
+  const [supply_radial_chart] = useState({
+    series : supply_chart_values,
+    options : {
+      chart:{
+        height: '100%',
+        type: 'radialBar',
+        width: 4,
+      },
+      plotOptions: {
+        radialBar: {
+          dataLabels: {
+            name: {
+              fontSize: '14px',
+              // color: '#FF007A',
+            },
+            value: {
+              fontSize: '11px',
+              color: '#000',
+            },
+            
+            // total: {
+            //   show: true,
+            //   label: 'Total',
+            //   formatter: function (w) {
+            //     return 249; 
+            //   },
+            // },
+          },
+        },
+      },
+      colors: supply_chart_colors,
+      labels: supply_chart_labels,
+    },
+  })
+
+
+
   const dexPairGraph = async (pass_object) => 
   {
     //console.log("adsfasdff")
@@ -401,10 +440,14 @@ export default function tokenDetailsFunction({
   }
 
   //pass_type 1:token value, 2:usd value
-  const tokenConverter = async (pass_value, pass_type, pass_pair_value) => {
-    await set_converter_pair_currency(pass_pair_value);
-    if (pass_value > 0) {
-      if (pass_type == 1) {
+  const tokenConverter = async (pass_value, pass_type, pass_pair_value, pass_converter_object) => 
+  {
+    await set_converter_object(pass_converter_object)
+    await set_converter_pair_currency(pass_pair_value)
+    if(pass_value > 0) 
+    {
+      if(pass_type == 1) 
+      {
         await set_token_converter_value(pass_value);
         if ((live_price * pass_value) / pass_pair_value >= 0.1) {
           await set_usd_converter_value(
@@ -415,7 +458,9 @@ export default function tokenDetailsFunction({
             roundNumericValue((live_price * pass_value) / pass_pair_value)
           );
         }
-      } else {
+      } 
+      else 
+      {
         await set_usd_converter_value(pass_value);
         if ((pass_value * pass_pair_value) / live_price >= 0.1) {
           await set_token_converter_value(
@@ -427,10 +472,14 @@ export default function tokenDetailsFunction({
           );
         }
       }
-    } else {
+    } 
+    else 
+    {
       await set_token_converter_value("");
       await set_usd_converter_value("");
     }
+
+    
   }
 
   const getDexVolumePriceFromChild = async (pass_object) => 
@@ -608,7 +657,7 @@ export default function tokenDetailsFunction({
     await tokenOtherDetails(interval_type, pass_source_type)
   }
 
-  
+  //await set_indicator_source_duration(pass_source_type)
 
   const tokenOtherDetails = async (pass_type, pass_indicator_source_type) => 
   {
@@ -635,7 +684,8 @@ export default function tokenDetailsFunction({
 
         if(response.data.message.converter_currencies) 
         {
-          set_converter_pair_currencies( response.data.message.converter_currencies );
+          set_converter_pair_currencies(response.data.message.converter_currencies)
+          set_converter_object(response.data.message.converter_currencies[0])
           
           if(response.data.message.moving_averages_crossovers)
           {
@@ -1222,7 +1272,7 @@ export default function tokenDetailsFunction({
     await set_time_name("");
     await set_chart_tab("");
 
-    await set_time_name("1D");
+    await set_time_name("24 Hours")
     await set_chart_tab(1);
   };
 
@@ -1362,545 +1412,545 @@ export default function tokenDetailsFunction({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ExchangeList()) }}
         />
-
       </Head>
+      <div className="indiviual_breadcrumb_search">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-8 col-xl-8 col-md-8">
+              <div className="breadcrumbs">
+                <div className="breadcrumb-individual primary"><Link href="/">Cryptocurrencies</Link></div>
+                <div className="breadcrumb-individual breadcrumb-arrow"> <img src="/assets/img/breadcrumb-arrow.svg" /> </div>
+                <div className="breadcrumb-individual secondary">{data.token_name}</div>
 
+              </div>
+            </div>
+            <div className="col-lg-4 col-xl-4 col-md-4">
+              <div className="search_token_address">
+                <Search_token />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div ref={div} className="markets_header_token">
-              <div className="container">
-                <div className="market_individual_header">
-                  <div className="">
-                    <div className="row">
-                      <div className="col-lg-8 col-xl-8 col-md-8">
-                        <div className="breadcrumbs">
-                          <div className="breadcrumb-individual primary"><Link href="/">Cryptocurrencies</Link></div>
-                          <div className="breadcrumb-individual breadcrumb-arrow"> <img src="/assets/img/breadcrumb-arrow.svg" /> </div>
-                          <div className="breadcrumb-individual secondary">{data.token_name}</div>
-
-                        </div>
-                      </div>
-                      <div className="col-lg-4 col-xl-4 col-md-4">
-                        <div className="search_token_address">
-                          <Search_token />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-lg-6 col-xl-6 col-md-12 order-md-1 order-2">
-                        <div className="token_main_details">
-                          <div className="media">
-                            <div className="media-left">
-                              <img
-                                src={
-                                  data.token_image
-                                    ? image_base_url + data.token_image
-                                    : data.coinmarketcap_id
-                                    ? cmc_image_base_url +
-                                      data.coinmarketcap_id +
-                                      ".png"
-                                    : image_base_url + "default.svg"
-                                }
-                                onError={(e) =>
-                                  (e.target.src = "/assets/img/default_token.png")
-                                }
-                                className="token_img"
-                                alt={data.token_name}
-                                width="100%"
-                                height="100%"
-                              />
-                            </div>
-
-                            <div className="media-body">
-                              <h1 className="media-heading">
-                                {data.token_name ? data.token_name : "-"}
-                                <span>
-                                  {data.symbol ? data.symbol.toUpperCase() : "-"}
-                                </span>
-                                {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
-                              </h1>
-                              <h5 title={live_price}>
-                            {live_price > 0 ? convertCurrency(live_price) : "NA"}
-                            {live_price ? (
-                            percentage_change_24h ? (
-                              <>
-                                  <span className="timings_price">&nbsp;24h
-                                  {percentage_change_24h > 0 ? (
-                                  
-                                    <span className="values_growth">
-                                      <span className="green">
-                                        <img
-                                          src="/assets/img/value_up.svg"
-                                          alt="Value Up"
-                                        />
-                                        {
-                                          percentage_change_24h ? percentage_change_24h
-                                          : 
-                                          ""
-                                        }
-                                        %
-                                      </span>
-                                    </span>
-                                  ) : (
-                                    <span className="values_growth">
-                                      <span className="red">
-                                        <img
-                                          src="/assets/img/value_down.svg"
-                                          alt="Value Down"
-                                        />
-                                        {percentage_change_24h ? percentage_change_24h
-                                          : "0"}
-                                        %
-                                      </span>
-                                    </span>
-                                  )}
-                                  &nbsp;
-                                  {convertCurrency(
-                                    ((percentage_change_24h * live_price) / 100).toFixed(4)
-                                  )}
-                                  </span>
-                              </>
-                            ) : null
-                          ) : null}
-                          </h5>
-                          <ul className="token_share_vote desktop_view" >
-                                {data.cp_rank ? <li>#{data.cp_rank} Rank</li> : ""}
-                                <li
-                                  onClick={() => set_share_modal_status(true)}
-                                  style={{ cursor: "pointer" }}
-                                  
-                                >
-                                  <img src="/assets/img/coin_share.svg" alt="Share" />
-                                </li>
-                                <li>
-                                  {user_token ? (
-                                    <>
-                                      {watchlist == true ? (
-                                        <span
-                                          onClick={() => removeFromWatchlist(data._id)}
-                                        >
-                                          <img
-                                            src="/assets/img/watchlist_filled.svg"
-                                            alt="Watchlist"
-                                          />
-                                        </span>
-                                      ) : (
-                                        <span onClick={() => addToWatchlist(data._id)}>
-                                          <img
-                                            src="/assets/img/watchlist_outline.svg"
-                                            alt="Watchlist"
-                                           
-                                          />
-                                        </span>
-                                      )}
-                                    </>
-                                  ) : (
-                                    <a onClick={() => loginModalStatus(data._id, 1)}>
-                                      <img
-                                        src="/assets/img/watchlist_outline.svg"
-                                        alt="Watchlist"
-                                        
-                                      />
-                                    </a>
-                                  )}
-                                  {total_watchlist_count ? <> {total_watchlist_count} Watchlists</>:""}
-                                </li>
-                              </ul>
-                          
-                              {/* <p>
-                                {data.token_title ? (
-                                  <>{data.token_title}</>
-                                ) : (
-                                  <>
-                                    Stay ahead by tracking{" "}
-                                    {data.symbol
-                                      ? data.symbol.toUpperCase()
-                                      : "-"}{" "}
-                                    cryptocurrency trends and analyzing data.
-                                  </>
-                                )}
-                              </p> */}
-                              
-                              
-                            </div>
-                          </div>
-
-                          <ul className="token_share_vote mobile_view">
-                                {data.cp_rank ? <li>#{data.cp_rank} Rank</li> : ""}
-                                <li
-                                  onClick={() => set_share_modal_status(true)}
-                                  style={{ cursor: "pointer" }}
-                                  
-                                >
-                                  <img src="/assets/img/coin_share.svg" alt="Share" />
-                                </li>
-                                <li>
-                                  {user_token ? (
-                                    <>
-                                      {watchlist == true ? (
-                                        <span
-                                          onClick={() => removeFromWatchlist(data._id)}
-                                        >
-                                          <img
-                                            src="/assets/img/watchlist_filled.svg"
-                                            alt="Watchlist"
-                                          />
-                                        </span>
-                                      ) : (
-                                        <span onClick={() => addToWatchlist(data._id)}>
-                                          <img
-                                            src="/assets/img/watchlist_outline.svg"
-                                            alt="Watchlist"
-                                           
-                                          />
-                                        </span>
-                                      )}
-                                    </>
-                                  ) : (
-                                    <a onClick={() => loginModalStatus(data._id, 1)}>
-                                      <img
-                                        src="/assets/img/watchlist_outline.svg"
-                                        alt="Watchlist"
-                                        
-                                      />
-                                    </a>
-                                  )}
-                                  {total_watchlist_count ? <> {total_watchlist_count} Watchlists</>:""}
-                                </li>
-                              </ul>
-                         
-                        </div>
+          <div className="container">
+            <div className="market_individual_header">
+              <div className="row">
+                <div className="col-lg-6 col-xl-6 col-md-12 order-md-1 order-2">
+                  <div className="token_main_details">
+                    <div className="media">
+                      <div className="media-left">
+                        <img
+                          src={
+                            data.token_image
+                              ? image_base_url + data.token_image
+                              : data.coinmarketcap_id
+                              ? cmc_image_base_url +
+                                data.coinmarketcap_id +
+                                ".png"
+                              : image_base_url + "default.svg"
+                          }
+                          onError={(e) =>
+                            (e.target.src = "/assets/img/default_token.png")
+                          }
+                          className="token_img"
+                          alt={data.token_name}
+                          width="100%"
+                          height="100%"
+                        />
                       </div>
 
-                      <div className="col-lg-3 col-xl-3 col-md-6 order-md-2 order-3">
-                        
-                      </div>
-
-                      <div className="col-lg-3 col-xl-3 col-md-6 order-md-3 order-1 ">
-                        <div className="row">
-                          <div className="col-md-12 ">
+                      <div className="media-body">
+                        <h1 className="media-heading">
+                          {data.token_name ? data.token_name : "-"}
+                          <span>
+                            {data.symbol ? data.symbol.toUpperCase() : "-"}
+                          </span>
+                          {/* <span><img src="/assets/img/watchlist_token.svg" /></span> */}
+                        </h1>
+                        <h5 title={live_price}>
+                      {live_price > 0 ? convertCurrency(live_price) : "NA"}
+                      {live_price ? (
+                      percentage_change_24h ? (
+                        <>
+                            <span className="timings_price">&nbsp;24h
+                            {percentage_change_24h > 0 ? (
                             
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-5">
-                        <div>
-                          <ul className="category-ul">
-                            {data.categories ? (
-                              <>
-                                {data.categories.map((item, i) =>
-                                  i < 2 ? (
-                                    <li key={i}>
-                                      <Link
-                                        href={
-                                          "/category/" + item.category_id
-                                        }
-                                      >
-                                        {item.category_name}
-                                      </Link>
-                                    </li>
-                                  ) : (
+                              <span className="values_growth">
+                                <span className="green">
+                                  <img
+                                    src="/assets/img/value_up.svg"
+                                    alt="Value Up"
+                                  />
+                                  {
+                                    percentage_change_24h ? percentage_change_24h
+                                    : 
                                     ""
-                                  )
-                                )}
-                                {data.categories.length > 2 ? (
-                                  <li
-                                    onClick={() => set_category_modal(true)}
+                                  }
+                                  %
+                                </span>
+                              </span>
+                            ) : (
+                              <span className="values_growth">
+                                <span className="red">
+                                  <img
+                                    src="/assets/img/value_down.svg"
+                                    alt="Value Down"
+                                  />
+                                  {percentage_change_24h ? percentage_change_24h
+                                    : "0"}
+                                  %
+                                </span>
+                              </span>
+                            )}
+                            &nbsp;
+                            {convertCurrency(
+                              ((percentage_change_24h * live_price) / 100).toFixed(4)
+                            )}
+                            </span>
+                        </>
+                      ) : null
+                    ) : null}
+                    </h5>
+                    <ul className="token_share_vote desktop_view" >
+                          {data.cp_rank ? <li>#{data.cp_rank} Rank</li> : ""}
+                          <li
+                            onClick={() => set_share_modal_status(true)}
+                            style={{ cursor: "pointer" }}
+                            
+                          >
+                            <img src="/assets/img/coin_share.svg" alt="Share" />
+                          </li>
+                          <li>
+                            {user_token ? (
+                              <>
+                                {watchlist == true ? (
+                                  <span
+                                    onClick={() => removeFromWatchlist(data._id)}
                                   >
-                                    +{data.categories.length - 2} More
-                                  </li>
+                                    <img
+                                      src="/assets/img/watchlist_filled.svg"
+                                      alt="Watchlist"
+                                    />
+                                  </span>
                                 ) : (
-                                  ""
+                                  <span onClick={() => addToWatchlist(data._id)}>
+                                    <img
+                                      src="/assets/img/watchlist_outline.svg"
+                                      alt="Watchlist"
+                                      
+                                    />
+                                  </span>
                                 )}
                               </>
                             ) : (
-                              ""
+                              <a onClick={() => loginModalStatus(data._id, 1)}>
+                                <img
+                                  src="/assets/img/watchlist_outline.svg"
+                                  alt="Watchlist"
+                                  
+                                />
+                              </a>
                             )}
-                          </ul>
-                        </div>
-                      </div>
-                      <div className="col-md-7">
-                        <div className="token_list_data token_list_data_individual">
-                        <ul>
-                          <li>
-                            <div className="token_list_values">
-                              <h4>1 hour change</h4>
-                              {data.percent_change_1h ? (
-                                data.percent_change_1h > 0 ? (
-                                  <h5 className="values_growth">
-                                    <span className="green">
-                                      <img
-                                        src="/assets/img/markets/high.png"
-                                        alt="High price"
-                                      />
-                                      {data.percent_change_1h.toFixed(2) +"%"}
-                                    </span>
-                                  </h5>
-                                ) : (
-                                  <h5 className="values_growth">
-                                    <span className="red">
-                                      <img
-                                        src="/assets/img/markets/low.png"
-                                        alt="Low price"
-                                      />
-                                      {data.percent_change_1h.toFixed(2).replace("-", "") + "%"}
-                                    </span>
-                                  </h5>
-                                )
-                              ) : (
-                                "-"
-                              )}
-                            </div>
-                          </li>
-                          <li>
-                            <div className="token_list_values">
-                              <h4>7 days change</h4>
-                              {percentage_change_7d ? (
-                                percentage_change_7d > 0 ? (
-                                  <h5 className="values_growth">
-                                    <span className="green">
-                                      <img
-                                        src="/assets/img/markets/high.png"
-                                        alt="High price"
-                                      />
-                                      {roundNumericValue(
-                                        percentage_change_7d
-                                      ) + "%"}
-                                    </span>
-                                  </h5>
-                                ) : (
-                                  <h5 className="values_growth">
-                                    <span className="red">
-                                      <img
-                                        src="/assets/img/markets/low.png"
-                                        alt="Low price"
-                                      />
-                                      {roundNumericValue(
-                                        percentage_change_7d
-                                      ) + "%"}
-                                    </span>
-                                  </h5>
-                                )
-                              ) : (
-                                "-"
-                              )}
-                            </div>
-                          </li>
-                          <li>
-                            <div className="token_list_values">
-                              <h4>24hr Low</h4>
-                              <h5>
-                                {low_24h ? convertCurrency(low_24h): "NA"}{" "}
-                                &nbsp;
-                                {low_24h ? (
-                                  <span className="values_growth">
-                                    <span className="green">
-                                      <img
-                                        src="/assets/img/markets/high.png"
-                                        alt="High price"
-                                      />
-                                      {(
-                                        ((live_price - low_24h) /
-                                          low_24h) *
-                                        100
-                                      ).toFixed(2)}
-                                      %
-                                    </span>
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                                
-                              </h5>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="token_list_values">
-                              <h4>24hr High</h4>
-                              <h5>
-                                {high_24h
-                                  ? convertCurrency(high_24h)
-                                  : "NA"}{" "}
-                                &nbsp;
-                                {high_24h ? (
-                                  <span className="values_growth">
-                                    <span className="red">
-                                    <img
-                                        src="/assets/img/markets/low.png"
-                                        alt="Low price"
-                                      />
-                                      {(((live_price - high_24h) /high_24h) *100).toFixed(2)} % </span>
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                                {/* {
-                                ath_change_percentage ?
-                                  ath_change_percentage > 0 ?
-                                    <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
-                                    :
-                                    <span className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
-                                  :
-                                  <span className="values_growth"></span>
-                              } */}
-                              </h5>
-                            </div>
+                            {total_watchlist_count ? <> {total_watchlist_count} Watchlists</>:""}
                           </li>
                         </ul>
-                        </div>
-                      </div>
-                    </div>
-                                
-
-                    {/* <div className="row token_header_cols">
-                      <div className="col-lg-3 col-xl-3 col-md-12 pr-0">
+                    
+                        {/* <p>
+                          {data.token_title ? (
+                            <>{data.token_title}</>
+                          ) : (
+                            <>
+                              Stay ahead by tracking{" "}
+                              {data.symbol
+                                ? data.symbol.toUpperCase()
+                                : "-"}{" "}
+                              cryptocurrency trends and analyzing data.
+                            </>
+                          )}
+                        </p> */}
+                        
                         
                       </div>
-                      <div className="col-lg-9 col-xl-9 col-md-12">
-                        <ul className="token_list_data">
-                          <li>
-                            <div className="token_list_content">
-                              <h4>
-                                {" "}
-                                Market Cap{" "}
-                                <OverlayTrigger
-                                  delay={{ hide: 450, show: 300 }}
-                                  overlay={(props) => (
-                                    <Tooltip
-                                      {...props}
-                                      className="custom_pophover"
-                                    >
-                                      <p>
-                                        Market capitalization is a measure used to
-                                        determine the total value of a publicly
-                                        traded cryptocurrency. It is calculated by
-                                        multiplying the current market price of a
-                                        single coin/token X total supply of the
-                                        coin/token.
-                                      </p>
-                                    </Tooltip>
-                                  )}
-                                  placement="bottom"
-                                >
-                                  <span className="info_col">
-                                    <img src="/assets/img/info.png" alt="Info" />
-                                  </span>
-                                </OverlayTrigger>{" "}
-                                : &nbsp;
-                                {circulating_supply > 0 ? (
-                                  <span className="responsive_value_display">
-                                    {convertCurrency(
-                                      circulating_supply * live_price
-                                    )}
-                                  </span>
-                                ) : (
-                                  "NA"
-                                )}
-                              </h4>
-                              
-                            </div>
-                          </li>
+                    </div>
 
-                          <li>
-                            <div className="token_list_content">
-                              <h4>
-                                24H Volume&nbsp;
-                                <OverlayTrigger
-                                  delay={{ hide: 450, show: 300 }}
-                                  overlay={(props) => (
-                                    <Tooltip
-                                      {...props}
-                                      className="custom_pophover"
-                                    >
-                                      <p>
-                                        Trading Volume is the Total vlaue of
-                                        tokens bought and sold in both centralized
-                                        and decentralized exchanges in 24 hours,
-                                        multiplied with number tokens traded, and
-                                        price in respective platforms, and added
-                                        together.
-                                      </p>
-                                    </Tooltip>
-                                  )}
-                                  placement="bottom"
-                                >
-                                  <span className="info_col">
-                                    <img src="/assets/img/info.png" alt="Info" />
-                                  </span>
-                                </OverlayTrigger>{" "}
-                                : &nbsp;
-                                <span className="responsive_value_display">
-                                  {volume > 0 ? convertCurrency(volume) : "NA"}
-                                </span>
-                                <span className="values_growth"></span>
-                              </h4>
-                            </div>
+                    <ul className="token_share_vote mobile_view">
+                          {data.cp_rank ? <li>#{data.cp_rank} Rank</li> : ""}
+                          <li
+                            onClick={() => set_share_modal_status(true)}
+                            style={{ cursor: "pointer" }}
+                            
+                          >
+                            <img src="/assets/img/coin_share.svg" alt="Share" />
                           </li>
                           <li>
-                            <div className="token_list_content">
-                              <h4>
-                                Circulating Supply{" "}
-                                <OverlayTrigger
-                                  delay={{ hide: 450, show: 300 }}
-                                  overlay={(props) => (
-                                    <Tooltip
-                                      {...props}
-                                      className="custom_pophover"
-                                    >
-                                      <p>
-                                        Circulating supply refers to the total
-                                        number of coins/tokens that are currently
-                                        in circulation and available to the
-                                        public. It represents the portion of the
-                                        total supply of a cryptocurrency that is
-                                        actively being traded or held by
-                                        investors.
-                                      </p>
-                                    </Tooltip>
-                                  )}
-                                  placement="bottom"
-                                >
-                                  <span className="info_col">
-                                    <img src="/assets/img/info.png" alt="Info" />
+                            {user_token ? (
+                              <>
+                                {watchlist == true ? (
+                                  <span
+                                    onClick={() => removeFromWatchlist(data._id)}
+                                  >
+                                    <img
+                                      src="/assets/img/watchlist_filled.svg"
+                                      alt="Watchlist"
+                                    />
                                   </span>
-                                </OverlayTrigger>{" "}
-                                :&nbsp;
-                                <span className="responsive_value_display">
-                                  {circulating_supply ? (
-                                    <>
-                                      {separator(circulating_supply) +
-                                        " " +
-                                        symbol.toUpperCase()}
-                                    </>
-                                  ) : (
-                                    "NA"
-                                  )}
-                                </span>
-                                {circulating_supply && data.max_supply ? (
-                                  <small>
-                                    (
-                                    {(
-                                      (circulating_supply / data.max_supply) *
-                                      100
-                                    ).toFixed(2)}
-                                    %)
-                                  </small>
                                 ) : (
-                                  ""
+                                  <span onClick={() => addToWatchlist(data._id)}>
+                                    <img
+                                      src="/assets/img/watchlist_outline.svg"
+                                      alt="Watchlist"
+                                      
+                                    />
+                                  </span>
                                 )}
-                              </h4>
-
-                             
-                            </div>
+                              </>
+                            ) : (
+                              <a onClick={() => loginModalStatus(data._id, 1)}>
+                                <img
+                                  src="/assets/img/watchlist_outline.svg"
+                                  alt="Watchlist"
+                                  
+                                />
+                              </a>
+                            )}
+                            {total_watchlist_count ? <> {total_watchlist_count} Watchlists</>:""}
                           </li>
                         </ul>
-                      </div>
-                    </div> */}
+                    
+                  </div>
+                </div>
+
+                <div className="col-lg-3 col-xl-3 col-md-6 order-md-2 order-3">
+                  
+                </div>
+
+                <div className="col-lg-3 col-xl-3 col-md-6 order-md-3 order-1 ">
+                  <div className="row">
+                    <div className="col-md-12 ">
+                      
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <div className="row">
+                <div className="col-md-5">
+                  <div>
+                    <ul className="category-ul">
+                      {data.categories ? (
+                        <>
+                          {data.categories.map((item, i) =>
+                            i < 2 ? (
+                              <li key={i}>
+                                <Link
+                                  href={
+                                    "/category/" + item.category_id
+                                  }
+                                >
+                                  {item.category_name}
+                                </Link>
+                              </li>
+                            ) : (
+                              ""
+                            )
+                          )}
+                          {data.categories.length > 2 ? (
+                            <li
+                              onClick={() => set_category_modal(true)}
+                            >
+                              +{data.categories.length - 2} More
+                            </li>
+                          ) : (
+                            ""
+                          )}
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </ul>
+                  </div>
+                </div>
+                <div className="col-md-7">
+                  <div className="token_list_data token_list_data_individual">
+                  <ul>
+                    <li>
+                      <div className="token_list_values">
+                        <h4>1 hour change</h4>
+                        {data.percent_change_1h ? (
+                          data.percent_change_1h > 0 ? (
+                            <h5 className="values_growth">
+                              <span className="green">
+                                <img
+                                  src="/assets/img/markets/high.png"
+                                  alt="High price"
+                                />
+                                {data.percent_change_1h.toFixed(2) +"%"}
+                              </span>
+                            </h5>
+                          ) : (
+                            <h5 className="values_growth">
+                              <span className="red">
+                                <img
+                                  src="/assets/img/markets/low.png"
+                                  alt="Low price"
+                                />
+                                {data.percent_change_1h.toFixed(2).replace("-", "") + "%"}
+                              </span>
+                            </h5>
+                          )
+                        ) : (
+                          "-"
+                        )}
+                      </div>
+                    </li>
+                    <li>
+                      <div className="token_list_values">
+                        <h4>7 days change</h4>
+                        {percentage_change_7d ? (
+                          percentage_change_7d > 0 ? (
+                            <h5 className="values_growth">
+                              <span className="green">
+                                <img
+                                  src="/assets/img/markets/high.png"
+                                  alt="High price"
+                                />
+                                {roundNumericValue(
+                                  percentage_change_7d
+                                ) + "%"}
+                              </span>
+                            </h5>
+                          ) : (
+                            <h5 className="values_growth">
+                              <span className="red">
+                                <img
+                                  src="/assets/img/markets/low.png"
+                                  alt="Low price"
+                                />
+                                {roundNumericValue(
+                                  percentage_change_7d
+                                ) + "%"}
+                              </span>
+                            </h5>
+                          )
+                        ) : (
+                          "-"
+                        )}
+                      </div>
+                    </li>
+                    <li>
+                      <div className="token_list_values">
+                        <h4>24hr Low</h4>
+                        <h5>
+                          {low_24h ? convertCurrency(low_24h): "NA"}{" "}
+                          &nbsp;
+                          {low_24h ? (
+                            <span className="values_growth">
+                              <span className="green">
+                                <img
+                                  src="/assets/img/markets/high.png"
+                                  alt="High price"
+                                />
+                                {(
+                                  ((live_price - low_24h) /
+                                    low_24h) *
+                                  100
+                                ).toFixed(2)}
+                                %
+                              </span>
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                          
+                        </h5>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="token_list_values">
+                        <h4>24hr High</h4>
+                        <h5>
+                          {high_24h
+                            ? convertCurrency(high_24h)
+                            : "NA"}{" "}
+                          &nbsp;
+                          {high_24h ? (
+                            <span className="values_growth">
+                              <span className="red">
+                              <img
+                                  src="/assets/img/markets/low.png"
+                                  alt="Low price"
+                                />
+                                {(((live_price - high_24h) /high_24h) *100).toFixed(2)}% </span>
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                          {/* {
+                          ath_change_percentage ?
+                            ath_change_percentage > 0 ?
+                              <span className="values_growth"><span className="green"><img src="/assets/img/value_up.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
+                              :
+                              <span className="values_growth"><span className="red"><img src="/assets/img/value_down.svg" />{ath_change_percentage.toFixed(2) + "%"}</span></span>
+                            :
+                            <span className="values_growth"></span>
+                        } */}
+                        </h5>
+                      </div>
+                    </li>
+                  </ul>
+                  </div>
+                </div>
+              </div>
+                            
+
+              {/* <div className="row token_header_cols">
+                <div className="col-lg-3 col-xl-3 col-md-12 pr-0">
+                  
+                </div>
+                <div className="col-lg-9 col-xl-9 col-md-12">
+                  <ul className="token_list_data">
+                    <li>
+                      <div className="token_list_content">
+                        <h4>
+                          {" "}
+                          Market Cap{" "}
+                          <OverlayTrigger
+                            delay={{ hide: 450, show: 300 }}
+                            overlay={(props) => (
+                              <Tooltip
+                                {...props}
+                                className="custom_pophover"
+                              >
+                                <p>
+                                  Market capitalization is a measure used to
+                                  determine the total value of a publicly
+                                  traded cryptocurrency. It is calculated by
+                                  multiplying the current market price of a
+                                  single coin/token X total supply of the
+                                  coin/token.
+                                </p>
+                              </Tooltip>
+                            )}
+                            placement="bottom"
+                          >
+                            <span className="info_col">
+                              <img src="/assets/img/info.png" alt="Info" />
+                            </span>
+                          </OverlayTrigger>{" "}
+                          : &nbsp;
+                          {circulating_supply > 0 ? (
+                            <span className="responsive_value_display">
+                              {convertCurrency(
+                                circulating_supply * live_price
+                              )}
+                            </span>
+                          ) : (
+                            "NA"
+                          )}
+                        </h4>
+                        
+                      </div>
+                    </li>
+
+                    <li>
+                      <div className="token_list_content">
+                        <h4>
+                          24H Volume&nbsp;
+                          <OverlayTrigger
+                            delay={{ hide: 450, show: 300 }}
+                            overlay={(props) => (
+                              <Tooltip
+                                {...props}
+                                className="custom_pophover"
+                              >
+                                <p>
+                                  Trading Volume is the Total vlaue of
+                                  tokens bought and sold in both centralized
+                                  and decentralized exchanges in 24 hours,
+                                  multiplied with number tokens traded, and
+                                  price in respective platforms, and added
+                                  together.
+                                </p>
+                              </Tooltip>
+                            )}
+                            placement="bottom"
+                          >
+                            <span className="info_col">
+                              <img src="/assets/img/info.png" alt="Info" />
+                            </span>
+                          </OverlayTrigger>{" "}
+                          : &nbsp;
+                          <span className="responsive_value_display">
+                            {volume > 0 ? convertCurrency(volume) : "NA"}
+                          </span>
+                          <span className="values_growth"></span>
+                        </h4>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="token_list_content">
+                        <h4>
+                          Circulating Supply{" "}
+                          <OverlayTrigger
+                            delay={{ hide: 450, show: 300 }}
+                            overlay={(props) => (
+                              <Tooltip
+                                {...props}
+                                className="custom_pophover"
+                              >
+                                <p>
+                                  Circulating supply refers to the total
+                                  number of coins/tokens that are currently
+                                  in circulation and available to the
+                                  public. It represents the portion of the
+                                  total supply of a cryptocurrency that is
+                                  actively being traded or held by
+                                  investors.
+                                </p>
+                              </Tooltip>
+                            )}
+                            placement="bottom"
+                          >
+                            <span className="info_col">
+                              <img src="/assets/img/info.png" alt="Info" />
+                            </span>
+                          </OverlayTrigger>{" "}
+                          :&nbsp;
+                          <span className="responsive_value_display">
+                            {circulating_supply ? (
+                              <>
+                                {separator(circulating_supply) +
+                                  " " +
+                                  symbol.toUpperCase()}
+                              </>
+                            ) : (
+                              "NA"
+                            )}
+                          </span>
+                          {circulating_supply && data.max_supply ? (
+                            <small>
+                              (
+                              {(
+                                (circulating_supply / data.max_supply) *
+                                100
+                              ).toFixed(2)}
+                              %)
+                            </small>
+                          ) : (
+                            ""
+                          )}
+                        </h4>
+
+                        
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div> */}
+            </div>
           </div>
+        </div>
 
       <div className="page">
         <div className="market_token_details">
@@ -1984,7 +2034,7 @@ export default function tokenDetailsFunction({
 
                   <div className="coin_details">
                     <div className="row">
-                      <div className="col-md-4 order-md-1 order-2" >
+                      <div className="col-lg-6 col-xl-4 col-md-6 order-md-1 order-2" >
                         <div className="coin_main_links">
                           <ul className="coin_quick_details">
                             {data.website_link ==
@@ -2530,10 +2580,10 @@ export default function tokenDetailsFunction({
                         </div>
 
                         <div className="row">
-                          <div className="col-md-7 col-6">
+                          <div className="col-md-5 col-lg-5 col-xl-6 col-6">
                             <div className="token_details_circular_graph">
                               <div class="media">
-                                <img src="/assets/img/circulating_supply.svg" alt="Circulating Supply" className="dots" />
+                                <img src="/assets/img/circulating_supply.svg" alt="Max Supply " className="dots" />
                                 <div class="media-body">
                                   <h4 className="quick_title"><span></span> Max Supply 
                                     <OverlayTrigger
@@ -2646,15 +2696,14 @@ export default function tokenDetailsFunction({
                                   <h5 className="quick_values">
                                     {circulating_supply ? (
                                       <>
-                                        {separator(circulating_supply) +
-                                          " " +
-                                          symbol.toUpperCase()}&nbsp;
+                                        {separator(circulating_supply)}&nbsp;
+                                        {/* +" "+symbol.toUpperCase() */}
                                       </>
                                     ) : (
                                       "NA"
                                     )}
 
-                                    {circulating_supply && data.max_supply ? (
+                                    {/* {circulating_supply && data.max_supply ? (
                                       <span>
                                         (
                                         {(
@@ -2665,19 +2714,19 @@ export default function tokenDetailsFunction({
                                       </span>
                                     ) : (
                                       ""
-                                    )}
+                                    )} */}
                                   </h5>
                                 </div>
                               </div>
                             </div>
                           </div>
-                          <div className="col-md-5 col-6">
+                          <div className="col-md-7 col-lg-7 col-xl-6 col-6">
                             <div id="chart" className="quick_values_graph">
                               <DynamicChartComponent
-                                options={chartData.options}
-                                series={chartData.series}
+                                options={supply_radial_chart.options}
+                                series={supply_radial_chart.series}
                                 type="radialBar"
-                                height={212}
+                                height={205}
                               />
                             </div>
                           </div>
@@ -2854,7 +2903,7 @@ export default function tokenDetailsFunction({
                           <ul className="coin_quick_details"></ul>
                         </div>
                       </div>
-                      <div className="col-md-4 order-md-2 order-1">
+                      <div className="col-lg-6 col-xl-4 col-md-6 order-md-2 order-1">
                         <div className="speedometer_summary">
                           <h5 className='sub_title_main'>Indicator Sentiment:</h5>
                           <div className="row">
@@ -3269,7 +3318,7 @@ export default function tokenDetailsFunction({
                         </div> */}
                       </div>
 
-                      <div className="col-md-4 col-12 order-md-3 order-3">
+                      <div className="col-lg-6 col-xl-4 col-md-6 col-12 order-md-3 order-3">
                         <Dex_volume
                           reqData={{
                             token_id: data.token_id,
@@ -3285,14 +3334,22 @@ export default function tokenDetailsFunction({
                           <div className="row">
                             <div className="col-12">
                               <h5 className="sub_title_main">
-                                {symbol} to USD Converter
+                                {symbol} to {converter_object.currency_name} Converter
                               </h5>
                               <div className="usd_converter">
                                 <img className="interchamge_icon" src="/assets/img/interchange_icon.svg" alt="Exchange" />
                               <div className="input-group">
                                 <div className="input-group-prepend converter-label">
                                   <span className="input-group-text">
-                                    <img src="/assets/img/uni_icon.svg" alt="UNI" /> &nbsp; {symbol}
+                                    <img src={
+                            data.token_image
+                              ? image_base_url + data.token_image
+                              : data.coinmarketcap_id
+                              ? cmc_image_base_url +
+                                data.coinmarketcap_id +
+                                ".png"
+                              : image_base_url + "default.svg"
+                          } alt="" className="conver_main_img" /> &nbsp; {symbol}
                                   </span>
                                 </div>
                                 <input
@@ -3302,7 +3359,8 @@ export default function tokenDetailsFunction({
                                     tokenConverter(
                                       e.target.value,
                                       1,
-                                      converter_pair_currency
+                                      converter_pair_currency,
+                                      converter_object
                                     )
                                   }
                                   step="0.000001"
@@ -3315,15 +3373,61 @@ export default function tokenDetailsFunction({
                           <div className="input-group">
                                 <div className="input-group-prepend converter-label">
                                   <span className="input-group-text converter-second-span">
-                                  <img src="/assets/img/usdt_icon.svg" alt="USDT" />&nbsp;
-                                    <select
+                                    
+                                    <div className="dropdown">
+                                      <button className="convertor_dropdown dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {
+                                          converter_object ?
+                                          <>
+                                          {
+                                            converter_object.currency_type == 1 ?
+                                            <img src={"/assets/img/flags/"+converter_object.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                            :
+                                            converter_object.currency_type == 2 ?
+                                            <img src={image_base_url+converter_object.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                            :
+                                            converter_object.currency_type == 3 ?
+                                            <img src={"/assets/img/flags/"+converter_object.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                            :
+                                            ""
+                                          } {converter_object.currency_name}
+                                          </>
+                                          :
+                                          ""
+                                        }
+                                        
+                                      </button>
+                                      <div className={`convertor_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`} aria-labelledby="volumeDropdown">
+                                        {
+                                            converter_pair_currencies.map((item, i) =>
+                                              item.currency_name != data.symbol ? 
+                                              <a key={i} className={`dropdown-item ${converter_pair_currency === item.currency_value ? 'active' : ''}`} onClick={()=>tokenConverter(token_converter_value, 1, item.currency_value , item)}>
+                                                <span>
+                                                  {
+                                                    item.currency_type == 1 ?
+                                                    <img src={"/assets/img/flags/"+item.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                                    :
+                                                    item.currency_type == 2 ?
+                                                    <img src={image_base_url+item.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                                    :
+                                                    item.currency_type == 3 ?
+                                                    <img src={"/assets/img/flags/"+item.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                                    :
+                                                    ""
+                                                  } {item.currency_name}
+                                                </span>
+                                              </a>
+                                              : 
+                                              ""
+                                            )
+                                        }     
+                                      </div>
+                                    </div>
+
+                                    {/* <select
                                      className={`form-no-border ${isOpen ? 'closed' : 'open'}`} 
                                       onChange={(e) =>
-                                        tokenConverter(
-                                          token_converter_value,
-                                          1,
-                                          e.target.value
-                                        )
+                                        tokenConverter(token_converter_value, 1, e.target.value)
                                       }
                                     >
                                       {converter_pair_currencies.map(
@@ -3342,7 +3446,7 @@ export default function tokenDetailsFunction({
                                             ""
                                           )
                                       )}
-                                    </select>
+                                    </select> */}
                                   </span>
                                 </div>
                                 <input
@@ -3352,7 +3456,8 @@ export default function tokenDetailsFunction({
                                     tokenConverter(
                                       e.target.value,
                                       2,
-                                      converter_pair_currency
+                                      converter_pair_currency,
+                                      converter_object
                                     )
                                   }
                                   step="0.000001"
@@ -3372,7 +3477,7 @@ export default function tokenDetailsFunction({
 
                   <div className="market_token_tabs" ref={icoRef}>
                     <div className="row">
-                      <div className="col-md-12 col-sm-12 col-12 col-lg-8 col-xl-8">
+                      <div className="col-md-12 col-sm-12 col-12 col-lg-12 col-xl-8">
                         <div className="token_details_tabs_row">
                           <ul className="nav nav-tabs">
                             <li className="nav-item">
@@ -3656,7 +3761,7 @@ export default function tokenDetailsFunction({
 <div className='dex_filter'>
   <div className="dropdown">
     <button className="dex_filter_button dropdown-toggle" type="button" id="volumeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      24 hours <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" className="dropdown_arrow_img" />
+      {time_name} <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" className="dropdown_arrow_img" />
     </button>
     <div className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`} aria-labelledby="volumeDropdown">
       {cmc_graph_ranges.length ? cmc_graph_ranges.map((item, i) => (
@@ -4178,16 +4283,27 @@ export default function tokenDetailsFunction({
                                   <div className='dex_filter mb-3'>
                                   <div className="charts_date_tab date_chart_interval float-left">
             <div class="dropdown">
-                <button className="dex_filter_button dropdown-toggle" value={1} onChange={(e)=>indicatorSourceType(e.target.value)} type="button" id="dropdownSortBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Recent trades <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
+                <button className="dex_filter_button dropdown-toggle"  type="button" id="dropdownSortBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {
+                  indicator_source_type == 1 ?
+                    "Coinpedia"
+                  :
+                  indicator_source_type == 2 ?
+                    "On Chain"
+                  :
+                  indicator_source_type == 3 ?
+                    "Binance"
+                  :
+                    ""
+                } <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
                 </button>
                 <div  className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`}
                     aria-labelledby="dropdownSortBy">
-                <ul>
-                    <li class="dropdown-item" value={1} onClick={(e)=>indicatorSourceType(e.target.value)}>Coinpedia</li>
-                    <li class="dropdown-item" value={2} onClick={(e)=>indicatorSourceType(e.target.value)}>On Chain</li>
-                    <li class="dropdown-item" value={3} onClick={(e)=>indicatorSourceType(e.target.value)}>Binance</li>
-                </ul>
+                  <ul>
+                      <li class="dropdown-item" onClick={()=>indicatorSourceType(1)}>Coinpedia</li>
+                      <li class="dropdown-item" onClick={()=>indicatorSourceType(2)}>On Chain</li>
+                      <li class="dropdown-item" onClick={()=>indicatorSourceType(3)}>Binance</li>
+                  </ul>
                 </div>
                 </div>
                 </div>
@@ -4203,37 +4319,39 @@ export default function tokenDetailsFunction({
                                    
                                
                                   </div>
-                                  <div className="col-md-8 col-6 text-right">
-                                    <div className="charts_date_tab date_chart_interval">
-                                  <div className='dex_filter mb-3'>
-            <div class="dropdown">
-                <button className="dex_filter_button dropdown-toggle" value={1} onChange={(e)=>indicatorSourceType(e.target.value)} type="button" id="dropdownSortBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                5 Minutes <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
-                </button>
-                <div  className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`}
-                    aria-labelledby="dropdownSortBy">
-                                    <ul>
-                                        {
-                                          indicator_time_series.length ?
-                                            indicator_time_series.map((item, i) =>
-                                              (indicator_source_type == 3) && item.binance ?
-                                              <li className="dropdown-item" onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
-                                              :
-                                              (indicator_source_type == 1) && item.cmc ?
-                                              <li className="dropdown-item" onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
-                                              :
-                                              (indicator_source_type == 2) && item.bitquery ?
-                                              <li className="dropdown-item" onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
-                                              :
-                                              ""
-                                            )
-                                          :
-                                          ""
-                                        }
-                                      </ul>
-                                      </div></div></div>
-                                  </div>
-                                  </div>
+                  <div className="col-md-8 col-6 text-right">
+                    <div className="charts_date_tab date_chart_interval">
+                      <div className='dex_filter mb-3'>
+                    <div class="dropdown">
+                      <button className="dex_filter_button dropdown-toggle" type="button" id="dropdownSortBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {indicatorDurationName(interval_type)} <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
+                      </button>
+                        <div className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`} aria-labelledby="dropdownSortBy">
+                            <ul>
+                              {
+                                indicator_time_series.length ?
+                                  indicator_time_series.map((item, i) =>
+                                    (indicator_source_type == 3) && item.binance ?
+                                    <li className="dropdown-item" onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
+                                    :
+                                    (indicator_source_type == 1) && item.cmc ?
+                                    <li className="dropdown-item" onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
+                                    :
+                                    (indicator_source_type == 2) && item.bitquery ?
+                                    <li className="dropdown-item" onClick={()=>tokenOtherDetails(item.interval_type, indicator_source_type)}>{item.interval_time}</li>
+                                    :
+                                    ""
+                                  )
+                                :
+                                ""
+                              }
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                                 </div>
                                 {
                                   !indicator_loader_status ?
@@ -4981,18 +5099,20 @@ export default function tokenDetailsFunction({
                                             </thead>
 
                                             <tbody>
-                                              {sma_list.length > 0 ? (
+                                              {
+                                                sma_list.length > 0 ? 
                                                 sma_list.map((item, i) => 
                                                 {
                                                   if(live_price > item.sma_value) 
                                                   {
-                                                    sma_buy_count++;
-                                                  } else if (live_price < item.sma_value) {
-                                                    sma_sell_count++;
+                                                    sma_buy_count++
+                                                  } else if (live_price < item.sma_value) 
+                                                  {
+                                                    sma_sell_count++
                                                   } else {
-                                                    sma_neutral_count++;
+                                                    sma_neutral_count++
                                                   }
-                                                  
+
                                                   return (
                                                     <tr key={i}>
                                                       <td> SMA {item.day_number}</td>
@@ -5013,16 +5133,16 @@ export default function tokenDetailsFunction({
                                                           }
                                                       </td>
                                                     </tr>
-                                                  );
+                                                  )
                                                 })
-                                              ) : (
-                                                <tr>
-                                                  <td>No Data Found</td>
-                                                </tr>
-                                              )}
+                                                : 
+                                                ""
+                                              }
 
-                                              {sma_list.length > 0 ? (
-                                                sma_list.map((item, i) => {
+                                              {
+                                                sma_list.length > 0 ? 
+                                                sma_list.map((item, i) => 
+                                                {
                                                   if(live_price > item.ema_value) 
                                                   {
                                                     ema_buy_count++;
@@ -5035,94 +5155,75 @@ export default function tokenDetailsFunction({
                                                     ema_neutral_count++;
                                                   }
 
-                                                  return (
-                                                    <tr key={i}>
-                                                      <td> EMA {item.day_number}</td>
-                                                      <td>
-                                                        <span>
-                                                        {roundNumericValue(item.ema_value)}
-                                                        </span>
-                                                      </td>
-                                                      <td>
-                                                          {
-                                                            live_price > item.ema_value ? 
-                                                            <span className="bullish">Buy</span>
-                                                            : 
-                                                            live_price < item.ema_value ? 
-                                                            <span className="bearish">Sell</span>
-                                                            : 
-                                                            <span className="neutral">Neutral</span>
-                                                          }
-                                                      </td>
-                                                    </tr>
-                                                  );
-                                                })
-                                              ) : (
-                                                <tr>
-                                                  <td>No Data Found</td>
-                                                </tr>
-                                              )}
-                                            </tbody>
-                                          </table>
-                                          <p className="total_buy_sell_neutral">
-                                            <span>Buy: {total_sma_buy}</span> <span>Sell: {total_sma_sell}</span> <span>Neutral: {total_sma_neutral}</span>
-                                          </p>
-                                          
-                                        </div>
-                                        </div>
-                                        <div className="analysis_values">
-                                      <h4 className="">Other Moving Averages</h4> 
-                                      <div className="technical_anaylysis_table">
-                                      <table className="table">
-                                        <thead>
-                                          <tr className="inner_table_average">
-                                            <th colspan="0">
-                                              <p className="">Period</p>
-                                            </th>
-                                            <th colspan="0">
-                                              <p className="">Value</p>
-                                            </th>
-                                            <th colspan="0">
-                                              <p className="">Action</p>
-                                            </th>
-                                          </tr>
-                                        </thead>
+                                                    return (
+                                                      <tr key={i}>
+                                                        <td> EMA {item.day_number}</td>
+                                                        <td>
+                                                          <span>
+                                                          {roundNumericValue(item.ema_value)}
+                                                          </span>
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                              live_price > item.ema_value ? 
+                                                              <span className="bullish">Buy</span>
+                                                              : 
+                                                              live_price < item.ema_value ? 
+                                                              <span className="bearish">Sell</span>
+                                                              : 
+                                                              <span className="neutral">Neutral</span>
+                                                            }
+                                                        </td>
+                                                      </tr>
+                                                    )
+                                                  })
+                                                : 
+                                                ""
+                                              }
 
-                                        <tbody>
                                           <tr>
-                                            <td>HMA(9)</td>
-                                            <td>{roundNumericValue(hull_moving_average)}</td>
-                                            <td>
+                                              <td>HMA(9)</td>
+                                              <td>{roundNumericValue(hull_moving_average)}</td>
+                                              <td>
+                                                  {
+                                                    live_price > hull_moving_average ? 
+                                                    <span className="bullish">Buy</span>
+                                                    : 
+                                                    live_price < hull_moving_average ? 
+                                                    <span className="bearish">Sell</span>
+                                                    : 
+                                                    <span className="neutral">Neutral</span>
+                                                  }
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td>VWMA(20)</td>
+                                              <td>{roundNumericValue(vwma)}</td>
+                                              <td>
                                                 {
-                                                  live_price > hull_moving_average ? 
+                                                  live_price > vwma ? 
                                                   <span className="bullish">Buy</span>
                                                   : 
-                                                  live_price < hull_moving_average ? 
+                                                  live_price < vwma ? 
                                                   <span className="bearish">Sell</span>
                                                   : 
                                                   <span className="neutral">Neutral</span>
                                                 }
-                                            </td>
+                                              </td>
                                           </tr>
-                                          <tr>
-                                            <td>VWMA(20)</td>
-                                            <td>{roundNumericValue(vwma)}</td>
-                                            <td>
-                                              {
-                                                live_price > vwma ? 
-                                                <span className="bullish">Buy</span>
-                                                : 
-                                                live_price < vwma ? 
-                                                <span className="bearish">Sell</span>
-                                                : 
-                                                <span className="neutral">Neutral</span>
-                                              }
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                        </table>
+
+                                            </tbody>
+                                          </table>
+                                          
+
+
+                                          <p className="total_buy_sell_neutral">
+                                            <span>Buy: {total_sma_buy+ema_buy_count+(live_price>hull_moving_average?1:0)+(live_price>vwma?1:0)}</span> <span>Sell: {total_sma_sell+ema_sell_count+(live_price<hull_moving_average?1:0)+(live_price<vwma?1:0)}</span> <span>Neutral: {total_sma_neutral+ema_neutral_count+(live_price==hull_moving_average?1:0)+(live_price==vwma?1:0)}</span>
+                                          </p>
+                                          
                                         </div>
-                                    </div> 
+                                        </div>
+                                        
                                   </div>
                                   
 
@@ -5562,7 +5663,7 @@ export default function tokenDetailsFunction({
                   </div>
                       </div>
                       
-                      <div className="col-md-12 col-sm-12 col-12 col-lg-4 col-xl-4">
+                      <div className="col-md-12 col-sm-12 col-12 col-lg-12 col-xl-4">
                         <div className="token_details_tabs_row">
                           <ul className="nav nav-tabs token_events_tabs">
                             <li className="nav-item">
@@ -5741,7 +5842,7 @@ export default function tokenDetailsFunction({
                                 height="100%"
                               />
               </div>
-              <h1 className="token_name_share">  {data.token_name ? data.token_name : "-"}
+              <h1 className="token_name_share">  {data.token_name ? data.token_name : "-"} -
                                 <span>
                                   {data.symbol ? data.symbol.toUpperCase() : "-"}
                                 </span> : {live_price > 0 ? convertCurrency(live_price): "NA"}</h1>

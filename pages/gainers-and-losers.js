@@ -409,14 +409,14 @@ const convertCurrency = (token_price) =>
 
                 <div className="prices transaction_table_block">
                     <div className="row">
-                        <div className="col-md-12 col-lg-6 mb-3 col-12">
+                        <div className="col-md-12 col-lg-6 col-12">
                             <ul className="secondary_tabs">
                                 <li className={all_tab_status == 0?"secondary_tabs_active ":null}><a onClick={()=>set_all_tab_status(0)}>Gainers </a></li>
                                 <span className='tabs_partition'></span>
                                 <li className={all_tab_status == 1?"secondary_tabs_active":null}><a onClick={()=>set_all_tab_status(1)}>Losers</a></li>
                             </ul>
                         </div>
-                        <div className="col-md-12 col-lg-6 mb-3 col-12 filter-category-section select_category_gainers">
+                        <div className="col-md-12 col-lg-6 col-12 filter-category-section select_category_gainers">
                         <div className="row">
                             
                             
@@ -494,7 +494,7 @@ const convertCurrency = (token_price) =>
 
                             
 
-                          <div className="col-md-4 mb-2 col-lg-3 col-6 ">
+                          <div className="col-md-4 col-lg-3 col-6 ">
                           <div className="cust_filters_dropdown" ref={coin_ref}>
                           <div className="cust_filter_input" >
                                {
@@ -609,7 +609,7 @@ const convertCurrency = (token_price) =>
 
                           <div className="col-md-4 col-lg-6 col-12 col-sm-12 ">
                                 <div className="input-group search_filter">
-                                    <input value={search_value} onChange={(e)=> set_search_value(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token" />
+                                    <input value={search_value} onChange={(e)=> set_search_value(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Coin/Token" />
                                     <div className="input-group-prepend ">
                                         <span className="input-group-text" ><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                                     </div>

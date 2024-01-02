@@ -180,15 +180,29 @@ export default function Exchange({reqData})
                 <div className='dex_filter mb-3'>
             <div class="dropdown">
                 <button className="dex_filter_button dropdown-toggle"  type="button" id="dropdownSortBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Recent trades <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
+                {
+                  sort_type == 1 ?
+                  "Recent trades"
+                  :
+                  sort_type == 2 ?
+                  "High amount"
+                  :
+                  sort_type == 3 ?
+                  "Low amount"
+                  :
+                  sort_type == 4 ?
+                  "Date and time"
+                  :
+                  ""
+                } <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
                 </button>
                 <div  className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`}
                     aria-labelledby="dropdownSortBy">
                 <ul >
-                    <li className="dropdown-item" value={1} onClick={(e)=>set_sort_type(e.target.value)}>Recent trades</li>
-                    <li className="dropdown-item" value={2} onClick={(e)=>set_sort_type(e.target.value)}>High amount</li>
-                    <li className="dropdown-item" value={3} onClick={(e)=>set_sort_type(e.target.value)}>Low amount</li>
-                    <li className="dropdown-item" value={4} onClick={(e)=>set_sort_type(e.target.value)}>Date and time</li>
+                    <li className="dropdown-item" value={1} onClick={(e)=>set_sort_type(1)}>Recent trades</li>
+                    <li className="dropdown-item" value={2} onClick={(e)=>set_sort_type(2)}>High amount</li>
+                    <li className="dropdown-item" value={3} onClick={(e)=>set_sort_type(3)}>Low amount</li>
+                    <li className="dropdown-item" value={4} onClick={(e)=>set_sort_type(4)}>Date and time</li>
                 </ul>
                 </div>
                 </div>

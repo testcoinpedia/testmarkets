@@ -45,41 +45,42 @@ import { tradeHistory } from './liquidity/queries'
 
 const cmc_graph_ranges = [
   {
-    time_name : "1D",
+    time_name : "24 Hours",
     intervals: "10m",
     count:"144"
   },
   {
-    time_name : "1W",
+    time_name : "1 Week",
     intervals: "1h",
     count:"168"
   },
   {
-    time_name : "1M",
+    time_name : "1 Month",
     intervals: "4h",
     count:"180"
   },
   {
-    time_name : "3M",
+    time_name : "3 Month",
     intervals: "1d",
     count:"90"
   },
   {
-    time_name : "6M",
+    time_name : "6 Month",
     intervals: "1d",
     count:"180"
   },
   {
-    time_name : "1Y",
+    time_name : "1 Year",
     intervals: "2d",
     count:"183"
   },
   {
-    time_name : "All",
+    time_name : "All Time",
     intervals: "3d",
     count:"243"
   }  
 ]
+
 
 
 const bitgquery_graph_ranges = [

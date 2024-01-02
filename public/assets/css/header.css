@@ -309,7 +309,7 @@ button.active.hiring_btn.mbl {
   padding: 10px 15px;
   min-width: 224px;
   box-shadow: 0 0 10px;
-  z-index: 999999;
+  z-index: 999999 !important;
 }
 
 .market_top_header .connect_wallet_header .connect_wallet {
@@ -923,6 +923,9 @@ font-size: 18px !important;
 @media (min-width: 992px) {
   .mobile_view_crypto {
     display: none;
+  }
+  .market_top_header .container {
+    padding: 0;
   }
 }
 

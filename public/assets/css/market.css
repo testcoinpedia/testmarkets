@@ -8519,7 +8519,6 @@ h6 {
   border-radius: 0;
   margin-bottom: 0px;
   padding-bottom: 25px;
-  margin-top: 25px;
   border-top: 1px solid #CEE1FF;
   padding-top: 17px;
 }
@@ -8735,7 +8734,7 @@ h6 {
 }
 
 .transaction_table_block .secondary_tabs .secondary_tabs_active {
-  color: #000;
+  color: #002358;
 }
 
 .category_list li img {
@@ -8779,7 +8778,6 @@ h6 {
 .completed_events table thead th {
   color: #7d7e84 !important;
   font-weight: 600 !important; 
-  font-family: 'Space Grotesk';
   background: #fff;
   font-size: 14px;
   border-bottom: 1px solid #e4e8ee;
@@ -9158,7 +9156,6 @@ table thead th {
   border-bottom: 1px solid #e6eaf2 !important;
   color: #000; 
   font-size: 14px;
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
 }
 
@@ -9176,7 +9173,7 @@ table thead th {
   padding: 12px 8px;
   font-weight: 200;
   font-size: 14px;
-  color: #111;
+  color: #002358;
 }
 
 thead th:first-child {
@@ -9190,7 +9187,6 @@ thead th:last-child {
 tbody td {
   border-top: 0px solid #ddd !important;
   border-bottom: 0px solid #ddd !important;
-  font-family: 'Space Grotesk';
   font-weight: 700 !important;
 }
 
@@ -9339,7 +9335,6 @@ tbody td {
 .table_header_res h5{
   font-size: 14px !important;
   color: #264d89;
-  font-family: 'Space Grotesk' !important;
   font-weight: 600 !important;
   margin: 5px 0 !important;
 }
@@ -9747,7 +9742,6 @@ tbody td {
   float: left;
   font-size: 16px;
   font-weight: 600 !important;
-  font-family: 'Space Grotesk';
 }
 
 #market_share_page .input-group {
@@ -9848,7 +9842,7 @@ tbody td {
   border: 0;
   background: transparent;
   font-size: 14px;
-  height: 38px;
+  height: 34px;
   box-shadow: none !important;
   outline: none !important;
 }
@@ -9916,8 +9910,7 @@ tbody td {
 
 .launchpad_list p {
   font-size: 16px;
-  font-family: 'Space Grotesk';
-font-weight: 400 !important;
+  font-weight: 400 !important;
   color: #000;
 }
 
@@ -9947,14 +9940,12 @@ font-weight: 400 !important;
   width: auto;
   font-size: 14px;
   color: #002358;
-  font-family: 'Space Grotesk';
   font-weight: 400 !important;
   cursor: pointer;
 }
 
 .quick_block_links .widgets__select a{
   color: #002358;
-  font-family: 'Space Grotesk';
 }
 
 .coin_main_links ul .coin_individual_list {
@@ -10029,7 +10020,7 @@ font-weight: 400 !important;
 .markets_list_quick_links {
   text-align: left;
   overflow-x: scroll;
-  margin-top: 15px;
+  margin-top: 35px;
 }
 
 .markets_list_quick_links::-webkit-scrollbar {
@@ -11340,7 +11331,6 @@ font-weight: 400;
 }
 
 .market_page_data tr td {
-  min-width: 120px !important;
   padding: 15px 8px !important;
   color: #002358;
   font-weight: 500 !important;
@@ -11380,7 +11370,7 @@ font-weight: 400;
 }
 
 .market_page_data a {
-  color: #000;
+  color: #002358;
   font-weight: 500 !important;
   font-family: 'Space Grotesk';
   font-size: 14px;
@@ -11440,7 +11430,7 @@ font-weight: 400;
 }
 
 .market_page_data tr .media p {
-  color: #888;
+  color: #264D89;
 }
 
 .token_tables tr .media p{
@@ -11688,6 +11678,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   min-width: 191px;
   box-shadow: 0 0 10px;
   max-width: 222px;
+  z-index: 99999 !important;
 }
 
 .connect_wallet_header .dropdown_wallet_header a {
@@ -12036,7 +12027,7 @@ font-weight: 500 !important;
 }
 
 .markets_header_token{
-  padding: 25px 0 15px !important;
+  padding: 20px 0 15px !important;
   position: sticky;
   top: 0px;
   z-index: 0;
@@ -12072,11 +12063,15 @@ font-weight: 500 !important;
 
 .market-overview .overview-title .category {
   background: #F1F6FF;
-  padding: 3px 10px;
-  border-radius: 5px;
+  padding: 4px 12px;
+  border-radius: 3px;
   font-size: 14px;
   color: #264D89;
   float: right;
+  margin-left: 10px;
+  border: 1px solid #CEE1FF;
+  position: relative;
+  top: -3px;
 }
 
 .market-overview .airdrops-list li {
@@ -12115,6 +12110,7 @@ font-weight: 500 !important;
   font-size: 16px;
   font-weight: 600 !important;
   color: #264D89;
+  margin-top: 5px;
 }
 
 .market-overview  .token-name .category-percent
@@ -12187,10 +12183,6 @@ font-weight: 500 !important;
   padding: 0 5px;
 }
 
-.search_token_address {
-  height: 50px;
-}
-
 .dex-volume
 {
   padding: 10px;
@@ -12220,6 +12212,7 @@ font-weight: 500 !important;
   margin-top: 0px;
   cursor: pointer;
   transition: 0.4s;
+  margin-bottom: 5px;
 }
 
 .category-ul li a{
@@ -12528,7 +12521,7 @@ font-weight: 500 !important;
   position: absolute;
   bottom: -70px;
   text-align: right;
-  left: 30px;
+  left: 25px;
   line-height: 1.2;
   color: #264D89;
   text-transform: uppercase;
@@ -12562,7 +12555,7 @@ font-weight: 500 !important;
 .analysis_tab_secondary_strong_buy {
   position: absolute;
   bottom: -70px;
-  right: 30px;
+  right: 25px;
   text-align: left;
   line-height: 1.2;
   color: #264D89;
@@ -12578,6 +12571,10 @@ font-weight: 500 !important;
   margin: 0 auto;
   width: 140px;
   z-index: -1;
+}
+
+.indiviual_breadcrumb_search {
+  padding: 25px 0 0;
 }
 
 /* End Secondary Analysis Graph*/
@@ -12821,6 +12818,43 @@ font-weight: 500 !important;
 
 .analysis_summary .speedometer {
   margin-top: -15px;
+}
+
+.conver_main_img {
+  width: 30px;
+}
+
+.convertor_dropdown {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.convertor_dropdown_block {
+  margin-top: 35px;
+  margin-left: -12px;
+  min-width: 120px;
+  height: 250px;
+  overflow-y: scroll;
+}
+
+.convertor_dropdown_block::-webkit-scrollbar {
+  width: 5px;
+}
+
+.convertor_dropdown_block::-webkit-scrollbar-track {
+  background: #F1F6FF;
+}
+
+.convertor_dropdown_block::-webkit-scrollbar-thumb {
+  background: #e0ebff;
+}
+
+.convertor_dropdown_block::-webkit-scrollbar-thumb:hover {
+  background: #e0ebff;
+}
+
+.convertor_dropdown_block .dropdown-item {
+  padding: 5px 10px;
 }
 
 /* End Market Individual Page  */
@@ -14626,29 +14660,26 @@ color: #DF233D;
 /*********** Start Custom Filter ************/
 
 .cust_filters_dropdown .cust_filter_input {
-  background: #EFF2F5 !important;
+  background: #F1F6FF !important;
   /* border: 1px solid #cad0d638; */
-  border-radius: 6px;
-  font-family: 'Space Grotesk';
+  border-radius: 3px;
 }
 
 .cust_filters_dropdown .cust_filter_input input {
   border: 0;
   background: transparent;
-  min-height: 40px;
+  min-height: 34px;
   font-size: 14px;
   font-weight: 300;
   padding: 5px 5px 5px 10px !important;
-  font-family: 'Space Grotesk';
 }
 
 .cust_filters_dropdown .markets_selected_category {
   padding: 5px 10px;
-    font-family: 'Space Grotesk';
     font-size: 12px;
     overflow: hidden;
     text-overflow: ellipsis;
-    height: 40px;
+    height: 36px;
 }
 
 .markets_selected_category p{
@@ -14657,8 +14688,11 @@ color: #DF233D;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-top: 5px;
+  margin-top: 3px;
   min-width: 180px;
+  font-weight: 500;
+  color: #264D89;
+  font-size: 13px;
 }
 
 .close_category_icon {
@@ -14674,16 +14708,15 @@ color: #DF233D;
 }
 
 .markets_subtitle {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600 !important;
-  font-family: 'Space Grotesk';
-  margin-top: 10px;
+  margin-top: 5px;
+  color: #002358;
 }
 
 .page_main_heading{
   font-size: 24px;
-    font-family: 'Space Grotesk';
-    font-weight: 700 !important;
+  font-weight: 700 !important;
 }
 
 .cust_filters_dropdown .cust_filter_input .input-group-addon {
@@ -14723,11 +14756,11 @@ color: #DF233D;
 }
 
 .cust_filters_dropdown .cust_filter_result li {
-  line-height: 2;
+  line-height: 2.5;
   cursor: pointer;
   border-bottom: 1px dashed #ddd;
   font-size: 12px;
-  font-weight: 300 !important;
+  font-weight: 500 !important;
 }
 
 .cust_filters_dropdown .cust_filter_result li:last-child {
@@ -16267,7 +16300,7 @@ a {
 
 
 .values_growth {
-  font-size: 14px;
+  /* font-size: 14px; */
   font-weight: 600 !important;
 }
 
@@ -16638,7 +16671,7 @@ font-weight: 500 !important;
 }
 
 .market_token_details .search_filter input {
-  height: 38px;
+  height: 34px;
   color: #363636;
   font-family: 'Space Grotesk';
   font-weight: 400;
@@ -17375,7 +17408,7 @@ background: rgb(217 217 217);
   color: #264D89 !important;
   background: #F1F6FF;
   border-radius: 5px;
-  padding: 4px 20px !important;
+  padding: 4px 10px !important;
 }
 .add-token-link
 {
@@ -18815,9 +18848,8 @@ padding: 5px 20px;
 .cust_filters_dropdown .cust_filter_input input {
   border: 0;
   background: transparent;
-  height: 42px;
   font-size: 14px;
-  font-weight: 200 !important;
+  font-weight: 400 !important;
 }
 
 .cust_filters_dropdown .cust_filter_input ul {
@@ -18898,6 +18930,13 @@ padding: 5px 20px;
   font-weight: 400;
   line-height: 3;
   color: #7c838a ;
+}
+
+.converter-currency-image
+{
+  width: 29px;
+  border-radius: 50%;
+  height: 29px;
 }
 
 .close_wallet {
@@ -19329,17 +19368,9 @@ h3.heading {
   margin-right: 0 !important;
 }
 
-
-.portfolio_login_popup_container p{
-
-}
-
 .sec_section_portfolio{
   color: #71727D !important;
 }
-
-
-
 
 .account_approval_status{
   margin: 10px auto 45px;
@@ -19381,7 +19412,6 @@ h3.heading {
 }
 
 .quick_values_graph .apexcharts-radialbar-slice-0 {
-  stroke: #FF007A !important;
   stroke-width: 9px !important;
   stroke-linecap: round !important;
   fill-opacity: 0.85 !important;
@@ -19389,7 +19419,6 @@ h3.heading {
 }
 
 .quick_values_graph .apexcharts-radialbar-slice-1 {
-  stroke: #FF007A80 !important;
   stroke-width: 9px !important;
   stroke-linecap: round !important;
   fill-opacity: 0.85 !important;
@@ -19397,7 +19426,6 @@ h3.heading {
 }
 
 .quick_values_graph .apexcharts-radialbar-slice-2 {
-  stroke: #FF007A33 !important;
   stroke-width: 9px !important;
   stroke-linecap: round !important;
   fill-opacity: 0.85 !important;
@@ -19960,10 +19988,6 @@ h3.heading {
   cursor: pointer;
  }
 
- .share_popup_token {
-
- }
-
  .share_popup_token .modal-body {
   padding: 20px 25px;
  }
@@ -20072,21 +20096,6 @@ h3.heading {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  @media  (min-width: 1280px) and (max-width: 1400px){
   .mobile-subscribe{
     display: none;
@@ -20127,6 +20136,10 @@ h3.heading {
 }
 
 @media (max-width: 768px) {
+
+  .category-ul li {
+    margin-bottom: 5px
+  }
 
   .token-details-popup .modal-dialog
   {
@@ -20471,7 +20484,7 @@ h3.heading {
   }
 
   .market_token_details .search_filter input {
-    height: 40px;
+    height: 34px;
   }
 
   .launchpad_list_content .launchpad_completed {
@@ -22211,7 +22224,12 @@ screen and (max-height: 300px) {
   }
 
   .technical_anaylysis_table {
-    overflow: hidden;
+    /* overflow: hidden; */
+    padding: 5px;
+  }
+
+  .technical_anaylysis_table tbody td {
+    padding: 0 3px;
   }
 
   .markets_list_quick_links{
@@ -22577,7 +22595,7 @@ screen and (max-height: 300px) {
   }
 
   .search_filter input {
-    height: 40px;
+    height: 34px;
   }
 
   .search_filter .input-group-prepend select {
@@ -24894,17 +24912,16 @@ screen and (max-height: 300px) {
 
 /*****************************  Markets Home page new design css starts  *****************************************/
 .markets_new_design .market_insights h1{
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 600 !important;
-  font-family: 'Space Grotesk';
   line-height: 1;
   margin-bottom: 10px;
+  color: #002358;
 }
 .markets_new_design .market_insights p{
-  color: #000;
+  color: #002358;
   font-size: 16px;
   font-weight: 500 !important;
-    font-family: 'Space Grotesk';
     margin-bottom: 12px;
 }
 .markets_new_design .search_filter.new_design_serach .form-control{
@@ -24914,17 +24931,14 @@ screen and (max-height: 300px) {
 .text-green{
   color: #16C784 !important;
   font-weight: 500 !important;
-  font-family: 'Space Grotesk';
 }
 .color-green{
   color: #4FD154 !important;
   font-weight: 500 !important;
-  font-family: 'Space Grotesk';
 }
 .text-red{
 color: #EA3943 !important;
 font-weight: 500 !important;
-    font-family: 'Space Grotesk';
 }
 .trending-tokens{
   margin: 10px 0;
@@ -24936,17 +24950,14 @@ font-weight: 500 !important;
 }
 .markets_new_design .search_filter.new_design_serach {
   font-weight: 500 !important;
-    font-family: 'Space Grotesk';
 }
 .markets_new_design  .search_filter.new_design_serach .form-control{
   /* font-size: 16px; */
   font-weight: 500 !important;
-    font-family: 'Space Grotesk';
 }
 .markets_new_design .search_filter.new_design_serach .search-input-box::placeholder{
   color: #8F8F8F !important;
   font-weight: 500 !important;
-    font-family: 'Space Grotesk';
  }
  /* .markets_new_design .search_filter.new_design_serach .input-group-text img{
   width: auto !important;
@@ -24985,7 +24996,6 @@ font-weight: 500 !important;
   padding: 5px;
   margin-bottom: 6px;
   font-weight: 500 !important;
-    font-family: 'Space Grotesk';
 }
 .trending-tokens li:not(:first-child):not(:last-child){
   background-color: #F2F5F7;
@@ -25005,9 +25015,6 @@ font-weight: 500 !important;
   margin-bottom: 10px;
 
 }
-
-
-
 
 .volume-tabs .nav-tabs .nav-link, .volume-tabs .nav-tabs .nav-link:focus, .volume-tabs .nav-tabs .nav-link:hover {
  border: 0px;
@@ -25048,7 +25055,6 @@ font-weight: 500 !important;
 .price-chart-content
 {
   font-size: 14px;
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
   
 }
@@ -25088,7 +25094,6 @@ font-weight: 500 !important;
   font-size: 22px !important;
   margin-bottom: 15px;
   padding-top: 10px;
-  font-family: 'Space Grotesk';
   font-weight: 700 !important;
 }
 
@@ -25130,7 +25135,6 @@ font-weight: 500 !important;
   flex-direction: column;
   align-items: center;
   color: #264D89;
-  font-family: 'Space Grotesk';
   font-weight: 400 !important;
   padding: 0px 2px;
 }
@@ -25151,7 +25155,6 @@ font-weight: 500 !important;
 .trending-tokens li h6{
   color: #898989;
   font-size: 14px;
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
 }
 /* .all-categories-list{
@@ -25162,7 +25165,6 @@ font-weight: 500 !important;
   font-size: 15px;
   padding: 6px 0;
   font-weight: 600 !important;
-  font-family: 'Space Grotesk';
 }
 .all-categories-list li {
   margin-right: 0px;
@@ -25170,7 +25172,7 @@ font-weight: 500 !important;
 .all-categories-list li .active_category{
   background: #F1F6FF !important;
   border: 0px solid #cad0d638;
-  border-radius: 6px;
+  border-radius: 4px;
   color: #424242;
   margin-right: 0px !important;
   transition: none;
@@ -25191,7 +25193,6 @@ font-weight: 500 !important;
  .gainers-loosers h2{
   font-size: 23px;
   font-weight: 700 !important;
-  font-family: 'Space Grotesk';
 }
 .gainers-loosers .nav-tabs{
 border: 0;
@@ -25203,8 +25204,6 @@ justify-content: end;
   padding: 6px;
   color: #000;
   font-weight: 500 !important;
-    font-family: 'Space Grotesk';
-  
 }
 .gainers-loosers .nav-tabs li:last-child a{
   margin-right: 0;
@@ -25224,7 +25223,6 @@ justify-content: end;
   font-size: 15px;
   color: #898989;
   font-weight: 500 !important;
-  font-family: 'Space Grotesk';
   min-width: auto;
 }
 .gainers-loosers.top-categories table tbody tr td{ 
@@ -25234,17 +25232,14 @@ justify-content: end;
   color: #000000;
     font-size: 14px;
     font-weight: 500 !important;
-  font-family: 'Space Grotesk';
 }
 .gainers-loosers .tab-pane table td span{
   color: #9C9C9C;
   font-weight: 500 !important;
-  font-family: 'Space Grotesk';
 }
 .gainers-loosers .tab-pane table td table tr span{
   color: #000000;
   font-weight: 500 !important;
-  font-family: 'Space Grotesk';
 }
 .gainers-loosers .tab-pane table td img{
   margin-right: 4px;
@@ -25252,7 +25247,6 @@ justify-content: end;
 .gainers-loosers .view-more-pg{
   color: #9C9C9C;
   font-weight: 500 !important;
-  font-family: 'Space Grotesk';
   font-size: 16px;
 }
 .gain-lose-progress{
@@ -25278,13 +25272,11 @@ justify-content: end;
 }
 .price-tracking-tbl h2{
   font-size: 24px;
-  font-family: 'Space Grotesk';
   font-weight: 600 !important;
 }
 .price-tracking-tbl .category_list li{
   color: #727272;
   font-size: 15px;
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
 }
 .price-tracking-tbl .category_list li a{
@@ -25316,7 +25308,6 @@ justify-content: end;
 }
 .market_page_data table tbody tr td .wishlist{
   margin-right: 10px;
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
   vertical-align: sub;
 }
@@ -25324,27 +25315,22 @@ justify-content: end;
   background: #fff;
   border-top: 0;
   border-bottom: 0;
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
   position: sticky;
   top: 0;
 }
 .price-tracking-tbl .filter-category-section .search_filter, .price-tracking-tbl .filter_rows li select, .price-tracking-tbl .css-1s2u09g-control{
-  background: #EFF2F5;
-    border: 0.4px solid #cad0d638;
-    border-radius: 6px;
-  min-height: 40px;
-  font-family: 'Space Grotesk';
+  border: 1px solid #CEE1FF;
+  border-radius: 3px;
+  min-height: 34px;
   font-weight: 400 !important;
   /* max-height: 38px; */
   width: 100%;
 }
 .price-tracking-tbl .css-14el2xx-placeholder{
-  font-family: 'Space Grotesk';
   white-space: nowrap;
 }
 .price-tracking-tbl .search_filter .form-control{
-  font-family: 'Space Grotesk';
   font-weight: 400 !important;
 }
 .price-tracking-tbl .css-1okebmr-indicatorSeparator{
@@ -25385,7 +25371,6 @@ justify-content: end;
   font-size: 15px;
   color: #264d89;
   padding: 15px 8px ;
-  font-family: 'Space Grotesk';
   font-weight: 600 !important;
   min-width: unset;
 }
@@ -25413,23 +25398,20 @@ justify-content: end;
 .price-tracking-tbl table tbody tr td, .price-tracking-tbl .market_page_data tr .media h4, .price-tracking-tbl .market_list_price .block_price{
   color: #002358;
   white-space: nowrap;
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
 }
 
 .price-tracking-tbl table tbody tr td a, .price-tracking-tbl .market_page_data tr .media h4, .price-tracking-tbl .market_list_price .block_price{
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
 }
 
 .price-tracking-tbl table tbody tr td .values_growth .green{
   color: #4FD154 !important;
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
+  font-size: 14px;
 }
 .price-tracking-tbl table tbody tr td .values_growth .red{
   color: #EA3943 !important;
-  font-family: 'Space Grotesk';
   font-weight: 500 !important;
 }
 .price-tracking-tbl .show-num {
@@ -25471,17 +25453,12 @@ justify-content: end;
     font-weight: 500 !important;
 }
 
-
-
 .add_team_member .form-custom{
   margin-bottom: 0 !important;
 }
 
-
-
 .add_team_member .employee-suggestions-list{
   padding: 5px;
-  font-family: 'Space Grotesk' !important;
   font-weight: 700 !important;
   font-size: 13px;
   margin-bottom: 4px;
@@ -25506,19 +25483,16 @@ justify-content: end;
 .add_team_member .employee-suggestions-list .media-body h5 {
   font-size: 14px;
   margin-bottom: 0;
-  font-family: 'Space Grotesk' !important;
   font-weight: 700 !important;
 }
 
 .add_team_member .employee-suggestions-list .media-body h5 span {
   font-size: 12px;
-  font-family: 'Space Grotesk' !important;
     font-weight: 600 !important;
 }
 
 .add_team_member .employee-suggestions-list .media-body h6 {
   margin-bottom: 0px;
-  font-family: 'Space Grotesk' !important;
   font-weight: 500 !important;
   font-size: 12px;
   color: #959595;
@@ -25527,7 +25501,6 @@ justify-content: end;
 
 .add_team_member .employee-suggestions-list .media-body .speakers-suggestions-list_h6 {
   margin-bottom: 0px;
-  font-family: 'Space Grotesk' !important;
     font-weight: 400 !important;
   font-size: 11px;
   color: #959595;
@@ -25537,7 +25510,6 @@ justify-content: end;
 .add_team_member .employee-suggestions-list .media-right button {
   color: #00247D;
   font-size: 14px;
-  font-family: 'Space Grotesk' !important;
   font-weight: 500 !important;
 }
 
@@ -25572,7 +25544,6 @@ justify-content: end;
 
 .custom_pophover .tooltip-inner p{
  font-size: 13px;
- font-family: 'Space Grotesk' !important;
  font-weight: 500 !important;
 }
 
@@ -25625,7 +25596,7 @@ justify-content: end;
 }
 
 .dex_filter .dex_filter_button{
-  background: #F1F6FF;
+  background: #f1f6ff;
   border: 0;
   color: #264D89;
   font-size: 14px;
@@ -25679,7 +25650,7 @@ justify-content: end;
   min-width: 100px;
   background-color: #f2f6ff ;
   background: #f2f6ff ;
-  margin-top: 40px;
+  margin-top: 35px;
   will-change: auto !important;
 }
 .dex_filter .dropdown-item{
@@ -25712,8 +25683,6 @@ justify-content: end;
 .charts_price_tabs li a{
   color: #264D89 !important;
 }
-
-
 
 .open {
   animation: growDown 0.5s ease-in-out forwards;
@@ -26376,13 +26345,63 @@ justify-content: end;
   }
 }
 
+@media (max-width: 390px) {
+  .analysis_buy{
+    right: 70px !important;
+  }
+
+  .analysis_strong_buy{
+    right: 10px !important;
+  }
+
+  .analysis_sell{
+    left: 70px !important;
+  }
+
+  .analysis_strong_sell{
+    left: 10px !important;
+  }
+
+  .analysis_tab_primary_strong_buy {
+    right: 20px !important;
+  }
+
+  .analysis_tab_primary_buy {
+    right: 70px !important;
+  }
+
+  .analysis_tab_primary_sell {
+    left: 70px !important;
+  }
+
+  .analysis_tab_primary_strong_sell {
+    left: 20px !important;
+  }
+
+  .analysis_tab_secondary_buy {
+    right: 95px !important;
+  }
+
+  .analysis_tab_secondary_sell {
+    left: 95px !important;
+  }
+  .analysis_tab_secondary_strong_buy{
+    right: 60px !important;
+  }
+
+  .analysis_tab_secondary_strong_sell{
+    left: 60px !important;
+  }
+}
+
+
 @media (max-width: 450px) {
   .analysis_buy{
     right: 70px;
   }
 
   .analysis_strong_buy{
-    right: 10px;
+    right: 30px;
   }
 
   .analysis_sell{
@@ -26390,25 +26409,165 @@ justify-content: end;
   }
 
   .analysis_strong_sell{
-    left: 10px;
+    left: 30px;
   }
 
   .analysis_tab_primary_strong_buy {
-    right: 20px;
+    right: 50px;
   }
 
   .analysis_tab_primary_buy {
-    right: 70px;
+    right: 100px;
   }
 
   .analysis_tab_primary_sell {
-    left: 70px;
+    left: 100px;
   }
 
   .analysis_tab_primary_strong_sell {
-    left: 20px;
+    left: 50px;
+  }
+
+  .analysis_tab_secondary_buy {
+    right: 125px;
+  }
+
+  .analysis_tab_secondary_sell {
+    left: 125px;
+  }
+  .analysis_tab_secondary_strong_buy{
+    right: 80px;
+  }
+
+  .analysis_tab_secondary_strong_sell{
+    left: 80px;
   }
 }
+
+@media (min-width: 768px) and (max-width: 1000px) {
+  .analysis_buy{
+    right: 60px;
+  }
+
+  .analysis_strong_buy{
+    right: 5px;
+  }
+
+  .analysis_sell{
+    left: 60px;
+  }
+
+  .analysis_strong_sell{
+    left: 5px;
+  }
+
+  .analysis_tab_primary_strong_buy {
+    right: 50px;
+  }
+
+  .analysis_tab_primary_buy {
+    right: 20px;
+  }
+
+  .analysis_tab_primary_sell {
+    left: 20px;
+  }
+
+  .analysis_tab_primary_strong_sell {
+    left: 50px;
+  }
+
+  .analysis_tab_secondary_buy {
+    right: 185px;
+  }
+
+  .analysis_tab_secondary_sell {
+    left: 185px;
+  }
+  .analysis_tab_secondary_strong_buy{
+    right: -5px;
+  }
+
+  .analysis_tab_secondary_strong_sell{
+    left: -5px;
+  }
+
+
+  .tokenomic_graph .total_value{
+    padding: 20px 25px;
+  }
+
+  .tokenomic_graph .total_value{
+    top: 110px
+  }
+
+
+  .analysis_summary .speedometer{
+    width: 230px !important;
+    height: 180px !important;
+    position: relative;
+    left: -20px;
+
+}
+
+.analysis_tab_primary_strong_buy_speedometer_image {
+  right: -10px;
+}
+
+
+}
+
+@media (min-width: 1200px) and (max-width: 1300px) {
+  .tokenomic_graph .total_value{
+    top: 105px !important;
+    padding: 40px 45px !important;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .analysis_buy {
+    right: 70px;
+  }
+
+  .tokenomic_graph .total_value{
+
+    top: 115px;
+    padding: 50px 55px;
+  }
+
+  .analysis_strong_buy{
+    right: 10px;
+  }
+
+  .analysis_sell {
+    left: 70px;
+  }
+
+  .analysis_strong_sell {
+    left: 10px;
+  }
+
+  .analysis_summary .speedometer {
+    margin-top: -15px;
+    position: relative;
+    left: -18px;
+    z-index: -1;
+}
+
+.analysis_values .summary_bullish {
+  margin-bottom: 5px;
+}
+}
+
+
+.token_details_tabs_row ul {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+
 
 .progress{
   height: 12px;

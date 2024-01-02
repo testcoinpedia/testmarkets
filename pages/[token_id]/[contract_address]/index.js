@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { smallExponentialPrice, API_BASE_URL,config,graphql_headers, graphqlApiURL, separator, graphqlApiKEY, speedoMeterValues, market_coinpedia_url, roundNumericValue,  indicator_time_series} from '../../../components/constants'
+import { IMAGE_BASE_URL, smallExponentialPrice, API_BASE_URL,config,graphql_headers, graphqlApiURL, separator, graphqlApiKEY, speedoMeterValues, market_coinpedia_url, roundNumericValue,  indicator_time_series} from '../../../components/constants'
 import { tokenBasic, otherDetails, getVolume24h, getHighLow24h, getNetworkId } from '../../../components/search_contract_address/live_price'
 import Search_token from '../../../components/search_token'
 import { ethers } from 'ethers'
@@ -59,7 +59,9 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
   const [percentage_change_24h, set_percentage_change_24h] = useState(false)
   const [contract_copy_status, set_contract_copy_status] = useState("")
   const [share_modal_status, set_share_modal_status] = useState(false)
-  
+  const [image_base_url] = useState(
+    IMAGE_BASE_URL + "/markets/cryptocurrencies/"
+  );
   
   const [exchangelistnew, set_exchange_list_new] = useState([])
   const [live_price, set_live_price] = useState(tokenData.live_price ? tokenData.live_price:"")
@@ -161,7 +163,7 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
   const [ma_crossovers_bullish, set_ma_crossovers_bullish] = useState("")
   const [ma_crossovers_bearish, set_ma_crossovers_bearish] = useState("")
   const [interval_type, set_interval_type] = useState(6)
-  
+  const [converter_object, set_converter_object] = useState("")
   
 
   const bullishCount = sma_list.filter(item => live_price > item.sma_value ).length;
@@ -250,7 +252,6 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
 
  const getTokenDetails = async () =>
  {  
- 
     await set_main_tab("")
     await set_main_tab(1)
     //await getexchangedata(address)
@@ -267,7 +268,6 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
 
     await updateContractDetails({volume_24h})
 
-    
 
     //getMarketCap(address)
     //await getTokenTransactions(address)
@@ -317,9 +317,6 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
         }
       }
     }
-
-    
-    
  }
 
 
@@ -383,34 +380,17 @@ const [atl_price_date, set_atl_price_date] = useState(
 );
 
 
-const [dex_circulating_supply, set_dex_circulating_supply] = useState(0);
-const [count_liquidity_pools, set_count_liquidity_pools] = useState(0);
+const [dex_circulating_supply, set_dex_circulating_supply] = useState(0)
+const [count_liquidity_pools, set_count_liquidity_pools] = useState(0)
 
-const [fetch_data_type, set_fetch_data_type] = useState(
-  data.fetch_data_type ? data.fetch_data_type : 0
-);
-const [modal_data, setModalData] = useState({icon: "", title: "",content: "",});
+const [fetch_data_type, set_fetch_data_type] = useState(data.fetch_data_type ? data.fetch_data_type : 0)
+const [modal_data, setModalData] = useState({icon: "", title: "",content: ""})
 
-
-
-
-
-
-
-
-
-
-//  usd converter
-
-
-
-
-
-
-const tokenConverter = async (pass_value, pass_type, pass_pair_value) => 
+const tokenConverter = async (pass_value, pass_type, pass_pair_value, pass_converter_object) => 
 {
   console.log("tokenConverter",pass_pair_value)
   console.log("tokenConverter1",pass_value)
+  await set_converter_object(pass_converter_object)
   await set_converter_pair_currency(pass_pair_value)
   if(pass_value > 0) 
   {
@@ -420,7 +400,6 @@ const tokenConverter = async (pass_value, pass_type, pass_pair_value) =>
       if(((live_price*pass_value)/pass_pair_value) >= 0.1) 
       {
         await set_usd_converter_value(((live_price * pass_value)/ pass_pair_value).toFixed(2))
-
       }
       else 
       {
@@ -464,8 +443,8 @@ const tokenOtherDetails = async (pass_type) =>
      
       if(response.data.message.converter_currencies) 
       {
-        set_converter_pair_currencies( response.data.message.converter_currencies );
-        
+        set_converter_pair_currencies(response.data.message.converter_currencies);
+        set_converter_object(response.data.message.converter_currencies[0])
         if(response.data.message.moving_averages_crossovers)
         {
           if(response.data.message.moving_averages_crossovers.data)
@@ -2264,9 +2243,9 @@ const toggleDropdown = () => {
                 <div className="col-md-12">
                   <div className="coin_details">
                     <div className="row">
-                    <div className="col-md-4 order-md-1 order-2">
+                    <div className="col-lg-6 col-xl-4 col-md-6 order-md-1 order-2">
                     <div className="row">
-                          <div className="col-md-7 col-6">
+                          <div className="col-md-5 col-lg-5 col-xl-6 col-6">
                             <div className="token_details_circular_graph">
                               <div class="media">
                                 <img src="/assets/img/circulating_supply.svg" alt="Circulating Supply" className="dots" />
@@ -2409,13 +2388,13 @@ const toggleDropdown = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="col-md-5 col-6">
+                          <div className="col-md-7 col-lg-7 col-xl-6 col-6">
                             <div id="chart" className="quick_values_graph">
                               <DynamicChartComponent
                                 options={chartData.options}
                                 series={chartData.series}
                                 type="radialBar"
-                                height={212}
+                                height={205}
                               />
                             </div>
                           </div>
@@ -2427,7 +2406,7 @@ const toggleDropdown = () => {
 
                     </div>
 
-                    <div className="col-md-4 order-md-2 order-1">
+                    <div className="col-lg-6 col-xl-4 col-md-6 order-md-2 order-1">
                         <div className="speedometer_summary">
                           <h5 className='sub_title_main'>Indicator Sentiment:</h5>
                           <div className="row">
@@ -2669,36 +2648,73 @@ const toggleDropdown = () => {
 
                       
 
-                      <div className="col-md-4 order-md-3 order-3">
+                      <div className="col-lg-6 col-xl-4 col-md-6 order-md-3 order-3">
                       <Dex_overview reqData={{ contract_address: address, contract_type:tokenData.contract_type, token_symbol: tokenData.symbol, volume: 1232 }} />
                       <div className='row'>
                             <div className='col-12'>
-                              <h5 className="sub_title_main mt-2">{tokenData.symbol} to USD Converter</h5>
+                              <h5 className="sub_title_main mt-2">{tokenData.symbol} to {converter_object.currency_name} Converter</h5>
                               <div className="usd_converter">
                                 <img className="interchamge_icon" src="/assets/img/interchange_icon.svg" alt="Exchange" />
 
-
                               <div className="input-group">
                                 <div className="input-group-prepend converter-label">
-                                  <span className="input-group-text"><img src="/assets/img/uni_icon.svg" alt="UNI" /> &nbsp;{tokenData.symbol}</span>
+                                  <span className="input-group-text"><img src={"/assets/img/"+(tokenData.contract_type == 1 ? "default.png": "binance.svg")} alt="UNI" /> &nbsp;{tokenData.symbol}</span>
                                 </div>
-                                <input type="number" value={token_converter_value} onChange={(e) => tokenConverter(e.target.value, 1, converter_pair_currency)} step="0.000001" min="0.000001" className="form-control converter-input" placeholder="0" />
+                                <input type="number" value={token_converter_value} onChange={(e) => tokenConverter(e.target.value, 1, converter_pair_currency, converter_object)} step="0.000001" min="0.000001" className="form-control converter-input" placeholder="0" />
                                
                               </div>
                               <div className="input-group">
                               <div className="input-group-prepend converter-label">
                                   <span className="input-group-text converter-second-span">
-                                  <img src="/assets/img/uni_icon.svg" alt="UNI" /> &nbsp;
-                                    <select className="form-no-border" onChange={(e) => tokenConverter(token_converter_value, 1, e.target.value)}>
-                                      {
-                                         converter_pair_currencies.map((item, i) =>
-                                          item.currency_name != data.symbol ?
-                                          <option value={item.currency_value} selected={converter_pair_currency == item.currency_value}>{item.currency_name}</option>
+                                  <div className="dropdown">
+                                      <button className="convertor_dropdown dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {
+                                          converter_object ?
+                                          <>
+                                          {
+                                            converter_object.currency_type == 1 ?
+                                            <img src={"/assets/img/flags/"+converter_object.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                            :
+                                            converter_object.currency_type == 2 ?
+                                            <img src={image_base_url+converter_object.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                            :
+                                            converter_object.currency_type == 3 ?
+                                            <img src={"/assets/img/flags/"+converter_object.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                            :
+                                            ""
+                                          } {converter_object.currency_name}
+                                          </>
                                           :
                                           ""
-                                        )
-                                      }
-                                    </select>
+                                        }
+                                        
+                                      </button>
+                                      <div className={`convertor_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`} aria-labelledby="volumeDropdown">
+                                        {
+                                            converter_pair_currencies.map((item, i) =>
+                                              item.currency_name != data.symbol ? 
+                                              <a key={i} className={`dropdown-item ${converter_pair_currency === item.currency_value ? 'active' : ''}`} onClick={()=>tokenConverter(token_converter_value, 1, item.currency_value , item)}>
+                                                <span>
+                                                  {
+                                                    item.currency_type == 1 ?
+                                                    <img src={"/assets/img/flags/"+item.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                                    :
+                                                    item.currency_type == 2 ?
+                                                    <img src={image_base_url+item.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                                    :
+                                                    item.currency_type == 3 ?
+                                                    <img src={"/assets/img/flags/"+item.currency_image} alt="Currency Image" className="converter-currency-image" />
+                                                    :
+                                                    ""
+                                                  } {item.currency_name}
+                                                </span>
+                                              </a>
+                                              : 
+                                              ""
+                                            )
+                                        }     
+                                      </div>
+                                    </div>
                                   </span>
                                 </div>
                                 <input type="number" value={usd_converter_value} onChange={(e) => tokenConverter(e.target.value, 2, converter_pair_currency)} step="0.000001" min="0.000001" className="form-control converter-input" placeholder="0" />
@@ -2716,7 +2732,7 @@ const toggleDropdown = () => {
               
               <div className="market_token_tabs ">
                 <div className="row">
-                  <div className="col-md-8 col-sm-12 col-12">
+                  <div className="col-md-12 col-sm-12 col-12 col-lg-12 col-xl-8" >
                     <div className='token_details_tabs_row'>
                       <ul className="nav nav-tabs ">
                         <li className="nav-item">
@@ -3855,7 +3871,7 @@ const toggleDropdown = () => {
 
          </div>
 
-                  <div className="col-md-12 col-sm-12 col-12 col-lg-4 col-xl-4">
+                  <div className="col-md-12 col-sm-12 col-12 col-lg-12 col-xl-4">
                       <div className='token_details_tabs_row '>
                         <ul className="nav nav-tabs token_events_tabs">
                             <li className="nav-item" >

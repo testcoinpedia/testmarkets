@@ -16,7 +16,9 @@ const AnimatedNumbers = dynamic(() => import("react-animated-numbers"), {
 export default function MyFunction({reqData}) 
 {
     const { token_id, contracts_array, token_symbol, token_price, volume } = reqData
+   
     const [volume_active_id, set_volume_active_id] = useState(4)
+    const [volume_active_name, set_volume_active_name] = useState("24h")
     const [dex_24h_volume, set_dex_24h_volume] = useState("")
     const [sell_txns, set_sell_txns] = useState("")
     const [total_txns, set_total_txns] = useState("")
@@ -27,12 +29,13 @@ export default function MyFunction({reqData})
     
     useEffect(() => 
     {
-        getDexVolume(volume_active_id)
+        getDexVolume(volume_active_id, volume_active_name)
     },  [sort_type])
 
-    const getDexVolume = async (pass_id) => 
+    const getDexVolume = async (pass_id, pass_name) => 
     {
         await set_volume_active_id(pass_id)
+        await set_volume_active_name(pass_name)
         await set_dex_volume("")
         // await set_sell_txns("")
         // await set_total_txns("")
@@ -121,11 +124,11 @@ export default function MyFunction({reqData})
                        <div className='dex_filter'>
                        <div className="dropdown">
                 <button className="dex_filter_button dropdown-toggle dex_block_bg" type="button" id="volumeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    24 h <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
+                    {volume_active_name} <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
                 </button>
                 <div className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`} aria-labelledby="volumeDropdown">
                     {volume_time_list.map((item, i) => (
-                        <a key={item._id} className="dropdown-item" onClick={() => getDexVolume(item._id)}>
+                        <a key={item._id} className="dropdown-item" onClick={() => getDexVolume(item._id, item.name)}>
                             {item.name}
                         </a>
                     ))}

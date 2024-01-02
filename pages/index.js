@@ -497,7 +497,7 @@ return (
                 {/* Live cry­pto­currency prices
                 <p>Global market cap today: $ 1.38 trillion high value <img src="/assets/img/markets/high-value.png" alt="high value"/><span className="color-green">10.02%</span> in 24 hrs.</p> */}
                   
-                  <h1 className="page_title">Top 100 Cryptocurrencies</h1>
+                  <h1 className="page_title">Good Morning,</h1>
                   {
                     total_marketcap ? 
                     <p>Total market cap today is {shortConvertCurrency(total_marketcap)} with {
@@ -782,10 +782,10 @@ return (
                     
                         <div className="col-md-6 col-6 col-sm-6">
                           <div className="input-group search_filter">
-                            <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token" />
                             <div className="input-group-prepend ">
                               <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                             </div>
+                            <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Coin/Token" />
                           </div> 
                         </div>
 

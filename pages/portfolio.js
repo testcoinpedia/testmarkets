@@ -738,7 +738,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     var polygon = 0
     var fantom = 0
     var avalanche = 0
-    var klaytn= 0
+   
     var obj2 = []
     var total_24h_change = 0
     for (var prop in tokens_final_array) {
@@ -768,9 +768,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
           else if (inner_run.network == 43114) {
             avalanche += !isNaN(parseFloat(inner_run.balance) * parseFloat(inner_run.price)) ? parseFloat(inner_run.balance) * parseFloat(inner_run.price) : 0
           }
-          else if (inner_run.network == 8217) {
-            klaytn += !isNaN(parseFloat(inner_run.balance) * parseFloat(inner_run.price)) ? parseFloat(inner_run.balance) * parseFloat(inner_run.price) : 0
-          }
+         
         }
       }
     }
@@ -787,7 +785,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     // }
 
 
-    const network_balances_list = await cryptoNetworksList({ ethereum, bsc, polygon, fantom, avalanche, klaytn })
+    const network_balances_list = await cryptoNetworksList({ ethereum, bsc, polygon, fantom, avalanche })
     await set_crypto_networks_list(network_balances_list)
     //console.log("network_balances_list", network_balances_list)
 
@@ -816,7 +814,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   const setNetWorth = async (balance_list, balance, server_present_time) =>
   { 
     console.log("total_balances", balance)
-    console.log("server_present_time",server_present_time)
+    console.log("balance_list",balance_list)
     const format_server_present_time = await moment(server_present_time).format("YYYY-MM-DDTHH:mm:ss")+".000Z"
     await set_loader_status(false)
     var date_array_1d = []
@@ -923,12 +921,17 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
               sumTwo += await parseFloat(innerRun.sparkline_in_7d[run].price)*parseFloat(innerRun.balance)
               counter++
             }
-            else if((innerRun.price && innerRun.balance))
-            { 
-              sumTwo += await parseFloat(innerRun.price)*parseFloat(innerRun.balance)
-              counter++
-            }
+            // else if((innerRun.price && innerRun.balance))
+            // { 
+            //   sumTwo += await parseFloat(innerRun.price)*parseFloat(innerRun.balance)
+            //   counter++
+            // }
+            console.log("loop Price", innerRun.sparkline_in_7d[run])
+            console.log("balance", innerRun.balance)
+            console.log("price", innerRun.price)
+           
           }
+          console.log("run", run)
 
           if(run == 0)
           {
@@ -1003,8 +1006,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     const avalanche_query = graphqlBasicTokenData(pass_address, "avalanche")
     const avalanche_opts = fetchAPIQuery(avalanche_query)
 
-    const klaytn_query=graphqlBasicTokenData(pass_address,"klaytn")
-    const klaytn_opts = fetchAPIQuery(klaytn_query)
+ 
 
     const bal_req = await Promise.all([
       fetch(graphqlApiURL, ethereum_opts),
@@ -1012,7 +1014,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       fetch(graphqlApiURL, polygon_opts),
       fetch(graphqlApiURL, fantom_opts),
       fetch(graphqlApiURL, avalanche_opts),
-      fetch(graphqlApiURL,klaytn_opts)
+    
     ])
    
     const balance_array = []
@@ -1117,10 +1119,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     {
         return 13  //Fantom
     }
-    else if(pass_network == 8217)
-    { 
-        return 20 //klaytn
-    }
+  
     else if(pass_network == 43114)
     {
         return 15  //Avalanche
@@ -1222,7 +1221,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
               const index2 = await p_history_7d.findIndex(item => item._id === cp_single_data._id)
               if(index2 != -1)
               {
-                inner_object['sparkline_in_7d'] = p_history_7d[index].data
+                inner_object['sparkline_in_7d'] = p_history_7d[index2].data
               }
               else
               {
@@ -1243,6 +1242,8 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
           }
         }
       }
+
+      console.log("arrange_result", arrange_result)
       return await { network_balance, arrange_result, not_fetching_data }
    }
 
@@ -1449,7 +1450,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       const pi_chart_value = await [total_ethereum_value, total_bnb_value, total_polygon_value, total_fantom_value, total_avalanche_value]
       // console.log("pi_chart_value", pi_chart_value)
       set_pi_chart_values(pi_chart_value)
-      set_pi_chart_names(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche','klaytn'])
+      set_pi_chart_names(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche'])
     }
   }
 

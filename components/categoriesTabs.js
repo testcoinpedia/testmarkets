@@ -61,7 +61,7 @@ return (
                     </li>
                     :
                     <li className="tabs_watchlist">
-                      <a onClick={()=>loginModalStatus(1)}><img src="/assets/img/watchlist_filled.svg" alt="Watchlist" width={17} height={17} /> Watchlist</a>
+                      <a onClick={()=>loginModalStatus(1)}> Watchlist</a>
                     </li>
                   }
 
@@ -69,10 +69,10 @@ return (
                     <Link href={market_coinpedia_url+"portfolio"}  className={"nav-item nav-link categories__item "+(tab_status_connections === 12 ? "active_category":"")}> Portfolio</Link>
                   </li>
 
-
+{/* 
                   <li className="tabs_partition">
 
-                  </li>
+                  </li> */}
 
                   <li>
                     <Link  href={"/"} data-toggle="tab"  className={"nav-item nav-link categories__item "+(tab_status_connections === 1 ? "active_category":"")} onClick={()=>set_tab_status_connections(1)}>
