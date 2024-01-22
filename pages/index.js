@@ -1,9 +1,10 @@
+
 import React, {useEffect, useState, useRef} from 'react'
 import Link from 'next/link' 
 import cookie from "cookie"
 import ReactPaginate from 'react-paginate'  
 import { getLaunchpadType } from '../config/helper' 
-import { API_BASE_URL, roundNumericValue, config, separator, getGoodWishOfDay, IMAGE_BASE_URL, market_coinpedia_url, strLenTrim, convertvalue, Logout} from '../components/constants' 
+import { API_BASE_URL, roundNumericValue, config, separator, app_coinpedia_url, IMAGE_BASE_URL, market_coinpedia_url, strLenTrim, convertvalue, Logout} from '../components/constants' 
 import Axios from 'axios'  
 import Head from 'next/head'
 import { useSelector, useDispatch } from 'react-redux'
@@ -17,7 +18,6 @@ import LoginModal from '../components/layouts/auth/loginModal'
 import Popupmodal from '../components/popupmodal'
 // import Select from 'react-select'
 import { useRouter } from 'next/navigation'
-// import Slider from 'react-slick';
 
 export default function MarketsIndex({page, userAgent, list_data, list_count, per_page_limit, final_count, pages_count, first_count, modalprops, unsubscribe, code})
 { 
@@ -71,9 +71,6 @@ export default function MarketsIndex({page, userAgent, list_data, list_count, pe
     const [request_config, set_request_config] = useState(config(userAgent.user_token ? userAgent.user_token : ""))
     const [action_row_id, set_action_row_id] = useState("")
 
-    const [wish_of_the_day] = useState(getGoodWishOfDay())
-    
-
     const convertCurrency = (token_price) =>
     {
       if(token_price)
@@ -118,8 +115,6 @@ export default function MarketsIndex({page, userAgent, list_data, list_count, pe
       {
         actionAfterMenuLogin(userData)
       }
-
-      
     }, [userData.token]);
 
     const actionAfterMenuLogin = async (pass_data) =>
@@ -249,7 +244,7 @@ export default function MarketsIndex({page, userAgent, list_data, list_count, pe
           set_launchpads_list(res.data.message.launchpads_list)
           set_gainers_category_list(res.data.message.gainers_category_list)
           
-          // console.log("MarketsOverview", res.data)
+          console.log("MarketsOverview", res.data)
         }
       })
     }
@@ -324,7 +319,7 @@ const searchTags = (param_value) =>
         {
             if(res.data.status === true)
             {    
-                // console.log("res",res) 
+                console.log("res",res) 
                 set_loader_status(false)
                 set_tokens_list(res.data.message)
                 setPageCount(Math.ceil(res.data.count/per_page_count))
@@ -418,40 +413,6 @@ const searchTags = (param_value) =>
       set_category_name("")
     } 
 
-    const settings = {
-      dots: true,
-      speed: 500,
-      slidesToShow: 3, // Number of items to show at a time
-      slidesToScroll: 1,
-      infinite: false,
-      responsive: [
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 1,
-            infinite: false,
-            dots: true,
-          },
-        },
-        {
-          breakpoint: 991,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 1,
-            infinite: false,
-            dots: true,
-          },
-        },
-        {
-          breakpoint: 767,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1,
-          },
-        },
-      ],
-    };
 
     
  
@@ -530,14 +491,13 @@ return (
         {/* ........... */}
         <div className="new_page_title_block">
           <div className="container">
-            <div className='col-md-12'>
+            <div className="col-md-12">
               <div className="row market_insights ">
                 <div className="col-md-6 col-lg-6 ">
                 {/* Live cry­pto­currency prices
                 <p>Global market cap today: $ 1.38 trillion high value <img src="/assets/img/markets/high-value.png" alt="high value"/><span className="color-green">10.02%</span> in 24 hrs.</p> */}
                   
-
-                  <h1 className="page_title" style={{textTransform: "capitalize"}}>{wish_of_the_day}, {userData.full_name ? userData.full_name:"Crypto"}</h1>
+                  <h1 className="page_title">Good Morning,</h1>
                   {
                     total_marketcap ? 
                     <p>Total market cap today is {shortConvertCurrency(total_marketcap)} with {
@@ -557,62 +517,65 @@ return (
                 </div>
               </div>
 
-              <div className='markets_overview_mobile'>
-                <Slider {...settings}>
-                    <div className='market-overview'>
-                      <h5 className='overview-title'>
-                        <img src="/assets/img/market_index.svg" className="market_overview_icon" /> 
-                        Markets Index
-                        
-                        <Link href="/categories"><img src="/assets/img/next-dark.svg"  className="media-object arrow-img market-overview-next " /></Link>  
+            <div className='markets_overview_mobile'>
+              <div className="row">
+                <div className="col-md-4 mb-2">
+                  <div className='market-overview'>
+                    <h5 className='overview-title'>
+                      <img src="/assets/img/market_index.svg" className="market_overview_icon" /> 
+                      Markets Index
+                      
+                      <Link href="/categories"><img src="/assets/img/next-dark.svg"  className="media-object arrow-img market-overview-next " /></Link>  
+                      {
+                        total_categories ?
+                        <Link href="/categories"><span className='category'>{total_categories} Categories</span></Link>
+                        :
+                        ""
+                      }
+                    </h5>
+                  
+                    <table class="market_overview_table">
+                      <tbody>
                         {
-                          total_categories ?
-                          <Link href="/categories"><span className='category'>{total_categories} Categories</span></Link>
+                          gainers_category_list.length ?
+                          gainers_category_list.map((item, i) =>
+                            <tr>
+                              <td>
+                                <div className="media">
+                                  <div className="media-left align-self-center mr-4">
+                                    <b>{++i}</b>
+                                  </div>
+                                  <div className="media-body align-self-center">
+                                    <h6 className="media-heading token-name">{strLenTrim(item.category_name, 20)}</h6>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div className="media-right ">
+                                  <h6 className="media-heading token-name"><span className='category-percent'>{(((item.total_gainers*100)/item.total_tokens)).toFixed(0)}%</span></h6>
+                                </div>
+                              </td>
+                              <td>
+                                <div className="media-right ">
+                                  <h6 className="media-heading token-name">Gainers</h6>
+                                </div>
+                              </td>
+                            </tr>
+                            // <li>
+                            //   <Link href={"/category/"+item.category_id}> 
+                              
+                            //   </Link>
+                            // </li> 
+                          )
                           :
                           ""
                         }
-                      </h5>
-                    
-                      <table class="market_overview_table">
-                        <tbody>
-                          {
-                            gainers_category_list.length ?
-                            gainers_category_list.map((item, i) =>
-                              <tr>
-                                <td>
-                                  <div className="media">
-                                    <div className="media-left align-self-center mr-4">
-                                      <b>{++i}</b>
-                                    </div>
-                                    <div className="media-body align-self-center">
-                                      <h6 className="media-heading token-name"><Link href={"/category/"+item.category_id}>{strLenTrim(item.category_name, 20)}</Link></h6>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="media-right ">
-                                    <h6 className="media-heading token-name"><span className='category-percent'>{(((item.total_gainers*100)/item.total_tokens)).toFixed(0)}%</span></h6>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="media-right ">
-                                    <h6 className="media-heading token-name">Gainers</h6>
-                                  </div>
-                                </td>
-                              </tr>
-                              // <li>
-                              //   <Link href={"/category/"+item.category_id}> 
-                                
-                              //   </Link>
-                              // </li> 
-                            )
-                            :
-                            ""
-                          }
-                        </tbody>
-                      </table>
-                    </div>        
-                  
+                      </tbody>
+                    </table>
+                  </div>        
+                </div>
+                
+                <div className="col-md-4  mb-2">
                     <div className='market-overview '>
                       
                       <h5 className='overview-title'>
@@ -668,79 +631,81 @@ return (
                           } 
                         </tbody>
                       </table>
+                       
+                    </div>
+                </div>
+                <div className="col-md-4  mb-2">
+                  <div className='market-overview'>
+                    <h5 className='overview-title'>
+                      <img src="/assets/img/launchpads.svg" className="market_overview_icon" /> 
+                      Launchpads
+                      <Link href="/launchpad"><img src="/assets/img/next-dark.svg"  className="media-object arrow-img market-overview-next " /></Link>
+                      {
+                        active_launchpads ?
+                        <Link href="/launchpad"><span className='category'>{active_launchpads} Live</span></Link>
+                        :
+                        ""
+                      }
                       
-                    </div>
-                  
-                    <div className='market-overview'>
-                      <h5 className='overview-title'>
-                        <img src="/assets/img/launchpads.svg" className="market_overview_icon" /> 
-                        Launchpads
-                        <Link href="/launchpad"><img src="/assets/img/next-dark.svg"  className="media-object arrow-img market-overview-next " /></Link>
-                        {
-                          active_launchpads ?
-                          <Link href="/launchpad"><span className='category'>{active_launchpads} Live</span></Link>
-                          :
-                          ""
-                        }
-                        
-                        {
-                          upcoming_launchpads ?
-                          <Link href="/launchpad/upcoming"><span className='category'>{upcoming_launchpads} Upcoming</span></Link>
-                          :
-                          ""
-                        }
+                      {
+                        upcoming_launchpads ?
+                        <Link href="/launchpad/upcoming"><span className='category'>{upcoming_launchpads} Upcoming</span></Link>
+                        :
+                        ""
+                      }
 
-                        
-                      </h5>  
-                      <table class="market_overview_table">
-                        <tbody>
-                          {
-                            launchpads_list.length ?
-                            launchpads_list.map((item, i) =>
-                            <tr>
-                              <td>
-                                <Link href={"/"+item.token_id+"?tab=airdrop&tab_id="+item._id}>
-                                  <div className="media">
-                                    <div className="media-left align-self-center">
-                                      <img src={(item.token_image ? image_base_url+item.token_image: item.coinmarketcap_id ? cmc_image_base_url+item.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object token-img" />
-                                    </div>
-                                    <div className="media-body align-self-center">
-                                      <h6 className="media-heading token-name">{strLenTrim(item.token_name, 20)}</h6>
-                                    </div>
+                       
+                    </h5>  
+                    <table class="market_overview_table">
+                      <tbody>
+                        {
+                          launchpads_list.length ?
+                          launchpads_list.map((item, i) =>
+                          <tr>
+                            <td>
+                              <Link href={"/"+item.token_id+"?tab=airdrop&tab_id="+item._id}>
+                                <div className="media">
+                                  <div className="media-left align-self-center">
+                                    <img src={(item.token_image ? image_base_url+item.token_image: item.coinmarketcap_id ? cmc_image_base_url+item.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object token-img" />
                                   </div>
-                                </Link>  
-                              </td>
-                              <td>
-                                <div className="media-right ">
-                                  <h6 className="media-heading token-name">{getLaunchpadType(item.launchpad_type)}
-                                  {/* <img src="/assets/img/right-arrow.png" onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object arrow-img" /> */}
-                                  
-                                  </h6>
+                                  <div className="media-body align-self-center">
+                                    <h6 className="media-heading token-name">{strLenTrim(item.token_name, 20)}</h6>
+                                  </div>
                                 </div>
-                              </td>
-                            </tr>
-                            // <ul className="airdrops-list">
-                            //     <li>
-                            //         <Link href={"/"+item.token_id+"?tab=ico&tab_id="+item._id}>
-                                      
-                            //         </Link>
-
+                              </Link>  
+                            </td>
+                            <td>
+                              <div className="media-right ">
+                                <h6 className="media-heading token-name">{getLaunchpadType(item.launchpad_type)}
+                                {/* <img src="/assets/img/right-arrow.png" onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={item.token_name}  className="media-object arrow-img" /> */}
+                                
+                                </h6>
+                              </div>
+                            </td>
+                          </tr>
+                          // <ul className="airdrops-list">
+                          //     <li>
+                          //         <Link href={"/"+item.token_id+"?tab=ico&tab_id="+item._id}>
                                     
-                            //     </li>
-                            // </ul>
-                            )
-                            :
-                            ""
-                          } 
-                        </tbody>
-                      </table>
-                    </div>
-                </Slider>
+                          //         </Link>
+
+                                  
+                          //     </li>
+                          // </ul>
+                          )
+                          :
+                          ""
+                        } 
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
               </div>
 
               <div>
                 <div className="all-categories-list ">
-                  <CategoriesTab active_tab={1} user_token={user_token}/>  
+                  <CategoriesTab active_tab={1} user_token={user_token}/> 
                 </div>
               </div>
             </div>
@@ -931,13 +896,13 @@ return (
                                     </Link>
                                   </td> 
                                   
-                                  <td className='market_list_price'> 
+                                  <td > 
                                     <Link href={"/"+e.token_id}>
-                                      
+                                      <div className="block_price">
                                         {e.price ? 
                                         <>
-                                        <span className="block_price"> {convertCurrency(e.price)}</span>
-                                       
+                                        {convertCurrency(e.price)}
+                                        <br/>
                                         {
                                           is_client ? 
                                           moment(e.updated_on).fromNow()
@@ -949,7 +914,7 @@ return (
                                         "-"
                                         }
                                         
-                                
+                                      </div>
                                     </Link>
                                   </td>
                                 
@@ -1097,7 +1062,7 @@ return (
                                   forcePage={currentPage}
                                   onClick={(clickEvent) => 
                                   {
-                                    // console.log("clickEvent", clickEvent)
+                                    console.log("clickEvent", clickEvent)
                                     if(clickEvent.nextSelectedPage)
                                     {
                                       if(clickEvent.nextSelectedPage > 0)
