@@ -23,9 +23,10 @@ export default function FeedFunction({networks, addresses})
     const tooltip1 = <Tooltip arrowOffsetTop={20} id="button-tooltip">Copied!</Tooltip>;
     const tooltip2 = <Tooltip id="button-tooltip">Copied!</Tooltip>;
     const tooltip3 = <Tooltip id="button-tooltip">Copied!</Tooltip>;  
-    console.log("networks", networks)
-    console.log("addresses", addresses)
+    // console.log("networks", networks)
+    // console.log("addresses", addresses)
     const [approvals_list, set_approvals_list] = useState([])
+    console.log("approvals_list",approvals_list)
     const [loader_status, set_loader_status] = useState(true)
     const [copy_hash_address, set_copy_hash_address]=useState("")
     const [protocol_type, set_protocol_type]=useState(protocol_types[0])
@@ -50,7 +51,7 @@ export default function FeedFunction({networks, addresses})
 
 
     const getTokenDetail = async (e) => {
-        console.log("e",e)
+        // console.log("e",e)
         await set_token_detail("")
         await set_token_details_modal_status(true)
         await set_token_detail(e)
@@ -64,6 +65,7 @@ export default function FeedFunction({networks, addresses})
     const getTokenApprovals = async (pass_protocol_type) =>
     {       
         const network_id = pass_protocol_type.network_id
+        console.log("network_id",network_id)
         const protocolType = pass_protocol_type.protocolType
 
         set_loader_status(true) 
@@ -75,19 +77,19 @@ export default function FeedFunction({networks, addresses})
             for(let run of addresses)
             {
                 const res = await Axios.get('/api/portfolio/approval_checker/?wallet_address='+run+"&network="+network_id+"&protocolType="+protocolType)
-                console.log("res",res)
+                // console.log("res",res)
                 if(res.data.status)
                 {
                     const authorizedList = await res.data.message ? res.data.message:[]
                     await authorizedList.forEach(function(e){
                         e["wallet_address"] = run
                     });
-                    console.log("authorizedList", authorizedList)
+                    // console.log("authorizedList", authorizedList)
                     
                     final_result = await [...final_result,...authorizedList]
                   
                 }
-                console.log("final_result", final_result)
+                // console.log("final_result", final_result)
             }
             set_loader_status(false) 
 
@@ -115,7 +117,7 @@ export default function FeedFunction({networks, addresses})
                     contract_name = await arrayWithoutD[0].contract_name 
                 }
 
-                console.log("asdf", arrayWithoutD)
+                // console.log("asdf", arrayWithoutD)
                 await cal_result.push({
                     address: run.address,
                     approvedAmount: run.approvedAmount,
@@ -133,11 +135,13 @@ export default function FeedFunction({networks, addresses})
               }
 
               await set_approvals_list(cal_result)
-              console.log("cal_result", cal_result)
+            //   console.log("cal_result", cal_result)
 
             }
             else
             {
+                // set_loader_status(true) 
+
                 await set_approvals_list([])
             }
                 
@@ -167,7 +171,7 @@ export default function FeedFunction({networks, addresses})
         const res = await Axios.post(API_BASE_URL + "markets/portfolio/approval_spenders", {addresses:addresses}, config(""))
         if(res.data.status) 
         {
-            console.log("res",res)
+            // console.log("res",res)
             return await res.data.message
         }
         else
@@ -324,6 +328,8 @@ export default function FeedFunction({networks, addresses})
                         </td> */}
                        
                         </tr>
+                        
+                    
                         )
                         
                         }
@@ -334,9 +340,16 @@ export default function FeedFunction({networks, addresses})
                                 Sorry, No related data found.
                             </td>
                         </tr>
+                        // (transactionLoader(10))
                         }
                         </>
                     :
+                    // (transactionLoader(10))
+                    // <tr key="1">
+                    //         <td className="text-center" colSpan="6">
+                    //             Sorry, No related data found.
+                    //         </td>
+                    //     </tr>
                     (transactionLoader(10))
                     }
                         

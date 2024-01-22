@@ -49,7 +49,34 @@ export const protocol_types = [
     network_name:"BSC",
     network_image:"bsc.svg",
     network_url: "https://bscscan.com/tx/"
-  }
+  },
+  {
+    _id:5,
+    type_name:"CRC-20",
+    network_id:"cronos",
+    protocolType:"token_20",
+    network_name:"Cronos",
+    network_image:"cronos.svg",
+    network_url: "https://cronosan.com/tx/"
+  },
+  {
+   _id:6,
+   type_name:"CRC-721",
+   network_id:"cronos",
+    protocolType:"token_721",
+    network_name:"Cronos",
+    network_image:"cronos.svg",
+    network_url: "https://cronosan.com/tx/"
+  },
+  {
+    _id:7,
+    type_name:"CRC-1155",
+    network_id:"cronos",
+     protocolType:"token_1155",
+     network_name:"Cronos",
+     network_image:"cronos.svg",
+     network_url: "https://cronosan.com/tx/"
+   }
 ]
 
 export const crypto_networks_list = [
@@ -88,11 +115,25 @@ export const crypto_networks_list = [
     network_image:"avax.svg",
     active_status:1
   },
+  // {
+  //   _id:7,
+  //   network_id:1284,
+  //   network_name:"Moonbeam",
+  //   network_image:"moonbeam.svg",
+  //   active_status:1
+  // },
+  // {
+  //   _id:8,
+  //   network_id:1284,
+  //   network_name:"Klaytn",
+  //   network_image:"klaytn.svg",
+  //   active_status:1
+  // },
   {
-    _id:7,
-    network_id:8217,
-    network_name:"Klaytn",
-    network_image:"arbitrum.svg",
+    _id:9,
+    network_id:338,
+    network_name:"Cronos",
+    network_image:"cronos.svg",
     active_status:1
   }
   // {
@@ -110,7 +151,7 @@ export const crypto_networks_list = [
   // }
 ]
 
-export const cryptoNetworksList = ({ethereum, bsc, polygon, fantom, avalanche}) =>
+export const cryptoNetworksList = ({ethereum, bsc, polygon, fantom, avalanche, cronos}) =>
 {
   return [
     {
@@ -151,6 +192,30 @@ export const cryptoNetworksList = ({ethereum, bsc, polygon, fantom, avalanche}) 
       network_name:"Avalanche",
       network_image:"avax.svg",
       network_balance:avalanche,
+      active_status:1
+    },
+    // {
+    //   _id:7,
+    //   network_id:1284,
+    //   network_name:"Moonbeam",
+    //   network_image:"moonbeam.svg",
+    //   network_balance:moonbeam,
+    //   active_status:1
+    // },
+    // {
+    //   _id:8,
+    //   network_id:8217,
+    //   network_name:"Klaytn",
+    //   network_image:"klaytn.svg",
+    //   network_balance:klaytn,
+    //   active_status:1
+    // },
+    {
+      _id:9,
+      network_id:338,
+      network_name:"Cronos",
+      network_image:"cronos.svg",
+      network_balance:cronos,
       active_status:1
     },
     // {
@@ -414,7 +479,7 @@ export const roundNumericValue=(value, pass_type=0) =>
         }
         else if((parseFloat(value) < 0.00001) && (parseFloat(value) > 0.000001))
         {
-          return (parseFloat(value)).toFixed(9)
+          return (parseFloat(value)).toFixed(4)
         }
         else if((parseFloat(value) < 0.000001) && (parseFloat(value) > 0.0000001))
         {
@@ -531,7 +596,16 @@ export const USDFormatValue=(value, type)=>
     }
     else
     {
-      return new Intl.NumberFormat().format(roundNumericValue(value, 1))
+      if(value > 100)
+      {
+        return new Intl.NumberFormat().format(roundNumericValue(value, 1))
+      }
+      else
+      {
+        return roundNumericValue(value, 1)
+      }
+      
+      //
     }
   }
   else
@@ -652,6 +726,24 @@ export const getShortAddress=(wallet_address, length)=>
     {
       return {
         network:"avalanche"
+      }
+    }
+    // else if(id == 1284)
+    // {
+    //   return {
+    //     network:"moonbeam"
+    //   }
+    // }
+    // else if(id == 8217)
+    // {
+    //   return {
+    //     network:"klaytn"
+    //   }
+    // }
+    else if(id == 338)
+    {
+      return {
+        network:"cronos"
       }
     }
     else
@@ -882,9 +974,9 @@ export const updateAddedWallet = async (pass_data, new_wallet_address) =>
       }
       i++
     }
-    console.log("pass_address", pass_address)
-    console.log("pass_data", pass_data)
-    console.log("aquisition_cost", aquisition_cost)
+    // console.log("pass_address", pass_address)
+    // console.log("pass_data", pass_data)
+    // console.log("aquisition_cost", aquisition_cost)
 
 
     return {token_balance:token_balance, aquisition_cost}
@@ -1002,8 +1094,8 @@ export const updateAddedWallet = async (pass_data, new_wallet_address) =>
                   total_aquisition_cost += await aquisition_cost
                 }
               
-                console.log("cal balance", token_worth_data.token_balance)
-                console.log("fetch bal", run.balance)
+                // console.log("cal balance", token_worth_data.token_balance)
+                // console.log("fetch bal", run.balance)
 
                 await final_array.push({
                   wallet_address : run.wallet_address,
@@ -1050,8 +1142,8 @@ export const updateAddedWallet = async (pass_data, new_wallet_address) =>
                 total_aquisition_cost += await aquisition_cost
               }
 
-              console.log("cal balance", token_worth_data.token_balance)
-              console.log("fetch bal", run.balance)
+              // console.log("cal balance", token_worth_data.token_balance)
+              // console.log("fetch bal", run.balance)
 
               await final_array.push({
                 wallet_address : run.wallet_address,
@@ -1253,6 +1345,18 @@ export  const graphqlPricingTokenData = (address, network) =>
     {
       return "avax.svg"
     }
+    // else if(pass_network_id == 1284)
+    // {
+    //   return "moonbeam.svg"
+    // }
+    // else if(pass_network_id == 8217)
+    // {
+    //   return "klaytn.svg"
+    // }
+    else if(pass_network_id == 338)
+    {
+      return "cronos.svg"
+    }
   }
 
 
@@ -1277,6 +1381,18 @@ export  const graphqlPricingTokenData = (address, network) =>
     else if(pass_network_id == 43114)
     {
       return "Avalanche"
+    }
+    else if(pass_network_id == 1284)
+    {
+      return "Moonbeam"
+    }
+    else if(pass_network_id == 8217)
+    {
+      return "Klaytn"
+    }
+    else if(pass_network_id == 338)
+    {
+      return "Cronos"
     }
   }
 
@@ -1303,6 +1419,18 @@ export  const graphqlPricingTokenData = (address, network) =>
     else if(pass_network_id == 43114)
     {
       return "https://avascan.info/blockchain/dfk/tx/"
+    }
+    else if(pass_network_id == 1284)
+    {
+      return "https://moonscan.io/tx/"
+    }
+    else if(pass_network_id == 8217)
+    {
+      return "https://klaytnscope.com/tx"
+    }
+    else if(pass_network_id == 338)
+    {
+      return "https://cronoscan.com/tx"
     }
   }
 
@@ -1357,7 +1485,7 @@ export const getGraphSparklineValues = async (sparkline_data, pass_data_type) =>
     }
     
     
-    console.log('graph_values', graph_values)
+    // console.log('graph_values', graph_values)
     return graph_values
 }
 

@@ -16,7 +16,7 @@ export default function LoginWithGmail({prev_url})
    
     const onLoginSuccess=(response)=>
     {   
-        console.log("gmail", response)
+        // console.log("gmail", response)
         
         const reqObj = {
             email_id : response.profileObj.email,
@@ -27,7 +27,7 @@ export default function LoginWithGmail({prev_url})
         
         Axios.post(API_BASE_URL+'app/auth/user_login_with_gmail', reqObj, config("")).then(res => 
         {  
-            console.log(res.data)    
+            // console.log(res.data)    
             if(res.data.status === true)
             {   
                 setLoginData(res.data.message)
@@ -44,7 +44,7 @@ export default function LoginWithGmail({prev_url})
 
     const onFailureSuccess=(res)=>
     {
-       console.log("login failed;", res)
+    //    console.log("login failed;", res)
     }
     
 

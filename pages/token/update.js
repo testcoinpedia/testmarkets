@@ -30,7 +30,7 @@ export default function Create_token({config})
     const editorRef = useRef(null)
     const router = useRouter()
     const { token_id } = router.query
-    console.log("token_id",token_id)    
+    // console.log("token_id",token_id)    
     const [token_row_id] = useState(token_id ? token_id:"")
     const [wallet_address, setWalletAddress] = useState('')
     const [contract_addresses, set_contract_addresses] = useState([{ contract_address: "", network_name: "", network_row_id: "", token_row_id: "" }])
@@ -238,7 +238,7 @@ export default function Create_token({config})
 const createNewToken = () =>
 {   
     let formValid = true
-    console.log("asdf", contract_addresses)
+    // console.log("asdf", contract_addresses)
     // if(contract_address.length === 2)
     // { 
     //   let list = err_contract_address
@@ -636,7 +636,7 @@ const createNewToken = () =>
             {
                 if(response.status)
                 { 
-                  console.log(response) 
+                  // console.log(response) 
                   setTokenMaxSupply(response.data.result/10**decimal) 
                 }
             })
@@ -661,7 +661,7 @@ const createNewToken = () =>
         
         const supply = await tokenContract.totalSupply() / (10 ** decval);  
         getTokenUsdPrice(id,network_type)
-        console.log("supply", live_price)
+        // console.log("supply", live_price)
         set_market_cap(supply * live_price)
     }
 
@@ -807,7 +807,7 @@ const createNewToken = () =>
     {
       if(response.data.status)
       { 
-        console.log(response.data) 
+        // console.log(response.data) 
         if(response.data.message.list_type == 2)
         {
           if(response.data.message.contract_addresses.length)

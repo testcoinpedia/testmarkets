@@ -3,9 +3,9 @@ import JsCookie from "js-cookie"
 
 export default function Popupmodal({dex_row_id})
 { 
-    console.log("dex_row_id",dex_row_id)
+    // console.log("dex_row_id",dex_row_id)
 
-    console.log(dex_row_id)
+    // console.log(dex_row_id)
     const [selected_dex_data, set_selected_dex_data] = useState({})
     const [title, set_title] = useState("")
     const [sub_title, set_sub_title] = useState("")

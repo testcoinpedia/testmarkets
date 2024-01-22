@@ -11,7 +11,7 @@ import { roundNumericValue, separator } from '../../../constants'
 export default function Tokenchart({reqData}) 
 {   
     
-    console.log("req Data", reqData)
+    // console.log("req Data", reqData)
 
     const chartContainerRef = useRef("")
     const [graph_status, set_graph_status] = useState(true)

@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 export default function MyFunction({token_id, active_tab, approval_status}) 
 {     
-    console.log("approval_status", approval_status)
+   //  console.log("approval_status", approval_status)
     const [tab_token_id, set_tab_token_id] = useState(token_id ? token_id:"")
 
     return (

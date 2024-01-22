@@ -7,16 +7,16 @@ const configurationData = {
 }; 
 export const Datafeed = (props) =>
 {
-    console.log("props", props)
+    // console.log("props", props)
     return {
         onReady: (callback) => 
         {
-            console.log('[onReady]: Method called!!');
+            // console.log('[onReady]: Method called!!');
             setTimeout(() => callback(configurationData))
         },
         resolveSymbol: async (symbolName, onSymbolResolvedCallback, onResolveErrorCallback, extension) => 
         {
-            console.log("symbolName", symbolName)
+            // console.log("symbolName", symbolName)
             try {
                 const symbolInfo = {
                     ticker: props.symbol,
@@ -36,7 +36,7 @@ export const Datafeed = (props) =>
                 }
                 
                 //const symbolInfo = await getSymbolInfoFromBackend(symbolName, extension);
-                console.log("symbolInfo", symbolInfo)
+                // console.log("symbolInfo", symbolInfo)
                 onSymbolResolvedCallback(symbolInfo);
             } catch (err) {
                 onResolveErrorCallback(err.message);
@@ -46,7 +46,7 @@ export const Datafeed = (props) =>
         {   
             if(resolution != '1D')
             {
-                console.log("resolution", resolution)
+                // console.log("resolution", resolution)
                 const response = await Axios.get('http://localhost:3010/?duration='+resolution)
                 if(response.data.status)
                 {   
@@ -101,7 +101,7 @@ export const Datafeed = (props) =>
                                 m++
                         }
                     }
-                    console.log("bars", bars)
+                    // console.log("bars", bars)
                     await onHistoryCallback(bars)
                     // console.log("bars", bars.length)
                     // console.log("message", response.data.message)

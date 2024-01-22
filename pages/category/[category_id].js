@@ -43,7 +43,7 @@ export default function Companies({data, userAgent, category_id, errorCode})
     const [watchlist_tab_status, set_watchlist_tab_status] = useState("")
     const [search_title, set_search_title] = useState("")  
     const [category_row_id] = useState(data._id)
-    console.log("data",data)
+    // console.log("data",data)
 
     const [user_token, set_user_token] = useState(userAgent.user_token? userAgent.user_token:"");
     const [login_modal_status, set_login_modal_status] = useState(false)
@@ -135,7 +135,7 @@ export default function Companies({data, userAgent, category_id, errorCode})
             if(res.data.status)
             {   
               set_loader_status(true)
-              console.log("res",res) 
+              // console.log("res",res) 
               set_tokens_list(res.data.message)
               setPageCount(Math.ceil(res.data.count/per_page_count))
               set_sl_no(current_pages)
@@ -304,10 +304,10 @@ return (
                        <div className='row'>
                     <div className='col-md-12 col-lg-12 col-12'>
                           <div className="input-group search_filter">
+                            <div className="input-group-prepend ">
+                              <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
+                            </div>
                             <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token" />
-                              <div className="input-group-prepend ">
-                                  <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
-                                </div>
                           </div> 
                          
                           </div>

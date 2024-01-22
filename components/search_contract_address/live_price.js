@@ -93,7 +93,7 @@ const fetchQuery = async (type, pass_address) =>
     const res = await fetch(graphqlApiURL, opts)
     const result = await res.json()
 
-    console.log("result", result)
+    // console.log("result", result)
 
     if(!result.errors)
     {   
@@ -140,7 +140,7 @@ const fetchQuery = async (type, pass_address) =>
             var valid_status = false
             if(result.data.ethereum.dexTrades)
             {
-                console.log("dex trades", result.data.ethereum.dexTrades)
+                // console.log("dex trades", result.data.ethereum.dexTrades)
                 if(pass_address === address) 
                 {
                     final_array['live_price'] = result.data.ethereum.dexTrades[0].quote
@@ -171,7 +171,7 @@ const fetchQuery = async (type, pass_address) =>
                             }
                         } 
                        
-                        console.log("last_trade_price", last_trade_price)
+                        // console.log("last_trade_price", last_trade_price)
                         final_array['live_price'] = last_trade_price
                     }
                     else if (result.data.ethereum.dexTrades.length == 2) 

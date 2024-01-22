@@ -238,7 +238,7 @@ export default function Create_token({config, token_id})
     Axios.get(API_BASE_URL + "markets/users/manage_tokenomics/list/"+token_id, config).then(
       (response) => 
       {
-        console.log(response);
+        // console.log(response);
         if(response.data.status) 
         {
           set_api_loader(false)

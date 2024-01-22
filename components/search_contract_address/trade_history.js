@@ -27,7 +27,7 @@ export default function Exchange({reqData})
     
 
     
-    console.log("reqData", reqData)
+    // console.log("reqData", reqData)
     
     const EndMessage = () => 
     {
@@ -56,7 +56,7 @@ export default function Exchange({reqData})
     {   
         if(contracts_address)
         {
-            console.log("contracts_array", contracts_address)
+            // console.log("contracts_array", contracts_address)
             getTradeHistory(true)
         }
     }, [sort_type])
@@ -81,7 +81,7 @@ export default function Exchange({reqData})
             
             
             const res_query = await tradeHistory({sort_type:sort_type, network_type:network_row_id, liquidity_address:contracts_address, limit:per_page, offset:present_current_page ? current_page:0})
-            console.log("tradeHistory", res_query)
+            // console.log("tradeHistory", res_query)
             if(res_query)
             {   
                 await set_api_loader_status(false)
@@ -167,7 +167,21 @@ export default function Exchange({reqData})
                 <div className='dex_filter mb-3'>
             <div class="dropdown">
                 <button className="dex_filter_button dropdown-toggle"  type="button" id="dropdownSortBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Recent trades <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
+                {
+                  sort_type == 1 ?
+                  "Recent trades"
+                  :
+                  sort_type == 2 ?
+                  "High amount"
+                  :
+                  sort_type == 3 ?
+                  "Low amount"
+                  :
+                  sort_type == 4 ?
+                  "Date and time"
+                  :
+                  ""
+                } <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
                 </button>
                 <div  className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`}
                     aria-labelledby="dropdownSortBy">

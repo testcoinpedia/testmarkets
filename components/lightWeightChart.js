@@ -21,7 +21,7 @@ export default function Chart({reqData,graph_data_date}) {
     const [coingecko, set_coingecko] = useState("")
     const [modal_data, setModalData] = useState({ icon: "", title: "", description: "" })
     // const [graph_data_date, set_graph_data_date] = useState(1)
-    console.log("graph_data_date",graph_data_date)
+    // console.log("graph_data_date",graph_data_date)
   
     const id="0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
     useEffect(()=>
@@ -199,7 +199,7 @@ export default function Chart({reqData,graph_data_date}) {
 
         fetch(graphQlURL, opts) .then(res => res.json()) .then(result => 
         { 
-            console.log("ethereum",result.data)
+            // console.log("ethereum",result.data)
 
             if (result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
             { 
@@ -219,7 +219,7 @@ export default function Chart({reqData,graph_data_date}) {
             
             
                         prices.push(val)
-                        console.log(prices)
+                        // console.log(prices)
                         // const base_value= prices.slice(-1)
 
                         // console.log("base_value",base_value)
@@ -228,7 +228,7 @@ export default function Chart({reqData,graph_data_date}) {
                 }
                 const base_value= prices.slice(-1)  
                 const value=  Object.assign({},base_value[0])
-                console.log("base_value",value)
+                // console.log("base_value",value)
                 // if(light_dark_mode=="dark"){
    
         const  chart= createChart(chartContainerRef.current,{
@@ -278,7 +278,7 @@ export default function Chart({reqData,graph_data_date}) {
                 });
     
     
-            console.log("chartContainerRef" ,chart)
+            // console.log("chartContainerRef" ,chart)
             const toolTipWidth = 80;
             const toolTipHeight = 80;
             const toolTipMargin = 15;
@@ -357,7 +357,7 @@ export default function Chart({reqData,graph_data_date}) {
                 val["time"] =rate[0]
                 val["value"] =rate[1]
                  prices.push(val)
-                 console.log("prices",prices)
+                //  console.log("prices",prices)
             
               }
             }  
@@ -413,7 +413,7 @@ export default function Chart({reqData,graph_data_date}) {
                     });
         
         
-                console.log("chartContainerRef" ,chart)
+                // console.log("chartContainerRef" ,chart)
                 const toolTipWidth = 80;
                 const toolTipHeight = 80;
                 const toolTipMargin = 15;

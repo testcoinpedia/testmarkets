@@ -3,7 +3,7 @@ import { graphql_headers, graphqlApiURL } from '../../constants'
 const liquidityQuery = (type, pass_address) =>
 {   
     const one_month_before_date = ((new Date(Date.now() - 180*24 * 60 * 60 * 1000)).toISOString())
-    console.log('one_month_before_date', one_month_before_date)
+    // console.log('one_month_before_date', one_month_before_date)
     //1:ETH, 2:BNB
     var network_id = ''
     if(type == 6)
@@ -61,7 +61,7 @@ const liquidityFetchQuery = async (type, pass_address) =>
     const res = await fetch(graphqlApiURL, opts)
     const result = await res.json()
     
-    //console.log("result", result)
+    console.log("result", result)
     var final_array = {}
     var token_addresses_array = []
     var token_symbol_array = []

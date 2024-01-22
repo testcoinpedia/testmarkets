@@ -138,7 +138,7 @@ export const Datafeed = (props) =>
         },
         getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) =>
         {   
-            console.log("resolution", resolution)
+            // console.log("resolution", resolution)
             if(resolution != '1D')
             {   
                 

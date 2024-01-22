@@ -755,7 +755,7 @@ export const getTokenUsdPrice=async(network,dateFrom,dateTo)=> {
   await fetch(url, opts)
     .then(res => res.json())
     .then(result => {
-      console.log(result)
+      // console.log(result)
       if (result.data.ethereum.dexTrades != null) { 
           dexTrades.push(result.data.ethereum.dexTrades)
           

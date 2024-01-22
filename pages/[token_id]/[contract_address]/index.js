@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { IMAGE_BASE_URL, smallExponentialPrice, API_BASE_URL,config,graphql_headers, graphqlApiURL, separator, graphqlApiKEY, speedoMeterValues, market_coinpedia_url, roundNumericValue,  indicator_time_series} from '../../../components/constants'
+import { IMAGE_BASE_URL, smallExponentialPrice, API_BASE_URL,config,graphql_headers, graphqlApiURL, separator, graphqlApiKEY, speedoMeterValues, market_coinpedia_url, roundNumericValue,  indicator_time_series, indicatorDurationName} from '../../../components/constants'
 import { tokenBasic, otherDetails, getVolume24h, getHighLow24h, getNetworkId } from '../../../components/search_contract_address/live_price'
 import Search_token from '../../../components/search_token'
 import { ethers } from 'ethers'
@@ -43,8 +43,8 @@ let inputProps2 = {
 
 export default function TokenDetails({network_id, address, tokenData, token_id,}) 
 {
-   console.log("tokenData", tokenData)
-   console.log("network_id", network_id)
+  //  console.log("tokenData", tokenData)
+  //  console.log("network_id", network_id)
 
    
   let sma_buy_count = 0
@@ -240,7 +240,7 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
     const res = await Axios.post(API_BASE_URL+"markets/search_contract_address/update_details", reqObj, config(""))
     if(res.data)
     {
-      console.log("data", res.data)
+      // console.log("data", res.data)
     } 
   }
   
@@ -280,7 +280,7 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
       set_open_24h(response3.message.open)
       set_close_24h(response3.message.close)
 
-      console.log("asdf", response3)
+      // console.log("asdf", response3)
     }
 
     if(tokenData.live_price)
@@ -318,10 +318,15 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
       }
     }
  }
-
+ 
+ var chart_total_supply_percentage = 0
+ if(total_supply)
+ {
+    chart_total_supply_percentage = 100
+ }
 
  const [chartData, setChartData] = useState({
-  series: [100, 100, 50],
+  series: [0, chart_total_supply_percentage, 0],
   options: {
     chart: {
       height: '100%',
@@ -350,8 +355,8 @@ export default function TokenDetails({network_id, address, tokenData, token_id,}
         },
       },
     },
-    colors: ['#FF007A', '#FF007A', '#FF007A'],
-    labels: ['Max Supply', 'Total Supply', 'Circulating Supply'],
+    colors: ['#FF007A', '#FF007A80', '#FF007A33'],
+    labels: ['Max', 'Total', 'Circulating'],
   },
 });
 
@@ -388,8 +393,8 @@ const [modal_data, setModalData] = useState({icon: "", title: "",content: ""})
 
 const tokenConverter = async (pass_value, pass_type, pass_pair_value, pass_converter_object) => 
 {
-  console.log("tokenConverter",pass_pair_value)
-  console.log("tokenConverter1",pass_value)
+  // console.log("tokenConverter",pass_pair_value)
+  // console.log("tokenConverter1",pass_value)
   await set_converter_object(pass_converter_object)
   await set_converter_pair_currency(pass_pair_value)
   if(pass_value > 0) 
@@ -432,7 +437,7 @@ const tokenOtherDetails = async (pass_type) =>
     const response = await Axios.get(API_BASE_URL +"markets/search_contract_address/other_details/" + address+"?interval_type="+pass_type+"&network_row_id="+network_id,config(""));
     if(response.data) 
     {
-      console.log("asdf", response.data)
+      // console.log("asdf", response.data)
       if(pass_type == 6)  
       {
         set_green_days(response.data.message.green_days)
@@ -677,9 +682,9 @@ const getMarketCap = async (id, decval, usd_price) =>
       const liqAbi = ["function getReserves() view returns (uint112, uint112, uint32)", "function token0() view returns (address)"];
       const liqContract = new ethers.Contract(pairAddr, liqAbi, provider);
       const reserve = await liqContract.getReserves();
-      console.log("reserve", reserve)
+      // console.log("reserve", reserve)
       const token0 = await liqContract.token0();
-      console.log("token0", token0)
+      // console.log("token0", token0)
       // const liquidity = ((token0.toLowerCase() === id.toLowerCase()) ? reserve[0] : reserve[1]) / (10 ** decval) * usd_price * 2;
       // console.log("liquidity", liquidity)
   }
@@ -720,7 +725,7 @@ const toggleDropdown = () => {
     Axios.get("https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=" + id + "&apikey=E9DBMPJU7N6FK7ZZDK86YR2EZ4K4YTHZJ1")
       .then(response => {
         if (response.status) {
-          console.log(response)
+          // console.log(response)
          // settoken_max_supply(response.data.result / 10 ** decimal)
         }
       })
@@ -1074,7 +1079,7 @@ const toggleDropdown = () => {
     fetch(url, opts)
       .then(res => res.json())
       .then(result => {
-        console.log("txns", result.data.ethereum)
+        // console.log("txns", result.data.ethereum)
         if (result.data.ethereum != null) 
         {
           
@@ -1343,7 +1348,7 @@ const toggleDropdown = () => {
       if(result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
       {
         const res_array = await setGraphData(result.data.ethereum.dexTrades, tokenData.contract_type)
-        console.log(res_array)
+        // console.log(res_array)
       }
     }
   }
@@ -1351,7 +1356,7 @@ const toggleDropdown = () => {
   const getDetails = async () =>
   {
     const get_live_price = await getLivePrice(address)
-    console.log("Address ", get_live_price)
+    // console.log("Address ", get_live_price)
   }
 
   const setGraphData = async (pass_data, contract_type) =>
@@ -2941,7 +2946,7 @@ const toggleDropdown = () => {
                                   <div className='dex_filter mb-3'>
             <div class="dropdown">
                 <button className="dex_filter_button dropdown-toggle" value={1} onChange={(e)=>indicatorSourceType(e.target.value)} type="button" id="dropdownSortBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                5 Minutes <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
+                {indicatorDurationName(interval_type)} <img src="/assets/img/features_dropdown.svg" alt="Features Dropdown" class="dropdown_arrow_img" />
                 </button>
                 <div  className={`dropdown_block badge_dropdown_block dropdown-menu ${isOpen ? 'closed' : 'open'}`}
                     aria-labelledby="dropdownSortBy">
@@ -3733,9 +3738,7 @@ const toggleDropdown = () => {
                                 );
                               })
                             ) : (
-                              <tr>
-                                <td>No Data Found</td>
-                              </tr>
+                              ""
                             )}
 
 
@@ -3776,14 +3779,42 @@ const toggleDropdown = () => {
                                   );
                                 })
                               ) : (
-                                <tr>
-                                  <td>No Data Found</td>
-                                </tr>
+                                ""
                               )}
+                            <tr>
+                                <td>HMA(9)</td>
+                                <td>{roundNumericValue(hull_moving_average)}</td>
+                                <td>
+                                    {
+                                      live_price > hull_moving_average ? 
+                                      <span className="bullish">Buy</span>
+                                      : 
+                                      live_price < hull_moving_average ? 
+                                      <span className="bearish">Sell</span>
+                                      : 
+                                      <span className="neutral">Neutral</span>
+                                    }
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>VWMA(20)</td>
+                                <td>{roundNumericValue(vwma)}</td>
+                                <td>
+                                  {
+                                    live_price > vwma ? 
+                                    <span className="bullish">Buy</span>
+                                    : 
+                                    live_price < vwma ? 
+                                    <span className="bearish">Sell</span>
+                                    : 
+                                    <span className="neutral">Neutral</span>
+                                  }
+                                </td>
+                              </tr>
                           </tbody>
                         </table>
                         <p className="total_buy_sell_neutral">
-                          <span>Buy: {total_sma_buy}</span> <span>Sell: {total_sma_sell}</span> <span>Neutral: {total_sma_neutral}</span>
+                          <span>Buy: {total_sma_buy+ema_buy_count+(live_price>hull_moving_average?1:0)+(live_price>vwma?1:0)}</span> <span>Sell: {total_sma_sell+ema_sell_count+(live_price<hull_moving_average?1:0)+(live_price<vwma?1:0)}</span> <span>Neutral: {total_sma_neutral+ema_neutral_count+(live_price==hull_moving_average?1:0)+(live_price==vwma?1:0)}</span>
                         </p>
                         {/* <h3 className="summary_total">
                           Summary: <span className={total_sma_buy > total_sma_sell ? 'summary_bullish active' : 'summary_bearish active'}>
@@ -3793,59 +3824,7 @@ const toggleDropdown = () => {
                       </div>
                       </div>
                 
-    <div className="analysis_values">
-      <h4 className="">Other Moving Averages</h4> 
-      <div className="technical_anaylysis_table simple_analysis">
-                                          <table className="table">
-        <thead>
-          <tr className="inner_table_average">
-            <th colspan="0">
-              <p className="">Period</p>
-            </th>
-            <th colspan="0">
-              <p className="">Value</p>
-            </th>
-            <th colspan="0">
-              <p className="">Action</p>
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td>HMA(9)</td>
-            <td>{roundNumericValue(hull_moving_average)}</td>
-            <td>
-                {
-                  live_price > hull_moving_average ? 
-                  <span className="bullish">Buy</span>
-                  : 
-                  live_price < hull_moving_average ? 
-                  <span className="bearish">Sell</span>
-                  : 
-                  <span className="neutral">Neutral</span>
-                }
-            </td>
-          </tr>
-          <tr>
-            <td>VWMA(20)</td>
-            <td>{roundNumericValue(vwma)}</td>
-            <td>
-              {
-                live_price > vwma ? 
-                <span className="bullish">Buy</span>
-                : 
-                live_price < vwma ? 
-                <span className="bearish">Sell</span>
-                : 
-                <span className="neutral">Neutral</span>
-              }
-            </td>
-          </tr>
-        </tbody>
-        </table>
-        </div>
-    </div>  
+     
   </div>
 
   </div>

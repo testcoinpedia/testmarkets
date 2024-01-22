@@ -9,7 +9,6 @@ import LoginModal from '../../components/layouts/auth/loginModal'
 
 import { Tooltip, OverlayTrigger, ProgressBar } from 'react-bootstrap'
 
-
 export default function MyFunction({ reqData }) {
   const { total_voting_count, positive_voting_counts, parent_user_token, token_row_id ,request_config, my_voting_status} = reqData
 
@@ -34,7 +33,7 @@ export default function MyFunction({ reqData }) {
 
   const getDataFromChild = async (pass_object) => 
   {
-    console.log("pass_object", pass_object)
+    // console.log("pass_object", pass_object)
     await set_login_modal_status(false)
     await set_user_token(JsCookie.get("user_token"))
     await updateVotingDetails(action_type)
@@ -141,13 +140,13 @@ export default function MyFunction({ reqData }) {
                 placement="bottom">
                 {
                   user_token ?
-                  <span className={(my_vote_status == 1 ? " community-bigger":" community-smaller")} onClick={()=>updateVotingDetails(1)}> <img src="/assets/img/like.svg" alt="like" /></span>
+                  <span onClick={()=>updateVotingDetails(1)}> <img src="/assets/img/like.svg" alt="like" /></span>
                   :
                   <span onClick={() => loginModalStatus(token_row_id, 1)}> <img src="/assets/img/like.svg" alt="like" /></span>
                 } 
                 </OverlayTrigger>
                 :
-                 <span className={(my_vote_status == 1 ? " community-bigger":" community-smaller")} onClick={()=>updateVotingDetails(1)}> <img src="/assets/img/like.svg" alt="like" /></span>
+                 <span onClick={()=>updateVotingDetails(1)}> <img src="/assets/img/like.svg" alt="like" /></span>
               }
                           </span>
               

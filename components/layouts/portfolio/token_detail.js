@@ -14,7 +14,7 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 export default function TokenDetail({token, backend_server_time}) 
 {   
-    console.log("token", token)
+    // console.log("token", token)
    
     const active_currency = useSelector(state => state.active_currency)
     const [line_graph_values, set_line_graph_values] = useState([])
@@ -45,6 +45,7 @@ export default function TokenDetail({token, backend_server_time})
     const[price_change_7d,set_price_change_7d]=useState("")
     const[price_change_24h,set_price_change_24h]=useState("")
     const[token_other_details,set_token_other_details]=useState("")
+    // console.log("token_other_details",token_other_details)
 
     const[net_worth_price,set_net_worth_price]=useState("")
     const[change_24h,set_change_24h]=useState("")
@@ -57,7 +58,7 @@ export default function TokenDetail({token, backend_server_time})
 
 
 
-    console.log("token_other_details", token_other_details)
+    // console.log("token_other_details", token_other_details)
     
     
     // sparkline_in_1d
@@ -116,12 +117,12 @@ export default function TokenDetail({token, backend_server_time})
       await set_change_24h(balance)
       
       const chart_1d = await getChartBasePrice({chart_data : sparkline_in_1d, price, balance, backend_server_time})
-      console.log("chart_1d", chart_1d)
+      // console.log("chart_1d", chart_1d)
       await set_line_graph_values_1d(chart_1d.data_list)
       await set_line_graph_base_price_1d(chart_1d.base_price)
 
       const chart_7d = await getChartBasePrice({chart_data : sparkline_in_7d, price, balance, backend_server_time})
-      console.log("chart_7d", chart_7d)
+      // console.log("chart_7d", chart_7d)
       await set_line_graph_values_7d(chart_7d.data_list)
       await set_line_graph_base_price_7d(chart_7d.base_price)
       
@@ -511,7 +512,7 @@ export default function TokenDetail({token, backend_server_time})
                 </a>
               </li>
               {
-                token_price>0.1?
+                token_price>0.001?
                 <div>
                 <li className="nav-item" key={2}>
                 <a className={"nav-link "+(tab_type == 2 ? "active":"")} onClick={()=>set_tab_type(2)}>
@@ -555,12 +556,18 @@ export default function TokenDetail({token, backend_server_time})
                 <div className='row'>
                 <div className='col-4 col-md-4'>
                   <label className='token-type-name'>1Hr Growth</label>
-                  <h6 className="values_growth">
+                  <p className="values_growth">
                       {
                         price_change_1hr ? 
                           price_change_1hr > 0 ?
+                         
+
                             <span className="green">
-                              {convertCurrency((price_change_1hr*token.price*token.balance)/100)}
+                         
+                              {
+                                
+                              convertCurrency((price_change_1hr*token.price*token.balance)/100)
+                              }
                             </span>
                             :
                             <span className="red">
@@ -569,12 +576,12 @@ export default function TokenDetail({token, backend_server_time})
                           :
                         "NA"
                     }
-                    </h6>
+                    </p>
                 </div>
               
                 <div className='col-4 col-md-4'>
                     <label className='token-type-name'>24Hrs Growth</label>
-                    <h6 className="values_growth">
+                    <p className="values_growth">
                         {
                         price_change_24h?price_change_24h>0?
                           <span className="green">
@@ -587,13 +594,13 @@ export default function TokenDetail({token, backend_server_time})
                         :
                         "NA"
                         }
-                    </h6>
+                    </p>
                 </div>
 
               <div className='col-4 col-md-4'>
           
                   <label className='token-type-name'>7D Growth</label>
-                    <h6 className="values_growth">
+                    <p className="values_growth">
                         {
                           price_change_7d?price_change_7d>0?
                             <span className="green">
@@ -606,7 +613,7 @@ export default function TokenDetail({token, backend_server_time})
                           :
                           "NA"
                         }
-                    </h6>
+                    </p>
                  
               </div>
 
@@ -836,9 +843,9 @@ export default function TokenDetail({token, backend_server_time})
               <div>
                 <div className='row'>
                   <div className='col-12 col-md-12'>
-                  <h6 className='pt-2'>Asset Worth
-                  </h6>
-                <small > The current value of assets by examining token holdings over the past 24 hours.</small>
+                  {/* <h6 className='pt-2'>Asset Worth
+                  </h6> */}
+                {/* <small > The current value of assets by examining token holdings over the past 24 hours.</small> */}
                   </div>
                   
                   {/* <div className='col-6 col-md-6'>

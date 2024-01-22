@@ -57,22 +57,22 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   // const dispatch = useDispatch()
   //Multiple Wallet Address Code Starts Here
   const [active_addresses, set_active_addresses] = useState(!userAgent.user_token ? userAgent.active_addresses ? JSON.parse(userAgent.active_addresses) : [] : [])
-  const [active_nicknames, set_active_nicknames] = useState(userAgent.active_nicknames ? JSON.parse(userAgent.active_nicknames) : {})
+  const [active_nicknames, set_active_nicknames] = useState(!userAgent.user_token ?userAgent.active_nicknames ? JSON.parse(userAgent.active_nicknames) : {}:{})
   const [tokens_list_as_account_view, set_tokens_list_as_account_view] = useState([])
   const [tokens_list_as_list_view, set_tokens_list_as_list_view] = useState([])
   const [tokens_grand_total, set_tokens_grand_total] = useState(0)
   const [wallet_listing_limit] = useState(4)
-  const [active_networks, set_active_networks] = useState([1, 56, 137, 250, 43114])
-  //console.log("active_networks",active_networks)
+  const [active_networks, set_active_networks] = useState([1, 56, 137, 250, 43114, 338])
+
   const [image_base_url] = useState(IMAGE_BASE_URL + "/markets/cryptocurrencies/")
   const [wallet_menu_show_status, set_wallet_menu_show_status] = useState("")
   const [copy_wallet_address, set_copy_wallet_address] = useState("")
-  const [crypto_networks_list, set_crypto_networks_list] = useState(cryptoNetworksList({ ethereum: 0, bsc: 0, polygon: 0, fantom: 0, avalanche: 0 }))
-  //console.log("crypto_networks_list",crypto_networks_list)
+  const [crypto_networks_list, set_crypto_networks_list] = useState(cryptoNetworksList({ ethereum: 0, bsc: 0, polygon: 0, fantom: 0, avalanche: 0,  cronos: 0}))
+
   const [display_tokens_balance, set_display_tokens_balance] = useState(0)
   const [tokens_view_type, set_tokens_view_type] = useState(1)
   const [filter_tokens_list_as_account_view, set_filter_tokens_list_as_account_view] = useState([])
-  //console.log("filter_tokens_list_as_account_view",filter_tokens_list_as_account_view)
+
   const [all_tokens, set_all_tokens] = useState([])
   const [token_minimum_balance] = useState(0.000000001)
   const [token_maximum_balance] = useState(10000000000 * 10000000000 * 1000)
@@ -109,13 +109,13 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   
 
   const [pi_chart_values, set_pi_chart_values] = useState([])
-  const [pi_chart_names, set_pi_chart_names] = useState(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche'])
-  const [pi_chart_colors] = useState(['#647fe6', '#ffc107', '#6f42c1', '#00bcd4', '#f44336'])
+  const [pi_chart_names, set_pi_chart_names] = useState(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche', 'Cronos'])
+  const [pi_chart_colors] = useState(['#647fe6', '#ffc107', '#6f42c1', '#00bcd4', '#de2214','#282E78'])
 
 
   const [token_allocation_values, set_token_allocation_values] = useState([])
   const [token_allocation_names, set_token_allocation_names] = useState([])
-  const [token_allocation_colors, set_token_allocation_colors] = useState(['#0088FE', '#00C49F', '#FFBB28', '#4b51cb', '#CF61B0', '#909090', '#5D69B1', '#24796C', '#E88310', '#2F8AC4', '#764E9F', '#ED645A', '#CC3A8E', '#C1C1C1', '#66C5CC', '#F89C74', '#DCB0F2', '#87C55F', '#9EB9F3', '#FE88B1', '#8BE0A4', '#B497E7',
+  const [token_allocation_colors, set_token_allocation_colors] = useState(['#0088FE', '#00C49F', '#FFBB28', '#4b51cb', '#CF61B0', '#909090','#808080','#A52A2A', '#5D69B1', '#24796C', '#E88310', '#2F8AC4', '#764E9F', '#ED645A', '#CC3A8E', '#C1C1C1', '#66C5CC', '#F89C74', '#DCB0F2', '#87C55F', '#9EB9F3', '#FE88B1', '#8BE0A4', '#B497E7',
     '#D3B484', '#B3B3B3', '#E10B64', '#E92828', '#78B4A4', '#604F00', '#0060E9', '#FF7DE3', '#20c997', '#6f42c1'])
 
   //Remove Wallet Account Starts Here
@@ -144,12 +144,21 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   const [unsubscribe_status, set_unsubscribe_status] = useState(false)
   const [line_graph_days, set_line_graph_days] = useState([])
   const [line_graph_values_1d, set_line_graph_values_1d] = useState([])
-  const [line_graph_values_7d, set_line_graph_values_7d] = useState([])
-  const [line_graph_base_price_1d, set_line_graph_base_price_1d] = useState(0)
-  const [line_graph_base_price_7d, set_line_graph_base_price_7d] = useState(0)
-  const [worth_chart_type, set_worth_chart_type] = useState(2)
-  
 
+
+  const [line_graph_values_7d, set_line_graph_values_7d] = useState([])
+
+  const [line_graph_base_price_1d, set_line_graph_base_price_1d] = useState(0)
+  // console.log("line_graph_base_price_1d",line_graph_base_price_1d)
+  const [line_graph_base_price_7d, set_line_graph_base_price_7d] = useState(0)
+  // console.log("line_graph_base_price_7d",line_graph_base_price_7d)
+  const [worth_chart_type, set_worth_chart_type] = useState(2)
+  const [network_has_more, set_network_has_more] = useState(true) 
+  const[my_data_status,set_my_data_status]=useState(false)
+  const SpinnerLoader = () => 
+  {
+      set_my_data_status(true)
+  }
   const line_chart_series = [{
     name: "Asset Worth",
     data: line_graph_values_1d
@@ -533,7 +542,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     
     if(not_fetched_array.length)
     {
-      await updateFetchedTokens(not_fetched_array)
+      await notFetchedTokens(not_fetched_array)
       //console.log("not_fetched_array", not_fetched_array)
     }
 
@@ -545,20 +554,12 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
   }
   
-  const updateFetchedTokens = async (pass_array) =>
+  const notFetchedTokens = async (pass_array) =>
   {
-     
-    const response = await Axios.post(API_BASE_URL + 'markets/portfolio/chart_prices', { assets: pass_array }, config(""))
+    const response = await Axios.post(API_BASE_URL + 'markets/portfolio/not_fetched_tokens', { assets: pass_array }, config(user_token))
     console.log("not_fetched_tokens", response)
-
   }
 
-  const getChartPrices = async (pass_array) =>
-  {
-    //const response = 
-    await Axios.post(API_BASE_URL + 'markets/portfolio/not_fetched_tokens', { assets: pass_array }, config(""))
-    //console.log("not_fetched_tokens", response)
-  }
   
   const updateTokensPricing = async (token_list) =>
   { 
@@ -644,7 +645,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
   const arrangeListViewTokens = async (pass_tokens_list, server_present_time) => 
   {
-   
+    console.log("server_present_time", server_present_time)
     console.log("pass_tokens_list", pass_tokens_list)
     var tokens_final_array = []
     var grand_total_balance = 0
@@ -738,7 +739,9 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     var polygon = 0
     var fantom = 0
     var avalanche = 0
-   
+  //  var moonbeam = 0
+  //  var klaytn=0
+   var cronos=0
     var obj2 = []
     var total_24h_change = 0
     for (var prop in tokens_final_array) {
@@ -768,7 +771,15 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
           else if (inner_run.network == 43114) {
             avalanche += !isNaN(parseFloat(inner_run.balance) * parseFloat(inner_run.price)) ? parseFloat(inner_run.balance) * parseFloat(inner_run.price) : 0
           }
-         
+          // else if (inner_run.network == 1284) {
+          //   moonbeam += !isNaN(parseFloat(inner_run.balance) * parseFloat(inner_run.price)) ? parseFloat(inner_run.balance) * parseFloat(inner_run.price) : 0
+          // }
+          // else if (inner_run.network == 8217) {
+          //   klaytn += !isNaN(parseFloat(inner_run.balance) * parseFloat(inner_run.price)) ? parseFloat(inner_run.balance) * parseFloat(inner_run.price) : 0
+          // }
+          else if (inner_run.network == 338) {
+            cronos += !isNaN(parseFloat(inner_run.balance) * parseFloat(inner_run.price)) ? parseFloat(inner_run.balance) * parseFloat(inner_run.price) : 0
+          }
         }
       }
     }
@@ -785,8 +796,11 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     // }
 
 
-    const network_balances_list = await cryptoNetworksList({ ethereum, bsc, polygon, fantom, avalanche })
+    const network_balances_list = await cryptoNetworksList({ ethereum, bsc, polygon, fantom, avalanche,cronos})
+    if(network_has_more)
+    {
     await set_crypto_networks_list(network_balances_list)
+    }
     //console.log("network_balances_list", network_balances_list)
 
 
@@ -813,8 +827,8 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   
   const setNetWorth = async (balance_list, balance, server_present_time) =>
   { 
-    console.log("total_balances", balance)
-    console.log("balance_list",balance_list)
+    // console.log("server_present_time", server_present_time)
+    // console.log("balance_list",balance_list)
     const format_server_present_time = await moment(server_present_time).format("YYYY-MM-DDTHH:mm:ss")+".000Z"
     await set_loader_status(false)
     var date_array_1d = []
@@ -877,12 +891,15 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
         })
       }
 
-      
-      await new_array_1d.push({
-        value : balance,
-        // counter: counter,
-        time : Math.floor((new Date(format_server_present_time)).getTime()/1000)
-      })
+      if(server_present_time)
+      {
+        await new_array_1d.push({
+          value : balance,
+          // counter: counter,
+          time : Math.floor((new Date(format_server_present_time)).getTime()/1000)
+        })
+      }
+     
       
 
     }
@@ -921,17 +938,17 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
               sumTwo += await parseFloat(innerRun.sparkline_in_7d[run].price)*parseFloat(innerRun.balance)
               counter++
             }
-            // else if((innerRun.price && innerRun.balance))
-            // { 
-            //   sumTwo += await parseFloat(innerRun.price)*parseFloat(innerRun.balance)
-            //   counter++
-            // }
-            console.log("loop Price", innerRun.sparkline_in_7d[run])
-            console.log("balance", innerRun.balance)
-            console.log("price", innerRun.price)
+            else if((innerRun.price && innerRun.balance))
+            { 
+              sumTwo += await parseFloat(innerRun.price)*parseFloat(innerRun.balance)
+              counter++
+            }
+            // console.log("loop Price", innerRun.sparkline_in_7d[run])
+            // console.log("balance", innerRun.balance)
+            // console.log("price", innerRun.price)
            
           }
-          console.log("run", run)
+          //console.log("run", run)
 
           if(run == 0)
           {
@@ -957,17 +974,23 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
           })
       }
 
-      await new_array_7d.push({
-        value : balance,
-        // counter: counter,
-        time : Math.floor((new Date(format_server_present_time)).getTime()/1000)
-      })
+      // console.log("format_server_present_time", format_server_present_time)
+
+      if(server_present_time)
+      {
+        await new_array_7d.push({
+          value : balance,
+          // counter: counter,
+          time : Math.floor((new Date(format_server_present_time)).getTime()/1000)
+        })
+      }
+      
     }
     const base_price_7d = await parseFloat(((low_value_7d+high_value_7d)/2).toFixed(2))
     await set_line_graph_values_7d(new_array_7d)
     await set_line_graph_base_price_7d(base_price_7d)
     await set_loader_status(true)
-      //console.log("low_value", low_value)
+      // console.log("new_array_7d", new_array_7d)
       
       //console.log("high_value", high_value)
    
@@ -990,6 +1013,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
   const fetchNewWalletTokens = async (pass_address) => 
   {
+    console.log("pass_address",pass_address)
     var merge_array = []
     const ethereum_query = graphqlBasicTokenData(pass_address, "ethereum")
     const ethereum_opts = fetchAPIQuery(ethereum_query)
@@ -1006,7 +1030,16 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     const avalanche_query = graphqlBasicTokenData(pass_address, "avalanche")
     const avalanche_opts = fetchAPIQuery(avalanche_query)
 
- 
+    // const moonbeam_query = graphqlBasicTokenData(pass_address, "moonbeam")
+    // const moonbeam_opts = fetchAPIQuery(moonbeam_query)
+
+
+    // const klaytn_query = graphqlBasicTokenData(pass_address, "klaytn")
+    // const klaytn_opts = fetchAPIQuery(klaytn_query)
+    
+
+    const cronos_query = graphqlBasicTokenData(pass_address, "cronos")
+    const cronos_opts = fetchAPIQuery(cronos_query)
 
     const bal_req = await Promise.all([
       fetch(graphqlApiURL, ethereum_opts),
@@ -1014,7 +1047,9 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       fetch(graphqlApiURL, polygon_opts),
       fetch(graphqlApiURL, fantom_opts),
       fetch(graphqlApiURL, avalanche_opts),
-    
+      // fetch(graphqlApiURL, moonbeam_opts),
+      // fetch(graphqlApiURL, klaytn_opts),
+      fetch(graphqlApiURL, cronos_opts)
     ])
    
     const balance_array = []
@@ -1053,6 +1088,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       // var arranged_data = []
       if(run.data)
       {
+        // console.log("asdf", run.data)
         const { arrange_result, network_balance, not_fetching_data } = await getArrangeBalanceData({
           p_wallet_address : pass_address, 
           p_balance_list : run.data, 
@@ -1080,6 +1116,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
         if(not_fetching_data.length)
         {
+          //  console.log("not_fetching_data", not_fetching_data)
           not_fetch_array = await [...not_fetch_array,...not_fetching_data]
           //await not_fetch_array.push(not_fetching_data)
         }
@@ -1090,7 +1127,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   
     //console.log("not_fetch_array", not_fetch_array)
 
-    console.log("final_array", final_array)
+    // console.log("final_array", final_array)
     //console.log("total_balance", total_balance)
 
     return { wallet_tokens_list: final_array, total_balance: total_balance, not_fetch_array, present_time }
@@ -1124,6 +1161,19 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     {
         return 15  //Avalanche
     }
+    // else if(pass_network == 1284)
+    // {
+    //     return 24  //Moonbeam
+    // }
+    // else if(pass_network == 8217)
+    // {
+    //     return 4  //klaytn
+    // }
+    else if(pass_network == 338)
+    {
+        return 34  //cronos
+    }
+
   }
 
    // pass_type 1: native token, 2:other token
@@ -1182,6 +1232,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
             inner_object['symbol'] = run.currency.symbol
             inner_object['address'] = run.currency.address
             inner_object['balance'] = run.value 
+            // console.log("asdf", inner_object)
             
             let token_type = 2
             let type_value = run.currency.address
@@ -1193,6 +1244,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
             const cp_single_data = await getCpSingleData(p_price_list, token_type, type_value, p_network_id)
             if(cp_single_data)
             {
+              // console.log("cp_single_data", cp_single_data)
               if(cp_single_data.token_name)
               {
                 inner_object['name'] = cp_single_data.token_name
@@ -1237,13 +1289,16 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
             }
             else
             {
-              await not_fetching_data.push(inner_object)
+              if(run.currency.address != '-') 
+              {
+                await not_fetching_data.push(inner_object)
+              }
             }
           }
         }
       }
 
-      console.log("arrange_result", arrange_result)
+      // console.log("arrange_result", arrange_result)
       return await { network_balance, arrange_result, not_fetching_data }
    }
 
@@ -1308,10 +1363,153 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
 
 
 
-  const setActiveNetworks = async (pass_network, pass_balance) => 
+  // const setActiveNetworks = async (pass_network, pass_balance) => 
+  // {
+  //   set_tab_active(1)
+  //   const my_active_networks = await setActiveNetworksArray(pass_network, active_networks)
+  //   const { account_view_result, grand_total_balance, final_24h_change } = await tokenAccountViewList(my_active_networks, tokens_list_as_account_view)
+  //   if (account_view_result) {
+  //     await set_filter_tokens_list_as_account_view(account_view_result)
+  //     await set_display_tokens_balance(grand_total_balance)
+  //     await JsCookie.set('display_tokens_balance', grand_total_balance, { domain: cookieDomainExtension })
+  //     await set_net_worth_24h_change(final_24h_change)
+  //   }
+  //   await set_active_networks([])
+  //   await set_active_networks(my_active_networks)
+    
+
+
+  // }
+
+
+
+  // updated networks
+  const setActiveNetworks = async (pass_network,pass_balance,pass_action_type,pass_nickname,refresh_status) => 
   {
+    // console.log("pass_network",pass_network)
+    // console.log("pass_address",pass_balance)
+    // console.log("pass_action_type",pass_action_type)
+    // console.log("pass_nickname",pass_nickname)
+    // console.log("refresh_status",refresh_status)
+
+    var server_present_time = ""
+   
+    set_loader_status(false)
     set_tab_active(1)
+    
     const my_active_networks = await setActiveNetworksArray(pass_network, active_networks)
+    var my_active_nicknames = active_nicknames
+    if(pass_action_type == 1) 
+    {
+      my_active_nicknames = await addActiveNickname(active_nicknames, pass_balance, pass_nickname)
+    }
+
+  
+    set_active_nicknames([])
+    set_active_nicknames(my_active_nicknames)
+    await JsCookie.set('active_nicknames', JSON.stringify(my_active_nicknames), { domain: cookieDomainExtension })
+
+    const my_active_addresses = await addRemoveActiveAddresses(pass_balance, active_addresses, pass_action_type)
+
+    // console.log("my_active_addresses", my_active_addresses)
+    await set_active_addresses([])
+    await set_active_addresses(my_active_addresses)
+    await JsCookie.set('active_addresses', JSON.stringify(my_active_addresses), { domain: cookieDomainExtension })
+
+    const portfolio_wallets = localStorage.getItem("users_wallets") ? JSON.parse(localStorage.getItem("users_wallets")) : {}
+    var tokens_list = []
+    var tokens = []
+    var not_fetched_array = []
+    var users_wallets_tokens = { wallet_address:"", tokens:[] }
+    for(let run of my_active_addresses) 
+    {
+      var fetch_status = false
+      
+      if(!refresh_status)
+      {
+        if(portfolio_wallets[run]) 
+        {
+          var { list, sub_total_balance, expire_at } = portfolio_wallets[run]
+          var local_present_time = new Date().getTime()
+
+
+
+          if(list) 
+          {
+            if(list.length > 0) 
+            {
+              if(expire_at >= local_present_time) 
+              {
+                const updated_token_list = await updateTokensPricing(list) 
+
+                fetch_status = true
+                var inner_tokens_list = {
+                  wallet_address : run,
+                  networks : list.map(item => item.network).filter((value, index, self) => self.indexOf(value) === index),
+                  tokens : updated_token_list.arrange_result,
+                  nick_name : await getNameByUsingWalletAddress(my_active_nicknames, run),
+                  sub_total_balance : updated_token_list.total_balance,
+                  
+                }
+
+                await tokens_list.push(inner_tokens_list)
+                // console.log("qwerty",tokens_list)
+                list.map((e) => tokens.push(e.name))
+
+                if(!server_present_time)
+                {
+                  server_present_time = await updated_token_list.present_time
+                }
+                
+                
+              }
+            }
+          }
+        }
+      }
+      
+     
+      if(!fetch_status) 
+      {
+        // console.log("asdfasdf")
+        var { wallet_tokens_list, total_balance, not_fetch_array, present_time } = await fetchNewWalletTokens(run)
+        // console.log(not_fetch_array)
+        await savePortfolioInLocalStorage({ wallet_address: run, final_array: wallet_tokens_list, total_balance: total_balance })
+
+        var inner_tokens_list = {
+          wallet_address: run,
+          networks: wallet_tokens_list.map(item => item.network).filter((value, index, self) => self.indexOf(value) === index),
+          nick_name: await getNameByUsingWalletAddress(my_active_nicknames, run),
+          tokens: wallet_tokens_list,
+          sub_total_balance: total_balance
+        }
+
+        await tokens_list.push(inner_tokens_list)
+        //console.log("qwerty1",tokens_list)
+
+        wallet_tokens_list.map((e) => tokens.push(e.name))
+        
+        if(not_fetch_array.length)
+        {
+          not_fetched_array = await not_fetch_array
+        }
+
+        if(wallet_tokens_list.length)
+        {
+          users_wallets_tokens = await { wallet_address:run, tokens:wallet_tokens_list }
+        }
+
+        if(!server_present_time)
+        {
+          server_present_time = await present_time
+        }
+        
+      }
+    }
+    set_all_tokens(tokens)
+  
+    await arrangeListViewTokens(tokens_list, server_present_time)
+    await set_tokens_list_as_account_view(tokens_list)
     const { account_view_result, grand_total_balance, final_24h_change } = await tokenAccountViewList(my_active_networks, tokens_list_as_account_view)
     if (account_view_result) {
       await set_filter_tokens_list_as_account_view(account_view_result)
@@ -1321,25 +1519,20 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     }
     await set_active_networks([])
     await set_active_networks(my_active_networks)
-    // var total_balances = 0
-    // for(let run of crypto_networks_list)
-    // {
-    //   if(my_active_networks.includes(run.network_id))
-    //   {
-    //     total_balances += run.network_balance
-    //   }
-    // }
+    
 
-    // await set_net_worth_24h_change(0)
-    // if(grand_total_balance > 0)
-    // {
-    //   await set_net_worth_24h_change((total_24h_change/obj2.length).toFixed(2))
-    // }
+    if(not_fetched_array.length)
+    {
+      await notFetchedTokens(not_fetched_array)
+      //console.log("not_fetched_array", not_fetched_array)
+    }
 
-    // for(let list of tokens_list_as_account_view)
-    // {
-
-    // }
+    if(users_wallets_tokens.wallet_address)
+    { 
+      await updateUsersAssets(users_wallets_tokens)
+      //console.log("users_wallets_tokens", users_wallets_tokens)
+    }
+    
 
 
   }
@@ -1411,7 +1604,9 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     var total_polygon_value = 0
     var total_fantom_value = 0
     var total_avalanche_value = 0
-    var total_klyton_value=0
+    // var total_moonbeam_value = 0
+    // var total_klaytn_value=0
+    var total_cronos_value=0
     var token_allocation_value = []
     var token_allocation_name = []
     for (let j of final_array) {
@@ -1430,9 +1625,17 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       else if (j.network == 43114) {
         total_avalanche_value += await !isNaN(parseFloat(j.price) * parseFloat(j.balance)) ? parseFloat(j.price) * parseFloat(j.balance) : 0
       }
-      else if (j.network == 8217) {
-        
-      total_klyton_value+= await !isNaN(parseFloat(j.price) * parseFloat(j.balance)) ? parseFloat(j.price) * parseFloat(j.balance) : 0
+     
+      // else if (j.network == 1284) {
+      //   total_moonbeam_value += await !isNaN(parseFloat(j.price) * parseFloat(j.balance)) ? parseFloat(j.price) * parseFloat(j.balance) : 0
+      // }
+
+      // else if (j.network == 8217) {
+      //   total_klaytn_value += await !isNaN(parseFloat(j.price) * parseFloat(j.balance)) ? parseFloat(j.price) * parseFloat(j.balance) : 0
+      // }
+
+      else if (j.network == 338) {
+        total_cronos_value += await !isNaN(parseFloat(j.price) * parseFloat(j.balance)) ? parseFloat(j.price) * parseFloat(j.balance) : 0
       }
 
       await token_allocation_name.push(j.symbol ? (j.symbol).substring(0, 13) : "")
@@ -1446,11 +1649,11 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     // console.log("token_allocation_value", token_allocation_value)
     // console.log("token_allocation_name", token_allocation_name)
 
-    if (total_ethereum_value || total_bnb_value || total_polygon_value || total_fantom_value) {
-      const pi_chart_value = await [total_ethereum_value, total_bnb_value, total_polygon_value, total_fantom_value, total_avalanche_value]
+    if (total_ethereum_value || total_bnb_value || total_polygon_value || total_fantom_value||total_cronos_value) {
+      const pi_chart_value = await [total_ethereum_value, total_bnb_value, total_polygon_value, total_fantom_value, total_avalanche_value,total_cronos_value]
       // console.log("pi_chart_value", pi_chart_value)
       set_pi_chart_values(pi_chart_value)
-      set_pi_chart_names(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche'])
+      set_pi_chart_names(['Ethereum', 'Binance', 'Polygon', 'Fantom', 'Avalanche','cronos'])
     }
   }
 
@@ -1471,7 +1674,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
     // set_loader_status(false)
     var my_active_networks = []
     if (pass_type == 1) {
-      my_active_networks = [1, 56, 137, 250, 43114,8217]
+      my_active_networks = [1, 56, 137, 250, 43114,338]
       // set_loader_status(true)
     }
 
@@ -1571,6 +1774,11 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
               sub_total_balance: updated_token_list.total_balance
             }
             await tokens_list.push(inner_tokens_list)
+
+            if(!server_present_time)
+            {
+              server_present_time = await updated_token_list.present_time
+            }
           }
         }
       }
@@ -1610,6 +1818,13 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
       await JsCookie.set('display_tokens_balance', grand_total_balance, { domain: cookieDomainExtension })
       await set_net_worth_24h_change(final_24h_change)
     }
+
+    if(not_fetched_array.length)
+    {
+      await notFetchedTokens(not_fetched_array)
+      //console.log("not_fetched_array", not_fetched_array)
+    }
+    
   }
 
 
@@ -2175,9 +2390,7 @@ const checkUserWalletAddress = async(pass_address) =>
                           <span className='tabs_partition'></span>
                           <li onClick={() => set_tab_active(4)} className={(tab_active == 4 ? "secondary_tabs_active" : "")}><a>NFT</a></li>
                           <span className='tabs_partition'></span>
-                          <li onClick={() => set_tab_active(5)} className={(tab_active == 5 ? "secondary_tabs_active" : "")}><a>Approvals</a></li>
-
-
+                          <li onClick={() => set_tab_active(5)} className={(tab_active == 5 ? "secondary_tabs_active" : "")}><a>Allowances</a></li>
                         </ul>
                       </div>
 
@@ -2231,7 +2444,7 @@ const checkUserWalletAddress = async(pass_address) =>
                                       }
                                     </span>
                                     <span className="input-group-addon ">
-                                      <img src="/assets/img/filter_dropdown_white.svg" alt="Filter" />
+                                      <img className=''src="/assets/img/filter_dropdown_white.svg" alt="Filter" />
                                     </span>
                                     {/* lightmode_image */}
                                   </div>
@@ -2411,9 +2624,9 @@ const checkUserWalletAddress = async(pass_address) =>
                                 {
                                   network_list_show_status ?
                                     <ul className="wallet-list-li network_display_dropdown networks_display">
-                                      <li className="network_select">Networks
+                                         <li className="network_select">Networks
                                         {
-                                          active_networks.length < 5 ?
+                                          active_networks.length < 6 ?
                                             <span onClick={() => makeAllNetworksActive(1)}>
                                               <img src="/assets/img/tick.png" alt="Tick" /> Select All
                                             </span>
@@ -2424,6 +2637,16 @@ const checkUserWalletAddress = async(pass_address) =>
                                         }
                                       </li>
 
+                                      <div className='network_pop_up_scroll'>
+            <InfiniteScroll
+                    dataLength={crypto_networks_list.length}
+                    style={{ overflow: "unset" }}
+                    // next={tokenAccountViewList}
+                    hasMore={network_has_more}
+                    loader={<SpinnerLoader />}
+                    // endMessage={<EndMessage />}
+                    scrollableTarget="scrollableDiv"
+                >
                                       {
                                         crypto_networks_list.length ?
                                           crypto_networks_list.map((item, i) =>
@@ -2448,6 +2671,8 @@ const checkUserWalletAddress = async(pass_address) =>
                                           :
                                           ""
                                       }
+                                         </InfiniteScroll>
+                                </div>
                                     </ul>
                                     :
                                     ""
@@ -2606,7 +2831,8 @@ const checkUserWalletAddress = async(pass_address) =>
                                                     {
                                                       loader_status ?
                                                         <>
-                                                          {tokens_list_as_list_view.length || address ?
+                                                          {
+                                                          tokens_list_as_list_view.length || address ?
                                                             <>
                                                               {
                                                                 tokens_list_as_list_view.length ?
@@ -2691,7 +2917,9 @@ const checkUserWalletAddress = async(pass_address) =>
                                                                 Sorry, No related data found.
                                                               </td>
                                                             </tr>
-                                                          }</> :
+                                                          }
+                                                          </>
+                                                           :
                                                         (tokenLoader(10))
                                                     }
 
@@ -2780,6 +3008,24 @@ const checkUserWalletAddress = async(pass_address) =>
                                                                           :
                                                                           ""
                                                                       }
+                                                                       {/* {
+                                                                        (item.networks).includes(1284) ?
+                                                                          <span><img src="/assets/img/portfolio/moonbeam.svg" alt="GLMR" /></span>
+                                                                          :
+                                                                          ""
+                                                                      }
+                                                                      {
+                                                                        (item.networks).includes(8217) ?
+                                                                          <span><img src="/assets/img/portfolio/klaytn.svg" alt="KLAY" /></span>
+                                                                          :
+                                                                          ""
+                                                                      } */}
+                                                                      {
+                                                                        (item.networks).includes(338) ?
+                                                                          <span><img src="/assets/img/portfolio/cronos.svg" alt="CRO" /></span>
+                                                                          :
+                                                                          ""
+                                                                      }
                                                                     </li>
                                                                     <li>
                                                                     
@@ -2851,7 +3097,7 @@ const checkUserWalletAddress = async(pass_address) =>
                                                                                       <td className="mobile_hide">{++l}</td>
                                                                                       <td className="portfolio_table_balance">
                                                                                         <div className="media" onClick={() => getTokenDetail(item)}>
-                                                                                          <img title={item.name} className="rounded-circle" src={image_base_url+item.image} onError={(e) => { e.target.onerror = null; e.target.src = (item.network == 56 ? "/assets/img/portfolio/bsc.svg" : item.network == 250 ? "/assets/img/portfolio/ftm.svg" : item.network == 137 ? "/assets/img/portfolio/polygon.svg" : item.network == 43114 ? "/assets/img/portfolio/avax.svg" : "/assets/img/portfolio/eth.svg") }} alt="Token" />
+                                                                                          <img title={item.name} className="rounded-circle" src={image_base_url+item.image} onError={(e) => { e.target.onerror = null; e.target.src = ( item.network == 338 ? "/assets/img/portfolio/cronos.svg" :item.network == 56 ? "/assets/img/portfolio/bsc.svg" : item.network == 250 ? "/assets/img/portfolio/ftm.svg" : item.network == 137 ? "/assets/img/portfolio/polygon.svg" : item.network == 43114 ? "/assets/img/portfolio/avax.svg" : "/assets/img/portfolio/eth.svg") }} alt="Token" />
                                                                                           <img className="rounded-circle rounded-circle portfolio_network_overlap" src={"/assets/img/portfolio/" + getNetworkImageNameByID(item.network)} alt="Token" title={getNetworkNameByID(item.network)} />
 
                                                                                           <div className="media-body align-self-center">
@@ -2954,8 +3200,17 @@ const checkUserWalletAddress = async(pass_address) =>
                                   </div>
                                   :
                                   tab_active == 5 ?
+                              
                                     <div className='col-md-12 col-xl-8 col-lg-12'>
-                                      <Token_Approvals networks={active_networks} addresses={active_addresses} />
+                                      {
+                                        active_addresses.length&& active_networks.length?
+                                        <div>
+                                           <Token_Approvals networks={active_networks} addresses={active_addresses} />
+                                        </div>
+                                        :
+                                        ""
+                                      }
+                                     
                                     </div>
                                     :
                                     <>
@@ -3213,7 +3468,7 @@ const checkUserWalletAddress = async(pass_address) =>
                   <div className='row'>
                     <div className='col-md-12'>
                       <button type="button" className="close" onClick={() => set_wallet_confirm_remove_modal(false)} data-dismiss="modal"><img src="https://image.coinpedia.org/wp-content/uploads/2023/03/17184522/close_icon.svg" alt="Close" /></button>
-                      <img src="/assets/img/cancel.png" alt="Cancel" title="Cancel" />
+                      <img className="remove_image"src="/assets/img/cancel.png" alt="Cancel" title="Cancel" />
                     </div>
                     <div className='col-md-12'>
                       <h4 className="modal-title">Remove Wallet </h4>

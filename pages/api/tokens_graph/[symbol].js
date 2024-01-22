@@ -1,3 +1,5 @@
+import { API_BASE_URL, config } from '../../../components/constants'
+
 export default async function handler(req, res) 
 {   
     const { symbol, intervals, count } = req.query
@@ -14,13 +16,27 @@ export default async function handler(req, res)
     if(tokenQuery) 
     {    
         const tokenQueryRun = await tokenQuery.json()
-        const capital_symbol = symbol.toUpperCase()
-        const token_data = tokenQueryRun.data[capital_symbol]
-       
-        res.json({ status:true, message:token_data[0].quotes})
+        if(tokenQueryRun.status)
+        {
+            if(tokenQueryRun.status.error_code == 0)
+            {
+                const capital_symbol = symbol.toUpperCase()
+                const token_data = tokenQueryRun.data[capital_symbol]
+                
+                fetch(API_BASE_URL+"markets/cryptocurrency/update_as_not_working_api/1/2", config)
+
+                res.json({ status:true, message:token_data[0].quotes})
+            }
+            else
+            {    
+                fetch(API_BASE_URL+"markets/cryptocurrency/update_as_not_working_api/1/1", config)
+               
+                res.json({ status:false, message:{alert_message:'Sorry, Invalid supplied data passed.'} })
+            }
+        }
     }
     else
     {
-        res.json({ status:false, message:{alert_message:'Sorry, Invalid supplied data passed.'} })
+        res.json({ status:false, message:{alert_message:'Sorry, Invalid supplied data passed.',  } })
     }
 }

@@ -27,12 +27,13 @@ export default function AnalyticsFun({ data })
       return '0'
     }
   }
-  console.log("Analytics", data)
+  // console.log("Analytics", data)
   
   
 
 
   const { net_worth_price, change_24h, line_graph_values_1d, line_graph_values_7d, line_graph_base_price_1d, line_graph_base_price_7d, token_allocation_values, token_allocation_names } = data
+  // console.log("line_graph_base_price_7d",line_graph_base_price_7d)
   const [network] = useState(data.networks)
   const [image_base_url] = useState(IMAGE_BASE_URL + "/markets/cryptocurrencies/")
 
@@ -42,7 +43,7 @@ export default function AnalyticsFun({ data })
   const [balance_list] = useState(data.tokens_list ? data.tokens_list : [])
   const [pi_chart_names] = useState(data.pi_chart_names)
   const [loader_status, set_loader_status] = useState(false)
-  const [pi_chart_colors] = useState(['#647fe6', '#ffc107', '#6f42c1', '#00bcd4'])
+  const [pi_chart_colors] = useState(['#647fe6', '#ffc107', '#6f42c1', '#00bcd4', '#f44336','#282E78'])
   const [token_allocation_colors] = useState(['#0088FE', '#00C49F', '#FFBB28', '#4b51cb', '#CF61B0', '#909090', '#5D69B1', '#24796C', '#E88310', '#2F8AC4', '#764E9F', '#ED645A', '#CC3A8E', '#C1C1C1', '#66C5CC', '#F89C74', '#DCB0F2', '#87C55F', '#9EB9F3', '#FE88B1', '#8BE0A4', '#B497E7',
     '#D3B484', '#B3B3B3', '#E10B64', '#E92828', '#78B4A4', '#604F00', '#0060E9', '#FF7DE3', '#20c997', '#6f42c1'])
 
@@ -62,7 +63,7 @@ export default function AnalyticsFun({ data })
  
 
   const getHighestNLowestValue = async (myArray) => {
-    console.log("myArray",myArray)
+    // console.log("myArray",myArray)
     var lowest = Number.POSITIVE_INFINITY
     var highest = Number.NEGATIVE_INFINITY
     var tmp = 0
@@ -83,8 +84,8 @@ export default function AnalyticsFun({ data })
         }
       }
     }
-    console.log("gainer", gainer)
-    console.log("loser", loser)
+    // console.log("gainer", gainer)
+    // console.log("loser", loser)
 
     await set_top_gainer(gainer)
     await set_top_loser(loser)
@@ -137,11 +138,11 @@ export default function AnalyticsFun({ data })
           ranges: [
             {
             from: 0,
-            to: 1000,
+            to: 1000000,
             color: 'rgba(14, 163, 83, 0.7)'
           }, 
           {
-            from: -1000,
+            from: -1000000,
             to: 0,
             color: 'rgba(223, 96, 96, 0.7)'
           }]
@@ -163,6 +164,7 @@ export default function AnalyticsFun({ data })
       categories: profile_loss_graph_days,
     }
   }
+
 
 
 
@@ -281,15 +283,73 @@ export default function AnalyticsFun({ data })
   //   getDaysList(tokens_list_as_list_view, tokens_balance, pass_type)
   
   // }
-  //  const setChartWorthData=(pass_type)=>{
-  //   console.log("pass_type",pass_type)
-  //   set_worth_chart_profit(pass_type)
-  //   profitLoss(tokens_list_as_list_view,tokens_balance,pass_type)
+   const setChartWorthData=(pass_type)=>{
+    console.log("pass_type",pass_type)
+    set_worth_chart_profit(pass_type)
+    profitLoss(tokens_list_as_list_view,tokens_balance,pass_type)
+  }
+
+
+  // const profitLoss = async (balance_list, pass_balance, pass_data_type) => 
+  // {
+  //   var low_value = 0
+  //   var high_value = 0
+  //   let j = 0
+  //   for(let run of line_graph_values_1d) 
+  //   {
+  //     if(j > 14)
+  //     {
+  //       if(j == 15)
+  //       {
+  //         low_value = await run.value
+  //       }
+  //       else
+  //       {
+  //         if(run.value < low_value)
+  //         {
+  //           low_value = await run.value
+  //         }
+  //       }
+
+  //       if(run.value > high_value)
+  //       {
+  //         high_value = await run.value
+  //       }
+  //     }
+  //     j++
+  //   }
+
+  //   const base_price = await parseFloat(((low_value+high_value)/2).toFixed(2))
+
+  //   // console.log("low_value", low_value)
+  //   // console.log("high_value", high_value)
+  //   var values_array = []
+  //   var times_array = []
+  //   let i = 0
+  //   for(let run of line_graph_values_1d) 
+  //   {
+  //     if(i > 14)
+  //     {
+  //       if(moment(new Date(run.time*1000)).format("m") == 0)
+  //       { 
+  //         //.format()
+  //         const time = moment.utc((new Date(run.time*1000))).format("ha ")
+  //         await values_array.push(parseFloat((run.value - base_price).toFixed(2)))
+  //         await times_array.push(time)
+  //       }
+  //     }
+  //     i++
+  //   }
+  //   // console.log("values_array", values_array)
+  //   // console.log("times_array", times_array)
+    
+  //   await set_profile_loss_graph_days(times_array)
+  //   await set_profit_loss_values(values_array)
   // }
-
-
   const profitLoss = async (balance_list, pass_balance, pass_data_type) => 
   {
+    console.log("pass_data_type",pass_data_type)
+    if(pass_data_type==2){
     var low_value = 0
     var high_value = 0
     let j = 0
@@ -316,35 +376,73 @@ export default function AnalyticsFun({ data })
       }
       j++
     }
+  
+
 
     const base_price = await parseFloat(((low_value+high_value)/2).toFixed(2))
+    console.log("base_price",base_price)
 
-    // console.log("low_value", low_value)
-    // console.log("high_value", high_value)
+    console.log("low_value", low_value)
+    console.log("high_value", high_value)
     var values_array = []
     var times_array = []
     let i = 0
     for(let run of line_graph_values_1d) 
     {
-      if(i > 14)
+      if(i > 15)
       {
         if(moment(new Date(run.time*1000)).format("m") == 0)
         { 
           //.format()
-          const time = moment.utc((new Date(run.time*1000))).format("ha MMM")
+          const Day = moment.utc((new Date(run.time*1000))).format("ha")
           await values_array.push(parseFloat((run.value - base_price).toFixed(2)))
-          await times_array.push(time)
+          await times_array.push(Day)
         }
       }
       i++
     }
-    // console.log("values_array", values_array)
-    // console.log("times_array", times_array)
+    console.log("values_array", values_array)
+    console.log("times_array", times_array)
     
     await set_profile_loss_graph_days(times_array)
     await set_profit_loss_values(values_array)
   }
 
+
+  if(pass_data_type==3){
+
+    const values_array = [];
+    const times_array = [];
+    const selectedDates = new Set();
+    console.log("selectedDates",selectedDates)
+    
+    for (let i = line_graph_values_7d.length - 1; i >= 0 && selectedDates.size < 8; i--) {
+      const run = line_graph_values_7d[i];
+      console.log("run",run)
+      const Day = moment.utc(new Date(run.time * 1000)).format('DD MMM');
+      console.log("Day",Day)
+      if (!selectedDates.has(Day)) {
+     
+          const timeSlot = moment.utc(new Date(run.time * 1000)).format('DD MMM');
+          const calculatedValue = parseFloat((run.value - line_graph_base_price_7d).toFixed(2));
+    
+          times_array.push(timeSlot);
+          values_array.push(calculatedValue);
+    
+          selectedDates.add(Day);
+        
+      }
+    }
+    times_array.reverse();
+    values_array.reverse();
+    console.log("Times Array", times_array);
+    console.log("Values Array", values_array);
+     
+    await set_profile_loss_graph_days(times_array)
+    await set_profit_loss_values(values_array)
+  }
+  }
+  
   useEffect(() => {
     
     getHighestNLowestValue(balance_list)
@@ -490,7 +588,8 @@ export default function AnalyticsFun({ data })
                   <p>Last 24hrs Top Gainer</p>
                     <div className="mt-2">
                       <div className="media">
-                        <img className="rounded-circle" title={top_gainer.name} src={image_base_url+top_gainer.image} onError={(e) => { e.target.onerror = null; e.target.src = (item.network == 56 ? "/assets/img/portfolio/bsc.svg" : item.network == 250 ? "/assets/img/portfolio/ftm.svg" : item.network == 137 ? "/assets/img/portfolio/polygon.svg" : item.network == 43114 ? "/assets/img/portfolio/avax.svg" : "/assets/img/portfolio/eth.svg") }} alt="Token" />
+                      <img className="rounded-circle" title={top_gainer.name} src={image_base_url+top_gainer.image} onError={(e) => { e.target.onerror = null; e.target.src = (network == 56 ? "/assets/img/portfolio/bsc.svg" :network == 250 ? "/assets/img/portfolio/ftm.svg" : network == 137 ? "/assets/img/portfolio/polygon.svg" : network == 43114 ? "/assets/img/portfolio/avax.svg" : "/assets/img/portfolio/eth.svg") }} alt="Token" />
+                        {/* <img className="rounded-circle" title={top_gainer.name} src={image_base_url+top_gainer.image} onError={(e) => { e.target.onerror = null; e.target.src = (item.network == 56 ? "/assets/img/portfolio/bsc.svg" : item.network == 250 ? "/assets/img/portfolio/ftm.svg" : item.network == 137 ? "/assets/img/portfolio/polygon.svg" : item.network == 43114 ? "/assets/img/portfolio/avax.svg" : "/assets/img/portfolio/eth.svg") }} alt="Token" /> */}
                         <div className="media-body align-self-center">
                           <h5 className="mt-0">{top_gainer.name}  <small className='green'>{(top_gainer.change_24h).toFixed(2)}%</small></h5>
                           <p></p>
@@ -524,7 +623,9 @@ export default function AnalyticsFun({ data })
                   <p>Last 24hrs Top Loser</p>
                       <div className="mt-2">
                         <div className="media">
-                          <img className="rounded-circle" title={top_loser.name} src={image_base_url+top_loser.image} onError={(e) => { e.target.onerror = null; e.target.src = (item.network == 56 ? "/assets/img/portfolio/bsc.svg" : item.network == 250 ? "/assets/img/portfolio/ftm.svg" : item.network == 137 ? "/assets/img/portfolio/polygon.svg" : item.network == 43114 ? "/assets/img/portfolio/avax.svg" : "/assets/img/portfolio/eth.svg") }} alt="Token" />
+                        <img className="rounded-circle" title={top_loser.name} src={image_base_url+top_loser.image} onError={(e) => { e.target.onerror = null; e.target.src = (network == 56 ? "/assets/img/portfolio/bsc.svg" :network == 250 ? "/assets/img/portfolio/ftm.svg" :network == 137 ? "/assets/img/portfolio/polygon.svg" : network == 43114 ? "/assets/img/portfolio/avax.svg" : "/assets/img/portfolio/eth.svg") }} alt="Token" />
+                        
+                          {/* <img className="rounded-circle" title={top_loser.name} src={image_base_url+top_loser.image} onError={(e) => { e.target.onerror = null; e.target.src = (item.network == 56 ? "/assets/img/portfolio/bsc.svg" : item.network == 250 ? "/assets/img/portfolio/ftm.svg" : item.network == 137 ? "/assets/img/portfolio/polygon.svg" : item.network == 43114 ? "/assets/img/portfolio/avax.svg" : "/assets/img/portfolio/eth.svg") }} alt="Token" /> */}
                           <div className="media-body align-self-center">
                             <h5 className="mt-0">{top_loser.name}  <small className='red'>{(top_loser.change_24h).toFixed(2)}%</small></h5>
                             <p></p>
@@ -609,8 +710,11 @@ export default function AnalyticsFun({ data })
       </div>
 
           <div className="line-chart-asset-worth charts_subtitle dex-donot-pichart">
-            <div className='row'>
-            <div className='col-12 col-md-12 col-sm-12'>
+            {
+              net_worth_price>0?
+              <div>
+                    <div className='row'>
+            <div className='col-6 col-md-6 col-sm-6'>
                 <h6>Daily Profits and Loss</h6>
                 <p>Daily profit and loss based on current token holdings</p>
             </div>
@@ -630,15 +734,36 @@ export default function AnalyticsFun({ data })
                   </li>
                 </ul>
               </div> */}
+                  
+              <div className="asset_view_tab">
+                <ul className="nav nav-tabs">
+                  <li className="nav-item" key={1}>
+                    <a className={"nav-link " + (worth_chart_profit == 2 ? "active" : "")} onClick={() => setChartWorthData(2)}>
+                      <span>1 Day</span>
+                    </a>
+                  </li>
+                  <li className="nav-item" key={1}>
+                    <a className={"nav-link " + (worth_chart_profit == 3 ? "active" : "")} onClick={() => setChartWorthData(3)}>
+                      <span>1 Week</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
               </div> 
-            </div>
+              </div> 
+            
             <ReactApexChart options={profit_loss_options} series={profit_loss_series} type="bar" height={350} />
+                </div>
+              :
+              ""
+            }
+        
           </div>
         </div>
 
         <div className="col-md-4">
           {
-            tokens_balance ?
+            net_worth_price ?
               <div className="dex-donot-pichart charts_subtitle">
                 <h6>Chain Allocation&nbsp;
                   <OverlayTrigger
@@ -664,7 +789,7 @@ export default function AnalyticsFun({ data })
           }
 
           {
-            tokens_balance ?
+            net_worth_price ?
               <div className="dex-donot-pichart charts_subtitle">
                 <h6>Token Allocation&nbsp; 
                   <OverlayTrigger

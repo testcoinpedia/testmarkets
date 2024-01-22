@@ -322,7 +322,7 @@ export default function Topmenu()
     // await set_request_config(JsCookie.get("user_token"))
    
     // router.reload("pass_object",pass_object)
-    console.log("name",name)
+    // console.log("name",name)
     // callback(name)
   }
 
@@ -348,7 +348,7 @@ export default function Topmenu()
 
   return (
     <>
-      <div className="market_top_header">
+      <div className="container-top market_top_header">
         <nav className="navbar navbar-expand-lg  navbar-dark navbar_border_bottom">
           <div className="container header_responsive_section padding_header">
             <div className="col-md-12 ">
@@ -494,6 +494,7 @@ export default function Topmenu()
                                 {/* <a className="header_reg_btn" href="/register">Verify</a> */}
                                 {/* <Link href="/connections"><a className="dropdown-item"><img src="/assets/img/drop_referral_list.png" /> Connections</a></Link> */}
                                 <h6>Other</h6>
+                                <Link href={events_coinpedia_url+"my-events/create-new"}  onClick={() => customToggle()} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2024/01/18174935/menu_create_event.svg" title=" Create Events" alt=" Create Events"/> Create New Event</Link>
                                 <Link href={events_coinpedia_url+"my-events/"} onClick={() => customToggle()} className="dropdown-item"><img src="https://image.coinpedia.org/wp-content/uploads/2023/09/22163647/menu_manage_event.svg" title=" Manage Events" alt=" Manage Events" className="manageevent_icon"/> Manage Events</Link>
                                 <a className="dropdown-item" onClick={() => logoutFunction()} style={{ color: '#fe4b4b' }}><img src="https://image.coinpedia.org/wp-content/uploads/2022/06/21160229/sidemenu-logout.svg" title="Logout" alt="Logout" /> Logout</a>
 
@@ -643,6 +644,7 @@ export default function Topmenu()
                         
 
                           <li className="menu_company_list">Other</li>
+                          <li><Link href={events_coinpedia_url + "my-events/create-new"} onClick={() => customToggle()}><img src="https://image.coinpedia.org/wp-content/uploads/2024/01/18174932/menu_create_event_white.svg" alt="Create Events" title="Create Events" className="manageevent_icon" /> Create New Event</Link></li>
                           <li><a href={events_coinpedia_url + "my-events"}><img src="https://image.coinpedia.org/wp-content/uploads/2023/09/22163650/menu_manage_event_white.svg" alt="Menu Company" className="manageevent_icon" /> Manage Events</a></li>
                         </ul>
                       </li>
@@ -855,11 +857,11 @@ export default function Topmenu()
                       } 
                     </button>
                 </li>
-                <li className="dropdown">
+                {/* <li className="dropdown">
                   <a data-toggle="dropdown" href="#">
                    
                   </a>
-                </li>
+                </li> */}
                 <li className="dark_theme_toggle" onClick={() => setDarkMode()} id="theme_color">
                     {
                       light_dark_mode ?
@@ -877,7 +879,7 @@ export default function Topmenu()
                     }
 
                   </li>
-                  <li><a href="#"><button className="header_button notification_bell"><img src="https://image.coinpedia.org/wp-content/uploads/2022/02/07181113/notification.svg" alt="Notification"  /></button></a></li>
+                  <li className='dropdown event-notify'><a href="#"><span ><img src="https://image.coinpedia.org/wp-content/uploads/2022/02/07181113/notification.svg" alt="Notification" className="header_button notification_bell"  /></span></a></li>
                 </ul>
               </div>
             </div>

@@ -184,7 +184,7 @@ const convertCurrency = (token_price) =>
         Axios.get(API_BASE_URL+"markets/cryptocurrency/gainers/"+per_page_count, req_config).then(response => 
         {
             set_loader_status(true)
-            console.log("Gainers",response.data.message)   
+            // console.log("Gainers",response.data.message)   
             if(response.data.status === true)
             { 
                 set_top_gainers(response.data.message)
@@ -209,7 +209,7 @@ const convertCurrency = (token_price) =>
         Axios.get(API_BASE_URL+"markets/cryptocurrency/losers/"+per_page_count, req_config).then(response => 
         {
             set_loader_status(true)
-            console.log("losers",response.data.message)   
+            // console.log("losers",response.data.message)   
             if(response.data.status === true)
             { 
                 set_top_loosers(response.data.message)
@@ -609,10 +609,11 @@ const convertCurrency = (token_price) =>
 
                           <div className="col-md-4 col-lg-6 col-12 col-sm-12 ">
                                 <div className="input-group search_filter">
-                                    <input value={search_value} onChange={(e)=> set_search_value(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Coin/Token" />
+                                    
                                     <div className="input-group-prepend ">
                                         <span className="input-group-text" ><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
                                     </div>
+                                    <input value={search_value} onChange={(e)=> set_search_value(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Coin/Token" />
                                 </div> 
                             </div>
                            

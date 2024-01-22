@@ -52,7 +52,7 @@ return (
       <div className="categories categories_list_display">
         <div className="markets_list_quick_links">
           <div className='row'>
-              <div className='col-md-10'>
+              <div className='col-md-12'>
               <ul>
                   {
                     user_token?
@@ -118,6 +118,23 @@ return (
                       BNB Chain
                     </Link>
                   </li>
+
+                  <li>
+                    <Link href={"/ETF"} data-toggle="tab" className={"nav-item nav-link categories__item "+(tab_status_connections === 10 ? "active_category":"")} onClick={()=>set_tab_status_connections(10)}>
+                     Bitcoin ETF Tracker
+                    </Link>
+                  </li>
+
+                  <li className=' float-right mt-2' >
+                  <div className='list-new-token' style={{display:"block"}}>
+                  {
+                    user_token ?
+                    <Link href={"/token/update/"}  className="nav-item nav-link">New Token listing</Link>
+                    :
+                    <a onClick={()=>loginModalStatus(2)}>New Token listing</a>
+                  }
+                </div>
+                  </li>
                  
                  {/* <li>
                     <Link href={"/category/defi"} data-toggle="tab" className={"nav-item nav-link categories__item "+(tab_status_connections === 10 ? "active_category":"")} onClick={()=>set_tab_status_connections(10)}>
@@ -127,16 +144,9 @@ return (
                      
                   </ul>
               </div>
-              <div className='col-md-2'>
-                  <li className='list-new-token text-right' style={{display:"block"}}>
-                        {
-                          user_token ?
-                          <Link href={"/token/update/"}  className="nav-item nav-link">New Token listing</Link>
-                          :
-                          <a onClick={()=>loginModalStatus(2)}>New Token listing</a>
-                        }
-                      </li>
-              </div>
+              {/* <div className='col-md-2'>
+               
+              </div> */}
           </div>
           
         </div>

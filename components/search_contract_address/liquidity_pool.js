@@ -56,7 +56,7 @@
         const res = await fetch(graphqlApiURL, opts)
         const result = await res.json()
         
-        console.log("result", result)
+        // console.log("result", result)
         var final_array = {}
         var token_addresses_array = []
         var token_symbol_array = []
@@ -104,7 +104,7 @@
     {
         try
         {  
-            console.log("pass_address", pass_address)
+            // console.log("pass_address", pass_address)
             const check_query = await liquidityFetchQuery(1, pass_address)
             if(!check_query.status)
             {
@@ -178,7 +178,7 @@
         const res = await fetch(graphqlApiURL, opts)
         const result = await res.json()
 
-        console.log("bal result", result)
+        // console.log("bal result", result)
         var final_array = {}
         if(!result.errors)
         {   

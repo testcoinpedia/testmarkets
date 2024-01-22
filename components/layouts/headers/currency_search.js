@@ -8,8 +8,8 @@ import { API_BASE_URL, events_coinpedia_url, app_coinpedia_url, market_coinpedia
 
 export default function LoginPopupmodal({reqData}) 
 {     
-    console.log("reqData", reqData)
-    console.log("currency_list", reqData.currency_list)
+    // console.log("reqData", reqData)
+    // console.log("currency_list", reqData.currency_list)
     
     const dispatch = useDispatch()
     const userData = useSelector(state => state.userData)

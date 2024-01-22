@@ -5,6 +5,7 @@ import {API_BASE_URL, graphqlApiKEY, market_coinpedia_url, config, createValidUR
 // import { useRouter } from 'next/navigation'
 import Popupmodal from '../components/popupmodal'
 import LoginModal from './layouts/auth/loginModal'
+import { useSelector, useDispatch } from 'react-redux'
 import Link from 'next/link'
 import JsCookie from "js-cookie" 
 import { TrendingLoader } from '../components/loaders/contentLoader'
@@ -12,7 +13,7 @@ import { checkContractAddress } from './search_contract_address/live_price'
 
 export default function Details() 
 {   
-    
+    const userData = useSelector(state => state.userData)
     // const router = useRouter()
     const inputRef = useRef(); 
     const [searchBy, setSearchBy] = useState("") 
@@ -26,7 +27,7 @@ export default function Details()
     const [result_showing_type, set_result_showing_type] = useState(1)
     //1:trending & recent searched, 2:Show all tokens, 3:Show all category
 
-    const [user_token, set_user_token] = useState(JsCookie.get("user_token") ? JsCookie.get("user_token"):"")
+    const [user_token, set_user_token] = useState(userData.token ? userData.token : JsCookie.get("user_token") ? JsCookie.get("user_token"):"")
     const [default_category_list, set_default_category_list] = useState([])
     const [default_tokens_list, set_default_tokens_list] = useState([])
     const [searched_tokens_list, set_searched_tokens_list] = useState([])
@@ -44,9 +45,14 @@ export default function Details()
     const [add_request_loader_status, set_add_request_loader_status] = useState(false)
     const [err_add_token_name, set_err_add_token_name] = useState("")
     const [err_add_symbol, set_err_add_symbol] = useState("")
+    const [crypto_networks, set_crypto_networks] = useState([])
+    const [network_row_id, set_network_row_id] = useState("")
+    const [blockchain_name, set_blockchain_name] = useState("")
+    const [contract_address, set_contract_address] = useState("")
+    const [err_contract_address, set_err_contract_address] = useState("")
+    const [err_network_row_id, set_err_network_row_id] = useState("")
+    const [err_blockchain_name, set_err_blockchain_name] = useState("")
     
-    
-
 
     var data = []
     if(JsCookie.get("category_search_tokens"))
@@ -63,6 +69,7 @@ export default function Details()
 
     const category_search_modal = useRef()
     useEffect(() => {
+        getCryptoNetworks()
         let handler = (e) => {
             if (!category_search_modal?.current?.contains(e.target)) {
                 set_search_container_status(false)
@@ -73,28 +80,56 @@ export default function Details()
         return () => {
             document.removeEventListener("mousedown", handler)
         }
+        
     }, [])
 
 
     
-  const getDataFromChild = async () => 
-  {
-    await set_login_modal_status(false)
-    router.push('/token/update')  
-  }
+    const getDataFromChild = async () => 
+    {
+        await set_login_modal_status(false)
+        if(add_token_name)
+        {
+            await set_add_request_modal_status(true)
+        }
+        else
+        {
+            router.push('/token/update')  
+        }
+        
+    }
 
-  const login_props = {
-    status: true,
-    request_config: request_config,
-    callback: getDataFromChild
-  }
-
+    const login_props = {
+        status: true,
+        request_config: request_config,
+        callback: getDataFromChild
+    }
 
     const loginModalStatus = async () => 
     {
+        await set_search_container_status(false)
         await set_login_modal_status(false)
         await set_login_modal_status(true)
+        await set_add_token_name("")
     }
+
+    const showTokenRequestModal = async () => 
+    {   
+        if(!userData.token)
+        {
+            await set_search_container_status(false)
+            await set_add_token_name(search_contract_address)
+            await set_login_modal_status(false)
+            await set_login_modal_status(true) 
+        }
+        else
+        {
+            await set_search_container_status(false)
+            await set_add_request_modal_status(true)
+            await set_add_token_name(search_contract_address)
+        }
+    }
+
 
     const clearform = () =>
     {
@@ -105,9 +140,12 @@ export default function Details()
     const addTokenRequest = async () =>
     {    
         let formIsValid = true
+        setModalData({icon: "", title: "", content:""})
         set_err_add_token_name("")
         set_err_add_symbol("")
-        setModalData({icon: "", title: "", content:""})
+        set_err_network_row_id("")
+        set_err_blockchain_name("")
+        set_err_contract_address("")
 
         if(!add_token_name) 
         {
@@ -121,6 +159,36 @@ export default function Details()
             set_err_add_symbol("The Add Symbol field is required.")
         }
 
+        if(!network_row_id) 
+        {
+            formIsValid = false
+            set_err_network_row_id("The Network Row ID field is required.")
+        }
+
+        if(network_row_id == 'other')
+        {
+            if(!blockchain_name) 
+            {
+                formIsValid = false
+                set_err_blockchain_name("The Blockchain Name field is required.")
+            }
+        }
+
+        if(!contract_address) 
+        {
+            formIsValid = false
+            set_err_contract_address("The Contract Address field is required.")
+        }
+        else if(contract_address.length < 32)
+        {
+            set_err_contract_address("Invalid Contract Address.")
+        }
+        else if(contract_address.length > 44)
+        {
+            set_err_contract_address("Invalid Contract Address.")
+        }
+
+
         if(!formIsValid) 
         {
             return
@@ -129,6 +197,9 @@ export default function Details()
         const req_obj = {
             token_name : add_token_name,
             symbol : add_symbol,
+            network_row_id : network_row_id,
+            blockchain_name : network_row_id == 'other' ? blockchain_name:"",
+            contract_address : contract_address,
             search_from_type : 2
         }
         
@@ -141,15 +212,25 @@ export default function Details()
                 setModalData({icon: "", title: "Thank you", content:res.data.message.alert_message})
                 set_add_token_name("")
                 set_add_symbol("")
+                set_network_row_id("")
+                set_blockchain_name("")
+                set_contract_address("")
                 set_search_contract_address("")
                 set_add_request_modal_status(false)
                 set_add_request_loader_status(false)
             } 
         } 
-       
     }
 
 
+    const getCryptoNetworks = async () => 
+    {
+      const res = await Axios.get(API_BASE_URL + "static/crypto_networks", config)
+      if(res.data.status) 
+      {
+        set_crypto_networks(res.data.message)
+      }
+    }
 
     const getTokenData = async ()=>
     { 
@@ -302,11 +383,15 @@ export default function Details()
                 {   
                     set_api_loader_status(true)
                     const token_basic_details = await checkContractAddress(param)
-                    console.log("token_basic_details", token_basic_details)
+                    // console.log("token_basic_details", token_basic_details)
                     if(token_basic_details.status)
                     {
                         set_api_loader_status(false)
-                        set_searched_contract_details(token_basic_details.message)
+                        if(param.length > 40)
+                        {
+                            set_searched_contract_details(token_basic_details.message)
+                        }
+                        
                     }
                     else
                     {
@@ -377,9 +462,11 @@ export default function Details()
     }
 
 
-    const Close=()=>{
-        set_search_container_status(false)
-        set_search_contract_address("")
+    const Close = async ()=>
+    {   
+        await set_result_showing_type(1)
+        await set_search_contract_address("")
+        await set_search_container_status(false)
     }
 return (
     <div>
@@ -418,7 +505,7 @@ return (
                         </div>
                         <input value={search_contract_address}  ref={inputRef => inputRef && inputRef.focus()} onChange={(e)=> getSearchedResults(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search coin, category or contract address" />
                         <div className="input-group-prepend ">
-                            <span className="input-group-text" onClick={()=>Close()} ><img className="close-image"  src="/assets/img/close.png" alt="search-box" /></span>                 
+                            <span className="input-group-text adf" onClick={()=>Close()} ><img className="close-image"  src="/assets/img/close.png" alt="search-box" /></span>                 
                         </div>
                     </div>
                     
@@ -516,7 +603,6 @@ return (
                                 (searched_tokens_list && searched_tokens_list.length > 0) ?
                                 <div>
                                     <p className='searchbox_titles'>Searched Currencies</p>
-                                   
                                     <ul className="search-tokens">
                                     {
                                         searched_tokens_list.slice(0,6).map((e,i) =>
@@ -635,18 +721,17 @@ return (
                                 ""
                             }
 
-
                             {
                                 !searched_contract_details && (searched_tokens_list.length == 0) && (searched_categories_list.length == 0) && (searched_liquidity_list.length == 0) ?
                                 <div style={{fontWeight:"500"}}>
-                                    Submit an <span className='add-token-link' onClick={()=>{set_add_request_modal_status(true), set_add_token_name(search_contract_address)}}>Add Token Request</span> to the administrator, or if you are the token owner, {
-                                        user_token ?
+                                    Submit an <span className='add-token-link' onClick={()=>showTokenRequestModal()}>Add Token Request</span> to the administrator, or if you are the token owner, {
+                                        userData.token ?
                                         <>
-                                        <Link href={"/token/update"} className='add-token-link' >list new token</Link>
+                                        <Link href={"/token/update"} className='add-token-link' >List new token</Link>
                                         </>
                                         :
                                         <>
-                                       <a className='add-token-link' onClick={()=>loginModalStatus()}>Log In</a> to add the new token.
+                                        <a className='add-token-link' onClick={()=>loginModalStatus()}>Log In</a> to add the new token.
                                         </>
                                         
                                     } 
@@ -878,19 +963,60 @@ return (
                             <div className="create_account">
                                 <div className="login_account_body pb-0">
                                     <h4 className="title">Submit a request to the administrator to add token details.</h4>
-                                    
-                                    <div className='mt-3'><b>Request Token Name <span className="label_star">*</span></b></div>
+                                    <div className='mt-3'><b>Token Name <span className="label_star">*</span></b></div>
                                     <div className="input-group mt-0">
-                                        <input type="text" className="form-control" placeholder="Request Token Name"  value={add_token_name} onChange={(e) => set_add_token_name((e.target.value).toLowerCase())} />
+                                        <input type="text" className="form-control modal-login-form-control" placeholder="Token Name"  value={add_token_name} onChange={(e) => set_add_token_name(e.target.value)} />
                                     </div>
                                     <div className="error">{err_add_token_name}</div>
 
-                                    <div className='mt-3'><b>Request Token Symbol <span className="label_star">*</span></b></div>
+                                    <div className='mt-3'><b>Token Symbol <span className="label_star">*</span></b></div>
                                     <div className="input-group mt-0">
-                                        <input type="text" className="form-control" placeholder="Request Token Symbol"  value={add_symbol} onChange={(e) => set_add_symbol((e.target.value).toLowerCase())} />
+                                        <input type="text" className="form-control modal-login-form-control" placeholder="Token Symbol"  value={add_symbol} onChange={(e) => set_add_symbol((e.target.value).toUpperCase())} />
                                     </div>
                                     <div className="error">{err_add_symbol}</div>
-                                
+
+                                    <div className='mt-3'><b>Select Network <span className="label_star">*</span></b></div>
+                                    <div className="input-group mt-0">
+                                        <select className='form-control modal-login-form-control' onChange={(e) => set_network_row_id((e.target.value).toLowerCase())}> 
+                                            <option value="" >Select Network</option>
+                                                {
+                                                    crypto_networks.length ?
+                                                    crypto_networks.map((item, inner_i) =>
+                                                    <>
+                                                    <option value={item._id} key={inner_i}>{item.network_name}</option>
+                                                    </>
+                                                    )
+                                                    :
+                                                    ""
+                                                }
+                                            <option value="other">Other Network</option>
+                                        </select>
+                                    </div>
+                                    <div className="error">{err_network_row_id}</div>
+
+
+                                    {
+                                        network_row_id == "other" ?
+                                        <>
+                                        <div className='mt-3'><b>Blockchain Name<span className="label_star">*</span></b></div> 
+                                        <div className="input-group mt-0">
+                                            <input type="text" className="form-control modal-login-form-control" placeholder="Blockchain Name"  value={blockchain_name} onChange={(e) => set_blockchain_name((e.target.value).toLowerCase())} />
+                                        </div>
+                                        <div className="error">{err_blockchain_name}</div>
+                                        </>
+                                        :
+                                        ""
+                                    }
+
+
+                                  <div className='mt-3'><b>Contract Address <span className="label_star">*</span></b></div>
+                                    <div className="input-group mt-0">
+                                        <input type="text" className="form-control modal-login-form-control" placeholder="Contract Address"  value={contract_address} onChange={(e) => set_contract_address((e.target.value).toLowerCase())} />
+                                    </div>
+                                    <div className="error">{err_contract_address}</div>
+                                    
+                                    {/* <div className='mt-3'><b>Select Network <span className="label_star">*</span></b></div> */}
+                                    
 
                                     <div className='button_wallet'>
                                         {

@@ -43,13 +43,13 @@ export default function NFTDetails({networks, addresses})
         if(JsCookie.get('user_token'))
         {   
             const response = await Axios.post(API_BASE_URL + 'markets/portfolio/users_nfts', { assets: pass_data }, config(JsCookie.get('user_token')))
-            console.log("updateUsersNFTs", response)
+            // console.log("updateUsersNFTs", response)
         }
     }
    
     const getNFTHistory = async (update_type) =>
     {   
-      console.log("update_type", update_type)
+    //   console.log("update_type", update_type)
       const data_list = []
       const data_list_ids = nft_ids
       let list_concat_type = false
@@ -75,13 +75,13 @@ export default function NFTDetails({networks, addresses})
                 const { network, network_image, network_name} = getEvmNetwork(network_id)
                 if(network) 
                 { 
-                  console.log(network, nft_nw_completed_data_status[network])
+                //   console.log(network, nft_nw_completed_data_status[network])
                   if(!nft_nw_completed_data_status[network])
                   {
                     const query = nftByWalletAddress({ wallet_addresses: addresses, network: network,  limit:nft_limit, offset:present_current_page ? nft_offset:0})
                     const config = evmConfig(query)
                     const response = await Axios(config)
-                    console.log("responsenft", response)
+                    // console.log("responsenft", response)
                     if(response.data) 
                     {
                       if(response.data.data.EVM) 
@@ -165,8 +165,8 @@ export default function NFTDetails({networks, addresses})
                 }
             }
 
-            console.log("nft_list", nft_list)
-        console.log("data_list", data_list)
+            // console.log("nft_list", nft_list)
+        // console.log("data_list", data_list)
         // , limit:nft_limit, offset:present_current_page ? nft_offset:0
         const set_images_response = await setNftImages({data:data_list})
         const updated_data = await nft_list.concat(set_images_response)
@@ -174,7 +174,7 @@ export default function NFTDetails({networks, addresses})
         await set_data_loader_status(false)
         await set_nft_ids(data_list_ids)
         await updateUsersNfts(set_images_response)
-        console.log("nft_ids", data_list_ids)
+        // console.log("nft_ids", data_list_ids)
           }
       }
       else
@@ -220,7 +220,7 @@ export default function NFTDetails({networks, addresses})
                 else if(run.URI)
                 {   
                     const uri_json_data = await getURIString(run.URI)
-                    console.log("asdf", uri_json_data)
+                    // console.log("asdf", uri_json_data)
                     if(uri_json_data.image)
                     {
                         nft_image = await uri_json_data.image
@@ -341,7 +341,7 @@ export default function NFTDetails({networks, addresses})
 
     const singleDetails = async (data) =>
     {
-        console.log("data",data)
+        // console.log("data",data)
         set_nft_modal_status(true)
         set_nft_details(data)
         await set_nft_other_details({})
@@ -368,7 +368,7 @@ export default function NFTDetails({networks, addresses})
                 }
                 catch(err)
                 {
-                   console.log("err",err) 
+                //    console.log("err",err) 
                 }
             }
             
@@ -557,7 +557,7 @@ export default function NFTDetails({networks, addresses})
     const myDataList = async (update_type) =>
     {
         await set_data_loader_status(true)
-        console.log("hitting")
+        // console.log("hitting")
         if(has_more)
         {
             console.log("hitting 2")
@@ -567,12 +567,12 @@ export default function NFTDetails({networks, addresses})
 
             const start = present_current_page 
             const end = start+per_page
-            console.log("start", start)
-            console.log("end", end)
-            console.log("nft_list", nft_list)
+            // console.log("start", start)
+            // console.log("end", end)
+            // console.log("nft_list", nft_list)
             const res_query = await nft_list.slice(start, end)
             
-            console.log("tradeHistory", res_query)
+            // console.log("tradeHistory", res_query)
             if(res_query.length)
             {   
                 //await set_my_data_status(false)

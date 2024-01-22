@@ -40,7 +40,7 @@ export class TVChartContainer extends React.PureComponent
 	{	
 		const { symbol, liquidity_row_id, min, max, token_row_id, network_row_id, liquidity_address, contracts_array } = this.props.reqData
 		// var offset = new Date().getTimezoneOffset();
-		console.log("offset", this.props.reqData);
+		// console.log("offset", this.props.reqData);
 
 		const widgetOptions = {
 			symbol: symbol,
@@ -68,7 +68,7 @@ export class TVChartContainer extends React.PureComponent
 		}
 		
 		
-		console.log("widgetOptions", widgetOptions)
+		// console.log("widgetOptions", widgetOptions)
 
 		const tvWidget = new widget(widgetOptions);
 		this.tvWidget = tvWidget;

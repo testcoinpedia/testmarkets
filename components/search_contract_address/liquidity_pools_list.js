@@ -128,7 +128,7 @@ const getLiquidityDetails = async () =>
 
             
                 const response = await getLiquidityAddresses(network_row_id,contracts_address)
-                console.log("get liquidity addresses", response)
+                // console.log("get liquidity addresses", response)
                
                 if(response.status)
                 {   
@@ -239,7 +239,7 @@ const getLiquidityDetails = async () =>
                             i++
                         }
                     }
-                   console.log("final_result", final_result)
+                //    console.log("final_result", final_result)
                    
                 }
                 else
@@ -259,7 +259,7 @@ const getLiquidityDetails = async () =>
         })
         
         await set_liquidity_pools(final_result)
-        console.log("grand_liquidity_value", grand_liquidity_value)
+        // console.log("grand_liquidity_value", grand_liquidity_value)
         const {series, labels} = await arrangePiChartData({list_data:final_result, grand_liquidity_value})
         await set_series_values(series)
         await set_labels_values(labels)
@@ -311,7 +311,7 @@ const priceList = async (token_symbols, token_addresses) =>
     {
         prices_array = await prices_res.data.message
 
-        console.log("prices_res", prices_res)
+        // console.log("prices_res", prices_res)
     }
     return prices_array
 }
@@ -319,7 +319,7 @@ const priceList = async (token_symbols, token_addresses) =>
 const updateInBackend = async (pass_data) =>
 {
    const response = await Axios.post("/api/liquidity/addresses/", { addresses:pass_data})
-   console.log("response", response)
+//    console.log("response", response)
 }
 
 

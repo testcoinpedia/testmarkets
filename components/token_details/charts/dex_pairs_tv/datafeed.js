@@ -31,7 +31,7 @@ export const Datafeed = (props) =>
             const contract_address = (contract_details[0].contract_address).toLowerCase()
             const response = await tradeHistoryForTV({network_type:network_row_id, liquidity_address:liquidity_address, limit:per_page_count, offset:offset})
                 //const response = await tradeHistoryForTV({network_type:network_row_id, liquidity_address:contract_address})
-               console.log("res_output", response)
+            //    console.log("res_output", response)
                 if(response.status)
                 {
                     if(response.message[0])
@@ -183,7 +183,7 @@ export const Datafeed = (props) =>
         },
         getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) =>
         {   
-            console.log("resolution", resolution)
+            // console.log("resolution", resolution)
             if(resolution != '1D')
             {   
                 

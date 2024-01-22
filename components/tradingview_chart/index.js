@@ -40,7 +40,7 @@ export class TVChartContainer extends React.PureComponent
 	{	
 		const reqData = this.props.reqData
 		// var offset = new Date().getTimezoneOffset();
-		console.log("offset", this.props.reqData);
+		// console.log("offset", this.props.reqData);
 
 		const widgetOptions = {
 			symbol: reqData.symbol,
@@ -67,7 +67,7 @@ export class TVChartContainer extends React.PureComponent
 			studies_overrides: this.props.studiesOverrides,
 		}
 		
-		console.log("widgetOptions", widgetOptions)
+		// console.log("widgetOptions", widgetOptions)
 
 		const tvWidget = new widget(widgetOptions);
 		this.tvWidget = tvWidget;

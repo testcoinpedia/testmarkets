@@ -71,7 +71,7 @@ export default function LoginPopupmodal(props)
 
     const checkAppleLogin = async (data) =>
     {  
-        console.log("data", data)
+        // console.log("data", data)
         
         set_apple_loader_status(true)
         await set_modal_data({icon: "",title: "",content:""})
@@ -100,7 +100,7 @@ export default function LoginPopupmodal(props)
                 }
 
                 const res = await Axios.post(MAIN_API_BASE_URL+'app/auth/user_login_with_apple', req_obj, config(id_token))
-                console.log(res.data)  
+                // console.log(res.data)  
                 if(res.data)
                 {   
                     set_apple_loader_status(false)
@@ -125,7 +125,7 @@ export default function LoginPopupmodal(props)
 
     const onGmailLoginSuccess=(response)=>
     {   
-        console.log("gmail", response)
+        // console.log("gmail", response)
         set_gmail_loader_status(true)
         const reqObj = {
             email_id : response.profileObj.email,
@@ -140,7 +140,7 @@ export default function LoginPopupmodal(props)
         Axios.post(MAIN_API_BASE_URL+'app/auth/user_login_with_gmail', reqObj, config("")).then(res => 
         {  
             set_gmail_loader_status(false)
-            console.log(res.data)  
+            // console.log(res.data)  
             setShowModal(false)  
             if(res.data.status === true)
             {   
@@ -161,7 +161,7 @@ export default function LoginPopupmodal(props)
 
     const onGmailFailureSuccess=(res)=>
     {
-       console.log("login failed;", res)
+    //    console.log("login failed;", res)
     }
 
     

@@ -30,6 +30,8 @@ export default function TransactionFun({networks, addresses})
     const [transaction_details_modal_status, set_transaction_details_modal_status] =useState(false)
     const [transaction_detail, set_transaction_detail] =useState("")
 
+    const[cronos_api_url]=useState("https://api.cronoscan.com/api?module=account&action=")
+    const[cronos_api_key]=useState("2BYA8HNPWJIF63395I9G7VYEFJ6DVJM98B")
    useEffect(()=>
    {  
         bnbTxnsList()
@@ -59,7 +61,7 @@ export default function TransactionFun({networks, addresses})
         var res10 = ""
         if(networks.includes(56) && (addresses.length > 0))
         {
-            console.log("asdf", networks)
+            // console.log("asdf", networks)
             res1 = await Axios.get(bnb_api_url+"txlist&address="+addresses[0]+"&startblock=0&endblock=99999999&sort=desc&apikey="+bnb_api_key)
             res2 = await Axios.get(bnb_api_url+"tokentx&address="+addresses[0]+"&sort=desc&apikey="+bnb_api_key)
             
@@ -203,7 +205,7 @@ export default function TransactionFun({networks, addresses})
 
         if(networks.includes(137) && (addresses.length > 0))
         {
-            console.log("asdf", networks)
+            // console.log("asdf", networks)
             res7 = await Axios.get(polygon_api_url+"txlist&address="+addresses[0]+"&startblock=0&endblock=99999999&sort=desc&apikey="+polygon_api_key)
             res8 = await Axios.get(polygon_api_url+"tokentx&address="+addresses[0]+"&sort=desc&apikey="+polygon_api_key)
             
@@ -248,7 +250,54 @@ export default function TransactionFun({networks, addresses})
                 }
             }
         }
+        if(networks.includes(338) && (addresses.length > 0))
+        {
+            console.log("asdf", networks)
+            res9 = await Axios.get(cronos_api_url+"txlist&address="+addresses[0]+"&startblock=0&endblock=99999999&sort=desc&apikey="+cronos_api_key)
+            res10 = await Axios.get(cronos_api_url+"tokentx&address="+addresses[0]+"&sort=desc&apikey="+cronos_api_key)
+            console.log("res10",res10)
+            
+            if(res9)
+            {   
+                for(let i of res9.data.result)
+                {   
+                    if(parseFloat(i.value))
+                    {
+                        await result.push({
+                            hash : i.hash,
+                            timeStamp : i.timeStamp,
+                            tokenDecimal : i.tokenDecimal,
+                            value : i.value,
+                            from : i.from,
+                            to : i.to,
+                            gas : i.gas,
+                            gasPrice : i.gasPrice,
+                            txnType : 9
+                        })
+                    }
+                }
+            }
 
+            // bnb tokens list
+            if(res10)
+            {   
+                for(let i of res10.data.result)
+                {
+                    await result.push({
+                        hash : i.hash,
+                        timeStamp : i.timeStamp,
+                        tokenDecimal : i.tokenDecimal,
+                        value : i.value,
+                        from : i.from,
+                        to : i.to,
+                        gas : i.gas,
+                        gasPrice : i.gasPrice,
+                        tokenSymbol : i.tokenSymbol,
+                        txnType : 10
+                    })
+                }
+            }
+        }
         // if(networks.includes(43114) && (addresses.length > 0))
         // {
         //     res9 = await Axios.get(avalanche_api_url+"txlist&address="+addresses[0]+"&startblock=0&endblock=99999999&sort=desc&apikey="+avalanche_api_key)
@@ -363,6 +412,11 @@ export default function TransactionFun({networks, addresses})
                                                 <img className="txn-netwok" src="/assets/img/portfolio/polygon.svg" alt="Token" title="Token" />
                                                 </>
                                                 :
+                                                (e.txnType == 9) || (e.txnType == 10) ?
+                                                <>
+                                                <img className="txn-netwok" src="/assets/img/portfolio/cronos.svg" alt="Token" title="Token" />
+                                                </>
+                                                :
                                                 <>
                                                 </>
                                             }
@@ -382,6 +436,9 @@ export default function TransactionFun({networks, addresses})
                                                             :
                                                             (e.txnType == 7) || (e.txnType == 8) ? 
                                                             "https://polygonscan.com/tx/"
+                                                            :
+                                                            (e.txnType == 9) || (e.txnType == 10) ? 
+                                                            "https://cronos.com/tx/"
                                                             :
                                                             ""
                                                             )+e.hash} target="_blank"
@@ -431,6 +488,16 @@ export default function TransactionFun({networks, addresses})
                                                 {e.tokenSymbol}
                                                 </>
                                                 :
+                                                e.txnType == 9 ?
+                                                <>
+                                                CRO
+                                                </>
+                                                :
+                                                e.txnType == 10 ?
+                                                <>
+                                                {e.tokenSymbol}
+                                                </>
+                                                :
                                                 <>
                                                 </>
                                             }
@@ -461,6 +528,11 @@ export default function TransactionFun({networks, addresses})
                                                 (e.txnType == 7) || (e.txnType == 8) ?
                                                 <>
                                                 {e.txnType == 3 ? "Matic":"ERC-20"}
+                                                </>
+                                                :
+                                                (e.txnType == 9) || (e.txnType == 10) ?
+                                                <>
+                                                {e.txnType == 3 ? "CRO":"CRC-20"}
                                                 </>
                                                 :
                                                 <>

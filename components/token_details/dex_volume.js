@@ -145,9 +145,8 @@ export default function MyFunction({reqData})
                                 
                             </div>
                             <div className='col-9 pl-0'>
-                            <h4 className='trading_volume'>Trading volume : <span className='float-right'>$5,548,145,484.19</span> </h4>
-                                  
-                                </div>
+                            <h4 className='trading_volume'>Trading volume : <span className='float-right'>{volume > 0 ? "$" + roundNumericValue(volume) : "NA"}</span> </h4>
+                             </div>
                         </div>
             
                     

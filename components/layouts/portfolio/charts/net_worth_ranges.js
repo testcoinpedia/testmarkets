@@ -10,7 +10,7 @@ import Net_worth from './net_worth'
 
 export default function Tokenchart({reqData}) 
 {   
-    console.log("reqData", reqData)
+    // console.log("reqData", reqData)
     const chartContainerRef = useRef("")
     const [worth_chart_type, set_worth_chart_type] = useState(1)
     const [show_message_status, set_show_message_status] = useState(false)
@@ -86,11 +86,34 @@ export default function Tokenchart({reqData})
                             ""
                         }
                     </span>
+                    {
+        net_worth_price>0?
+    <div>
+        
+
+      {worth_chart_type === 1 ? (
+      
+        <small className=''>
+            
+            Last 1 Day net worth based on present token holdings.</small>
+      ) : worth_chart_type === 2 ? (
+        <small className=''>Last 1 Week net worth based on present token holdings.</small>
+      ) : null}
+
+ 
+    </div>
+   
+        :
+        ""
+}
                     </h6>
-                    {/* <p className='net_worth_title'>Last 1day net worth based on present token holdings</p> */}
+                   
+                    {/* <p className='net_worth_title'>Last 1day and 1 Week net worth based on present token holdings</p> */}
                 </div>
+                
                 :
                 <div className='col-6 col-md-6 col-sm-6'>
+                    
                 </div>
             }
             
@@ -98,7 +121,10 @@ export default function Tokenchart({reqData})
             
             <div className='col-6'>
                 <div className="asset_view_tab">
-                <ul className="nav nav-tabs">
+                    {
+                        net_worth_price>0?
+                        <div>
+                            <ul className="nav nav-tabs">
                     
                     <li className="nav-item" key={"asd"}>
                     <a className={"nav-link " + (worth_chart_type == 1 ? "active" : "")} onClick={() => setChartWorth(1)}>
@@ -111,12 +137,38 @@ export default function Tokenchart({reqData})
                     </a>
                     </li>
                 </ul>
+                            </div>
+                            :
+                            ""
+                    }
+                
              </div>
             </div>
+          
         </div>
+        {
+        net_worth_price>0?
+    <div>
+        {/* <div className='row px-3'>
+        <div>
+      {worth_chart_type === 1 ? (
+      
+        <p className='net_worth_title'>
+            
+            Last 1 Day net worth based on present token holdings.</p>
+      ) : worth_chart_type === 2 ? (
+        <p className='net_worth_title'>Last 1 Week net worth based on present token holdings.</p>
+      ) : null}
+
+    </div>
+    </div> */}
+        </div>
+        :
+        ""
+}
 
             {
-                worth_chart_type && line_graph_values.length?
+                worth_chart_type && line_graph_values.length && net_worth_price?
                 <Net_worth
                     reqData={{
                         line_graph_values,
@@ -124,7 +176,10 @@ export default function Tokenchart({reqData})
                     }}
                 />
                 :
-                ""
+                <div className='text-center py-5 my-5'>
+    <h6 >Chart is empty </h6>
+    <p>No data available to display.</p>
+  </div>
             }
            
         </>

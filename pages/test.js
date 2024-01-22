@@ -55,8 +55,17 @@ export default function Companies({user_token, config, userAgent})
 
     const tokensList = async () =>
     {  
-
-    }
+      var final_array = []
+      const res = await Axios.get("https://coinpedia.org/wp-json/wp/v2/tags/?per_page=100")
+      if(res.data)
+      {
+        for(let i of res.data)
+        {
+          await final_array.push({category:i.name})
+        }
+      }
+      // console.log("final_array", final_array)
+    } 
    
  
 return (

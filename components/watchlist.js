@@ -58,7 +58,7 @@ export default function Details({config,user_token})
     }
     const ModalVote=(token_id,status,_id,item)=> 
     { 
-      console.log(item)   
+      // console.log(item)   
       setHandleModalVote(!handleModalVote) 
       set_voting_status(status)
       set_Token_id(token_id)
@@ -74,7 +74,7 @@ export default function Details({config,user_token})
       Axios.get(API_BASE_URL+"markets/listing_tokens/save_voting_details/"+token_id, config)
       .then(res=>
       { 
-        console.log(res)
+        // console.log(res)
         if(res.data.status === true) 
         {
           
@@ -83,7 +83,7 @@ export default function Details({config,user_token})
             return obj._id === vote_id
           })
           var testObj = result ? result[0] : "" 
-          console.log("testObj",testObj)
+          // console.log("testObj",testObj)
           var test_total_votes = testObj.total_votes+1
           testObj['total_votes'] = test_total_votes
           testList[item] = testObj
@@ -92,7 +92,7 @@ export default function Details({config,user_token})
           set_voting_message(res.data.message.alert_message) 
           setHandleModalVote(!handleModalVote)
           getWatchlist()
-          console.log(voting_ids)
+          // console.log(voting_ids)
         }
       })
     }
@@ -101,7 +101,7 @@ export default function Details({config,user_token})
       Axios.get(API_BASE_URL+"markets/listing_tokens/remove_voting_details/"+token_id, config)
       .then(res=>
       { 
-        console.log(res)
+        // console.log(res)
         if(res.data.status === true) 
         {
           var testList = watchlist
@@ -113,13 +113,13 @@ export default function Details({config,user_token})
           test_total_votes = testObj.total_votes-1
           testObj['total_votes'] = test_total_votes
           testList[item] = testObj
-          console.log(testObj)
+          // console.log(testObj)
           set_watchlist(testList)
           voting_ids.splice(voting_ids.indexOf(vote_id), 1) 
           set_voting_message(res.data.message.alert_message)
           setHandleModalVote(!handleModalVote) 
           getWatchlist()
-          console.log(voting_ids)
+          // console.log(voting_ids)
         }
       })
     }

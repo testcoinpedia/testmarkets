@@ -57,7 +57,7 @@ export default function Create_token({ config, token_id }) {
     const [elements, set_elements] = useState([]);
     const [approval_status, set_approval_status] = useState("")
 
-    console.log("team_member", team_member)
+    // console.log("team_member", team_member)
     const [add_manual_full_name, set_add_manual_full_name] = useState('')
     const [add_manual_email_id, set_add_manual_email_id] = useState('')
     const [add_manual_designation, set_add_manual_designation] = useState('')
@@ -332,7 +332,7 @@ export default function Create_token({ config, token_id }) {
     const teammemberList = () => {
         Axios.get(API_BASE_URL + "markets/users/manage_team_members/list/" + token_id, config).then(
             (response) => {
-                console.log("dfgf", response);
+                // console.log("dfgf", response);
                 if (response.data.status) {
                     set_api_loader(false)
                     set_team_member_list(response.data.message);

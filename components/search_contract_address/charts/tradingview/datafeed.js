@@ -90,7 +90,7 @@ export const Datafeed = (props) =>
         },
         getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) =>
         {   
-            console.log("resolution", resolution)
+            // console.log("resolution", resolution)
             if(resolution != '1D')
             {   
                 
@@ -124,7 +124,7 @@ export const Datafeed = (props) =>
                             {
                                 data_end_status = true
                             }
-                            console.log("my_store_response 1", trading_history)
+                            // console.log("my_store_response 1", trading_history)
                             trading_history = await (response.message).concat(trading_history)
                             data_add_status = true
                             // console.log("my_store_response 2", my_store_response.message)

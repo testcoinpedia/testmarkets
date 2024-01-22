@@ -151,7 +151,7 @@ export default function Companies({userAgent})
         {
             if(res.data.status === true)
             {    
-                console.log("res",res) 
+                // console.log("res",res) 
                 set_loader_status(true)
                 set_tokens_list(res.data.message)
                 setPageCount(Math.ceil(res.data.count/per_page_count))
@@ -332,12 +332,12 @@ return (
                   
                   <div className='row'>
                           <div className='col-md-12 col-lg-12 col-12'>
-                          <div className="input-group search_filter">
-                              <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Coin/Token" />
+                            <div className="input-group search_filter">
                               <div className="input-group-prepend ">
-                                  <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
-                                </div>
-                              </div> 
+                                <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
+                              </div>
+                                <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Coin/Token" />
+                            </div> 
                           </div>
 
                           {/* <div className="col-md-4 col-lg-4 col-4 mobile_hide_view">
@@ -360,204 +360,199 @@ return (
                   
                 </div>
                 <div className="market_page_data new_token_page">
-                     <div className="table-responsive">
-                       <table className="table table-borderless">
-                         <thead>
-                            <tr>
-                                <th className="mobile_fixed_first" style={{minWidth: '35px'}}></th>
-                                <th className="mobile_hide_view" style={{minWidth: '35px'}}>#</th>
-                                <th className="mobile_fixed table-cell-shadow-right name_col">Name</th>
-                                <th className="">Price</th>
-                                <th className="" style={{minWidth: 'unset'}}>24h</th>
-                                <th className=" table_circulating_supply new_market_cap">Fully Diluted Market Cap&nbsp;
-                                  <OverlayTrigger
-                                    delay={{ hide: 450, show: 300 }}
-                                      overlay={(props) => (
-                                        <Tooltip {...props} className="custom_pophover">
-                                          <p>Market capitalization is a measure used to determine the total value of a publicly traded cryptocurrency. It is calculated by multiplying the current market price of a single coin/token X total supply of the coin/token.</p>
+                    <div className="table-responsive">
+                      <table className="table table-borderless">
+                        <thead>
+                          <tr>
+                            <th className="mobile_fixed_first" style={{minWidth: '35px'}}></th>
+                            <th className="mobile_hide_view" style={{minWidth: '35px'}}>#</th>
+                            <th className="mobile_fixed table-cell-shadow-right name_col">Name</th>
+                            <th className="">Price</th>
+                            <th className="" style={{minWidth: 'unset'}}>24h</th>
+                            <th className=" table_circulating_supply new_market_cap">Diluted Market Cap&nbsp;
+                              <OverlayTrigger
+                                delay={{ hide: 450, show: 300 }}
+                                  overlay={(props) => (
+                                    <Tooltip {...props} className="custom_pophover">
+                                      <p>Market capitalization is a measure used to determine the total value of a publicly traded cryptocurrency. It is calculated by multiplying the current market price of a single coin/token X total supply of the coin/token.</p>
 
-                                        </Tooltip>
-                                      )}
-                                      placement="bottom"
-                                    ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
-                                  </OverlayTrigger>
-                                </th> 
-                                <th className="">Blockchain</th>
-                                <th className=" " style={{minWidth: 'unset'}}>Total Supply</th>
+                                    </Tooltip>
+                                  )}
+                                  placement="bottom"
+                                ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
+                              </OverlayTrigger>
+                            </th> 
+                            <th style={{minWidth: '120px'}}>Blockchain</th>
+                            <th className=" " style={{minWidth: 'unset'}}>Total Supply</th>
+                            
+                            {/* <th className=" table_circulating_supply new_circulating_supply">Circulating Supply&nbsp;
+                              <OverlayTrigger
+                                delay={{ hide: 450, show: 300 }}
+                                overlay={(props) => (
+                                  <Tooltip {...props} className="custom_pophover">
+                                    <p>Circulating supply refers to the total number of coins/tokens that are currently in circulation and available to the public. It represents the portion of the total supply of a cryptocurrency that is actively being traded or held by investors.</p>
+                                  </Tooltip>
+                                )}
+                                placement="bottom"
+                              ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
+                              </OverlayTrigger>
+                            </th>   */}
+                            {/* <th className="last_data new_last_date">Last 7 Days</th> */}
+                          </tr>
+                        </thead>
+                        
+  
+                        <tbody>
+                          {
+                          loader_status ?
+                          <>
+                          {
+                            tokens_list.length > 0
+                            ?
+                            tokens_list.map((e, i) => 
+                            <tr key={i}>
                                 
-                                {/* <th className=" table_circulating_supply new_circulating_supply">Circulating Supply&nbsp;
-                                  <OverlayTrigger
-                                    delay={{ hide: 450, show: 300 }}
-                                    overlay={(props) => (
-                                      <Tooltip {...props} className="custom_pophover">
-                                        <p>Circulating supply refers to the total number of coins/tokens that are currently in circulation and available to the public. It represents the portion of the total supply of a cryptocurrency that is actively being traded or held by investors.</p>
-                                      </Tooltip>
-                                    )}
-                                    placement="bottom"
-                                  ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
-                                  </OverlayTrigger>
-                                </th>   */}
-                                {/* <th className="last_data new_last_date">Last 7 Days</th> */}
-                            </tr>
-                         </thead>
-                         
-   
-                         <tbody>
-                           {
-                            loader_status ?
-                           <>
-                           {
-                             tokens_list.length > 0
-                             ?
-                             tokens_list.map((e, i) => 
-                             <tr key={i}>
-                                 
-                                     <td className="mobile_fixed_first">
-                                     
-                                     {
-                                        user_token ?
+                                    <td className="mobile_fixed_first">
+                                    
+                                    {
+                                      user_token ?
+                                        <>
+                                        {
+                                          e.watchlist_status== true ?
+                                          <span onClick={()=>removeFromWatchlist(e._id)} ><img src=" /assets/img/wishlist_star_selected.svg" alt="Watchlist" width={17} height={17} /></span>
+                                          :
+                                          <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/star.svg" alt="Watchlist" width={17} height={17} /></span>
+                                          }
+                                        </>
+                                        :
+                                        <span className='login-watchlist' onClick={()=>loginModalStatus(e._id)}><img src="/assets/img/star.svg" alt="Watchlist"/></span>
+                                    }
+                                    
+                                    </td>
+                                  <td className="mobile_hide_view wishlist"> {sl_no+i+1}
+                                  </td>
+                                    <td className="mobile_fixed table-cell-shadow-right name_col">
+                                      <Link href={"/"+e.token_id}>
+                                        
+                                        <div className="media">
+                                          <div className="media-left align-self-center">
+                                            <img src={(e.token_image ? image_base_url+e.token_image: e.coinmarketcap_id ? cmc_image_base_url+e.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                          </div>
+                                          <div className="media-body align-self-center">
+                                            <h4 className="media-heading">{strLenTrim(e.token_name, 14)} </h4>
+                                            <p>{(e.symbol).toUpperCase()}</p>
+                                          </div>
+                                        </div> 
+                                        
+                                      </Link>
+                                    </td> 
+                                    {/* <td>{e.price === null? "-":"$"+ Number(e.price).toFixed(2)}</td> */}
+                                    {/* <td>
+                                      <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span>
+                                    </td> */}
+              
+                                    <td className="market_list_price"> 
+                                      <Link href={"/"+e.token_id}>
+                                        {
+                                          e.price ?
                                           <>
-                                          {
-                                            e.watchlist_status== true ?
-                                            <span onClick={()=>removeFromWatchlist(e._id)} ><img src=" /assets/img/wishlist_star_selected.svg" alt="Watchlist" width={17} height={17} /></span>
-                                            :
-                                            <span onClick={()=>addToWatchlist(e._id)} ><img src="/assets/img/star.svg" alt="Watchlist" width={17} height={17} /></span>
-                                            }
+                                          <span className="block_price"> {convertCurrency(e.price)}</span>
+                                          {e.updated_on ? moment(e.updated_on).fromNow():null} 
                                           </>
                                           :
-                                          <span className='login-watchlist' onClick={()=>loginModalStatus(e._id)}><img src="/assets/img/star.svg" alt="Watchlist"/></span>
+                                          "-"
+                                        }
+                                        </Link>
+                                  </td>
+                                        
+                                  <td className="mobile_hide_table_col">
+                                      <Link href={"/"+e.token_id}>
+                                      {
+                                      e.percent_change_24h?e.percent_change_24h>0?
+                                      <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
+                                      :
+                                      <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="low price"/>{(e.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                      :
+                                      "-"
                                       }
-                                     
-                                     </td>
-                                    <td className="mobile_hide_view wishlist"> {sl_no+i+1}
+                                      </Link>
                                     </td>
-                                     <td className="mobile_fixed table-cell-shadow-right name_col">
-                                       <Link href={"/"+e.token_id}>
-                                         
-                                          <div className="media">
-                                            <div className="media-left align-self-center">
-                                              <img src={(e.token_image ? image_base_url+e.token_image: e.coinmarketcap_id ? cmc_image_base_url+e.coinmarketcap_id+".png" : image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
-                                            </div>
-                                            <div className="media-body align-self-center">
-                                              <h4 className="media-heading">{strLenTrim(e.token_name, 14)} </h4>
-                                              <p>{(e.symbol).toUpperCase()}</p>
-                                            </div>
-                                          </div> 
-                                         
-                                       </Link>
-                                     </td> 
-                                     {/* <td>{e.price === null? "-":"$"+ Number(e.price).toFixed(2)}</td> */}
-                                     {/* <td>
-                                       <span className="twenty_high"><img src="/assets/img/green-up.png" />2.79%</span>
-                                     </td> */}
-               
-                                     <td className="market_list_price"> 
-                                       <Link href={"/"+e.token_id}>
-                                         {
-                                            e.price ?
-                                            <>
-                                            <span className="block_price"> {convertCurrency(e.price)}</span>
-                                            {e.updated_on ? moment(e.updated_on).fromNow():null} 
-                                            </>
-                                            :
-                                            "-"
-                                         }
-                                         </Link>
+
+                                    <td >
+                                    <div className='circulating-supply'>
+                                      <Link href={"/"+e.token_id}>
+                                      {/* {e.fully_diluted_market_cap ? "$"+separator((e.fully_diluted_market_cap).toFixed(0)) : "-"} */}
+                                      {e.fully_diluted_market_cap ? convertCurrency(e.fully_diluted_market_cap): ""}
+                                      </Link>
+                                    </div>
                                     </td>
-                                         
-                                    <td className="mobile_hide_table_col">
-                                       <Link href={"/"+e.token_id}>
-                                       {
-                                        e.percent_change_24h?e.percent_change_24h>0?
-                                        <h6 className="values_growth"><span className="green"><img src="/assets/img/markets/high.png" alt="high price"/>{e.percent_change_24h.toFixed(2)+"%"}</span></h6>
+
+                                    <td className=" wishlist"> 
+                                      {
+                                        e.list_type == 1 ?
+                                        <p className='new-token-network'>
+                                          Coin
+                                        </p>
                                         :
-                                        <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="low price"/>{(e.percent_change_24h.toFixed(2)).replace('-', '')+"%"}</span></h6>
+                                        <>
+                                        {
+                                          e.networks ?
+                                          <div className="media">
+                                          <div className="media-left align-self-center" style={{width:"22px"}}>
+                                            <img  style={{width:"22px"}} src={(e.networks.token_image ? image_base_url+e.networks.token_image: image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                          </div>
+                                          <div className="media-body align-self-center" style={{marginLeft:"5px"}}>
+                                            {e.networks.network_name != 'BNB Smart Chain (BEP20)' ? e.networks.network_name:"BNB"}
+                                            
+                                          </div>
+                                        </div>
+                                          :
+                                          <p className='new-token-network'>Token</p>
+                                        }
+                                          
+                                        </>
+                                      }
+
+                                    </td> 
+                                    <td>
+                                      <Link href={"/"+e.token_id}>
+                                      {
+                                        e.total_supply ?
+                                        separator((e.total_supply).toFixed(0))
                                         :
                                         "-"
-                                        }
-                                       </Link>
-                                     </td>
+                                      }
+                                      {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>1.05%</span></h6> */}
+                                      </Link>
+                                    </td>
 
-                                     <td >
-                                      <div className='circulating-supply'>
-                                        <Link href={"/"+e.token_id}>
-                                        {/* {e.fully_diluted_market_cap ? "$"+separator((e.fully_diluted_market_cap).toFixed(0)) : "-"} */}
-                                        {e.fully_diluted_market_cap ? convertCurrency(e.fully_diluted_market_cap): ""}
-                                        </Link>
-                                      </div>
-                                     </td>
-
-                                     <td className=" wishlist"> 
-                                        {
-                                          e.list_type == 1 ?
-                                          <p className='new-token-network'>
-                                            Coin
-                                          </p>
-                                          :
-                                          <>
-                                          {
-                                            e.networks ?
-                                            <div className="media">
-                                            <div className="media-left align-self-center" style={{width:"22px"}}>
-                                              <img  style={{width:"22px"}} src={(e.networks.token_image ? image_base_url+e.networks.token_image: image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
-                                            </div>
-                                            <div className="media-body align-self-center" style={{marginLeft:"5px"}}>
-                                              <p >{e.networks.network_name != 'BNB Smart Chain (BEP20)' ? e.networks.network_name:"BNB"} </p>
-                                              
-                                            </div>
-                                          </div>
-                                            :
-                                            <p className='new-token-network'>Token</p>
-                                          }
-                                            
-                                          </>
-                                        }
-
-                                      </td> 
-                                     <td>
-                                       <Link href={"/"+e.token_id}>
-                                       {
-                                          e.total_supply ?
-                                          separator((e.total_supply).toFixed(0))
-                                          :
-                                          "-"
-                                        }
-                                        {/* <h6 className="values_growth"><span className="red"><img src="/assets/img/markets/low.png" alt="high price"/>1.05%</span></h6> */}
-                                       </Link>
-                                     </td>
-
-                                      
-                                     
+                                    {/* <td className="mobile_hide_table_col">
+                                      {
+                                        e.coinmarketcap_id ?
+                                        <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} width="100%" height="100%"/>
+                                        :
+                                        "-"
+                                      }
+                                    </td>  */}
                                     
-                                   
-                                      
-                                     {/* <td className="mobile_hide_table_col">
-                                        {
-                                          e.coinmarketcap_id ?
-                                          <img className={e.percent_change_7d>0 ? "saturated-up":"saturated-down"} src={"https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/"+(e.coinmarketcap_id ? e.coinmarketcap_id+".svg":"")} onError={(e) =>e.target.src = ""} alt={e.token_name} width="100%" height="100%"/>
-                                          :
-                                          "-"
-                                        }
-                                     </td>  */}
-                                      
-                               </tr> 
-                             ) 
-                             :
-                             <tr >
-                               <td className="text-lg-center text-md-left" colSpan="11">
-                                   Sorry, No related data found.
-                               </td>
-                             </tr>
-                           }
-                             </>
-                             :
-                             <TableContentLoader row="10" col="11" />  
+                              </tr> 
+                            ) 
+                            :
+                            <tr >
+                              <td className="text-lg-center text-md-left" colSpan="11">
+                                  Sorry, No related data found.
+                              </td>
+                            </tr>
                           }
-                           
-                         </tbody>
-                       </table>
-                     </div>
-                   </div> 
+                            </>
+                            :
+                            <TableContentLoader row="10" col="11" />  
+                        }
+                          
+                        </tbody>
+                      </table>
+                    </div>
+                  </div> 
                 
 
                 <div className="col-md-12">

@@ -262,7 +262,6 @@ export default function Exchange({reqData})
                                                     <br/>
                                                     {moment(innerItem.block.timestamp.time).format('h:mma')}
                                                 </td>
-
                                                 <td>
                                                     {
                                                         (innerItem.sellCurrency.address).toLowerCase() == (contracts_array[0].contract_address).toLowerCase()  ?
@@ -275,7 +274,6 @@ export default function Exchange({reqData})
                                                         </span>
                                                     } 
                                                 </td>
-
                                                 <td>
                                                     {
                                                         (innerItem.sellCurrency.address).toLowerCase() == (contracts_array[0].contract_address).toLowerCase()  ?

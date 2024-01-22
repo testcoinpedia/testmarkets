@@ -72,6 +72,24 @@ export const config=(user_token)=>
 }
 
 
+export const getGoodWishOfDay = () =>
+{
+  var today = new Date()
+  var current_hour = today.getHours()
+  if(current_hour < 12) 
+  {
+    return "Good Morning"
+  } 
+  else if (current_hour < 18) 
+  {
+    return "Good Afternoon"
+  } 
+  else 
+  {
+    return "Good Evening"
+  }
+}
+
 // var interval = '1d'
 // if(interval_type == 1)
 // {
@@ -260,7 +278,7 @@ export const arrayColumn = async (anArray, columnNumber) =>
     const new_array = []
     for(let run of anArray)
     {   
-        console.log("run", run)
+        // console.log("run", run)
         if(run[columnNumber])
         {
             await new_array.push(run[columnNumber])
@@ -326,6 +344,18 @@ export const calling_network = [
   {
     network : "avalanche",
     id : 43114
+  },
+  // {
+  //   network : "moonbeam",
+  //   id : 1284
+  // },
+  // {
+  //   network : "klaytn",
+  //   id : 8217
+  // },
+  {
+    network : "cronos",
+    id : 338
   },
   // {
   //   network:"arbitrun",

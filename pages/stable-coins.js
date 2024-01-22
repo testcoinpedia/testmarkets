@@ -150,7 +150,7 @@ export default function Companies({userAgent})
         {
             if(res.data.status === true)
             {    
-                console.log("res",res) 
+                // console.log("res",res) 
                 set_loader_status(true)
                 set_tokens_list(res.data.message)
                 setPageCount(Math.ceil(res.data.count/per_page_count))
@@ -331,10 +331,10 @@ return (
                         <div className='row'>
                           <div className='col-md-12 col-lg-12 col-12'>
                             <div className="input-group search_filter">
+                              <div className="input-group-prepend ">
+                                <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
+                              </div>
                               <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Coin/Token" />
-                                <div className="input-group-prepend ">
-                                    <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
-                                  </div>
                             </div> 
                           
                             </div>

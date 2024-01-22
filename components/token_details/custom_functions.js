@@ -14,7 +14,7 @@ import { tradeHistory } from './liquidity/queries'
         offset:0
     })
 
-    console.log("res_query", res_query)
+    // console.log("res_query", res_query)
 
     if(res_query.status)
     {
@@ -38,7 +38,7 @@ import { tradeHistory } from './liquidity/queries'
       }
 
       const response = await Axios.post(API_BASE_URL + "markets/tokens/update_first_trade_details", req_obj, config(""))
-      console.log("response", response)
+      // console.log("response", response)
     }
 }
 
@@ -121,15 +121,16 @@ const cmcArrageGraphData = async (data)=>
   for(let run of data)
   { 
       var create_obj = {}
-      create_obj['time'] = await  Math.floor((new Date(run.timestamp)).getTime()/1000)
+      const current_country_time = await moment(run.timestamp).format("YYYY-MM-DDTHH:mm:ss")+".000Z"
+      create_obj['time'] = await  Math.floor((new Date(current_country_time)).getTime()/1000)
       create_obj['value'] = run.quote.USD.price
 
       var create_obj2 = {}
-      create_obj2['time'] = await  Math.floor((new Date(run.timestamp)).getTime()/1000)
+      create_obj2['time'] = await  Math.floor((new Date(current_country_time)).getTime()/1000)
       create_obj2['value'] = run.quote.USD.volume_24h
 
       var create_obj3 = {}
-      create_obj3['time'] = await  Math.floor((new Date(run.timestamp)).getTime()/1000)
+      create_obj3['time'] = await  Math.floor((new Date(current_country_time)).getTime()/1000)
       create_obj3['value'] = run.quote.USD.market_cap
 
       if(run.quote.USD.price > high_value)
@@ -148,7 +149,7 @@ const cmcArrageGraphData = async (data)=>
   }
   const base_price = await ((low_value+high_value)/2).toFixed(0)
   
-  console.log("final_array", final_array)
+  // console.log("final_array", final_array)
 
   return {final_array, volume_array,market_cap_array, base_price, low_value, high_value}
 }

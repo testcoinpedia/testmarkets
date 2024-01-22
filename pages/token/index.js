@@ -40,7 +40,7 @@ export default function WalletTokensList({userAgent, config})
       const res = await Axios.get(API_BASE_URL+"markets/users/manage_crypto/list", config)
       if(res.data.status)
       {
-          console.log(res.data.watchlist)
+          // console.log(res.data.watchlist)
           await set_watchlist(res.data.watchlist)
           await set_loader_status(true)
 

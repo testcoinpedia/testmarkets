@@ -175,7 +175,7 @@ export default function CreateLauchPad({config,token_id})
     Axios.get(API_BASE_URL + "markets/users/manage_launchpads/list/"+token_id, config).then(
       (response) => 
       {
-        console.log("dfgf",response);
+        // console.log("dfgf",response);
         if(response.data.status) 
         {
           set_api_loader(false)
@@ -191,7 +191,7 @@ export default function CreateLauchPad({config,token_id})
     {
         if(response.data.status) 
         {
-            console.log("indi",response.data.message)
+            // console.log("indi",response.data.message)
             set_launchpad_type(response.data.message.launchpad_type)
             setStartDate(moment(response.data.message.start_date).utc().format("YYYY-MM-DD"))
             setEndDate(moment(response.data.message.end_date).utc().format("YYYY-MM-DD"))

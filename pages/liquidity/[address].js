@@ -44,7 +44,7 @@ export default function WalletDetails({address})
             token_name= token_response.message.name
         }
 
-        console.log("token_response", token_response)
+        // console.log("token_response", token_response)
 
         var final_result = []
         if(response.status)
@@ -100,7 +100,7 @@ export default function WalletDetails({address})
                     token_balance: token_balance
                 })
             }
-            console.log("final_result", final_result)
+            // console.log("final_result", final_result)
             await set_liquidity_pools(final_result)
            
             
@@ -142,7 +142,7 @@ export default function WalletDetails({address})
         if(prices_res.data.status) 
         {
             prices_array = await prices_res.data.message
-            console.log("prices_res", prices_res)
+            // console.log("prices_res", prices_res)
         }
         return prices_array
     }

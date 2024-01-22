@@ -139,7 +139,7 @@ export default function Companies({user_token, config, userAgent})
         {
             if(res.data.status === true)
             {    
-                console.log("res",res) 
+                // console.log("res",res) 
                 set_loader_status(true)
                 set_tokens_list(res.data.message)
                 setPageCount(Math.ceil(res.data.count/per_page_count))
@@ -323,10 +323,10 @@ return (
                           }
                         <div className="col-md-8 col-12 col-sm-6">
                           <div className="input-group search_filter">
+                            <div className="input-group-prepend ">
+                              <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
+                            </div>
                             <input value={search_title} onChange={(e)=> set_search_title(e.target.value)} type="text" className="form-control search-input-box" placeholder="Search Token" />
-                              <div className="input-group-prepend ">
-                                  <span className="input-group-text" onClick={()=> tokensList({selected:0})}><img src="/assets/img/search_large.svg" alt="search-box"  width="100%" height="100%"/></span>                 
-                                </div>
                           </div> 
                          
                           </div>
@@ -357,62 +357,61 @@ return (
                 </div>
                 <div className="market_page_data">
                 {
-                             tokens_list.length > 0 ?
-                             tokens_list.map((e, i) => 
-                     <div className="table-responsive">
-                    
-                       <table className="table table-borderless">
-                         <thead>
-                            <tr>
-                                <th className="mobile_fixed_first" style={{minWidth: '34px'}}></th>
-                                <th className="mobile_hide_view" style={{minWidth: '34px'}}>#</th>
-                                <th className="mobile_fixed rank_class table-cell-shadow-right">Name</th>
-                                <th className="">Price</th>
-                                <th className="" style={{minWidth: 'unset'}}>1h</th>
-                                <th className="" style={{minWidth: 'unset'}}>24h</th>
-                                <th className="" style={{minWidth: 'unset'}}>7d</th>
-                                <th className="table_circulating_supply">Market Cap&nbsp;
-                                  <OverlayTrigger
-                                    delay={{ hide: 450, show: 300 }}
-                                    overlay={(props) => (
-                                      <Tooltip {...props} className="custom_pophover">
-                                        <p>Market capitalization is a measure used to determine the total value of a publicly traded cryptocurrency. It is calculated by multiplying the current market price of a single coin/token X total supply of the coin/token.</p>
-                                      </Tooltip>
-                                    )}
-                                    placement="bottom"
-                                  ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
-                                  </OverlayTrigger>
-                                </th> 
-                                <th className="volume_24h">Volume(24H)&nbsp;
-                                  <OverlayTrigger
-                                    // delay={{ hide: 450, show: 300 }}
-                                    overlay={(props) => (
-                                      <Tooltip {...props} className="custom_pophover">
-                                        <p>The 24-hour volume, also known as trading volume or trading activity, refers to the total amount of a specific coin/token that has been bought and sold within a 24-hour period. It represents the total number of coins/tokens traded during that time frame.</p>
-                                      </Tooltip>
-                                    )}
-                                    placement="bottom"
-                                  ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
-                                  </OverlayTrigger>
-                                </th>  
-                                <th className="table_circulating_supply">Circulating Supply&nbsp;
-                                  <OverlayTrigger
-                                    delay={{ hide: 450, show: 300 }}
-                                    overlay={(props) => (
-                                      <Tooltip {...props} className="custom_pophover">
-                                        <p>Circulating supply refers to the total number of coins/tokens that are currently in circulation and available to the public. It represents the portion of the total supply of a cryptocurrency that is actively being traded or held by investors.</p>
-                                      </Tooltip>
-                                    )}
-                                    placement="bottom"
-                                  ><span className='info_col' ><img src="/assets/img/info.png" alt="info"/></span>
-                                  </OverlayTrigger>
-                                </th>  
-                                <th className="last_data">Last 7 Days</th>
-                            </tr>
-                         </thead>
-                         
-   
-                         <tbody>
+                        tokens_list.length > 0 ?
+                  <div className="table-responsive">
+                    <table className="table table-borderless">
+                      <thead>
+                        <tr>
+                          <th className="mobile_fixed_first" style={{minWidth: '34px'}}></th>
+                          <th className="mobile_hide_view" style={{minWidth: '34px'}}>#</th>
+                          <th className="mobile_fixed rank_class table-cell-shadow-right">Name</th>
+                          <th className="">Price</th>
+                          <th className="" style={{minWidth: 'unset'}}>1h</th>
+                          <th className="" style={{minWidth: 'unset'}}>24h</th>
+                          <th className="" style={{minWidth: 'unset'}}>7d</th>
+                          <th className="table_circulating_supply">Market Cap&nbsp;
+                            <OverlayTrigger
+                              delay={{ hide: 450, show: 300 }}
+                              overlay={(props) => (
+                                <Tooltip {...props} className="custom_pophover">
+                                  <p>Market capitalization is a measure used to determine the total value of a publicly traded cryptocurrency. It is calculated by multiplying the current market price of a single coin/token X total supply of the coin/token.</p>
+                                </Tooltip>
+                              )}
+                              placement="bottom"
+                            ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
+                            </OverlayTrigger>
+                          </th> 
+                          <th className="volume_24h">Volume(24H)&nbsp;
+                            <OverlayTrigger
+                              // delay={{ hide: 450, show: 300 }}
+                              overlay={(props) => (
+                                <Tooltip {...props} className="custom_pophover">
+                                  <p>The 24-hour volume, also known as trading volume or trading activity, refers to the total amount of a specific coin/token that has been bought and sold within a 24-hour period. It represents the total number of coins/tokens traded during that time frame.</p>
+                                </Tooltip>
+                              )}
+                              placement="bottom"
+                            ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
+                            </OverlayTrigger>
+                          </th>  
+                          <th className="table_circulating_supply">Circulating Supply&nbsp;
+                            <OverlayTrigger
+                              delay={{ hide: 450, show: 300 }}
+                              overlay={(props) => (
+                                <Tooltip {...props} className="custom_pophover">
+                                  <p>Circulating supply refers to the total number of coins/tokens that are currently in circulation and available to the public. It represents the portion of the total supply of a cryptocurrency that is actively being traded or held by investors.</p>
+                                </Tooltip>
+                              )}
+                              placement="bottom"
+                            ><span className='info_col' ><img src="/assets/img/info.png" alt="info"/></span>
+                            </OverlayTrigger>
+                          </th>  
+                          <th className="last_data">Last 7 Days</th>
+                        </tr>
+                      </thead>
+                      {
+                        tokens_list.length > 0 ?
+                        tokens_list.map((e, i) => 
+                          <tbody>
                            {
                             loader_status ?
                            <>                           
@@ -590,47 +589,44 @@ return (
                                      </td> */}
                                      
                                      
-                                     {/* <td  className="mobile_hide_table_col text-center">
-                                       {
-                                         user_token ?
-                                         <>
-                                         {
-                                           voting_ids.includes(e._id) ?
-                                           <span className="market_list_price markets_voted"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,true,e._id,i)} >Voted</button></span>
-                                           :
-                                           <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,false,e._id,i)} className="vote_btn">Vote</button></span>
-                                          }
-                                         </>
-                                         :
-                                         <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><span className="market_list_price"><button data-toggle="tooltip" className="vote_btn">Vote</button></span></a></Link>
-                                       }
-                                       </td>  */}
-                               </tr> 
+                                  {/* <td  className="mobile_hide_table_col text-center">
+                                    {
+                                      user_token ?
+                                      <>
+                                      {
+                                        voting_ids.includes(e._id) ?
+                                        <span className="market_list_price markets_voted"> <button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,true,e._id,i)} >Voted</button></span>
+                                        :
+                                        <span className="market_list_price"><button data-toggle="tooltip" onClick={()=>ModalVote(e.token_id,false,e._id,i)} className="vote_btn">Vote</button></span>
+                                        }
+                                      </>
+                                      :
+                                      <Link href={app_coinpedia_url+"login?prev_url="+market_coinpedia_url}><a onClick={()=> Logout()}><span className="market_list_price"><button data-toggle="tooltip" className="vote_btn">Vote</button></span></a></Link>
+                                    }
+                                  </td>  */}
+                                </tr>
+                              </>
+                              :
+                              <TableContentLoader row="10" col="11" />  
+                            }
+                          </tbody>
+                        )
+                      :""
+                      }
+                      </table>
                              
-                             </>
+                             </div>
                              :
-                             <TableContentLoader row="10" col="11" />  
-                          }
-                           
-                         </tbody>
-                       </table>
-                             
-                     </div>
-                     )
-                       :
-                       <div className="row">
-                  <div className="col-md-8 col-lg-8 col-xl-7 mx-auto">
-                <div className="account_approval_status">
-                      <img src="/assets/img/watchlist_markets.svg" alt="pending" title="pending" />
-                <h6 className="text-center text-capitalize">You haven't personalized your Watchlist with any Crypto Tokens or Coins yet.</h6>
-              <p className="text-center welcome_manage_event">Explore the <a href="/"> Live Market List</a> to discover and add your preferred tokens or coins to your watchlist. Enabling you to stay updated with real-time information and track the performance of assets that interest you.</p>
-              
-              
-              
-              </div>
-              </div>
-              </div>
-                     }
+                             <div className="row">
+                        <div className="col-md-8 col-lg-8 col-xl-7 mx-auto">
+                      <div className="account_approval_status">
+                            <img src="/assets/img/watchlist_markets.svg" alt="pending" title="pending" />
+                      <h6 className="text-center text-capitalize">You haven't personalized your Watchlist with any Crypto Tokens or Coins yet.</h6>
+                    <p className="text-center welcome_manage_event">Explore the <a href="/"> Live Market List</a> to discover and add your preferred tokens or coins to your watchlist. Enabling you to stay updated with real-time information and track the performance of assets that interest you.</p>
+                    
+                    </div>
+                    </div>
+                    </div>}
                    </div> 
                 
 

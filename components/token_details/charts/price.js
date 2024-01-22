@@ -273,12 +273,13 @@ export default function Tokenchart({reqData})
                                 const data2 = param.seriesData.get(volumeSeries)
                                 const volume_24h = data2.value !== undefined ? data2.value : data2.close
                                 
+                                var old_date = new Date(dateStr*1000)
             
                                 toolTip.innerHTML =`
                                 <div style="width: 220px; border:1px solid #E6EBEF;padding: 8px; border-radius: 5px;font-family: 'Space Grotesk';">
                                     <h4 style="font-size: 13px;font-family: 'Space Grotesk'; color: ${price>base_price ? "green":"red" }">
-                                        ${moment.unix(dateStr).format('DD MMM YYYY')}
-                                        <span style="float:right;font-family: 'Space Grotesk';">${moment.unix(dateStr).format('hh:mm a')}</span>
+                                        ${moment.utc(old_date).format('DD MMM YYYY')}
+                                        <span style="float:right;font-family: 'Space Grotesk';">${moment.utc(old_date).format('hh:mm a')}</span>
                                     </h4>
                                     <h5 style="font-size: 15px;font-family: 'Space Grotesk';color: ${'black'}; margin-top: 10px;">
                                         ${

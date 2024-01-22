@@ -66,7 +66,7 @@ export default function Create_token({config,token_id})
 
     const active_currency = useSelector(state => state.active_currency)
 
-    console.log("token_id",token_id)
+    // console.log("token_id",token_id)
     // API_BASE_URL+"markets/users/manage_airdrops/list
 
     useEffect(() => {
@@ -278,7 +278,7 @@ export default function Create_token({config,token_id})
       Axios.get(API_BASE_URL + "markets/users/manage_airdrops/list/"+token_id, config).then(
         (response) => 
         {
-          console.log(response);
+          // console.log(response);
           if(response.data.status) 
           {
             set_api_loader(false)

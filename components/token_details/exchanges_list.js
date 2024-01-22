@@ -112,7 +112,7 @@ export default function Exchange({exchange_list_new, crypto_type, token_id, ath_
         }
 
         const response = await Axios.post(API_BASE_URL + "markets/tokens/update_ath_atl_details", req_obj, config(""))
-        console.log("response", response)
+        // console.log("response", response)
   }
 
   const getGraphQLData = () =>

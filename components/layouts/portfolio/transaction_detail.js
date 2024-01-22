@@ -64,9 +64,15 @@ export default function TransactionDetail({transaction})
 
     return(
     <>
+        {/* <table className='table token-details-table'>
+          <tbody>
+           
+          </tbody>
+        </table> */}
+
         <table className='table token-details-table'>
           <tbody>
-            <tr>
+          <tr>
               <td><label className='token-type-name'>Transaction Hash</label></td>
               <td className='token-value-details'>
                 <div className="media mb-0">
@@ -96,6 +102,9 @@ export default function TransactionDetail({transaction})
                       (transaction.txnType == 7) || (transaction.txnType == 8) ? 
                       "https://polygonscan.com/tx/"
                       :
+                      (transaction.txnType == 9) || (transaction.txnType == 10) ? 
+                      "https://cronoscan.com/tx/"
+                      :
                       ""
                       )+transaction.hash
                       } 
@@ -106,11 +115,6 @@ export default function TransactionDetail({transaction})
                 </div>
               </td>
             </tr>
-          </tbody>
-        </table>
-
-        <table className='table token-details-table'>
-          <tbody>
             <tr>
               <td><label className='token-type-name'>N/w</label></td>
               <td className='token-value-details'> {
@@ -123,7 +127,7 @@ export default function TransactionDetail({transaction})
                 <>
                 <img className="txn-netwok" src="/assets/img/portfolio/bsc.svg" alt="Token" title="Token" /> 
                 </>
-                    :
+                  :
                 (transaction.txnType == 5) || (transaction.txnType == 6) ?
                 <>
                 <img className="txn-netwok" src="/assets/img/portfolio/ftm.svg" alt="Token" title="Token" />
@@ -132,6 +136,11 @@ export default function TransactionDetail({transaction})
                 (transaction.txnType == 7) || (transaction.txnType == 8) ?
                 <>
                 <img className="txn-netwok" src="/assets/img/portfolio/polygon.svg" alt="Token" title="Token" />
+                </>
+                :
+                (transaction.txnType == 9) || (transaction.txnType == 10) ?
+                <>
+                <img className="txn-netwok" src="/assets/img/portfolio/cronos.svg" alt="Token" title="Token" />
                 </>
                 :
                 <>
@@ -186,6 +195,16 @@ export default function TransactionDetail({transaction})
                   </>
                   :
                   transaction.txnType == 8 ?
+                  <>
+                  {transaction.tokenSymbol}
+                  </>
+                  :
+                  transaction.txnType == 9 ?
+                  <>
+                  CRO
+                  </>
+                  :
+                  transaction.txnType == 10 ?
                   <>
                   {transaction.tokenSymbol}
                   </>

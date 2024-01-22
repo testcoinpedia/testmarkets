@@ -17,7 +17,7 @@ export default function LoginWithApple({prev_url})
 
     const checkUserLogin = async (data) =>
     {  
-        console.log("data", data)
+        // console.log("data", data)
         set_api_loader_status(false)
         await Setmodal_data({icon: "",title: "",content:""})
         if(!data.error)
@@ -26,7 +26,7 @@ export default function LoginWithApple({prev_url})
             {
                 set_api_loader_status(true)
                 const id_token = data.authorization ? data.authorization.id_token : ""
-                console.log("data", data)
+                // console.log("data", data)
                 var full_name = ""
                 var email_id = ""
                 if(data.user)
@@ -43,7 +43,7 @@ export default function LoginWithApple({prev_url})
                 }
 
                 const res = await Axios.post(API_BASE_URL+'app/auth/user_login_with_apple', req_obj, config(id_token))
-                console.log(res.data)  
+                // console.log(res.data)  
                 if(res.data)
                 {
                     if(res.data.status === true)

@@ -10,6 +10,8 @@ import { useRouter } from 'next/router';
 import { useEffect,useState } from 'react';
 
 function MyApp({ Component, pageProps }) 
+
+
 {
     return ( 
       <>
@@ -20,14 +22,17 @@ function MyApp({ Component, pageProps })
           <meta name="google-site-verification" content="f5cgDtTg3LajIuIprZ7HotIsYpT4ydHO4zSvpaBiWsc" />
           
           <link rel="shortcut icon" type="image/x-icon" href={favicon}/>
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
-          <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"></link>
           
           <link rel="stylesheet" href="/assets/css/bootstrap.min.css" crossOrigin="anonymous"/>
           <link rel="stylesheet" media="all" href="/assets/css/market.css" />
           <link rel="stylesheet" media="all" href="/assets/css/header.css" />
           <link rel="stylesheet" media="all" href="/assets/css/footer.css" />
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href="/assets/css/slick.min.css"
+            print="Media"
+          />
 
           <link rel="preconnect" href="https://fonts.googleapis.com"></link>
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin></link>
@@ -59,6 +64,22 @@ function MyApp({ Component, pageProps })
           `,
         }}
         ></script>
+
+{/* <script type="text/javascript">
+              {`
+               var _paq = window._paq = window._paq || [];
+               _paq.push(["setCookieDomain", "*.coinpedia.org"]);
+               _paq.push(['trackPageView']);
+               _paq.push(['enableLinkTracking']);
+               (function() {
+                 var u="https://coinpedia-news.matomo.cloud/";
+                 _paq.push(['setTrackerUrl', u+'matomo.php']);
+                 _paq.push(['setSiteId', '1']);
+                 var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                 g.async=true; g.src='//cdn.matomo.cloud/coinpedia-news.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+               })();
+              `}
+            </script> */}
 
 
       

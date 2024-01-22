@@ -10,7 +10,7 @@ import { graphql_headers, separator, graphqlApiURL } from '../../constants'
 
 export default function Tokenchart({reqData}) 
 {
-    console.log("active_tab",reqData)
+    // console.log("active_tab",reqData)
     const chartContainerRef = useRef("")
     const chartMarketCapRef = useRef("")
     const [graph_status, set_graph_status] = useState(true)
@@ -137,8 +137,8 @@ export default function Tokenchart({reqData})
 
         }
         
-        console.log("low_value", low_value)
-        console.log("high_value", high_value)
+        // console.log("low_value", low_value)
+        // console.log("high_value", high_value)
 
         const base_price = await ((low_value+high_value)/2).toFixed(2)
 
@@ -213,7 +213,7 @@ export default function Tokenchart({reqData})
         const result = await res.json()
         if(result)
         {
-            console.log("result.data.ethereum", result.data.ethereum)
+            // console.log("result.data.ethereum", result.data.ethereum)
             if(result.data.ethereum != null && result.data.ethereum.dexTrades != null) 
             {
                 const res_graph_array = await setGraphData(result.data.ethereum.dexTrades, contract_type)
@@ -242,8 +242,8 @@ export default function Tokenchart({reqData})
             {
                 const final_array = graph_response.result
                 const base_price = graph_response.base_price
-                console.log("final_array", final_array)
-                console.log("base_price", base_price)
+                // console.log("final_array", final_array)
+                // console.log("base_price", base_price)
                 // console.log("high_value", high_value)
                 // console.log("response", response)
                 if(chartContainerRef.current)
@@ -340,7 +340,7 @@ export default function Tokenchart({reqData})
                     // });
             
             
-                    console.log("chartContainerRef", chart)
+                    // console.log("chartContainerRef", chart)
                     const toolTipWidth = 80;
                     const toolTipHeight = 80;
                     const toolTipMargin = 15;
