@@ -9590,7 +9590,7 @@ tbody td {
 }
 
 .coin_cat_img {
-  /* width: 22px; */
+  width: 17px;
   margin-right: 4px;
   position: relative;
   top: -1px;
@@ -9835,7 +9835,7 @@ tbody td {
 
 .search_filter .input-group-text img {
   width: 18px;
-  margin-right: 5px;
+  margin-right: 0px;
 }
 
 .search_filter input {
@@ -9845,6 +9845,7 @@ tbody td {
   height: 34px;
   box-shadow: none !important;
   outline: none !important;
+  padding-left: 5px;
 }
 
 .search_filter .input-group-text {
@@ -12032,7 +12033,7 @@ font-weight: 500 !important;
   top: 0px;
   z-index: 0;
   background: #fff;
-  z-index: 999;
+  z-index: 99;
   transition: 0.5s ease-in infinite;
   width: 100%;
 }
@@ -12056,9 +12057,14 @@ font-weight: 500 !important;
 
 /* Start Market Main Page  */
 
+.markets_overview_mobile .slick-initialized .slick-slide {
+  padding: 5px;
+}
+
 .market-overview .overview-title .market_overview_icon {
   height: 18px;
   margin-right: 6px;
+  display: inline-block;
 }
 
 .market-overview .overview-title .category {
@@ -12149,7 +12155,8 @@ font-weight: 500 !important;
 }
 
 .market-overview tbody tr td {
-  padding: 7px 8px !important;
+  padding: 5px 8px !important;
+  height: 36px;
 }
 
 .market-overview tbody tr td .media img {
@@ -12160,6 +12167,18 @@ font-weight: 500 !important;
 
 .market-overview tbody tr {
   border-bottom: 1px solid #CEE1FF !important;
+}
+
+.block_price {
+  line-height: 1.2;
+}
+
+.block_price h6 {
+  font-size: 16px;
+}
+
+.block_price p {
+  font-size: 12px;
 }
 
 /* End Market Main Page  */
@@ -12185,7 +12204,7 @@ font-weight: 500 !important;
 
 .dex-volume
 {
-  padding: 10px;
+  padding: 10px 10px 5px;
   border-radius: 6px;
   background: #F1F6FF;
   margin-bottom: 20px;
@@ -14721,11 +14740,11 @@ color: #DF233D;
 
 .cust_filters_dropdown .cust_filter_input .input-group-addon {
   /* line-height: 3; */
-  padding: 5px 10px;
+  padding: 9px 10px;
 }
 
 .cust_filters_dropdown .cust_filter_input .input-group-addon img {
-  margin-top: 1px;
+  margin-top: 2px;
   width: 10px;
 }
 
@@ -16407,7 +16426,7 @@ font-weight: 500 !important;
   box-shadow: 0 8px 9px rgb(0 0 0 / 7%);
   /* border: 1px solid #ebebebc2; */
   position: absolute;
-  z-index: 999;
+  z-index: 99999;
   top: 8px;
   right: 15px;
 }
@@ -17402,6 +17421,11 @@ background: rgb(217 217 217);
 }
 .summary-p {
   font-size: 18px;
+}
+
+.list-new-token {
+  text-align: right;
+  font-weight: 500;
 }
 
 .list-new-token a {
@@ -18869,6 +18893,11 @@ padding: 5px 20px;
   line-height: 1.3;
 }
 
+.modal-login-form-control {
+  height: 37px !important;
+  font-size: 14px;
+}
+
 .cust_filters_dropdown .cust_filter_input ul li img {
   width: 100%;
   border-radius: 50px;
@@ -18883,7 +18912,7 @@ padding: 5px 20px;
   position: absolute;
   width: 250px;
   z-index: 999;
-  max-height: 333px;
+  max-height: 533px;
 }
 
 .accounts_display {
@@ -18918,7 +18947,7 @@ padding: 5px 20px;
 .cust_portfolio_network .total_networks {
   font-weight: 400;
   line-height: 3;
-  padding-left: 5px;
+  padding-left: 0px;
   color: #7c838a ;
 }
 
@@ -20104,13 +20133,13 @@ h3.heading {
 
 
 
-@media (min-width: 1024px) and (max-width: 1279px) {
+@media (min-width: 1024px) and (max-width: 1280px) {
   .dropdown-toggle::after {
     display: none;
   }
-.mobile-subscribe{
-  display: block;
-}
+  .mobile-subscribe{
+    display: block;
+  }
 
 
   .events_detail_score h3 {
@@ -20122,7 +20151,20 @@ h3.heading {
     float: left !important;
     margin: 5px 0;
   }
-  
+}
+
+@media(max-width: 1280px) {
+  .community_block_data {
+    padding: 20px 15px;
+  }
+
+  .like_dislike_text.like_text_color img {
+    width: 25px;
+  }
+
+  .like_dislike_text.dislike_text_color img {
+    width: 25px;
+  }
 }
 
 @media (min-width: 769px) {
@@ -20136,7 +20178,9 @@ h3.heading {
 }
 
 @media (max-width: 768px) {
-
+  .volume-details {
+    width: 100%;
+  }
   .category-ul li {
     margin-bottom: 5px
   }
@@ -20150,6 +20194,10 @@ h3.heading {
   {
     border-radius: 0px;
     border: 0px;
+  }
+
+  .volume-details .volume-item .volume-value {
+    align-items: flex-start !important;
   }
  
   /***** Start Portfolio Responsive *****/
@@ -20285,10 +20333,6 @@ h3.heading {
     font-size: 11px;
   }
 
-  .new_token_page table thead tr th.table_circulating_supply {
-    min-width: 180px !important;
-  }
-
   .transaction_table_block .secondary_tabs li {
     font-size: 14px;
     margin-right: 5px;
@@ -20341,13 +20385,7 @@ h3.heading {
     min-width: 60px !important;
   }
 
-  .price-tracking-tbl table tbody tr td .values_growth .red{
-    font-size: 12px;
-  }
-
-  .price-tracking-tbl table tbody tr td .values_growth .green {
-    font-size: 12px;
-  }
+  
   
   .token_content h2 {
     font-size: 16px;
@@ -20588,6 +20626,27 @@ h3.heading {
   }
 
   /* End Market individual page */
+
+  /* Start Market Main Page */
+  .price-tracking-tbl table tbody tr td .values_growth .green {
+    font-size: 12px !important;
+  }
+  .price-tracking-tbl table tbody tr td .values_growth .red{
+    font-size: 12px !important;
+  }
+  .list-new-token {
+    text-align: center;
+    margin-top: 10px;
+  }
+  .markets_overview_mobile .slick-initialized .slick-slide {
+    padding: 0;
+  }
+
+  .markets_selected_category p {
+    min-width: auto;
+  }
+  
+  /* End Market Main Page */
 }
 
 
@@ -22103,12 +22162,11 @@ screen and (max-height: 300px) {
     margin-top: 0px !important;
   }
 
-  /* .token_main_details .media {
-    position: relative;
-    z-index: 9;
-    display: block;
-    text-align: center;
-  } */
+  .market-overview .overview-title .category {
+    padding: 4px 5px;
+    font-size: 12px;
+    margin-left: 5px;
+  }
 
   .token_main_details .media-body {
     text-align: left;
@@ -22303,8 +22361,6 @@ screen and (max-height: 300px) {
     width: 10px;
   }
 
-  
-
   .market_growth {
     padding: 4px 8px;
     margin-left: 10px;
@@ -22322,7 +22378,7 @@ screen and (max-height: 300px) {
   }
 
   .token_main_details .media .media-heading {
-    margin-top: 5px;
+    margin-top: 0px;
     font-size: 18px;
   }
 
@@ -22331,9 +22387,9 @@ screen and (max-height: 300px) {
   }
 
   .token_main_details .media h5 span {
-    padding: 3px 10px;
+    padding: 3px 0px;
     font-size: 13px;
-    display: contents;
+    display: inline-block;
   }
 
   .token_list_values h5 {
@@ -22589,13 +22645,12 @@ screen and (max-height: 300px) {
   }
 
   .cust_filters_dropdown .cust_filter_input{
-    height: 40px;
     margin-bottom: 0px;
     margin-top: 10px !important;
   }
 
   .search_filter input {
-    height: 34px;
+    height: 32px;
   }
 
   .search_filter .input-group-prepend select {
@@ -22760,10 +22815,6 @@ screen and (max-height: 300px) {
     display: flex;
   } */
 
-  .volume-details .volume-item .volume-value {
-    display: block !important;
-    margin-right: 20px;
-  }
 
   .coin_details .token_list_values h5{
     margin-top: 0;
@@ -22860,8 +22911,6 @@ screen and (max-height: 300px) {
   .prices__logo {
     margin-right: 0;
   }
-
-
 
   .exchange_transactions ul li a {
     padding: 4px 6px;
@@ -23024,7 +23073,7 @@ screen and (max-height: 300px) {
   }
 
   .market_page_data tr .media img {
-    margin-top: 5px;
+    margin-top: 0px;
   }
 
   .price_change,
@@ -24004,6 +24053,7 @@ screen and (max-height: 300px) {
   .token_main_details .media h5 {
     margin-top: 3px;
     font-size: 26px;
+    line-height: 1;
   }
 
   .token_price_block h5 {
@@ -24719,7 +24769,10 @@ screen and (max-height: 300px) {
   .cust_filters_dropdown .cust_filter_input .input-group-addon {
     padding: 5px;
   }
-
+.network_dropdown{
+  padding: 2px;
+  width:20px;
+}
   .cust_filters_dropdown .cust_filter_input input {
     font-size: 12px;
   }
@@ -25066,15 +25119,10 @@ font-weight: 500 !important;
   font-weight: 500;
 }
 
-.community-bigger img
+/* .community-bigger img
 {
   width: 25px !important;
-}
-.community-smaller img
-{
-  width: 12px !important;
-}
-
+} */
 
 .form-no-border
 {
@@ -25413,6 +25461,7 @@ justify-content: end;
 .price-tracking-tbl table tbody tr td .values_growth .red{
   color: #EA3943 !important;
   font-weight: 500 !important;
+  font-size: 14px;
 }
 .price-tracking-tbl .show-num {
   padding: 8px 10px;
@@ -25526,7 +25575,7 @@ justify-content: end;
 
 
 .info_col img{
-  width: 15px;
+  width: 12px;
   margin-bottom: 0px;
   cursor: pointer;
 }
@@ -25671,7 +25720,7 @@ justify-content: end;
   margin: 0 auto;
   left: 0;
   right: 0;
-  z-index: 99;
+  z-index: 9;
   top: 55px;
 }
 
@@ -25745,11 +25794,20 @@ justify-content: end;
 }
 
 
+.running_btc_market {
+  color: #0bb102;
+  background: #aee5ca;
+  padding: 0 7px;
+  border-radius: 15px;
+}
 
+.price_change_btc p, .price_change_btc a {
+  color: #0bb102 !important;
+}
 
-
-
-
+.btc_links_block , .btc_links_block a  {
+  color: #0066ff !important;
+}
 
 
 
@@ -25823,16 +25881,119 @@ justify-content: end;
   .price-tracking-tbl .filter-category-section ul:not(.price-tracking-tbl .filter_rows li){
     float: left;
   }
+}
 
-  .markets_overview_mobile {
-    display: none;
+@media (min-width: 768px) and (max-width: 1000px) {
+  .analysis_buy{
+    right: 60px;
   }
 
-  
+  .analysis_strong_buy{
+    right: 5px;
+  }
 
+  .analysis_sell{
+    left: 60px;
+  }
+
+  .analysis_strong_sell{
+    left: 5px;
+  }
+
+  .analysis_tab_primary_strong_buy {
+    right: 50px;
+  }
+
+  .analysis_tab_primary_buy {
+    right: 20px;
+  }
+
+  .analysis_tab_primary_sell {
+    left: 20px;
+  }
+
+  .analysis_tab_primary_strong_sell {
+    left: 50px;
+  }
+
+  .analysis_tab_secondary_buy {
+    right: 185px;
+  }
+
+  .analysis_tab_secondary_sell {
+    left: 185px;
+  }
+  .analysis_tab_secondary_strong_buy{
+    right: -5px;
+  }
+
+  .analysis_tab_secondary_strong_sell{
+    left: -5px;
+  }
+
+
+  .tokenomic_graph .total_value{
+    padding: 20px 25px;
+  }
+
+  .tokenomic_graph .total_value{
+    top: 110px
+  }
+
+  .analysis_summary .speedometer{
+    width: 230px !important;
+    height: 180px !important;
+    position: relative;
+    left: -20px;
+}
+
+.analysis_tab_primary_strong_buy_speedometer_image {
+  right: -10px;
+}
 
 }
 
+@media (min-width: 1200px) and (max-width: 1300px) {
+  .tokenomic_graph .total_value{
+    top: 105px !important;
+    padding: 40px 45px !important;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .analysis_buy {
+    right: 70px;
+  }
+
+  .tokenomic_graph .total_value{
+
+    top: 115px;
+    padding: 50px 55px;
+  }
+
+  .analysis_strong_buy{
+    right: 10px;
+  }
+
+  .analysis_sell {
+    left: 70px;
+  }
+
+  .analysis_strong_sell {
+    left: 10px;
+  }
+
+  .analysis_summary .speedometer {
+    margin-top: -15px;
+    position: relative;
+    left: -18px;
+    z-index: -1;
+}
+
+.analysis_values .summary_bullish {
+  margin-bottom: 5px;
+}
+}
 
 @media screen and (max-width:767px){
   .markets_new_design .search_filter.new_design_serach .input-group-text img {
@@ -25863,8 +26024,8 @@ justify-content: end;
   }
   .markets_new_design .market_insights p{
     font-size: 14px;
-    margin-top: 15px;
-    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-bottom: 15px;
   }
 
   .search_section .search-result{
@@ -25929,7 +26090,7 @@ justify-content: end;
   }
 
   .market_token_tabs .charts_price_tabs li a span {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .market_individual_header {
@@ -25938,7 +26099,9 @@ justify-content: end;
   }
 
  
-
+  .markets_header_token .container {
+    padding: 0;
+  }
 
   .popup_modal_for_all h4 {
     margin-top: 0px;
@@ -26093,7 +26256,16 @@ justify-content: end;
     width: 9px;
   }
 
-  .ico_status_button{
+  .contracts_dropdown {
+    width: 100%;
+  }
+
+  .coin_individual_list .contracts_list ul {
+    margin-top: 0;
+  }
+
+  .coin_individual_list .badge_dropdown_block ul {
+    margin-top: 0;
   }
 
   .details_airdrop_card p {
@@ -26157,7 +26329,7 @@ justify-content: end;
   }
 
   .token_main_details .media .token_img {
-    width: 60px;
+    width: 70px;
     margin-top: 8px;
     margin-right: 5px;
   }
@@ -26288,6 +26460,10 @@ justify-content: end;
     font-size: 16px;
   }
 
+  .speedometer_summary {
+    margin-top: 10px;
+  }
+
 }
 
 
@@ -26345,56 +26521,6 @@ justify-content: end;
   }
 }
 
-@media (max-width: 390px) {
-  .analysis_buy{
-    right: 70px !important;
-  }
-
-  .analysis_strong_buy{
-    right: 10px !important;
-  }
-
-  .analysis_sell{
-    left: 70px !important;
-  }
-
-  .analysis_strong_sell{
-    left: 10px !important;
-  }
-
-  .analysis_tab_primary_strong_buy {
-    right: 20px !important;
-  }
-
-  .analysis_tab_primary_buy {
-    right: 70px !important;
-  }
-
-  .analysis_tab_primary_sell {
-    left: 70px !important;
-  }
-
-  .analysis_tab_primary_strong_sell {
-    left: 20px !important;
-  }
-
-  .analysis_tab_secondary_buy {
-    right: 95px !important;
-  }
-
-  .analysis_tab_secondary_sell {
-    left: 95px !important;
-  }
-  .analysis_tab_secondary_strong_buy{
-    right: 60px !important;
-  }
-
-  .analysis_tab_secondary_strong_sell{
-    left: 60px !important;
-  }
-}
-
-
 @media (max-width: 450px) {
   .analysis_buy{
     right: 70px;
@@ -26444,119 +26570,80 @@ justify-content: end;
   }
 }
 
-@media (min-width: 768px) and (max-width: 1000px) {
-  .analysis_buy{
-    right: 60px;
-  }
-
+@media(max-width: 399px) {
   .analysis_strong_buy{
-    right: 5px;
+    right: 15px !important;
+  }
+  .analysis_strong_sell{
+    left: 15px !important;
+  }
+}
+ 
+@media (max-width: 390px) {
+  .analysis_buy{
+    right: 70px !important;
   }
 
   .analysis_sell{
-    left: 60px;
-  }
-
-  .analysis_strong_sell{
-    left: 5px;
+    left: 70px !important;
   }
 
   .analysis_tab_primary_strong_buy {
-    right: 50px;
+    right: 40px !important;
   }
 
   .analysis_tab_primary_buy {
-    right: 20px;
+    right: 90px !important;
   }
 
   .analysis_tab_primary_sell {
-    left: 20px;
+    left: 90px !important;
   }
 
   .analysis_tab_primary_strong_sell {
-    left: 50px;
+    left: 40px !important;
   }
 
   .analysis_tab_secondary_buy {
-    right: 185px;
+    right: 95px !important;
   }
 
   .analysis_tab_secondary_sell {
-    left: 185px;
+    left: 95px !important;
   }
   .analysis_tab_secondary_strong_buy{
-    right: -5px;
+    right: 60px !important;
   }
 
   .analysis_tab_secondary_strong_sell{
-    left: -5px;
-  }
-
-
-  .tokenomic_graph .total_value{
-    padding: 20px 25px;
-  }
-
-  .tokenomic_graph .total_value{
-    top: 110px
-  }
-
-
-  .analysis_summary .speedometer{
-    width: 230px !important;
-    height: 180px !important;
-    position: relative;
-    left: -20px;
-
-}
-
-.analysis_tab_primary_strong_buy_speedometer_image {
-  right: -10px;
-}
-
-
-}
-
-@media (min-width: 1200px) and (max-width: 1300px) {
-  .tokenomic_graph .total_value{
-    top: 105px !important;
-    padding: 40px 45px !important;
+    left: 60px !important;
   }
 }
 
-@media (min-width: 1200px) and (max-width: 1400px) {
-  .analysis_buy {
-    right: 70px;
-  }
-
-  .tokenomic_graph .total_value{
-
-    top: 115px;
-    padding: 50px 55px;
-  }
-
-  .analysis_strong_buy{
-    right: 10px;
-  }
-
-  .analysis_sell {
-    left: 70px;
+@media(max-width: 360px) {
+  .analysis_strong_buy {
+    right: 8px !important;
+    font-size: 10px;
   }
 
   .analysis_strong_sell {
-    left: 10px;
+    left: 8px !important;
+    font-size: 10px;
   }
 
-  .analysis_summary .speedometer {
-    margin-top: -15px;
-    position: relative;
-    left: -18px;
-    z-index: -1;
-}
+  .analysis_neutral,
+  .analysis_sell,
+  .analysis_buy {
+    font-size: 10px;
+  }
 
-.analysis_values .summary_bullish {
-  margin-bottom: 5px;
-}
+  .analysis_tab_secondary_strong_buy {
+    right: 50px !important;
+  }
+
+  .analysis_tab_secondary_strong_sell {
+    left: 50px !important;
+  }
 }
 
 
@@ -26584,5 +26671,60 @@ justify-content: end;
 
 .bg-danger {
   background-color: #fc2d00 !important;
+}
+
+
+.network_pop_up_scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.network_pop_up_scroll{
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 200px;
+}
+/* Default styles for larger screens */
+.nft_pop_up_scroll {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 500px;
+}
+.nft_pop_up_scroll::-webkit-scrollbar{
+  width: 5px;
+}
+/* Media query for screens with a maximum width of 767px (typical for mobile devices) */
+@media (max-width: 667px) {
+  .nft_pop_up_scroll {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 200px;
+    max-height: 100vh; 
+  }
+  .network_pop_up_scroll{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 200px;
+  } 
+}
+@media (max-width: 540px) {
+  .nft_pop_up_scroll {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 300px;
+    max-height: 100vh; 
+  }
+  .network_pop_up_scroll{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 200px;
+  }
+}
+.network_pop_up_scroll::-webkit-scrollbar-track{
+  background: #f1f1f1;  
+}
+.network_pop_up_scroll::-webkit-scrollbar-thumb {
+  background: #888;  
+}
+.network_pop_up_scroll::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }
 /****************************** Markets Home page new design css ends  ****************************************/

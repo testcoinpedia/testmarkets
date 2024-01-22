@@ -142,8 +142,8 @@
 }
 
 .navbar-expand-lg .navbar-nav .nav-link {
-  padding: 12px 7px 12px 14px !important;
-  margin: 10px 0px;
+  padding: 15px 7px 15px 14px!important;
+  margin: 10px 0;
 }
 
 /* .track_your_portfolio {
@@ -445,6 +445,8 @@ button.active.hiring_btn.mbl {
 
 .market_top_header {
   background: #180857 !important;
+  position: relative;
+  z-index: 999;
 }
 
 .market_top_header .navbar {
@@ -460,7 +462,7 @@ button.active.hiring_btn.mbl {
 
 .main_menu_header {
   padding: 0 !important;
-  margin: 5px 0 6px;
+  margin: 5px 0 7px;
 }
 
 .main_menu_header .navbar-right .header_button i {
@@ -490,11 +492,11 @@ a:hover {
 
 .main_menu_header .navbar-right img {
   width: 40px;
-  margin: 0 10px;
+  /* margin: 0 10px; */
 }
 
 .main_menu_header .navbar-right li {
-  padding: 6px 0 9px !important;
+  padding: 7px 0 8px !important;
   margin-left: 10px;
 }
 
@@ -606,11 +608,16 @@ a:hover {
 
 .header_button {
   background-color: #25126d;
+  border-radius: 6px!important;
+  height: 38px;
   border-radius: 6px;
+  position: relative;
+  text-align: center;
   color: #fff;
-  padding: 6px 12px;
-  margin-top: 0px;
-  outline: 0 !important;
+  padding: 8px 12px;
+  margin-top: 0;
+  width: 100%;
+  outline: 0!important;
 }
 
 .quick_links_header_left {
@@ -924,9 +931,9 @@ font-size: 18px !important;
   .mobile_view_crypto {
     display: none;
   }
-  .market_top_header .container {
+  /* .market_top_header .container {
     padding: 0;
-  }
+  } */
 }
 
 @media (max-width: 992px) {
@@ -1598,6 +1605,13 @@ font-size: 18px !important;
     font-size: 11px !important;
   }
 } */
+
+@media (min-width: 769px){
+.container {
+    padding-right: 0;
+    padding-left: 0;
+}
+}
 
 @media (max-width: 299px) {
   .navbar-toggler-icon {

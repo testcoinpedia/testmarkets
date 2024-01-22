@@ -1713,10 +1713,10 @@ tbody td {
 }
 
 .coin_cat_img {
-  width: 22px;
   margin-right: 4px;
   position: relative;
   top: -1px;
+  width: 17px;
 }
 
 .contract_block .contract_list {
