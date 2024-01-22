@@ -17,7 +17,7 @@ import LoginModal from '../components/layouts/auth/loginModal'
 import Popupmodal from '../components/popupmodal'
 // import Select from 'react-select'
 import { useRouter } from 'next/navigation'
-import Slider from 'react-slick';
+// import Slider from 'react-slick';
 
 export default function MarketsIndex({page, userAgent, list_data, list_count, per_page_limit, final_count, pages_count, first_count, modalprops, unsubscribe, code})
 { 
