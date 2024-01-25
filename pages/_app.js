@@ -81,20 +81,18 @@ function MyApp({ Component, pageProps })
               `}
             </script> */}
 
-
-      
-          
-          <script src="https://kit.fontawesome.com/215157a960.js" crossOrigin="anonymous"></script>
-          <script src="/assets/js/jquery.min.js"></script>
-          <script src="/assets/js/popper.min.js" crossOrigin="anonymous"></script>
-          <script src="/assets/js/bootstrap.min.js" crossOrigin="anonymous"></script>
-          <script src="/static/datafeeds/udf/dist/bundle.js" />
         </Head>
         <Provider store={rootReducer}> 
+            
         <Topmenu />
         <Component {...pageProps}/>
           <Footer /> 
          </Provider>
+         <script src="https://kit.fontawesome.com/215157a960.js" crossOrigin="anonymous"></script>
+          <script src="/assets/js/jquery.min.js"></script>
+          <script src="/assets/js/popper.min.js" crossOrigin="anonymous"></script>
+          <script src="/assets/js/bootstrap.min.js" crossOrigin="anonymous"></script>
+          <script src="/static/datafeeds/udf/dist/bundle.js" />
       </> 
 );
   
