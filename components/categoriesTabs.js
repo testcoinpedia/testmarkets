@@ -16,6 +16,8 @@ export default function Details({active_tab, user_token})
   const [request_config, set_request_config] = useState(config(user_token ? user_token : ""))
   const [login_for_type, set_login_for_type] = useState("")
 
+  const [isMobileView, setIsMobileView] = useState(false);
+
   const getDataFromChild = async () => 
   {
     await set_login_modal_status(false)
@@ -45,6 +47,18 @@ export default function Details({active_tab, user_token})
     await set_login_modal_status(true)
   }
   
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 991);
+    };
+
+    handleResize(); // Check initial viewport width
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [])
   
   
 return (
@@ -120,21 +134,37 @@ return (
                   </li>
 
                   <li>
-                    <Link href={"/ETF"} data-toggle="tab" className={"nav-item nav-link categories__item "+(tab_status_connections === 10 ? "active_category":"")} onClick={()=>set_tab_status_connections(10)}>
-                     Bitcoin ETF Tracker
+                    <Link href={"/crypto-etf/"} data-toggle="tab" className={"nav-item nav-link categories__item "+(tab_status_connections === 10 ? "active_category":"")} onClick={()=>set_tab_status_connections(10)}>
+                    ETF Tracker
                     </Link>
                   </li>
 
-                  <li className=' float-right mt-2' >
-                  <div className='list-new-token' style={{display:"block"}}>
+                  {isMobileView ? 
+
+                  <li className='float-right token_list' >
+                  <div className='list-new-token'>
                   {
                     user_token ?
-                    <Link href={"/token/update/"}  className="nav-item nav-link">New Token listing</Link>
+                    <Link href={"/token/update/"}  className="nav-item nav-link"><span><img src="/assets/img/new_token.svg" alt="Token" /></span></Link>
                     :
-                    <a onClick={()=>loginModalStatus(2)}>New Token listing</a>
+                    <a onClick={()=>loginModalStatus(2)}><span><img src="/assets/img/new_token.svg" alt="Token" /></span></a>
                   }
                 </div>
                   </li>
+
+                  :
+
+                  <li className='float-right' >
+                  <div className='list-new-token' style={{display:"block"}}>
+                  {
+                    user_token ?
+                    <Link href={"/token/update/"}  className="nav-item nav-link"><span><img src="/assets/img/new_token.svg" alt="Token" /></span> New Token listing</Link>
+                    :
+                    <a onClick={()=>loginModalStatus(2)}><span><img src="/assets/img/new_token.svg" alt="Token" /></span> New Token listing</a>
+                  }
+                </div>
+                  </li>
+                  }
                  
                  {/* <li>
                     <Link href={"/category/defi"} data-toggle="tab" className={"nav-item nav-link categories__item "+(tab_status_connections === 10 ? "active_category":"")} onClick={()=>set_tab_status_connections(10)}>
@@ -144,9 +174,7 @@ return (
                      
                   </ul>
               </div>
-              {/* <div className='col-md-2'>
-               
-              </div> */}
+              
           </div>
           
         </div>

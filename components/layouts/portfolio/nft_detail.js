@@ -668,6 +668,7 @@ export default function NFTDetails({networks, addresses})
                     :
                     !nft_list.length ?
                     <div className="col-md-3 mb-3">
+                        {/* <img src="/assets/img/portfolio/nft_default.svg" className='rounded'/> */}
                         <h6>No related data found.</h6>
                     </div>
                     :

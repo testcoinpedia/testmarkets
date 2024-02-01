@@ -40,7 +40,7 @@ export default function TransactionFun({networks, addresses})
 
     const getTokenDetail= async (e)=>
     {
-        console.log("transactions", e)
+        // console.log("transactions", e)
         await set_transaction_detail("")
         await set_transaction_details_modal_status(true)
         await set_transaction_detail(e)
@@ -252,10 +252,10 @@ export default function TransactionFun({networks, addresses})
         }
         if(networks.includes(338) && (addresses.length > 0))
         {
-            console.log("asdf", networks)
+            // console.log("asdf", networks)
             res9 = await Axios.get(cronos_api_url+"txlist&address="+addresses[0]+"&startblock=0&endblock=99999999&sort=desc&apikey="+cronos_api_key)
             res10 = await Axios.get(cronos_api_url+"tokentx&address="+addresses[0]+"&sort=desc&apikey="+cronos_api_key)
-            console.log("res10",res10)
+            // console.log("res10",res10)
             
             if(res9)
             {   

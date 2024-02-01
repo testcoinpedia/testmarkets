@@ -1,5 +1,5 @@
 
-
+import { IMAGE_BASE_URL } from '../components/constants' 
 
 export  const roundNumericValue=(value) =>
 {
@@ -58,6 +58,7 @@ export  const roundNumericValue=(value) =>
   }
   return return_value
 }
+
  
 //type 1:USD
 export const USDFormatValue=(value, type)=>

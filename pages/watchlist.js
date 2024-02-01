@@ -93,7 +93,7 @@ export default function Companies({user_token, config, userAgent})
       set_modal_data({icon:"", title:"", content:""})
       const res = await Axios.get(API_BASE_URL+"markets/subscribe/email_subscribe/1", config)
       if(res.data)
-      {
+      { 
         if(res.data.status)
         {  
           set_modal_data({icon: "/assets/img/update-successful.png", title: "Thank You!", content: res.data.message.alert_message})

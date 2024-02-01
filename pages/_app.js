@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps })
           <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"></link>
 
           <link rel="stylesheet" media="all" href="/assets/css/darktheme.css" />
-          
+          {/* <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self'; base-uri 'self';"></meta> */}
           <script async src="https://www.googletagmanager.com/gtag/js?id=G-RE1GG3FGQW"></script>
           <script
                     dangerouslySetInnerHTML={{
@@ -81,14 +81,15 @@ function MyApp({ Component, pageProps })
               `}
             </script> */}
 
+          
+
+          
         </Head>
         <Provider store={rootReducer}> 
-            
         <Topmenu />
         <Component {...pageProps}/>
           <Footer /> 
          </Provider>
-         <script src="https://kit.fontawesome.com/215157a960.js" crossOrigin="anonymous"></script>
           <script src="/assets/js/jquery.min.js"></script>
           <script src="/assets/js/popper.min.js" crossOrigin="anonymous"></script>
           <script src="/assets/js/bootstrap.min.js" crossOrigin="anonymous"></script>

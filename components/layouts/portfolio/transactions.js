@@ -416,7 +416,9 @@ export default function TransactionFun({networks, addresses})
                 <div className='new_page_table profile_page_table '>
                     
 
-                  
+                    <h6 className='portfolio-sub-title mt-2'>
+            Total Transaction{txns_list.length ? <>({txns_list.length})</>:""}
+            </h6>
                     
                         <div className="table-responsive">
                             <table className="table">
@@ -639,8 +641,13 @@ export default function TransactionFun({networks, addresses})
                                         </>
                                         :
                                         <tr key="1">
+                                            {/* <img src="https://image.coinpedia.org/wp-content/uploads/2023/12/16175042/no-results-found.svg"/> */}
                                             <td className="text-center" colSpan="6">
-                                                Sorry, No related data found.
+                                            <div className="sorry_message">
+                          {/* <img src="/assets/img/portfolio/no-results-found.svg"/> */}
+                            <h6 className='err-message text-center'>    Sorry, No related data found.</h6>
+                        </div>
+                                               
                                             </td>
                                         </tr>
                                         }

@@ -95,10 +95,14 @@ export default function Tokenchart({reqData})
                 {
                     const response_message = response.data.message
                     const last_element_details = await response_message[response_message.length - 1]
-                    if(last_element_details.quote.USD)
+                    if(intervals == '10m')
                     {
-                        reqData.callback(last_element_details.quote.USD)
+                        if(last_element_details.quote.USD)
+                        {
+                            reqData.callback(last_element_details.quote.USD)
+                        }
                     }
+                   
                     const { final_array, volume_array, base_price, low_value, high_value } = await cmcArrageGraphData(response.data.message)
                     // console.log("high_value", high_value)
                     // console.log("final_array", final_array)

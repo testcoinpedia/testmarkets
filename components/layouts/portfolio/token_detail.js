@@ -321,6 +321,7 @@ export default function TokenDetail({token, backend_server_time})
         // }
 
       const response = await getTokenInOutDetails(token)
+      console.log("response",response)
       if(response.total_aquisition_cost)
       {
         set_total_aquisition_cost(response.total_aquisition_cost)

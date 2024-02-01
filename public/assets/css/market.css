@@ -10089,10 +10089,11 @@ tbody td {
 }
 
 .tabs_partition{
-  border-right: 1px solid rgb(17, 20, 45);
+  border-right: 1px solid #d0e1ff;
   margin-right: 15px;
-  line-height: 1;
-  padding: 5px 0;
+  line-height: 0.5;
+  height: 18px;
+  margin-top: 5px;
 }
 
 .search_filter .input-group-text {
@@ -10189,8 +10190,16 @@ a:not([href]):not([class]):hover {
   color: #fff;
 }
 
+.communities_dropdown .badge_dropdown_block li {
+  line-height: 1.5;
+  margin-bottom: 5px;
+}
 
-
+.communities_dropdown .badge_dropdown_block li img { 
+  width: 20px;
+  margin-right: 5px;
+  vertical-align: text-bottom;
+}
 
 .no_data_found {
   font-size: 14px;
@@ -12062,7 +12071,7 @@ font-weight: 500 !important;
 }
 
 .market-overview .overview-title .market_overview_icon {
-  height: 18px;
+  height: 100%;
   margin-right: 6px;
   display: inline-block;
 }
@@ -12841,6 +12850,7 @@ font-weight: 500 !important;
 
 .conver_main_img {
   width: 30px;
+  border-radius: 20px;
 }
 
 .convertor_dropdown {
@@ -17432,7 +17442,7 @@ background: rgb(217 217 217);
   color: #264D89 !important;
   background: #F1F6FF;
   border-radius: 5px;
-  padding: 4px 10px !important;
+  padding: 8px 12px !important;
 }
 .add-token-link
 {
@@ -17440,6 +17450,32 @@ background: rgb(217 217 217);
   cursor: pointer;
 }
 
+.etf_tabs_track {
+  float: right;
+  /* display: block; */
+}
+
+.etf_tabs_track li{
+  margin-left: 15px !important;
+}
+
+.last_updated span{
+  display: block;
+}
+
+.etf_tabs_track .last_updated h6{
+  font-weight: 500;
+  color: #264D89;
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+
+
+.market-overview .values_growth img {
+  display: inline-block;
+}
 
 .number-ticker .number {
   line-height: 1;
@@ -20307,6 +20343,14 @@ h3.heading {
   
   /***** End Portfolio Responsive *****/
 
+  .etf_tracker_tabs .nav-pill a {
+    font-size: 13px;
+  }
+
+  .slick-next {
+    display: none !important;
+  }
+
   .portfolio-sub-title {
     text-align: left;
     margin-bottom: 0px;
@@ -22091,6 +22135,30 @@ screen and (max-height: 300px) {
   .donot-pi-chart-section, .dex-donot-pichart {
     min-height: auto;
   }
+
+
+
+  .last_updated span{
+    display: inline;
+  }
+
+  .etf_dropdown .dropdown-menu {
+   
+    min-width: 75px !important;
+    left: -10px !important;
+  }
+
+  .etf_tabs_track {
+    float: none;
+  }
+  
+
+  /* .serial_number{
+    position: sticky;
+    left: 0px;
+    z-index: 0;
+    background: #fff;
+} */
 
   .complete_button {
     margin-top: 15px;
@@ -25446,7 +25514,7 @@ justify-content: end;
 .price-tracking-tbl table tbody tr td, .price-tracking-tbl .market_page_data tr .media h4, .price-tracking-tbl .market_list_price .block_price{
   color: #002358;
   white-space: nowrap;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
 }
 
 .price-tracking-tbl table tbody tr td a, .price-tracking-tbl .market_page_data tr .media h4, .price-tracking-tbl .market_list_price .block_price{
@@ -25794,20 +25862,387 @@ justify-content: end;
 }
 
 
-.running_btc_market {
+
+.running_status{
   color: #0bb102;
   background: #aee5ca;
   padding: 0 7px;
   border-radius: 15px;
+  font-size: 12px;
+}
+
+.pending_status{
+  color: #feae15;
+  background: #fff1e0;
+  padding: 0 7px;
+  border-radius: 15px;
+  font-size: 12px;
 }
 
 .price_change_btc p, .price_change_btc a {
   color: #0bb102 !important;
 }
 
-.btc_links_block , .btc_links_block a  {
+/* .btc_links_block , .btc_links_block a  {
   color: #0066ff !important;
+} */
+
+.etf_tracker_table .filter-category-section ul {
+  float: right;
 }
+
+.etf_tracker_table .filter-category-section ul li {
+  width: auto !important;
+}
+
+.etf_tracker_tabs {
+  display: block;
+    float: right;
+    margin-top: 5px;
+    font-weight: 500;
+    overflow: auto;
+    white-space: nowrap;
+    width: -webkit-fill-available;
+    background: #F1F6FF;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+.etf_tracker_tabs .nav-pill {
+  padding: 0 10px;
+  font-size: 16px;
+  font-weight: 500 !important;
+  color: #264D89;
+  display: inline-block;
+}
+
+.etf_tracker_tabs .active {
+  color: #000 !important;
+  background: #fff;
+  border-radius: 3px;
+}
+
+.overview_etf_block {
+  padding: 15px 0;
+  border-top: 1px solid #CEE1FF;
+  border-bottom: 1px solid #CEE1FF;
+  margin: 20px 0;
+}
+
+
+.overview_etf_trackers {
+  margin: 0 0;
+}
+
+.etf_tracker_table .markets_subtitle {
+  margin-top: 12px;
+}
+
+  /* .overview_etf_trackers .overview-title {
+    margin: 16px 0;
+} */
+
+.card_block_overview {
+  border: 1px solid #CEE1FF;
+  border-radius: 10px;
+  padding: 15px 15px;
+  min-height: 160px;
+}
+
+.card_block_overview h6{
+  color: #264d89;
+  font-size: 16px;
+
+}
+
+.card_block_overview h3{
+  color: #000;
+  margin: 8px 0px !important;
+  font-weight: 600 !important;
+}
+
+.highest-price-change p{
+  color: #002358 !important;
+  font-weight: 500 !important;
+}
+
+
+.highest-price-change ul {
+
+}
+
+.highest-price-change li{
+  border-bottom: 1px solid #CEE1FF !important;
+}
+
+.highest-price-change li:last-child {
+  border-bottom: unset !important;
+}
+
+.highest-price-change h6{
+  color: #000 !important;
+  font-weight: 600 !important;
+  text-align: right;
+  float: right;
+}
+
+.card_block_overview h3 span{
+  font-size: 12px;
+  color: #264d89;
+  font-weight: 600;
+
+}
+
+.network_pop_up_scroll::-webkit-scrollbar-track{
+  background: #f1f1f1;  
+}
+.network_pop_up_scroll::-webkit-scrollbar-thumb {
+  background: #888;  
+}
+.network_pop_up_scroll::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+.sorry_message p {
+  font-weight: 500 !important;
+  margin: 5px 0 0 !important;
+  font-size: 13px;
+  color: #696969 !important;
+  text-align: center;
+ 
+}
+
+img {
+  max-width: 100%;
+  vertical-align: middle;
+}
+.sorry_message img {
+    display: block;
+    margin: 0 auto !important;
+    width: 120px !important;
+    height: 120px !important;
+    text-align: center;
+    margin-top: 25px !important;
+}
+.network-image_pop-up{
+  width: 28px !important;
+  margin-top: 5px;
+  margin-right: 5px !important;
+  border-radius: 50% !important;
+}
+.network_pop_up_scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.network_pop_up_scroll{
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100px;
+}
+
+.etf_overview_box .token-name {
+  display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-width: 120px;
+
+    /* width: 250px; */
+}
+
+.etf_overview_block {
+  background: #0066ff;
+  border: 1px solid #0066ff;
+  border-radius: 6px;
+  color: #fff;
+  padding: 5px 10px;
+}
+
+.etf_overview_block h4{
+ font-size: 22px;
+}
+
+.etf_overview_block p{
+ font-size: 14px;
+}
+
+.parted_list_etf {
+  text-align: right;
+  /* margin: 10px auto;
+  position: relative;
+  top: 0;
+  bottom: 0;
+  display: block; */
+}
+
+.parted_list_etf ul{
+  /* display: block; */
+
+}
+
+.parted_list_etf li {
+  display: inline-block;
+  padding: 0 8px;
+  position: relative;
+  top: 15px;
+}
+
+.parted_list_etf li:first-child {
+  border-right: 1px solid #CEE1FF;
+}
+
+.parted_list_etf p {
+  display: flex;
+  font-weight: 500;
+  margin: 0;
+}
+
+.parted_list_etf li img{
+  width: 28px;
+  position: relative;
+  display: inline;
+  bottom: 2px;
+}
+
+.etf_overview_block {
+  margin-bottom: 10px;
+}
+
+.parted_list_etf li span{
+  font-weight: 300 !important;
+  color: #F1F6FF;
+}
+
+.etf_dropdown .etf_tracker_tabs {
+  padding: 6px 10px !important;
+}
+
+.etf_dropdown .dropdown-menu {
+  padding-left: 10px;
+  border: 1px solid #CEE1FF;
+}
+
+.etf_dropdown .dropdown-item {
+  padding: 2px 0 !important;
+  font-size: 13px;
+  color: #264d89;
+  font-weight: 500 !important;
+}
+
+.open_icon img{
+  
+}
+
+.etf_filter_block .show .filter_icon img{
+  transform: rotate(180deg);
+  transition: transform .5s ease-in-out;
+}
+
+.etf_filter_block .filter_icon img{
+  transform: rotate(0deg);
+  transition: transform .5s ease-in-out;
+}
+
+.slick-initialized .slick-slide {
+  padding: 10px;
+}
+.token_details_tabs_row ul {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+
+
+.progress{
+  height: 12px;
+  margin-top: inherit;
+}
+
+.progress1{
+  margin-top: 10px;
+}
+
+.bg-success {
+  background-color: #16c784 !important;
+}
+
+.bg-danger {
+  background-color: #fc2d00 !important;
+}
+
+
+.network_pop_up_scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.network_pop_up_scroll{
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100px;
+}
+/* Default styles for larger screens */
+.nft_pop_up_scroll {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 500px;
+}
+
+.nft_pop_up_scroll::-webkit-scrollbar{
+  width: 5px;
+}
+
+.slick-dots li button:before {
+  font-size: 25px !important;
+  margin-top: 10px !important;
+}
+
+.slick-list {
+  margin-bottom: 30px !important;
+}
+
+.slick-dots {
+  bottom: -18px !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25881,6 +26316,28 @@ justify-content: end;
   .price-tracking-tbl .filter-category-section ul:not(.price-tracking-tbl .filter_rows li){
     float: left;
   }
+  .markets_list_quick_links ul {
+    display: flex;
+  }
+
+  .token_list {
+    position: sticky;
+    right: 0;
+  }
+
+  .token_list .nav-link{
+    width: 50px;
+    margin-left: 15px;
+  }
+
+  .list-new-token {
+    margin-top: 0;
+  }
+
+  .etf_table_width {
+    min-width: 130px !important;
+  }
+
 }
 
 @media (min-width: 768px) and (max-width: 1000px) {
@@ -25996,6 +26453,20 @@ justify-content: end;
 }
 
 @media screen and (max-width:767px){
+
+  .parted_list_etf li img {
+    width: 22px;
+    position: relative;
+    bottom: 0px;
+}
+
+.etf_tabs_track  .last_updated {
+  margin-left: 0 !important;
+}
+
+.overview_etf_trackers .overview-title {
+  font-size: 15px;
+}
   .markets_new_design .search_filter.new_design_serach .input-group-text img {
     width: 20px !important;
   }
@@ -26464,6 +26935,10 @@ justify-content: end;
     margin-top: 10px;
   }
 
+  .slick-initialized .slick-slide {
+    padding: 0px;
+  }
+
 }
 
 
@@ -26647,50 +27122,7 @@ justify-content: end;
 }
 
 
-.token_details_tabs_row ul {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  flex-wrap: nowrap;
-}
 
-
-.progress{
-  height: 12px;
-  margin-top: inherit;
-}
-
-.progress1{
-  margin-top: 10px;
-}
-
-.bg-success {
-  background-color: #16c784 !important;
-}
-
-.bg-danger {
-  background-color: #fc2d00 !important;
-}
-
-
-.network_pop_up_scroll::-webkit-scrollbar {
-  width: 5px;
-}
-.network_pop_up_scroll{
-  overflow-y: scroll;
-  overflow-x: hidden;
-  height: 200px;
-}
-/* Default styles for larger screens */
-.nft_pop_up_scroll {
-  overflow-y: scroll;
-  overflow-x: hidden;
-  height: 500px;
-}
-.nft_pop_up_scroll::-webkit-scrollbar{
-  width: 5px;
-}
 /* Media query for screens with a maximum width of 767px (typical for mobile devices) */
 @media (max-width: 667px) {
   .nft_pop_up_scroll {
@@ -26702,7 +27134,7 @@ justify-content: end;
   .network_pop_up_scroll{
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 200px;
+    height: 100px;
   } 
 }
 @media (max-width: 540px) {
@@ -26715,16 +27147,9 @@ justify-content: end;
   .network_pop_up_scroll{
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 200px;
+    height: 100px;
   }
 }
-.network_pop_up_scroll::-webkit-scrollbar-track{
-  background: #f1f1f1;  
-}
-.network_pop_up_scroll::-webkit-scrollbar-thumb {
-  background: #888;  
-}
-.network_pop_up_scroll::-webkit-scrollbar-thumb:hover {
-  background: #555; 
-}
+
+
 /****************************** Markets Home page new design css ends  ****************************************/

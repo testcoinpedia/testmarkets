@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Error from "../404";
 import { smallExponentialPrice, API_BASE_URL,config, separator,getURLWebsiteName,getShortWalletAddress,
   createValidURL,
+  getSocialImage,
   app_coinpedia_url,
   market_coinpedia_url,
   IMAGE_BASE_URL,
@@ -89,7 +90,7 @@ export default function tokenDetailsFunction({
   search_by_category
 }) 
 {
-  console.log("data", data)
+ // console.log("data", data)
 
   // const [nextNumber, setNextNumber] = useState(getRandomNumber());
   // const intervalRef = useRef();
@@ -2349,7 +2350,7 @@ export default function tokenDetailsFunction({
                               communities[0] != "" ||
                               (communities[1] != "" &&
                                 communities[1] != undefined) ? (
-                                <li className="coin_individual_list">
+                                <li className="coin_individual_list communities_dropdown">
                                   <div className="quick_block_links">
                                     <div
                                       className="widgets__select links_direct"
@@ -2383,6 +2384,7 @@ export default function tokenDetailsFunction({
                                               href={e ? e : ""}
                                               target="_blank"
                                             >
+                                             <img src={getSocialImage(e)} /> 
                                               {getURLWebsiteName(e)}
                                             </a>
                                           </li>
@@ -2475,6 +2477,7 @@ export default function tokenDetailsFunction({
                             {data.list_type == 2 && data.contract_addresses ? (
                               <>
                                 {data.contracts_array.length ? (
+                                  data.contracts_array[0].contract_address ?
                                   <>
                                     <li
                                       className="coin_individual_list"
@@ -2505,8 +2508,11 @@ export default function tokenDetailsFunction({
                                       {contracts_addr_details ? (
                                         <div className={`dropdown_block badge_dropdown_block contracts_list ${isOpen ? 'closed' : 'open'}`}>
                                           <ul>
-                                            {data.contracts_array.map(
+                                            {
+                                              data.contracts_array.length ?
+                                              data.contracts_array.map(
                                               (innerItem, i) => (
+                                                innerItem.contract_address ?
                                                 <>
                                                   <li key={i} className="mb-2">
                                                     <div className="media contracts_dropdown">
@@ -2608,9 +2614,15 @@ export default function tokenDetailsFunction({
                                                       </div>
                                                     </div>
                                                   </li>
-                                                </>
+                                                  </>
+                                                  :
+                                                  ""
+                                                
                                               )
-                                            )}
+                                            )
+                                            :
+                                            ""
+                                            }
                                           </ul>
                                         </div>
                                       ) : (
@@ -2618,6 +2630,8 @@ export default function tokenDetailsFunction({
                                       )}
                                     </li>
                                   </>
+                                  :
+                                  ""
                                 ) : null}
                               </>
                             ) : (

@@ -1,32 +1,32 @@
 import JsCookie from "js-cookie"
 
 // Live links
-// export const coinpedia_url="https://coinpedia.org/"
-// export const app_coinpedia_url="https://app.coinpedia.org/"
-// export const market_coinpedia_url = 'https://markets.coinpedia.org/' 
-// export const events_coinpedia_url = 'https://events.coinpedia.org/'
-// export const cookieDomainExtension = '.coinpedia.org'
-// export const logo =  '/assets/img/logo.png'
-// export const favicon =  '/assets/img/favicon.png'
-// export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
-// export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
-// export const API_BASE_URL = 'https://marketsapi.coinpedia.org/'
-// export const MAIN_API_BASE_URL = 'https://api.coinpedia.org/'
-// export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
-
-//Test links
-export const coinpedia_url="https://maintest.coinpedia.org/"
-export const app_coinpedia_url = 'https://testapp.coinpedia.org/'
-export const market_coinpedia_url = 'https://testmarkets.coinpedia.org/'
-export const events_coinpedia_url = 'https://testevents.coinpedia.org/'
+export const coinpedia_url="https://coinpedia.org/"
+export const app_coinpedia_url="https://app.coinpedia.org/"
+export const market_coinpedia_url = 'https://markets.coinpedia.org/' 
+export const events_coinpedia_url = 'https://events.coinpedia.org/'
 export const cookieDomainExtension = '.coinpedia.org'
-export const logo = '/assets/img/logo.png'
-export const favicon = '/assets/img/favicon.png'
+export const logo =  '/assets/img/logo.png'
+export const favicon =  '/assets/img/favicon.png'
 export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
 export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
-export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
 export const API_BASE_URL = 'https://marketsapi.coinpedia.org/'
-export const MAIN_API_BASE_URL = 'https://shark-app-q5yj6.ondigitalocean.app/'
+export const MAIN_API_BASE_URL = 'https://api.coinpedia.org/'
+export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
+
+//Test links
+// export const coinpedia_url="https://maintest.coinpedia.org/"
+// export const app_coinpedia_url = 'https://testapp.coinpedia.org/'
+// export const market_coinpedia_url = 'https://testmarkets.coinpedia.org/'
+// export const events_coinpedia_url = 'https://testevents.coinpedia.org/'
+// export const cookieDomainExtension = '.coinpedia.org'
+// export const logo = '/assets/img/logo.png'
+// export const favicon = '/assets/img/favicon.png'
+// export const graphqlApiKEY = "BQYI963iirpgew04eXmID1hhCF3jozik"
+// export const portfolio_graphql_api_key = "BQYI963iirpgew04eXmID1hhCF3jozik"
+// export const OKLINK_API_KEY = 'ca039275-4bee-4e16-86b8-edda00dae2aa'
+// export const API_BASE_URL = 'https://marketsapi.coinpedia.org/'
+// export const MAIN_API_BASE_URL = 'https://shark-app-q5yj6.ondigitalocean.app/'
 
 // Local Links
 // export const coinpedia_url="http://192.168.1.100:81/cpnews/"
@@ -44,18 +44,22 @@ export const MAIN_API_BASE_URL = 'https://shark-app-q5yj6.ondigitalocean.app/'
 
 
 
-export const separator=(numb)=> {
+export const separator=(numb)=> 
+{
   var str = numb.toString().split(".")
   str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   return str.join(".")
 }
+
 export const IMAGE_BASE_URL = 'https://image.coinpedia.org/app_uploads'
  
 export const x_api_key = "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS"
 export const config=(user_token)=> 
 {
+
   if(user_token)
   {
+    
     return { headers :
     {
       "api_key" : "234ADSIUDG98669DKLDSFHDASDFLKHSDAFIUUUUS",
@@ -71,6 +75,87 @@ export const config=(user_token)=>
   }
 }
 
+
+
+
+export const getSocialImage = (pass_link) =>
+{ 
+    var image_name = ""
+    if(pass_link)
+    {
+      if(pass_link.includes("facebook") || pass_link.includes("facebook.com"))
+      {
+        image_name = "facebook.svg"
+      }
+      else if(pass_link.includes("x.com") || pass_link.includes("twitter.com") || pass_link.includes("t.co/"))
+      {
+        image_name = "x.svg"
+      }
+      else if(pass_link.includes("telegram")|| pass_link.includes("t.me"))
+      {
+        image_name = "telegram.svg"
+      }
+      else if(pass_link.includes("discord.com") || pass_link.includes("discord.gg"))
+      {
+        image_name = "discord.svg"
+      }
+      else if(pass_link.includes("instagram.com"))
+      {
+        image_name = "instagram.svg"
+      }
+      else if(pass_link.includes("medium.com"))
+      {
+        image_name = "medium.svg"
+      }
+      else if(pass_link.includes("reddit.com"))
+      {
+        image_name = "reddit.svg"
+      }
+      else if(pass_link.includes("youtube.com"))
+      {
+        image_name = "youtube.svg"
+      }
+      else if(pass_link.includes("linkedin.com") || pass_link.includes("linkedin.in"))
+      {
+        image_name = "linkedin.svg"
+      }
+      else if(pass_link.includes("tumblr.com"))
+      {
+        image_name = "tumblr.svg"
+      }
+      else if(pass_link.includes("tiktok.com"))
+      {
+        image_name = "tiktok.svg"
+      }
+      else if(pass_link.includes("twitch.tv"))
+      {
+        image_name = "twitch.svg"
+      }
+      else if(pass_link.includes("quora.com"))
+      {
+        image_name = "quora.svg"
+      }
+      else if(pass_link.includes("pinterest.com"))
+      {
+        image_name = "pinterest.svg"
+      }
+      else if(pass_link.includes("bitcointalk.org"))
+      {
+        image_name = "bitcointalk.svg"
+      }
+      else 
+      {
+        image_name = "default.svg"
+      }
+
+    }
+    else
+    {
+      image_name = "default.svg"
+    }
+
+    return IMAGE_BASE_URL+"/social_images/"+image_name
+}
 
 export const getGoodWishOfDay = () =>
 {

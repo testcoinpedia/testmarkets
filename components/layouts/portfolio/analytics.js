@@ -284,7 +284,7 @@ export default function AnalyticsFun({ data })
   
   // }
    const setChartWorthData=(pass_type)=>{
-    console.log("pass_type",pass_type)
+    // console.log("pass_type",pass_type)
     set_worth_chart_profit(pass_type)
     profitLoss(tokens_list_as_list_view,tokens_balance,pass_type)
   }
@@ -348,7 +348,7 @@ export default function AnalyticsFun({ data })
   // }
   const profitLoss = async (balance_list, pass_balance, pass_data_type) => 
   {
-    console.log("pass_data_type",pass_data_type)
+    // console.log("pass_data_type",pass_data_type)
     if(pass_data_type==2){
     var low_value = 0
     var high_value = 0
@@ -380,10 +380,10 @@ export default function AnalyticsFun({ data })
 
 
     const base_price = await parseFloat(((low_value+high_value)/2).toFixed(2))
-    console.log("base_price",base_price)
+    // console.log("base_price",base_price)
 
-    console.log("low_value", low_value)
-    console.log("high_value", high_value)
+    // console.log("low_value", low_value)
+    // console.log("high_value", high_value)
     var values_array = []
     var times_array = []
     let i = 0
@@ -401,8 +401,8 @@ export default function AnalyticsFun({ data })
       }
       i++
     }
-    console.log("values_array", values_array)
-    console.log("times_array", times_array)
+    // console.log("values_array", values_array)
+    // console.log("times_array", times_array)
     
     await set_profile_loss_graph_days(times_array)
     await set_profit_loss_values(values_array)
@@ -414,13 +414,13 @@ export default function AnalyticsFun({ data })
     const values_array = [];
     const times_array = [];
     const selectedDates = new Set();
-    console.log("selectedDates",selectedDates)
+    // console.log("selectedDates",selectedDates)
     
     for (let i = line_graph_values_7d.length - 1; i >= 0 && selectedDates.size < 8; i--) {
       const run = line_graph_values_7d[i];
-      console.log("run",run)
+      // console.log("run",run)
       const Day = moment.utc(new Date(run.time * 1000)).format('DD MMM');
-      console.log("Day",Day)
+      // console.log("Day",Day)
       if (!selectedDates.has(Day)) {
      
           const timeSlot = moment.utc(new Date(run.time * 1000)).format('DD MMM');
@@ -435,8 +435,8 @@ export default function AnalyticsFun({ data })
     }
     times_array.reverse();
     values_array.reverse();
-    console.log("Times Array", times_array);
-    console.log("Values Array", values_array);
+    // console.log("Times Array", times_array);
+    // console.log("Values Array", values_array);
      
     await set_profile_loss_graph_days(times_array)
     await set_profit_loss_values(values_array)
@@ -755,7 +755,11 @@ export default function AnalyticsFun({ data })
             <ReactApexChart options={profit_loss_options} series={profit_loss_series} type="bar" height={350} />
                 </div>
               :
-              ""
+              <div className='text-center py-5 my-5'>
+              <img  className="no_data pb-2"src="/assets/img/portfolio/No_graph_data.svg"/>
+<h6 >Chart is empty </h6>
+<p>No data available to display.</p>
+</div>
             }
         
           </div>

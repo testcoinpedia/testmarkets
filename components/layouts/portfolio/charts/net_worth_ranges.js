@@ -168,6 +168,7 @@ export default function Tokenchart({reqData})
 }
 
             {
+                
                 worth_chart_type && line_graph_values.length && net_worth_price?
                 <Net_worth
                     reqData={{
@@ -176,10 +177,7 @@ export default function Tokenchart({reqData})
                     }}
                 />
                 :
-                <div className='text-center py-5 my-5'>
-    <h6 >Chart is empty </h6>
-    <p>No data available to display.</p>
-  </div>
+              ""
             }
            
         </>

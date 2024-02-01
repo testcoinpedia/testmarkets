@@ -116,7 +116,7 @@ export default function WalletDetails({ userAgent, prev_url, search_address })
   const [token_allocation_values, set_token_allocation_values] = useState([])
   const [token_allocation_names, set_token_allocation_names] = useState([])
   const [token_allocation_colors, set_token_allocation_colors] = useState(['#0088FE', '#00C49F', '#FFBB28', '#4b51cb', '#CF61B0', '#909090','#808080','#A52A2A', '#5D69B1', '#24796C', '#E88310', '#2F8AC4', '#764E9F', '#ED645A', '#CC3A8E', '#C1C1C1', '#66C5CC', '#F89C74', '#DCB0F2', '#87C55F', '#9EB9F3', '#FE88B1', '#8BE0A4', '#B497E7',
-    '#D3B484', '#B3B3B3', '#E10B64', '#E92828', '#78B4A4', '#604F00', '#0060E9', '#FF7DE3', '#20c997', '#6f42c1'])
+    '#D3B484', '#B3B3B3', '#E10B64', '#E92828', '#78B4A4', '#604F00', '#282E78', '#282E78', '#282E78','#9DBCDD','#6D9BCD','#2E5A88'])
 
   //Remove Wallet Account Starts Here
   const [wallet_confirm_remove_modal, set_wallet_confirm_remove_modal] = useState(false)
@@ -2705,10 +2705,12 @@ const checkUserWalletAddress = async(pass_address) =>
                           <div className='row'>
                             {
                               tab_active == 1 ?
+                             
                                 <>
                                   <div className='col-md-12 col-xl-8 col-lg-12'>
                                   {
                                     loader_status ?
+                                 
                                     <>
                                      {
                                       tokens_list_as_list_view.length ?
@@ -2730,6 +2732,7 @@ const checkUserWalletAddress = async(pass_address) =>
                                         </div>
                                         :
                                         <div className='overveiw-chart-loader'>
+                                           <img  className="no_data pb-2"src="/assets/img/portfolio/No_graph_data.svg"/>
                                         <h6>Chart is empty </h6>
                                         <p>No data available to display.</p>
                                       </div>
@@ -3195,7 +3198,10 @@ const checkUserWalletAddress = async(pass_address) =>
                                       active_networks.length && active_addresses.length ?
                                         <Transactions networks={active_networks} addresses={active_addresses} />
                                         :
-                                        ""
+                                        <div className="sorry_message">
+                                        <img src="https://image.coinpedia.org/wp-content/uploads/2023/12/16175042/no-results-found.svg"/>
+                                          <h6 className='err-message text-center'>Please select at least one account to proceed.</h6>
+                                      </div>
                                     }
                                   </div>
                                   :
@@ -3208,7 +3214,10 @@ const checkUserWalletAddress = async(pass_address) =>
                                            <Token_Approvals networks={active_networks} addresses={active_addresses} />
                                         </div>
                                         :
-                                        ""
+                                        <div className="sorry_message">
+                                    <img src="https://image.coinpedia.org/wp-content/uploads/2023/12/16175042/no-results-found.svg"/>
+                                      <h6 className='err-message text-center'>Please select at least one account to proceed.</h6>
+                                  </div>
                                       }
                                      
                                     </div>
@@ -3289,6 +3298,7 @@ const checkUserWalletAddress = async(pass_address) =>
                         </>
                         :
                         tab_active == 3 ?
+                        active_addresses.length && active_networks.length?
                           <>
                             {
                               tokens_grand_total ?
@@ -3311,9 +3321,18 @@ const checkUserWalletAddress = async(pass_address) =>
                                   line_graph_base_price_7d
                                   }} />
                                 :
-                                ""
+                                <div className='text-center py-5 my-5'>
+                                <img  className="no_data pb-2"src="/assets/img/portfolio/No_graph_data.svg"/>
+                  <h6 >Chart is empty </h6>
+                  <p>No data available to display.</p>
+                  </div>
                             }
                           </>
+                          :
+                          <div className="sorry_message">
+                          <img src="https://image.coinpedia.org/wp-content/uploads/2023/12/16175042/no-results-found.svg"/>
+                            <h6 className='err-message text-center'>Please select at least one account to proceed.</h6>
+                        </div>
                           :
                           tab_active == 4 ?
                             active_networks.length && active_addresses.length ?
@@ -3404,7 +3423,10 @@ const checkUserWalletAddress = async(pass_address) =>
                             <NFT_detail networks={active_networks} addresses={active_addresses} />
                             </>
                             :
-                            ""
+                            <div className="sorry_message">
+                            <img src="https://image.coinpedia.org/wp-content/uploads/2023/12/16175042/no-results-found.svg"/>
+                              <h6 className='err-message text-center'>Please select at least one account to proceed.</h6>
+                          </div>
                           :
                           tab_active == 6 ?
                             <>

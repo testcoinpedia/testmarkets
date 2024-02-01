@@ -33,7 +33,12 @@ export default function FeedFunction({networks, addresses})
     const [token_details_modal_status, set_token_details_modal_status] = useState(false)
     const [token_detail, set_token_detail] = useState("")
     const [tokens_grand_total, set_tokens_grand_total] = useState(0)
-
+    const [network_has_more, set_network_has_more] = useState(true)
+    const[my_data_status,set_my_data_status]=useState(false)
+    const SpinnerLoader = () => 
+    {
+        set_my_data_status(true)
+    }
     const protocolType = (pass_protocol_type) =>
     {  
      
@@ -243,6 +248,16 @@ export default function FeedFunction({networks, addresses})
                         <img src="/assets/img/filter_dropdown.svg" /> 
                     </button>
                     <ul className="dropdown-menu">
+                    <div className='network_pop_up_scroll'>
+            <InfiniteScroll
+                    dataLength={protocol_types.length}
+                    style={{ overflow: "unset" }}
+                    // next={tokenAccountViewList}
+                    hasMore={network_has_more}
+                    loader={<SpinnerLoader />}
+                    // endMessage={<EndMessage />}
+                    scrollableTarget="scrollableDiv"
+                >
                         {
                             protocol_types.length ? 
                             protocol_types.map((item, i) =>
@@ -253,6 +268,8 @@ export default function FeedFunction({networks, addresses})
                             :
                             ""
                         }
+                       </InfiniteScroll>
+                        </div>
                     </ul>
                 </div>
            </div>
@@ -422,8 +439,25 @@ export default function FeedFunction({networks, addresses})
                                         </div>
                                 
                                     </tr>
+                                    {
+                                            protocol_type?
+                                            <div className='row'>
+                                             <div className='col-6 col-md-6'>
+                                    <td><label className='token-type-name '>N/w</label></td>
+                                    
+                                    </div>
+                                            <div className='col-6 col-md-6'>
+                                            <td className='token-value-details'>
+                                            <img className="network-image_pop-up"  src={`/assets/img/portfolio/${protocol_type.network_image}`} alt={protocol_type.network_name} title={protocol_type.network_name} />
+                                                </td>
+                                            </div>
+                                        </div>
+                                            :
+                                            ""
+                                        }
                                     <tr>
-                                    {token_detail.symbol?
+                                    {
+                                    token_detail.symbol?
                                     <div className='row'>
                                     <div className='col-6 col-md-6'>
                                     <td><label className='token-type-name '>Symbol</label></td>
@@ -459,7 +493,14 @@ export default function FeedFunction({networks, addresses})
                                             <div className='col-6 col-md-6'>
                                             <td className='token-value-details'>
                                                 
-                                            {token_detail.protocolType}
+                                            {
+                                            token_detail.protocolType==='token_20'?
+                                           'ERC-20'
+                                            :
+                                            'ERC-721'
+                                           
+
+                                            }
                                                 </td>
                                             </div>
                                         </div>

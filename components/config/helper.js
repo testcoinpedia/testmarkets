@@ -50,33 +50,51 @@ export const protocol_types = [
     network_image:"bsc.svg",
     network_url: "https://bscscan.com/tx/"
   },
+  // {
+  //   _id:5,
+  //   type_name:"CRC-20",
+  //   network_id:"cronos",
+  //   protocolType:"token_20",
+  //   network_name:"Cronos",
+  //   network_image:"cronos.svg",
+  //   network_url: "https://cronosan.com/tx/"
+  // },
+  // {
+  //  _id:6,
+  //  type_name:"CRC-721",
+  //  network_id:"cronos",
+  //   protocolType:"token_721",
+  //   network_name:"Cronos",
+  //   network_image:"cronos.svg",
+  //   network_url: "https://cronosan.com/tx/"
+  // },
+  // {
+  //   _id:7,
+  //   type_name:"CRC-1155",
+  //   network_id:"cronos",
+  //    protocolType:"token_1155",
+  //    network_name:"Cronos",
+  //    network_image:"cronos.svg",
+  //    network_url: "https://cronosan.com/tx/"
+  //  }
   {
-    _id:5,
-    type_name:"CRC-20",
-    network_id:"cronos",
+    _id:10,
+    type_name:"ERC-20",
+    network_id:"polygon",
     protocolType:"token_20",
-    network_name:"Cronos",
-    network_image:"cronos.svg",
-    network_url: "https://cronosan.com/tx/"
+    network_name:"Polygon",
+    network_image:"polygon.svg",
+    network_url: "https://polygonscan.com/tx/"
   },
   {
-   _id:6,
-   type_name:"CRC-721",
-   network_id:"cronos",
-    protocolType:"token_721",
-    network_name:"Cronos",
-    network_image:"cronos.svg",
-    network_url: "https://cronosan.com/tx/"
-  },
-  {
-    _id:7,
-    type_name:"CRC-1155",
-    network_id:"cronos",
-     protocolType:"token_1155",
-     network_name:"Cronos",
-     network_image:"cronos.svg",
-     network_url: "https://cronosan.com/tx/"
-   }
+    _id:11,
+    type_name:"ERC-20",
+    network_id:"ftm",
+    protocolType:"token_20",
+    network_name:"Fantom",
+    network_image:"ftm.svg",
+    network_url: "https://ftmscan.com/tx/"
+  }
 ]
 
 export const crypto_networks_list = [
@@ -632,7 +650,8 @@ export const getShortAddress=(wallet_address, length)=>
         url: 'https://streaming.bitquery.io/graphql',
         headers: { 
           'Content-Type': 'application/json', 
-          'X-API-KEY': portfolio_graphql_api_key
+          'X-API-KEY': portfolio_graphql_api_key,
+          'Authorization': 'Bearer ory_at_qZL8Ii56Cqi_0FpLNtoLszwSKFakJDILadGbd5csiXM.gUc9dOTT1_ymOKaE5nkyiPhczPVnqCQgd_NRr_W-RQo'
         },
         data : JSON.stringify({query})
     }
@@ -766,7 +785,7 @@ export const getShortAddress=(wallet_address, length)=>
         ) {
           block {
             timestamp {
-              time(format: "%Y-%m-%dT%H:%M:%SZ")
+              time(format: "%Y-%m-%d %H:%M:%S")
               dayOfWeek
             }
             height
@@ -869,13 +888,13 @@ export const updateAddedWallet = async (pass_data, new_wallet_address) =>
           if(!data_list_hash.includes(run.transaction.hash))
           {
             let type = 1
-            if((run.transaction.txFrom.address).toLowerCase() == wallet_address)
+            if((run.address.address).toLowerCase() == wallet_address)
             {
               type = 3
             }
             
             await arrange_result.push({
-              amount : run.amount,
+              address : run.currency.address,
               gas_value : run.gasValue,
               amount_in_usd : run.amountInUSD,
               amount : run.amount,
@@ -903,7 +922,8 @@ export const updateAddedWallet = async (pass_data, new_wallet_address) =>
             }
             
             await arrange_result.push({
-              amount : run.amount,
+              address : run.currency.address,
+              symbol:run.currency.symbol,
               gas_value : run.gasValue,
               amount_in_usd : run.amountInUSD,
               amount : run.amount,

@@ -490,19 +490,24 @@ return (
                                     <td className=" wishlist"> 
                                       {
                                         e.list_type == 1 ?
-                                        <p className='new-token-network'>
-                                          Coin
-                                        </p>
+                                        <div className="media">
+                                          <div className="media-left align-self-center" style={{width:"22px"}}>
+                                            <img  style={{width:"22px"}} src={(image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                          </div>
+                                          <div className="media-body align-self-center" style={{marginLeft:"5px"}}>
+                                            Coin
+                                          </div>
+                                        </div>
                                         :
                                         <>
                                         {
-                                          e.networks ?
+                                          e.networks[0] ?
                                           <div className="media">
                                           <div className="media-left align-self-center" style={{width:"22px"}}>
-                                            <img  style={{width:"22px"}} src={(e.networks.token_image ? image_base_url+e.networks.token_image: image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
+                                            <img  style={{width:"22px"}} src={(e.networks[0].token_image ? image_base_url+e.networks[0].token_image: image_base_url+"default.svg")} onError={(e) =>e.target.src = "/assets/img/default_token.png"} alt={e.token_name} width="100%" height="100%" className="media-object" />
                                           </div>
                                           <div className="media-body align-self-center" style={{marginLeft:"5px"}}>
-                                            {e.networks.network_name != 'BNB Smart Chain (BEP20)' ? e.networks.network_name:"BNB"}
+                                            {e.networks[0].network_name != 'BNB Smart Chain (BEP20)' ? e.networks[0].network_name:"BNB"}
                                             
                                           </div>
                                         </div>
