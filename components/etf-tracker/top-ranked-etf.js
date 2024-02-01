@@ -53,7 +53,7 @@ export default function TopRankedEtf({ overview_list})
         <div className='markets_overview_mobile etf_overview_box'>
             <div className='market-overview'>
                 <h5 className='overview-title'>
-                  <img src="/assets/img/etf_top_ranked.svg" className="market_overview_icon" /> 
+                  <img src="/assets/img/etf_top_ranked.svg" alt="Top Ranked" className="market_overview_icon" /> 
                   Top Ranked ETFs by Volume
                     
                 </h5>

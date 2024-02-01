@@ -65,7 +65,7 @@ export default function HighestEtf({ overview_list})
         <div className='markets_overview_mobile etf_overview_box'>
             <div className='market-overview'>
                 <h5 className='overview-title'>
-                  <img src="/assets/img/money_raised.svg" className="market_overview_icon" /> 
+                  <img src="/assets/img/money_raised.svg" alt="Highest PRice" className="market_overview_icon" /> 
                   Highest Price change in the Last 1 Hour
                   
                   {/* <span className='category'> {convertCurrency(totalVolume)}</span> */}

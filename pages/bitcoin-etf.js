@@ -456,7 +456,7 @@ return (
                                 <th className='table-cell-shadow-right name_col' style={{width: '150px'}}>ETF Name</th>
                                 
                                 <th className=" ">Price</th>
-                                <th className=" ">Price Change&nbsp;
+                                <th className='etf_table_width'>Price Change&nbsp;
                                 <OverlayTrigger
                                     delay={{ hide: 450, show: 300 }}
                                       overlay={(props) => (
@@ -468,7 +468,7 @@ return (
                                     ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
                                   </OverlayTrigger>
                                 </th>
-                                <th className="">Market Cap&nbsp;
+                                <th className='etf_table_width'>Market Cap&nbsp;
                                 <OverlayTrigger
                                     delay={{ hide: 450, show: 300 }}
                                       overlay={(props) => (
@@ -492,7 +492,7 @@ return (
                                     ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
                                   </OverlayTrigger>
                                 </th> */}
-                                <th>Fee&nbsp;
+                                <th className='etf_table_width'>Fee&nbsp;
                                 <OverlayTrigger
                                     delay={{ hide: 450, show: 300 }}
                                       overlay={(props) => (
@@ -504,7 +504,7 @@ return (
                                     ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
                                   </OverlayTrigger>
                                 </th>
-                                <th>AUM&nbsp;
+                                <th className='etf_table_width'>AUM&nbsp;
                                 <OverlayTrigger
                                     delay={{ hide: 450, show: 300 }}
                                       overlay={(props) => (
@@ -516,7 +516,7 @@ return (
                                     ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
                                   </OverlayTrigger>
                                 </th>
-                                <th>24H Volume&nbsp;
+                                <th className='etf_table_width'>24H Volume&nbsp;
                                 <OverlayTrigger
                                     delay={{ hide: 450, show: 300 }}
                                       overlay={(props) => (
@@ -528,7 +528,7 @@ return (
                                     ><span className='info_col' ><img src="/assets/img/info.png" alt="info" /></span>
                                   </OverlayTrigger>
                                 </th>
-                                <th>Custodian&nbsp;
+                                <th className='etf_table_width'>Custodian&nbsp;
                                 <OverlayTrigger
                                     delay={{ hide: 450, show: 300 }}
                                       overlay={(props) => (
